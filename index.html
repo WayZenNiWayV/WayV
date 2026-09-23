@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<title>WayV Vision Phone</title>
+<style>
+:root{
+  --phone-w:min(92vw,calc(92dvh / 2.026),420px);
+  --phone-h:calc(var(--phone-w) * 2.026);
+  --radius:calc(var(--phone-w) * 0.11);
+  --safe-top:0px;
+  --safe-bottom:0px;
+  --green-bg:#eefaf2;
+  --green-paper:#ffffff;
+  --green-card:#f4fbf6;
+  --green-deep:#3fa96a;
+  --green-mid:#7ccc9b;
+  --green-soft:#b8e2c6;
+  --green-ink:#1e4a30;
+  --green-ink-soft:#5a8d6e;
+  --line:#d6ecd9;
+  --shadow:0 20px 50px -15px rgba(40,130,70,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#d4f0de,#e8f6dd 60%,#f0fbf0);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.phone-shell{width:var(--phone-w);height:var(--phone-h);background:#0d1a12;border-radius:var(--radius);padding:calc(var(--phone-w)*0.027);box-shadow:0 40px 80px -20px rgba(20,60,35,.35),inset 0 0 0 1.5px rgba(255,255,255,.08);position:relative;transition:all .15s ease;}
+.phone-shell::before{content:"";position:absolute;top:calc(var(--phone-w)*0.048);left:50%;transform:translateX(-50%);width:calc(var(--phone-w)*0.293);height:calc(var(--phone-w)*0.08);background:#0d1a12;border-radius:calc(var(--phone-w)*0.048);z-index:10;}
+.phone-screen{width:100%;height:100%;background:var(--green-bg);border-radius:calc(var(--radius) - var(--phone-w)*0.016);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+.phone-screen::before{content:"";position:absolute;top:-20%;left:-20%;width:80%;height:60%;background:radial-gradient(circle,rgba(124,204,155,.45) 0%,transparent 70%);pointer-events:none;}
+.phone-screen::after{content:"";position:absolute;bottom:-15%;right:-15%;width:70%;height:55%;background:radial-gradient(circle,rgba(184,226,198,.55) 0%,transparent 70%);pointer-events:none;}
+.status-bar{height:calc(var(--phone-w)*0.128 + var(--safe-top));padding:calc(var(--safe-top) + var(--phone-w)*0.053) calc(var(--phone-w)*0.064) 0;display:flex;justify-content:space-between;align-items:center;font-size:calc(var(--phone-w)*0.04);font-weight:600;color:var(--green-ink);position:relative;z-index:1;}
+.status-bar .icons{display:flex;gap:calc(var(--phone-w)*0.016);align-items:center;font-size:calc(var(--phone-w)*0.035);}
+.status-bar .icons svg{display:block;flex-shrink:0;}
+.status-bar .sig-icon,.status-bar .wifi-icon{width:calc(var(--phone-w)*0.045);height:calc(var(--phone-w)*0.045);}
+.status-bar .bat-icon{width:calc(var(--phone-w)*0.062);height:calc(var(--phone-w)*0.034);}
+.status-bar .bat-text{font-variant-numeric:tabular-nums;}
+.desktop{flex:1;padding:10px 10px calc(var(--phone-w)*0.027);display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:calc(var(--phone-w)*0.213);gap:calc(var(--phone-w)*0.032);overflow-y:auto;align-content:start;position:relative;z-index:1;}
+.desktop::-webkit-scrollbar{display:none;}
+.tile{border-radius:calc(var(--phone-w)*0.04);cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .6s cubic-bezier(.32,2,.4,1);}
+.tile:active{transform:scale(.88);transition:transform .08s ease-out;}
+.tile .app-icon{width:calc(var(--phone-w)*0.117);height:calc(var(--phone-w)*0.117);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:calc(var(--phone-w)*0.059);background:rgba(255,255,255,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--green-deep);border:1px solid rgba(255,255,255,.8);box-shadow:0 4px 14px -4px rgba(40,130,70,.2);}
+.tile .app-label{font-size:calc(var(--phone-w)*0.029);color:var(--green-ink);margin-top:calc(var(--phone-w)*0.01);font-weight:500;}
+.tile.widget{transition:none;align-items:stretch;height:auto;min-height:calc(var(--phone-w)*0.213 + 24px);background:rgba(255,255,255,.42);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border:1px solid rgba(255,255,255,.5);box-shadow:0 8px 32px -8px rgba(40,130,70,.18);}
+.tile.widget:active{transform:none;}
+.tile.widget-disk{transition:none;height:auto;align-items:center;justify-content:center;background:none;box-shadow:none;border:none;overflow:visible;border-radius:0;}
+.tile.widget-photo{transition:none;height:auto;align-items:center;justify-content:center;background:rgba(255,255,255,.42);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border:1px solid rgba(255,255,255,.5);box-shadow:0 8px 32px -8px rgba(40,130,70,.18);}
+.tile[data-app-key="wechat"],.tile[data-app-key="weibo"]{margin-top:20px;}
+
+.dock{display:flex;justify-content:space-around;align-items:center;margin:calc(var(--phone-w)*0.016) 10px calc(var(--phone-w)*0.01);padding:calc(var(--phone-w)*0.016) calc(var(--phone-w)*0.02);background:rgba(255,255,255,.32);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);border-radius:calc(var(--phone-w)*0.05);border:1px solid rgba(255,255,255,.55);gap:calc(var(--phone-w)*0.01);position:relative;z-index:1;box-shadow:0 8px 30px -10px rgba(40,130,70,.2);}
+.dock-item{display:flex;flex-direction:column;align-items:center;gap:calc(var(--phone-w)*0.006);cursor:pointer;transition:transform .2s;}
+.dock-item:active{transform:scale(.92);}
+.dock-item .dock-icon{width:calc(var(--phone-w)*0.105);height:calc(var(--phone-w)*0.105);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:calc(var(--phone-w)*0.052);background:rgba(255,255,255,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--green-deep);border:1px solid rgba(255,255,255,.8);box-shadow:0 4px 12px -3px rgba(40,130,70,.18);}
+.dock-item .dock-label{font-size:calc(var(--phone-w)*0.024);color:var(--green-ink);font-weight:500;}
+
+.disk-widget{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;padding:calc(var(--phone-w)*0.02);transform:translateY(15px);}
+.disk-vinyl{width:calc(var(--phone-w)*0.34);height:calc(var(--phone-w)*0.34);border-radius:50%;background:repeating-radial-gradient(circle at center,#1a1a1a 0,#1a1a1a 1.5px,#333 2px,#333 2.5px);position:relative;animation:diskSpin 16s linear infinite;box-shadow:none;flex-shrink:0;will-change:transform;}
+.disk-cover{position:absolute;width:calc(var(--phone-w)*0.16);height:calc(var(--phone-w)*0.16);border-radius:50%;overflow:hidden;background:#111;border:3px solid #000;top:50%;left:50%;transform:translate(-50%,-50%);cursor:pointer;}
+.disk-cover img{width:100%;height:100%;object-fit:cover;}
+.disk-cover svg{width:55%;height:55%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--green-deep);}
+@keyframes diskSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.photo-widget{width:100%;height:100%;border-radius:inherit;overflow:hidden;background:rgba(255,255,255,.25);position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.photo-widget img{width:100%;height:100%;object-fit:cover;}
+.photo-widget .photo-placeholder{display:flex;flex-direction:column;align-items:center;gap:calc(var(--phone-w)*0.01);color:var(--green-ink-soft);font-size:calc(var(--phone-w)*0.028);}
+.photo-widget .photo-placeholder svg{width:calc(var(--phone-w)*0.06);height:calc(var(--phone-w)*0.06);stroke:var(--green-deep);fill:none;stroke-width:1.8;}
+.home-indicator{width:calc(var(--phone-w)*0.357);height:calc(var(--phone-w)*0.013);background:rgba(30,74,48,.35);border-radius:calc(var(--phone-w)*0.008);margin:calc(var(--phone-w)*0.016) auto calc(var(--phone-w)*0.021 + var(--safe-bottom));}
+.widget-homeinfo{padding:calc(var(--phone-w)*0.012) calc(var(--phone-w)*0.035);display:flex;flex-direction:column;justify-content:space-between;background:rgba(255,255,255,.25);backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3);height:100%;gap:calc(var(--phone-w)*0.012);}
+.hi-row{display:flex;align-items:center;justify-content:space-between;}
+.name-row{display:flex;align-items:center;gap:calc(var(--phone-w)*0.021);min-width:0;}
+.weather-row{display:flex;align-items:center;gap:calc(var(--phone-w)*0.021);cursor:pointer;user-select:none;}
+.weather-icon{width:calc(var(--phone-w)*0.07);height:calc(var(--phone-w)*0.07);flex-shrink:0;}
+.weather-icon svg{width:100%;height:100%;stroke:var(--green-ink);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.weather-temp{font-size:calc(var(--phone-w)*0.07);color:var(--green-ink);font-weight:600;}
+.loc-row{display:flex;align-items:center;gap:calc(var(--phone-w)*0.013);cursor:pointer;font-size:calc(var(--phone-w)*0.038);color:var(--green-ink-soft);min-width:0;}
+.loc-row span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(var(--phone-w)*0.3);}
+.loc-row svg{width:calc(var(--phone-w)*0.04);height:calc(var(--phone-w)*0.04);stroke:var(--green-deep);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.date-row{font-size:calc(var(--phone-w)*0.04);color:var(--green-ink-soft);}
+.user-name{font-size:calc(var(--phone-w)*0.052);color:var(--green-ink);font-weight:600;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(var(--phone-w)*0.28);min-width:0;}
+.user-avatar{width:calc(var(--phone-w)*0.098);height:calc(var(--phone-w)*0.098);border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;border:calc(var(--phone-w)*0.005) solid #fff;box-shadow:0 calc(var(--phone-w)*0.008) calc(var(--phone-w)*0.021) -calc(var(--phone-w)*0.005) rgba(40,130,70,.25);flex-shrink:0;}
+.user-avatar img{width:100%;height:100%;object-fit:cover;}
+.user-avatar svg{width:calc(var(--phone-w)*0.06);height:calc(var(--phone-w)*0.06);}
+.slogan{font-size:calc(var(--phone-w)*0.036);color:var(--green-ink-soft);cursor:pointer;letter-spacing:.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(var(--phone-w)*0.4);}
+.clock{font-size:calc(var(--phone-w)*0.072);font-weight:700;color:var(--green-ink);font-variant-numeric:tabular-nums;line-height:1.2;letter-spacing:calc(var(--phone-w)*0.005);}
+.page-view{position:absolute;inset:0;background:var(--green-bg);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .35s cubic-bezier(.32,.72,0,1);z-index:5;}
+.page-view.active{transform:translateX(0);}
+.page-header{height:calc(56px + var(--safe-top));padding:calc(12px + var(--safe-top)) 16px 0;display:flex;align-items:center;gap:10px;font-weight:600;color:var(--green-ink);font-size:16px;}
+.page-back{width:32px;height:32px;border-radius:50%;background:var(--green-paper);border:none;color:var(--green-deep);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.page-back:active{transform:scale(.9);}
+.page-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px 16px calc(12px + var(--safe-bottom));-webkit-overflow-scrolling:touch;}
+.modal-mask{position:fixed;inset:0;background:rgba(30,74,48,.3);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:100;animation:fadeIn .2s ease;}
+.modal-box{background:rgba(255,255,255,.85);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border-radius:20px;padding:22px;width:80%;max-width:300px;box-shadow:0 20px 60px -15px rgba(20,60,35,.35);border:1px solid rgba(255,255,255,.6);}
+.modal-box h4{color:var(--green-ink);margin-bottom:12px;font-size:15px;}
+.modal-box input,.modal-box textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none;resize:vertical;}
+.modal-box input:focus,.modal-box textarea:focus{border-color:var(--green-deep);}
+.modal-box .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;}
+.modal-box button{padding:8px 16px;border-radius:10px;border:none;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;}
+.modal-box .btn-ok{background:var(--green-deep);color:#fff;}
+.modal-box .btn-cancel{background:var(--green-bg);color:var(--green-ink);}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+
+.settings-section{margin-bottom:18px;}
+.settings-section-title{font-size:13px;color:var(--green-ink-soft);font-weight:600;margin:4px 2px 8px;letter-spacing:.5px;text-transform:uppercase;}
+.settings-card{background:rgba(255,255,255,.55);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:0 2px 12px -4px rgba(40,130,70,.12);border:1px solid rgba(255,255,255,.5);min-width:0;overflow:hidden;}
+.settings-card-title{font-size:14px;font-weight:600;color:var(--green-ink);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.settings-row{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);min-width:0;overflow:hidden;}
+.settings-row:last-child{border-bottom:none;}
+.settings-row-label{font-size:13px;color:var(--green-ink);flex-shrink:0;min-width:60px;}
+.settings-row-input{flex:1;min-width:0;width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none;background:var(--green-bg);}
+.settings-row-input:focus{border-color:var(--green-deep);background:#fff;}
+.settings-row-select{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none;background:var(--green-bg);}
+.settings-btn{padding:8px 14px;border-radius:10px;border:none;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;background:var(--green-deep);color:#fff;transition:transform .1s;}
+.settings-btn:active{transform:scale(.96);}
+.settings-btn-secondary{background:var(--green-bg);color:var(--green-ink);border:1px solid var(--line);}
+.settings-btn-danger{background:#fff;color:#e74c3c;border:1px solid #fadbd8;}
+.settings-btn-small{padding:5px 10px;font-size:12px;}
+
+.char-card{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;background:rgba(255,255,255,.45);backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3);border:1px solid rgba(255,255,255,.4);margin-bottom:8px;cursor:pointer;transition:all .2s;}
+.char-card.active{border-color:var(--green-deep);background:rgba(124,204,155,.1);box-shadow:0 2px 12px -4px rgba(40,130,70,.2);}
+.char-card:active{transform:scale(.98);}
+.char-avatar{width:44px;height:44px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.char-avatar img{width:100%;height:100%;object-fit:cover;}
+.char-avatar svg{width:60%;height:60%;color:var(--green-deep);}
+.char-info{flex:1;min-width:0;}
+.char-name{font-size:14px;font-weight:600;color:var(--green-ink);}
+.char-identity{font-size:12px;color:var(--green-ink-soft);margin-top:2px;}
+.char-card .char-actions{display:flex;gap:6px;flex-shrink:0;align-items:center;}
+.char-icon-btn{width:30px;height:30px;border-radius:8px;border:none;background:var(--green-bg);color:var(--green-ink-soft);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.char-icon-btn:hover{background:var(--green-soft);color:var(--green-deep);}
+.char-icon-btn:active{transform:scale(.9);}
+.char-icon-btn.danger:hover{background:#fdecea;color:#e74c3c;}
+.char-icon-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.char-add-card{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border-radius:12px;background:rgba(255,255,255,.5);border:1.5px dashed var(--green-deep);color:var(--green-deep);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;}
+.char-add-card:active{transform:scale(.98);background:rgba(124,204,155,.15);}
+.char-top-card{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.55);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(255,255,255,.6);box-shadow:0 4px 16px -6px rgba(40,130,70,.2);margin-bottom:4px;}
+.char-top-avatar{width:52px;height:52px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.char-top-avatar img{width:100%;height:100%;object-fit:cover;}
+.char-top-avatar svg{width:55%;height:55%;color:var(--green-deep);}
+.char-top-info{flex:1;min-width:0;overflow:hidden;}
+.char-top-name{font-size:16px;font-weight:700;color:var(--green-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.char-top-identity{font-size:12px;color:var(--green-ink-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.char-top-card .char-actions{display:flex;gap:6px;flex-shrink:0;}
+.char-list-box{background:rgba(255,255,255,.35);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(255,255,255,.5);border-radius:14px;padding:10px;}
+
+.api-card{padding:12px;margin-bottom:10px;}
+.api-card.active{border-color:var(--green-deep);background:rgba(124,204,155,.08);}
+.api-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.api-name{font-size:14px;font-weight:600;color:var(--green-ink);}
+.api-badge{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--green-deep);color:#fff;font-weight:500;}
+.api-badge-off{background:var(--line);color:var(--green-ink-soft);}
+.api-url{font-size:11px;color:var(--green-ink-soft);word-break:break-all;margin-bottom:6px;}
+.api-model{font-size:12px;color:var(--green-ink);background:var(--green-bg);padding:4px 8px;border-radius:6px;display:inline-block;}
+.api-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+
+.voice-card .voice-preview{display:flex;align-items:center;gap:10px;padding:10px;background:var(--green-bg);border-radius:10px;margin-top:8px;min-width:0;overflow:hidden;}
+.voice-play-btn{width:36px;height:36px;border-radius:50%;background:var(--green-deep);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.voice-play-btn:active{transform:scale(.92);}
+
+.chat-page{display:flex;flex-direction:column;height:100%;}
+.chat-header{flex-shrink:0;}
+.chat-messages{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;}
+.chat-messages::-webkit-scrollbar{width:0;}
+.chat-bubble{max-width:78%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;color:var(--green-ink);word-break:break-word;white-space:pre-wrap;}
+.chat-bubble.user{align-self:flex-end;background:var(--green-deep);color:#fff;border-bottom-right-radius:4px;}
+.chat-bubble.ai{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;}
+.chat-bubble.typing{align-self:flex-start;background:transparent;border:none;padding:0;color:var(--green-ink-soft);font-size:13px;}
+.chat-input-area{flex-shrink:0;padding:10px 12px calc(10px + var(--safe-bottom));background:var(--green-bg);border-top:1px solid var(--line);display:flex;gap:8px;align-items:flex-end;}
+.chat-input{flex:1;border:1px solid var(--line);border-radius:20px;padding:10px 14px;font-size:14px;color:var(--green-ink);font-family:inherit;outline:none;background:#fff;max-height:80px;resize:none;min-height:40px;}
+.chat-input:focus{border-color:var(--green-deep);}
+.chat-send{width:40px;height:40px;border-radius:50%;background:var(--green-deep);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.chat-send:active{transform:scale(.9);}
+.chat-send:disabled{background:var(--line);cursor:not-allowed;}
+
+.onboarding-overlay{position:absolute;inset:0;background:var(--green-bg);z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;}
+.onboarding-overlay h2{color:var(--green-ink);font-size:20px;margin-bottom:8px;}
+.onboarding-overlay p{color:var(--green-ink-soft);font-size:14px;margin-bottom:20px;line-height:1.6;}
+
+.social-field-group{background:var(--green-bg);border-radius:10px;padding:10px;margin-top:6px;}
+.social-field-group-title{font-size:12px;color:var(--green-ink-soft);margin-bottom:8px;font-weight:600;}
+
+@media (hover: none) and (pointer: coarse) {
+  :root{
+    --phone-w:100vw;
+    --phone-h:100dvh;
+    --radius:0px;
+    --safe-top:env(safe-area-inset-top, 0px);
+    --safe-bottom:env(safe-area-inset-bottom, 0px);
+  }
+  html,body{background:var(--green-bg);overflow:hidden;}
+  .phone-shell{width:100vw;height:100dvh;border-radius:0;padding:0;box-shadow:none;background:var(--green-bg);}
+  .phone-shell::before{display:none;}
+  .phone-screen{border-radius:0;}
+  .status-bar{height:calc(var(--phone-w)*0.11 + var(--safe-top));padding-top:calc(var(--safe-top) + var(--phone-w)*0.045);}
+  .desktop{padding:10px calc(var(--phone-w)*0.03) calc(var(--phone-w)*0.027);}
+  .dock{margin:calc(var(--phone-w)*0.016) calc(var(--phone-w)*0.03) calc(var(--phone-w)*0.01);}
+  .modal-mask{padding:var(--safe-top) env(safe-area-inset-right,0px) var(--safe-bottom) env(safe-area-inset-left,0px);}
+  .onboarding-overlay{padding:calc(20px + var(--safe-top)) 20px calc(20px + var(--safe-bottom));}
+}
+
+@media (max-width: 480px) and (hover: hover) {
+  :root{
+    --phone-w:100vw;
+    --phone-h:100dvh;
+    --radius:0px;
+  }
+  html,body{background:var(--green-bg);}
+  .phone-shell{width:100vw;height:100dvh;border-radius:0;padding:0;box-shadow:none;background:var(--green-bg);}
+  .phone-shell::before{display:none;}
+  .phone-screen{border-radius:0;}
+}
+</style>
+</head>
+<body>
+<div id="phone" class="phone-shell">
+  <div class="phone-screen" id="phoneScreen">
+    <div class="status-bar" id="statusBar"></div>
+    <div class="desktop" id="desktop"></div>
+    <div class="dock" id="dock"></div>
+    <div class="home-indicator"></div>
+  </div>
+</div>
+<div id="modalRoot"></div>
+
+<script>
+/* ============ phone-engine ============ */
+const Phone = (() => {
+  const STORE_KEY = 'wayv_phone_data';
+  let widgets = [];
+  let apps = [];
+  let state = null;
+  function loadState(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }catch{ return {}; } }
+  function saveState(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+  function init(){
+    state = loadState();
+    if(!state.globalData) state.globalData = {};
+    if(!state.characters){
+      state.characters = [{
+        id:'char_default', name:'WayZenNi', avatar:'', age:'', identity:'',
+        relationships:'', persona:'',
+        social:{ wechatId:'', weiboId:'', bubbleId:'', taobaoId:'' },
+        wcProfile:{ gender:'', region:'', patMsg:'', signature:'' },
+        worldbookIds:[],
+        data:{ homeInfo:{ slogan:'we are your vision', location:'Shanghai', weather:null } }
+      }];
+    }
+    if(!state.currentCharId) state.currentCharId = state.characters[0].id;
+    state.characters.forEach(c => {
+      if(!c.social) c.social = { wechatId:'', weiboId:'', bubbleId:'', taobaoId:'' };
+      if(c.relationships === undefined) c.relationships = '';
+      if(c.persona === undefined) c.persona = '';
+      if(!c.wcProfile) c.wcProfile = { gender:'', region:'', patMsg:'', signature:'' };
+      if(!c.data) c.data = { homeInfo:{ slogan:'we are your vision', location:'Shanghai', weather:null } };
+      if(c.data.homeInfo) c.data.homeInfo.weather = null;
+    });
+    if(!state.apis){
+      state.apis = [{
+        id:'api_deepseek', name:'DeepSeek (默认)', url:'https://api.deepseek.com/v1',
+        key:'', models:[], selectedModel:''
+      }];
+    }
+    if(!state.currentApiId && state.apis.length) state.currentApiId = state.apis[0].id;
+    if(!state.voiceConfig){
+      state.voiceConfig = { provider:'minimax', groupId:'', apiKey:'', voiceId:'', model:'speech-01-t2s', speed:1.0 };
+    }
+    if(!state.worldbooks) state.worldbooks = [
+      { id:'wb_1', name:'角色扮演守则', group:'人设', global:true, content:'\u5bf9\u8bdd\u65f6\u4fdd\u6301\u89d2\u8272\u7684\u4e00\u8d2f\u6027\uff0c\u4e0d\u8981\u7a81\u7834\u7b2c\u56db\u5899\u3002\n\u56de\u5e94\u8981\u7b26\u5408\u89d2\u8272\u7684\u8eab\u4efd\u3001\u5e74\u9f84\u548c\u6027\u683c\u3002\n\u5c0f\u8bed\u5de5\u5177\u548c\u8868\u60c5\u52a8\u4f5c\u63cf\u5199\u53ef\u4ee5\u589e\u52a0\u771f\u5b9e\u611f\u3002' },
+      { id:'wb_2', name:'对话风格', group:'人设', global:true, content:'\u4f7f\u7528\u7b80\u6d01\u81ea\u7136\u7684\u8bed\u8a00\uff0c\u907f\u514d\u8fc7\u4e8e\u5b98\u65b9\u6216\u5197\u957f\u3002\n\u59d4\u5a01\u8868\u8fbe\uff0c\u4e0d\u8981\u76f4\u63a5\u7ed9\u51fa\u6240\u6709\u4fe1\u606f\u3002\n\u9002\u5f53\u4f7f\u7528\u8bed\u6c14\u8bcd\u6e32\u67d3\u60c5\u611f\u3002' },
+      { id:'wb_3', name:'世界观设定', group:'背景', global:false, content:'\u804a\u5929\u5730\u70b9\u5728\u73b0\u4ee3\u90fd\u5e02\uff0c\u65e5\u5e38\u751f\u6d3b\u573a\u666f\u3002\n\u6240\u6709\u4eba\u7269\u90fd\u662f\u771f\u5b9e\u5b58\u5728\u7684\u4e2a\u4eba\uff0c\u4e0d\u662fAI\u3002' }
+    ];
+    state.characters.forEach(c => {
+      if(!c.worldbookIds) c.worldbookIds = [];
+    });
+    if(!state.chatHistory) state.chatHistory = {};
+    saveState();
+    renderStatusBar();
+    Desktop.mount(widgets, apps);
+    startClock();
+    fetchRealWeather();
+    setInterval(fetchRealWeather, 600000);
+    checkOnboarding();
+  }
+  function checkOnboarding(){
+    if(!state.characters || state.characters.length === 0){
+      showOnboarding();
+    }
+  }
+  function showOnboarding(){
+    const phone = document.getElementById('phoneScreen');
+    if(!phone.querySelector('.onboarding-overlay')){
+      const overlay = document.createElement('div');
+      overlay.className = 'onboarding-overlay';
+      overlay.innerHTML = `
+        <h2>欢迎来到 WayV Vision</h2>
+        <p>在开始之前，<br>请先创建一个属于你的人设</p>
+        <button class="settings-btn" id="onboardingCreate">+ 创建人设</button>
+      `;
+      phone.appendChild(overlay);
+      overlay.querySelector('#onboardingCreate').onclick = async () => {
+        const r = await editCharacter(null);
+        if(r) overlay.remove();
+      };
+    }
+  }
+  function saveChar(character){
+    if(character.id){
+      const idx = state.characters.findIndex(c => c.id === character.id);
+      if(idx >= 0) state.characters[idx] = character;
+      else state.characters.push(character);
+    } else {
+      character.id = 'char_' + Date.now();
+      state.characters.push(character);
+    }
+    if(!state.currentCharId) state.currentCharId = state.characters[0].id;
+    saveState();
+    document.dispatchEvent(new CustomEvent('char-updated'));
+  }
+  function selectChar(id){ state.currentCharId = id; saveState(); document.dispatchEvent(new CustomEvent('char-updated')); }
+  function deleteChar(id){
+    state.characters = state.characters.filter(c => c.id !== id);
+    if(state.currentCharId === id){
+      state.currentCharId = state.characters[0]?.id || null;
+    }
+    saveState();
+    document.dispatchEvent(new CustomEvent('char-updated'));
+    if(state.characters.length === 0){
+      setTimeout(showOnboarding, 100);
+    }
+  }
+  function getCurrentApi(){ return state.apis.find(a => a.id === state.currentApiId) || state.apis[0]; }
+  function saveApi(api){
+    if(api.id){
+      const idx = state.apis.findIndex(a => a.id === api.id);
+      if(idx >= 0) state.apis[idx] = api;
+    } else {
+      api.id = 'api_' + Date.now();
+      state.apis.push(api);
+    }
+    if(!state.currentApiId) state.currentApiId = state.apis[0].id;
+    saveState();
+  }
+  function deleteApi(id){
+    state.apis = state.apis.filter(a => a.id !== id);
+    if(state.currentApiId === id) state.currentApiId = state.apis[0]?.id || null;
+    saveState();
+  }
+  function selectApi(id){ state.currentApiId = id; saveState(); }
+  async function fetchModelsForApi(api){
+    try{
+      const res = await fetch(`${api.url.replace(/\/$/,'')}/models`, {
+        headers:{ 'Authorization': `Bearer ${api.key}` }
+      });
+      const json = await res.json();
+      if(json.data && Array.isArray(json.data)){
+        return json.data.map(m => m.id || m.id);
+      }
+      return [];
+    }catch(e){ return []; }
+  }
+  async function chatWithAI(messages, apiOverride){
+    const api = apiOverride || getCurrentApi();
+    if(!api || !api.url || !api.key){
+      throw new Error('请先在设置里配置 API');
+    }
+    const model = api.selectedModel;
+    if(!model) throw new Error('该 API 还未选择模型');
+    const VALID_ROLES = ['system','user','assistant','tool'];
+    const clean = (messages || []).filter(m => m && m.content !== undefined && VALID_ROLES.includes(m.role));
+    const res = await fetch(`${api.url.replace(/\/$/,'')}/chat/completions`, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':`Bearer ${api.key}`
+      },
+      body: JSON.stringify({ model, messages: clean, stream:false })
+    });
+    if(!res.ok){
+      const txt = await res.text();
+      throw new Error('API 错误: ' + txt);
+    }
+    const json = await res.json();
+    return json.choices?.[0]?.message?.content || '';
+  }
+  function getCurrentChar(){ return state.characters.find(c => c.id === state.currentCharId) || state.characters[0]; }
+  function getData(appKey){ const c = getCurrentChar(); c.data = c.data || {}; c.data[appKey] = c.data[appKey] || {}; return c.data[appKey]; }
+  function setData(appKey, value){ const c = getCurrentChar(); c.data = c.data || {}; c.data[appKey] = value; saveState(); }
+  function getGlobalData(key){ state.globalData = state.globalData || {}; state.globalData[key] = state.globalData[key] || {}; return state.globalData[key]; }
+  function setGlobalData(key, value){ state.globalData = state.globalData || {}; state.globalData[key] = value; saveState(); }
+  function updateChar(patch){ Object.assign(getCurrentChar(), patch); saveState(); }
+  function renderStatusBar(){
+    const bar = document.getElementById('statusBar');
+    if(!bar) return;
+    const SIG_SVG = '<svg class="sig-icon" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="2.4" height="4" rx="0.6"/><rect x="3.4" y="6" width="2.4" height="6" rx="0.6"/><rect x="6.8" y="4" width="2.4" height="8" rx="0.6"/><rect x="10.2" y="2" width="2.4" height="10" rx="0.6"/><rect x="13.6" y="0" width="2.4" height="12" rx="0.6"/></svg>';
+    const WIFI_SVG = '<svg class="wifi-icon" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 4.5a10 10 0 0114 0"/><path d="M3.2 7a6 6 0 019.6 0"/><path d="M5.6 9.2a2.5 2.5 0 014.8 0"/><circle cx="8" cy="11" r="0.7" fill="currentColor" stroke="none"/></svg>';
+    let batteryLevel = null;
+    let charging = false;
+    const batterySvg = () => {
+      const lvl = batteryLevel == null ? 1 : batteryLevel;
+      const fillW = Math.max(1, Math.round(lvl * 16));
+      const fillColor = charging ? '#f5b800' : (lvl <= 0.2 ? '#e74c3c' : 'var(--green-deep)');
+      return `<svg class="bat-icon" viewBox="0 0 24 12"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2" y="2" width="${fillW}" height="8" rx="1.5" fill="${fillColor}"/><rect x="21.2" y="4" width="1.8" height="4" rx="0.6" fill="currentColor"/></svg>`;
+    };
+    const batPct = () => batteryLevel == null ? '' : `<span class="bat-text">${Math.round(batteryLevel*100)}%</span>`;
+    const update = () => {
+      const d = new Date();
+      bar.innerHTML = `<span>${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</span><span class="icons">${SIG_SVG}${WIFI_SVG}${batterySvg()}${batPct()}</span>`;
+    };
+    update();
+    setInterval(update, 30000);
+    if(navigator.getBattery){
+      navigator.getBattery().then(bat => {
+        const updBat = () => { batteryLevel = bat.level; charging = bat.charging; update(); };
+        updBat();
+        bat.addEventListener('levelchange', updBat);
+        bat.addEventListener('chargingchange', updBat);
+      }).catch(()=>{});
+    }
+  }
+  function startClock(){
+    setInterval(() => {
+      const clock = document.querySelector('.widget-homeinfo .clock');
+      if(!clock) return;
+      const d = new Date();
+      clock.textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }, 1000);
+  }
+  function registerWidget(cfg){ Phone._widgetCache[cfg.key] = cfg; widgets.push(cfg); }
+  function registerApp(cfg){ apps.push(cfg); }
+  function openPage({title, render}){
+    const screen = document.getElementById('phoneScreen');
+    const view = document.createElement('div');
+    view.className = 'page-view';
+    view.innerHTML = `<div class="page-header"><button class="page-back">‹</button><span class="title">${title||''}</span></div><div class="page-body"></div>`;
+    const body = view.querySelector('.page-body');
+    view.querySelector('.page-back').onclick = () => closePage(view);
+    screen.appendChild(view);
+    requestAnimationFrame(() => view.classList.add('active'));
+    if(render) render(body);
+    return view;
+  }
+  function closePage(view){ view.classList.remove('active'); setTimeout(() => view.remove(), 350); }
+  function modal({title, fields, onOk}){
+    return new Promise(resolve => {
+      const root = document.getElementById('modalRoot');
+      const mask = document.createElement('div');
+      mask.className = 'modal-mask';
+      let inputs = '';
+      fields.forEach(f => {
+        if(f.type === 'textarea') inputs += `<div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">${f.label}</div><textarea data-key="${f.key}" rows="3" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none;resize:vertical" placeholder="${f.placeholder||''}">${f.value||''}</textarea></div>`;
+        else if(f.type === 'file') inputs += `<div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">${f.label}</div><input type="file" accept="image/*" data-key="${f.key}" ${f.multiple?'multiple':''}></div>`;
+        else if(f.type === 'select') inputs += `<div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">${f.label}</div><select data-key="${f.key}" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none;background:#fff">${f.opts||''}</select></div>`;
+        else if(f.type === 'checkbox') inputs += `<div style="margin-bottom:10px;display:flex;align-items:center;gap:8px"><input type="checkbox" data-key="${f.key}" ${f.checked?'checked':''} style="width:18px;height:18px"><span style="font-size:13px;color:var(--green-ink)">${f.label}</span></div>`;
+        else inputs += `<div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">${f.label}</div><input type="${f.type||'text'}" data-key="${f.key}" placeholder="${f.placeholder||''}" value="${f.value||''}" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none"></div>`;
+      });
+      mask.innerHTML = `<div class="modal-box" style="animation:popIn .25s ease"><h4>${title||''}</h4>${inputs}<div class="modal-actions"><button class="btn-cancel" data-act="cancel">取消</button><button class="btn-ok" data-act="ok">确定</button></div></div>`;
+      root.appendChild(mask);
+      const box = mask.querySelector('.modal-box');
+      function dismiss(result){ mask.style.animation='fadeIn .2s ease reverse'; box.style.animation='popIn .2s ease reverse'; setTimeout(()=>mask.remove(),180); resolve(result); }
+      mask.addEventListener('click', e => {
+        if(e.target === mask) dismiss(null);
+        const act = e.target.dataset.act;
+        if(act === 'cancel') dismiss(null);
+        if(act === 'ok'){
+          const values = {};
+          mask.querySelectorAll('[data-key]').forEach(el => {
+            if(el.type === 'checkbox') values[el.dataset.key] = el.checked;
+            else if(el.type === 'file') values[el.dataset.key] = el.multiple ? Array.from(el.files||[]) : (el.files?.[0] || null);
+            else values[el.dataset.key] = el.value;
+          });
+          Promise.resolve(onOk ? onOk(values) : values).then(v => {
+            if(v === false) return;
+            dismiss(v ?? values);
+          }).catch(err => { alert('操作失败：' + (err?.message || err)); });
+        }
+      });
+    });
+  }
+  function fileToBase64(file){ return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);}); }
+  function getWeekdayCN(d){ return ['礼拜日','礼拜一','礼拜二','礼拜三','礼拜四','礼拜五','礼拜六'][d.getDay()]; }
+  function getWeekdayEN(d){ return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()]; }
+  function monthDay(d){ return `${d.getMonth()+1}月${d.getDate()}日`; }
+  function showDeveloping(){
+    const root = document.getElementById('modalRoot');
+    const mask = document.createElement('div');
+    mask.className = 'modal-mask';
+    mask.style.background = 'transparent';
+    mask.style.backdropFilter = 'none';
+    mask.style.pointerEvents = 'none';
+    mask.innerHTML = `<div style="background:rgba(0,0,0,.45);color:#fff;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:400;animation:popIn .2s ease;box-shadow:0 4px 16px rgba(0,0,0,.15)">功能正在研发中……</div>`;
+    root.appendChild(mask);
+    setTimeout(() => { mask.style.transition = 'opacity .3s'; mask.style.opacity = '0'; setTimeout(() => mask.remove(), 300); }, 1200);
+  }
+  return { init, getCurrentChar, getData, setData, getGlobalData, setGlobalData, updateChar, openPage, modal, fileToBase64, showDeveloping,
+    registerWidget, registerApp, getWeekdayCN, getWeekdayEN, monthDay, _widgetCache:{},
+    saveChar, selectChar, deleteChar, getCurrentApi, saveApi, selectApi, deleteApi, fetchModelsForApi, chatWithAI,
+    openSettings: () => openPage({ title:'设置', render: renderSettingsPage }),
+    _getState: () => state, _saveState: saveState,
+    _refreshAll: () => {
+      rerender('homeInfo');
+      rerender('disk');
+      rerender('photo');
+    }
+  };
+})();
+
+/* ============ desktop ============ */
+const Desktop = (() => {
+  function mount(widgets, apps){
+    const el = document.getElementById('desktop');
+    if(!el || el._mounted) return;
+    el._mounted = true;
+    const tiles = [];
+    widgets.forEach(w => tiles.push({...w, _isWidget:true}));
+    apps.forEach(a => tiles.push({...a, _isWidget:false}));
+    tiles.forEach(t => {
+      const node = document.createElement('div');
+      let extraCls = '';
+      if(t._isWidget){
+        if(t.gridClass) extraCls = ' ' + t.gridClass;
+        else extraCls = ' widget';
+      }
+      node.className = 'tile' + extraCls;
+      node.dataset.appKey = t.key;
+      if(t.colStart) node.style.gridColumn = `${t.colStart} / span ${t.colSpan || 1}`;
+      if(t.rowStart) node.style.gridRow = `${t.rowStart} / span ${t.rowSpan || 1}`;
+      if(t._isWidget){
+        node.innerHTML = t.render();
+        node.querySelectorAll('[data-action]').forEach(btn => {
+          btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const fn = t.onAction && t.onAction[btn.dataset.action];
+            if(fn) fn(node);
+          });
+        });
+      } else {
+        node.innerHTML = `<div class="app-icon">${t.icon}</div><div class="app-label">${t.name}</div>`;
+      }
+      node.addEventListener('click', () => {
+        if(t._isWidget && t.onWidgetClick){ t.onWidgetClick(node); return; }
+        if(!t._isWidget && !t.onClick){ Phone.showDeveloping(); return; }
+        t.onClick && t.onClick();
+      });
+      el.appendChild(node);
+    });
+  }
+  function renderDock(items){
+    const dock = document.getElementById('dock');
+    if(!dock || dock._mounted) return;
+    dock._mounted = true;
+    items.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'dock-item';
+      div.innerHTML = `<div class="dock-icon">${item.icon}</div><div class="dock-label">${item.name}</div>`;
+      div.addEventListener('click', () => { if(item.onClick) item.onClick(); else Phone.showDeveloping(); });
+      dock.appendChild(div);
+    });
+  }
+  return { mount, renderDock };
+})();
+
+/* ============ home-info widget ============ */
+const CITY_CN_MAP = {
+  '首尔':'Seoul','首尔特别市':'Seoul','东京':'Tokyo','上海市':'Shanghai','上海':'Shanghai',
+  '北京市':'Beijing','北京':'Beijing','广州市':'Guangzhou','广州':'Guangzhou',
+  '深圳市':'Shenzhen','深圳':'Shenzhen','香港':'Hong Kong','香港特别行政区':'Hong Kong',
+  '新加坡':'Singapore','纽约':'New York','纽约市':'New York','伦敦':'London','巴黎':'Paris',
+  '洛杉矶':'Los Angeles','芝加哥':'Chicago','悉尼':'Sydney','墨尔本':'Melbourne',
+  '多伦多':'Toronto','温哥华':'Vancouver','大阪':'Osaka','京都':'Kyoto','曼谷':'Bangkok',
+  '台北':'Taipei','高雄':'Kaohsiung','澳门':'Macau','南京市':'Nanjing','南京':'Nanjing',
+  '成都市':'Chengdu','成都':'Chengdu','杭州市':'Hangzhou','杭州':'Hangzhou',
+  '武汉市':'Wuhan','武汉':'Wuhan','西安市':'Xian','西安':'Xian',
+  '重庆市':'Chongqing','重庆':'Chongqing','天津市':'Tianjin','天津':'Tianjin',
+  '苏州市':'Suzhou','苏州':'Suzhou','长沙市':'Changsha','长沙':'Changsha',
+  '青岛市':'Qingdao','青岛':'Qingdao','厦门市':'Xiamen','厦门':'Xiamen',
+  '郑州市':'Zhengzhou','郑州':'Zhengzhou','大连市':'Dalian','大连':'Dalian',
+  '莫斯科':'Moscow','圣彼得堡':'Saint Petersburg','柏林':'Berlin','罗马':'Rome',
+  '米兰':'Milan','马德里':'Madrid','巴塞罗那':'Barcelona','阿姆斯特丹':'Amsterdam',
+  '维也纳':'Vienna','日内瓦':'Geneva','苏黎世':'Zurich','斯德哥尔摩':'Stockholm',
+  '奥斯陆':'Oslo','赫尔辛基':'Helsinki','哥本哈根':'Copenhagen','华沙':'Warsaw',
+  '布拉格':'Prague','布达佩斯':'Budapest','伊斯坦布尔':'Istanbul','迪拜':'Dubai',
+  '阿布扎比':'Abu Dhabi','利雅得':'Riyadh','德黑兰':'Tehran','加尔各答':'Kolkata',
+  '孟买':'Mumbai','新德里':'New Delhi','德里':'Delhi','曼谷':'Bangkok','河内':'Hanoi',
+  '胡志明市':'Ho Chi Minh City','吉隆坡':'Kuala Lumpur','雅加达':'Jakarta',
+  '马尼拉':'Manila','卡拉奇':'Karachi','伊斯兰堡':'Islamabad','开罗':'Cairo',
+  '约翰内斯堡':'Johannesburg','内罗毕':'Nairobi','拉各斯':'Lagos','墨西哥城':'Mexico City',
+  '圣保罗':'Sao Paulo','布宜诺斯艾利斯':'Buenos Aires','利马':'Lima',
+  '波哥大':'Bogota','圣地亚哥':'Santiago','雅典':'Athens','开罗':'Cairo',
+  '仰光':'Yangon','金边':'Phnom Penh','万象':'Vientiane','加德满都':'Kathmandu'
+};
+function toEN(loc){ return CITY_CN_MAP[loc] || loc; }
+const WMO_CODE_MAP = {
+  0:'sun',1:'sun',2:'cloudy',3:'cloud',
+  45:'cloud',48:'cloud',
+  51:'rain',53:'rain',55:'rain',56:'rain',57:'rain',
+  61:'rain',63:'rain',65:'rain',66:'rain',67:'rain',
+  71:'snow',73:'snow',75:'snow',77:'snow',
+  80:'rain',81:'rain',82:'rain',85:'snow',86:'snow',
+  95:'storm',96:'storm',99:'storm'
+};
+async function fetchRealWeather(){
+  const data = Phone.getGlobalData('homeInfo');
+  const locRaw = data.location && data.location !== '定位中...' ? data.location : 'Shanghai';
+  const loc = toEN(locRaw);
+  if(loc !== locRaw){ data.location = loc; Phone.setGlobalData('homeInfo', data); rerender('homeInfo'); }
+  try{
+    const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(loc)}&count=1&language=en`).then(r=>r.json());
+    if(!geo.results?.length){
+      if(data.location === '定位中...'){ data.location='Shanghai'; Phone.setGlobalData('homeInfo',data); }
+      rerender('homeInfo'); return;
+    }
+    const {latitude,longitude,name}=geo.results[0];
+    const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code`).then(r=>r.json());
+    if(w.current){
+      const iconKey = WMO_CODE_MAP[w.current.weather_code] || 'sun';
+      data.weather = { icon:iconKey, temp:Math.round(w.current.temperature_2m)+'°C' };
+      data.location = name;
+      Phone.setGlobalData('homeInfo', data);
+      rerender('homeInfo');
+    }
+  }catch(e){}
+}
+
+const WEATHER_SVG = {
+  sun:    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.5" y1="4.5" x2="6.5" y2="6.5"/><line x1="17.5" y1="17.5" x2="19.5" y2="19.5"/><line x1="4.5" y1="19.5" x2="6.5" y2="17.5"/><line x1="17.5" y1="6.5" x2="19.5" y2="4.5"/></svg>',
+  cloud:  '<svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 01-1-7.9 5 5 0 019.6-1A3.5 3.5 0 0117.5 18H7z"/></svg>',
+  rain:   '<svg viewBox="0 0 24 24"><path d="M7 14a4 4 0 01-1-7.9 5 5 0 019.6-1A3.5 3.5 0 0117.5 14H7z"/><line x1="8" y1="18" x2="7" y2="21"/><line x1="12" y1="18" x2="11" y2="21"/><line x1="16" y1="18" x2="15" y2="21"/></svg>',
+  snow:   '<svg viewBox="0 0 24 24"><path d="M7 14a4 4 0 01-1-7.9 5 5 0 019.6-1A3.5 3.5 0 0117.5 14H7z"/><line x1="8" y1="19" x2="8" y2="19"/><line x1="12" y1="20" x2="12" y2="20"/><line x1="16" y1="19" x2="16" y2="19"/></svg>',
+  storm:  '<svg viewBox="0 0 24 24"><path d="M7 14a4 4 0 01-1-7.9 5 5 0 019.6-1A3.5 3.5 0 0117.5 14H7z"/><polyline points="12 15 10 19 13 19 11 23"/></svg>',
+  moon:   '<svg viewBox="0 0 24 24"><path d="M20 15A8 8 0 119 4a7 7 0 0011 11z"/></svg>',
+  cloudy: '<svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="3.5"/><line x1="8" y1="2" x2="8" y2="4"/><path d="M10 18a3.5 3.5 0 01-1-6.9A4.5 4.5 0 0117 13a3 3 0 010 6h-7z"/></svg>'
+};
+const LOC_SVG = '<svg viewBox="0 0 24 24"><path d="M12 22s-7-7.2-7-12a7 7 0 0114 0c0 4.8-7 12-7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+
+Phone.registerWidget({
+  key: 'homeInfo',
+  render(){
+    const g = Phone.getGlobalData('homeInfo');
+    const charName = g.name || Phone.getCurrentChar().name || '未命名';
+    const charAvatar = g.avatar || Phone.getCurrentChar().avatar || '';
+    const d = new Date();
+    const loc = g.location || '定位中...';
+    const w = g.weather || { icon:'sun', temp:'--' };
+    const weatherSvg = WEATHER_SVG[w.icon] || WEATHER_SVG.sun;
+    const avatarHtml = charAvatar
+      ? `<img src="${charAvatar}" alt="avatar">`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--green-deep)"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>`;
+    const now = new Date();
+    const clockStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    return `<div class="widget-homeinfo">
+      <div class="hi-row">
+        <div class="weather-row" data-action="refreshWeather"><span class="weather-icon">${weatherSvg}</span><span class="weather-temp">${w.temp}</span></div>
+        <div class="name-row">
+          <div class="user-name" data-action="editName">${charName}</div>
+          <div class="user-avatar" data-action="editAvatar">${avatarHtml}</div>
+        </div>
+      </div>
+      <div class="hi-row">
+        <div class="loc-row" data-action="editLoc">${LOC_SVG}<span>${loc}</span></div>
+        <div class="slogan" data-action="editSlogan">${g.slogan || 'we are your vision'}</div>
+      </div>
+      <div class="hi-row">
+        <div class="date-row">${Phone.monthDay(d)} ${Phone.getWeekdayCN(d)}</div>
+        <div class="clock">${clockStr}</div>
+      </div>
+    </div>`;
+  },
+  onAction:{
+    async refreshWeather(){
+      fetchRealWeather();
+    },
+    async editLoc(){
+      const data = Phone.getGlobalData('homeInfo');
+      const r = await Phone.modal({ title:'设置定位', fields:[{key:'location',label:'地点（中英文都可以，最终显示为英文）',value:'',placeholder:'上海 / Seoul / 东京'}] });
+      if(!r?.location) return;
+      const raw = r.location.trim();
+      const pre = toEN(raw);
+      try{
+        const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(pre)}&count=1&language=en`).then(x=>x.json());
+        if(geo.results?.length){
+          data.location = geo.results[0].name;
+        }else{
+          data.location = pre;
+        }
+      }catch(e){ data.location = pre; }
+      Phone.setGlobalData('homeInfo', data);
+      rerender('homeInfo');
+      fetchRealWeather();
+    },
+    async editName(){
+      const g = Phone.getGlobalData('homeInfo');
+      const r = await Phone.modal({ title:'修改名字', fields:[{key:'name',label:'名字',value:g.name||Phone.getCurrentChar().name||'',placeholder:'用户名'}], onOk:v=>{g.name=v.name.trim();Phone.setGlobalData('homeInfo',g);return v;} });
+      if(r) rerender('homeInfo');
+    },
+    async editAvatar(){
+      const g = Phone.getGlobalData('homeInfo');
+      const r = await Phone.modal({ title:'修改头像', fields:[{key:'url',label:'图片 URL（留空用本地上传）',value:''},{key:'file',label:'或上传本地图片',type:'file'}], onOk:async v=>{if(v.file)g.avatar=await Phone.fileToBase64(v.file);else if(v.url.trim())g.avatar=v.url.trim();Phone.setGlobalData('homeInfo',g);return v;} });
+      if(r) rerender('homeInfo');
+    },
+    async editSlogan(){
+      const g = Phone.getGlobalData('homeInfo');
+      const r = await Phone.modal({ title:'修改 slogan', fields:[{key:'slogan',label:'slogan',value:g.slogan||'we are your vision',placeholder:'we are your vision'}], onOk:v=>{g.slogan=v.slogan.trim();Phone.setGlobalData('homeInfo',g);return v;} });
+      if(r) rerender('homeInfo');
+    }
+  }
+});
+
+function rerender(key){
+  const cfg = Phone._widgetCache[key];
+  if(!cfg) return;
+  const tile = document.querySelector(`.tile[data-app-key="${key}"]`);
+  if(!tile) return;
+  tile.innerHTML = cfg.render();
+  tile.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const fn = cfg.onAction?.[btn.dataset.action];
+      if(fn) fn(tile);
+    });
+  });
+}
+
+async function editCharacter(char){
+  const isNew = !char;
+  const editing = char ? {...char, social: char.social || {}, relationships: char.relationships || '', persona: char.persona || '', worldbookIds: char.worldbookIds || []} : { name:'', avatar:'', age:'', identity:'', relationships:'', persona:'', social:{ wechatId:'', weiboId:'', bubbleId:'', taobaoId:'' }, wcProfile:{ gender:'', region:'', patMsg:'', signature:'' }, worldbookIds:[], data:{ homeInfo:{ slogan:'we are your vision', location:'Shanghai', weather:null } } };
+  const root = document.getElementById('modalRoot');
+  const mask = document.createElement('div');
+  mask.className = 'modal-mask';
+  mask.innerHTML = `<div class="modal-box" style="animation:popIn .25s ease;width:85%;max-width:340px;max-height:85vh;overflow-y:auto"><h4>${isNew ? '创建人设' : '编辑人设'}</h4>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+      <div class="char-avatar" id="charAvatarPreview" style="width:56px;height:56px">${editing.avatar ? `<img src="${editing.avatar}">` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>`}</div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+        <input type="file" accept="image/*" id="charAvatarFile" style="display:none">
+        <button type="button" class="settings-btn settings-btn-small" id="charAvatarBtn" style="align-self:flex-start">${editing.avatar ? '更换头像' : '上传头像'}</button>
+      </div>
+    </div>
+    <div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">姓名 *</div><input type="text" id="charName" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none" placeholder="输入姓名" value="${editing.name||''}"></div>
+    <div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">年龄</div><input type="text" id="charAge" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none" placeholder="年龄" value="${editing.age||''}"></div>
+    <div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">身份</div><input type="text" id="charIdentity" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none" placeholder="例如:大学生/工程师/..." value="${editing.identity||''}"></div>
+    <div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">人际关系</div><textarea id="charRelationships" rows="2" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none;resize:vertical" placeholder="例如:有一只猫叫咪咪，和父母住在一起...">${editing.relationships||''}</textarea></div>
+    <div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">人设</div><textarea id="charPersona" rows="2" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none;resize:vertical" placeholder="例如:性格开朗，喜欢音乐和摄影...">${editing.persona||''}</textarea></div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:6px">社交圈（同步各平台账号名，不可编辑）</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:13px;color:var(--green-ink);min-width:60px">微信ID</span>
+        <span style="flex:1;font-size:12px;color:${editing.social.wechatId?'var(--green-ink)':'var(--green-ink-soft)'};border:none;border-bottom:1px solid var(--line);padding:4px 2px">${editing.social.wechatId||'未绑定'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:13px;color:var(--green-ink);min-width:60px">微博ID</span>
+        <span style="flex:1;font-size:12px;color:${editing.social.weiboId?'var(--green-ink)':'var(--green-ink-soft)'};border:none;border-bottom:1px solid var(--line);padding:4px 2px">${editing.social.weiboId||'未绑定'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:13px;color:var(--green-ink);min-width:60px">泡泡ID</span>
+        <span style="flex:1;font-size:12px;color:${editing.social.bubbleId?'var(--green-ink)':'var(--green-ink-soft)'};border:none;border-bottom:1px solid var(--line);padding:4px 2px">${editing.social.bubbleId||'未绑定'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:13px;color:var(--green-ink);min-width:60px">淘宝ID</span>
+        <span style="flex:1;font-size:12px;color:${editing.social.taobaoId?'var(--green-ink)':'var(--green-ink-soft)'};border:none;border-bottom:1px solid var(--line);padding:4px 2px">${editing.social.taobaoId||'未绑定'}</span>
+      </div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:6px">世界书（勾选对该角色生效的守则）</div>
+      <div id="charWorldbooks">${(() => {
+        const wbs = Phone._getState().worldbooks || [];
+        if(wbs.length === 0) return '<div style="font-size:12px;color:var(--green-ink-soft);padding:8px 0">暂无世界书，请先在世界书 App 中添加</div>';
+        return wbs.map(wb => {
+          const checked = wb.global || (editing.worldbookIds || []).includes(wb.id);
+          return `<label style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer">
+            <input type="checkbox" data-wb-id="${wb.id}" ${checked?'checked':''} style="width:16px;height:16px">
+            <span style="font-size:13px;color:var(--green-ink);flex:1">${wb.name}${wb.global?' <span style="font-size:11px;color:var(--green-deep)">[全局]</span>':''}</span>
+          </label>`;
+        }).join('');
+      })()}</div>
+    </div>
+    <div class="modal-actions"><button class="btn-cancel" data-act="cancel">取消</button><button class="btn-ok" data-act="ok">保存</button></div>
+  </div>`;
+  root.appendChild(mask);
+  const box = mask.querySelector('.modal-box');
+  const fileInput = mask.querySelector('#charAvatarFile');
+  const preview = mask.querySelector('#charAvatarPreview');
+  mask.querySelector('#charAvatarBtn').onclick = () => fileInput.click();
+  fileInput.onchange = async () => {
+    if(fileInput.files?.[0]){
+      editing.avatar = await Phone.fileToBase64(fileInput.files[0]);
+      preview.innerHTML = `<img src="${editing.avatar}">`;
+    }
+  };
+  return new Promise(resolve => {
+    function dismiss(result){ mask.style.animation='fadeIn .2s ease reverse'; box.style.animation='popIn .2s ease reverse'; setTimeout(()=>mask.remove(),180); resolve(result); }
+    mask.addEventListener('click', async e => {
+      if(e.target === mask) return dismiss(null);
+      const act = e.target.dataset.act;
+      if(act === 'cancel') return dismiss(null);
+      if(act === 'ok'){
+        const name = mask.querySelector('#charName').value.trim();
+        if(!name){ alert('姓名必填'); return; }
+        editing.name = name;
+        editing.age = mask.querySelector('#charAge').value.trim();
+        editing.identity = mask.querySelector('#charIdentity').value.trim();
+        editing.relationships = mask.querySelector('#charRelationships').value.trim();
+        editing.persona = mask.querySelector('#charPersona').value.trim();
+        editing.social = char?.social || { wechatId:'', weiboId:'', bubbleId:'', taobaoId:'' };
+        editing.wcProfile = char?.wcProfile || { gender:'', region:'', patMsg:'', signature:'' };
+        editing.worldbookIds = Array.from(mask.querySelectorAll('#charWorldbooks input[type="checkbox"]:checked')).map(cb => cb.dataset.wbId);
+        Phone.saveChar(editing);
+        rerender('homeInfo');
+        dismiss(editing);
+      }
+    });
+  });
+}
+
+function renderSettingsPage(body){
+  body.innerHTML = '';
+  const chars = JSON.parse(JSON.stringify(Phone._getState().characters || []));
+  const currentChar = Phone._getState().currentCharId;
+  const apis = JSON.parse(JSON.stringify(Phone._getState().apis || []));
+  const currentApi = Phone._getState().currentApiId;
+  const voiceCfg = JSON.parse(JSON.stringify(Phone._getState().voiceConfig || {}));
+
+  const avatarSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>`;
+
+  const append = (html) => { const div = document.createElement('div'); div.innerHTML = html.trim(); body.appendChild(div.firstChild); };
+
+  append(`<div class="settings-section"><div class="settings-section-title">人设</div></div>`);
+
+  const activeChar = chars.find(c => c.id === currentChar) || chars[0];
+  if(activeChar){
+    const topCard = document.createElement('div');
+    topCard.className = 'char-top-card';
+    topCard.innerHTML = `
+      <div class="char-top-avatar">${activeChar.avatar ? `<img src="${activeChar.avatar}">` : avatarSvg}</div>
+      <div class="char-top-info">
+        <div class="char-top-name">${activeChar.name || '未命名'}</div>
+        <div class="char-top-identity">${activeChar.identity || '未设置身份'}${activeChar.age ? ' · '+activeChar.age+'岁' : ''}</div>
+      </div>`;
+    body.appendChild(topCard);
+  }
+
+  append(`<div class="settings-section" style="margin-top:14px"><div class="settings-section-title" style="font-size:12px">切换人设</div></div>`);
+  const charBox = document.createElement('div');
+  charBox.className = 'char-list-box';
+  chars.forEach(c => {
+    const active = c.id === currentChar;
+    const html = `<div class="char-card ${active?'active':''}" data-char-id="${c.id}">
+      <div class="char-avatar">${c.avatar ? `<img src="${c.avatar}">` : avatarSvg}</div>
+      <div class="char-info">
+        <div class="char-name">${c.name || '未命名'}</div>
+        <div class="char-identity">${c.identity || '未设置身份'}${c.age ? ' · '+c.age+'岁' : ''}</div>
+      </div>
+      <div class="char-actions">
+        <button class="char-icon-btn" data-act="editChar" title="编辑"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
+        ${chars.length > 1 ? `<button class="char-icon-btn danger" data-act="delChar" title="删除"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 012-2h2a2 2 0 012 2v2"/></svg></button>` : ''}
+      </div>
+    </div>`;
+    const temp = document.createElement('div'); temp.innerHTML = html.trim();
+    const card = temp.firstChild;
+    card.onclick = () => { Phone.selectChar(c.id); Phone._refreshAll(); renderSettingsPage(body); };
+    const editBtn = card.querySelector('[data-act="editChar"]');
+    if(editBtn) editBtn.onclick = async (e) => { e.stopPropagation(); await editCharacter(c); Phone._refreshAll(); renderSettingsPage(body); };
+    const delBtn = card.querySelector('[data-act="delChar"]');
+    if(delBtn) delBtn.onclick = (e) => {
+      e.stopPropagation();
+      if(confirm('确认删除这个人设？')){ Phone.deleteChar(c.id); Phone._refreshAll(); renderSettingsPage(body); }
+    };
+    charBox.appendChild(card);
+  });
+  const addChar = document.createElement('div');
+  addChar.className = 'char-add-card';
+  addChar.innerHTML = '+ 创建新人设';
+  addChar.onclick = async () => { await editCharacter(null); Phone._refreshAll(); renderSettingsPage(body); };
+  charBox.appendChild(addChar);
+  body.appendChild(charBox);
+
+  append(`<div class="settings-section" style="margin-top:22px"><div class="settings-section-title">聊天 API</div></div>`);
+  if(apis.length === 0){
+    append(`<div style="text-align:center;color:var(--green-ink-soft);font-size:13px;padding:20px">还没有配置 API</div>`);
+  }
+  apis.forEach((api, idx) => {
+    const active = api.id === currentApi;
+    const modelLabel = api.selectedModel || '未选择模型';
+    const modelsLoaded = api.models && api.models.length > 0;
+    const html = `<div class="settings-card api-card ${active?'active':''}" data-api-id="${api.id}">
+      <div class="api-card-header">
+        <div class="api-name">${api.name || '未命名 API'}</div>
+        ${active ? `<span class="api-badge">当前使用</span>` : ''}
+      </div>
+      <div class="api-url">${api.url || 'URL 未设置'}</div>
+      <div style="margin-bottom:8px">
+        <span class="api-model">${modelLabel}</span>
+      </div>
+      <div class="api-actions">
+        <button class="settings-btn settings-btn-small" data-act="editApi">编辑</button>
+        <button class="settings-btn settings-btn-secondary settings-btn-small" data-act="fetchModels">${modelsLoaded?'刷新模型':'拉取模型'}</button>
+        ${!active ? `<button class="settings-btn settings-btn-secondary settings-btn-small" data-act="setCurrent">设为当前</button>` : ''}
+        ${apis.length > 1 ? `<button class="settings-btn settings-btn-danger settings-btn-small" data-act="delApi">删除</button>` : ''}
+      </div>
+    </div>`;
+    const temp = document.createElement('div'); temp.innerHTML = html.trim();
+    const card = temp.firstChild;
+    card.querySelector('[data-act="editApi"]').onclick = async () => { await editApiDialog(api); renderSettingsPage(body); };
+    card.querySelector('[data-act="fetchModels"]').onclick = async () => {
+      const btn = card.querySelector('[data-act="fetchModels"]'); btn.textContent = '拉取中...'; btn.disabled = true;
+      const models = await Phone.fetchModelsForApi(api);
+      api.models = models;
+      if(models.length > 0 && !api.selectedModel) api.selectedModel = models[0];
+      Phone.saveApi(api);
+      btn.textContent = models.length ? '刷新模型' : '拉取模型'; btn.disabled = false;
+      if(models.length > 0){
+        await Phone.modal({ title:'选择模型', fields:[{ key:'model', label:'该 API 可用模型', type:'select', opts: models.map(m => `<option value="${m}" ${m===api.selectedModel?'selected':''}>${m}</option>`).join('') }], onOk: v=>{ api.selectedModel = v.model; Phone.saveApi(api); return v; } });
+      }else{
+        alert('未能拉到模型列表，请检查 URL 和 Key');
+      }
+      renderSettingsPage(body);
+    };
+    const setBtn = card.querySelector('[data-act="setCurrent"]');
+    if(setBtn) setBtn.onclick = () => { Phone.selectApi(api.id); renderSettingsPage(body); };
+    const delBtn = card.querySelector('[data-act="delApi"]');
+    if(delBtn) delBtn.onclick = () => { if(confirm('确认删除？')){ Phone.deleteApi(api.id); renderSettingsPage(body); } };
+    body.appendChild(card);
+  });
+  const addApi = document.createElement('div');
+  addApi.className = 'char-add-card';
+  addApi.innerHTML = '+ 添加 API';
+  addApi.onclick = async () => { await editApiDialog(null); renderSettingsPage(body); };
+  body.appendChild(addApi);
+
+  append(`<div class="settings-section" style="margin-top:22px"><div class="settings-section-title">MiniMax 语音配置</div></div>`);
+  const voiceCard = document.createElement('div');
+  voiceCard.className = 'settings-card voice-card';
+  const vmOpts = ['speech-01-t2s','speech-02-t2s','speech-01-t2s-hd'];
+  const cardHtml = `<div class="settings-row"><div class="settings-row-label">Group ID</div><input class="settings-row-input" id="voiceGroupId" type="text" value="${voiceCfg.groupId||''}" placeholder="MiniMax 团队 ID（一串数字）"></div>
+    <div class="settings-row"><div class="settings-row-label">API Key</div><input class="settings-row-input" id="voiceKey" type="password" value="${voiceCfg.apiKey||''}" placeholder="MiniMax API Key"></div>
+    <div class="settings-row"><div class="settings-row-label">Voice ID</div><input class="settings-row-input" id="voiceVoiceId" type="text" value="${voiceCfg.voiceId||''}" placeholder="音色 ID"></div>
+    <div class="settings-row"><div class="settings-row-label">模型</div>
+      <select class="settings-row-select" id="voiceModel">${vmOpts.map(m=>`<option value="${m}" ${m===voiceCfg.model?'selected':''}>${m}</option>`).join('')}</select>
+    </div>
+    <div class="settings-row"><div class="settings-row-label">语速</div>
+      <input class="settings-row-input" id="voiceSpeed" type="number" step="0.1" min="0.1" max="3" value="${voiceCfg.speed||1.0}">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="settings-btn" id="voiceSave">保存语音配置</button>
+      <button class="settings-btn settings-btn-secondary" id="voiceTest">试听</button>
+    </div>
+    <div class="voice-preview" id="voicePreview" style="display:none">
+      <button class="voice-play-btn" id="voicePlayBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div style="flex:1;min-width:0;font-size:13px;color:var(--green-ink)">
+        输入要试听的文字：<input id="voiceTestText" class="settings-row-input" style="margin-top:6px" type="text" value="你好，我是AI助手">
+      </div>
+    </div>`;
+  voiceCard.innerHTML = cardHtml.trim();
+  body.appendChild(voiceCard);
+
+  const vKey = voiceCard.querySelector('#voiceKey');
+  const vGroupId = voiceCard.querySelector('#voiceGroupId');
+  const vVoiceId = voiceCard.querySelector('#voiceVoiceId');
+  const vModel = voiceCard.querySelector('#voiceModel');
+  const vSpeed = voiceCard.querySelector('#voiceSpeed');
+  voiceCard.querySelector('#voiceSave').onclick = () => {
+    Phone._getState().voiceConfig = {
+      provider:'minimax', groupId: vGroupId.value.trim(), apiKey: vKey.value.trim(), voiceId: vVoiceId.value.trim(), model: vModel.value, speed: parseFloat(vSpeed.value) || 1.0
+    };
+    Phone._saveState();
+    alert('语音配置已保存');
+  };
+  const voicePreview = voiceCard.querySelector('#voicePreview');
+  voiceCard.querySelector('#voiceTest').onclick = () => { voicePreview.style.display = 'flex'; };
+  let currentAudio = null;
+  voiceCard.querySelector('#voicePlayBtn').onclick = async () => {
+    const cfg = Phone._getState().voiceConfig;
+    if(!cfg.groupId){ alert('请先填入 MiniMax Group ID'); return; }
+    if(!cfg.apiKey){ alert('请先填入 MiniMax API Key'); return; }
+    if(!cfg.voiceId){ alert('请先填入 Voice ID'); return; }
+    const text = voiceCard.querySelector('#voiceTestText').value.trim();
+    if(!text) return;
+    try{
+      const res = await fetch('https://api.minimax.chat/v1/text_to_speech', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${cfg.apiKey}`, 'GroupId': cfg.groupId },
+        body: JSON.stringify({
+          model: cfg.model,
+          text,
+          voice_setting:{ voice_id: cfg.voiceId, speed: cfg.speed || 1.0 },
+          response_type: 'url'
+        })
+      });
+      const json = await res.json();
+      if(json.data?.audio_url){
+        if(currentAudio) currentAudio.pause();
+        currentAudio = new Audio(json.data.audio_url);
+        currentAudio.play();
+      }else{
+        alert('试听失败: ' + (json.base_resp?.status_msg || '未知错误'));
+      }
+    }catch(e){ alert('试听失败: ' + e.message); }
+  };
+}
+
+async function editApiDialog(api){
+  const isNew = !api;
+  const editing = api ? {...api} : { name:'', url:'', key:'', models:[], selectedModel:'' };
+  const r = await Phone.modal({
+    title: isNew ? '添加 API' : '编辑 API',
+    fields: [
+      { key:'name', label:'名称（如 DeepSeek / 本地 Ollama）', value: editing.name || '', placeholder:'API 名称' },
+      { key:'url', label:'Base URL', value: editing.url || '', placeholder:'https://api.deepseek.com/v1' },
+      { key:'key', label:'API Key', value: editing.key || '', placeholder:'Bearer token', type:'password' }
+    ],
+    onOk: v => {
+      editing.name = v.name.trim() || (editing.url ? editing.url.split('/')[2] : '未命名');
+      editing.url = v.url.trim();
+      editing.key = v.key.trim();
+      return editing;
+    }
+  });
+  if(r){
+    Phone.saveApi(editing);
+    await Phone.modal({ title:'拉取模型', fields:[{ key:'fetch', label:'是否现在拉取模型列表？', type:'select', opts:'<option value="yes">是（推荐）</option><option value="no">稍后再说</option>' }] });
+  }
+}
+
+const WECHAT_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="currentColor"><path d="M9.5 3C5.36 3 2 5.91 2 9.5c0 2.06 1.11 3.92 2.84 5.14L4 17.5l3.1-1.63c.77.2 1.58.31 2.4.31.34 0 .67-.02 1-.05C10.25 13.7 10 12.62 10 11.5c0-3.31 3.13-6 7-6 .17 0 .34.01.5.02C16.55 3.77 13.29 3 9.5 3zM7 7a1 1 0 110 2 1 1 0 010-2zm5 0a1 1 0 110 2 1 1 0 010-2z"/></svg>';
+const WEIBO_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="currentColor"><ellipse cx="12" cy="12" rx="9" ry="7"/><ellipse cx="10" cy="12" rx="5" ry="4" fill="#fff" opacity=".9"/></svg>';
+const BUBBLE_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="currentColor"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5" fill="#fff" opacity=".9"/></svg>';
+const TAOBAO_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="currentColor"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zm0 4c3 0 5 2 5 4 0 1.5-.8 2.8-2 3.5l-1-1.7c.6-.4 1-.9 1-1.8 0-1.2-.8-2-2-2s-2 .8-2 2c0 .9.4 1.4 1 1.8l-1 1.7c-1.2-.7-2-2-2-3.5 0-2 2-4 5-4z"/></svg>';
+const COUPLE_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="currentColor"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.5-7 10-7 10z"/></svg>';
+const SETTINGS_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>';
+const FIND_PHONE_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="currentColor"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 018 8c0 5.25-7 12-7 12h-2S4 15.25 4 10a8 8 0 018-8z"/></svg>';
+const MUSIC_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="currentColor"><path d="M9 17V5l12-2v12"/><circle cx="6" cy="17" r="3"/><circle cx="18" cy="15" r="3"/></svg>';
+const WORLD_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>';
+const BEAUTY_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="currentColor"><circle cx="12" cy="8" r="6"/><path d="M6 14l6 8 6-8z"/></svg>';
+const CAMERA_ICON = '<svg viewBox="0 0 24 24" width="60%" height="60%" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>';
+
+const HOME_INFO_POS = Phone._widgetCache.homeInfo;
+Object.assign(HOME_INFO_POS, { colStart:1, rowStart:1, colSpan:4, rowSpan:1 });
+
+Phone.registerWidget({
+  key: 'disk',
+  gridClass: 'widget-disk',
+  colStart: 1, rowStart: 2, colSpan: 2, rowSpan: 2,
+  render(){
+    const d = Phone.getGlobalData('disk');
+    const cover = d.cover || '';
+    return `<div class="disk-widget"><div class="disk-vinyl"><div class="disk-cover" data-action="changeCover">${cover ? `<img src="${cover}">` : CAMERA_ICON}</div></div></div>`;
+  },
+  onAction:{
+    async changeCover(){
+      const r = await Phone.modal({ title:'更换唱片封面', fields:[{key:'url',label:'图片 URL',value:''},{key:'file',label:'或上传本地图片',type:'file'}], onOk:async v=>{const d=Phone.getGlobalData('disk');if(v.file)d.cover=await Phone.fileToBase64(v.file);else if(v.url.trim())d.cover=v.url.trim();Phone.setGlobalData('disk',d);return v;} });
+      if(r) rerender('disk');
+    }
+  }
+});
+
+Phone.registerWidget({
+  key: 'photo',
+  gridClass: 'widget-photo',
+  colStart: 3, rowStart: 4, colSpan: 2, rowSpan: 2,
+  render(){
+    const d = Phone.getGlobalData('photo');
+    const img = d.image || '';
+    return `<div class="photo-widget" data-action="change"><div class="photo-placeholder" ${img?'style="display:none"':''}>${CAMERA_ICON}<span>点击添加图片</span></div>${img?`<img src="${img}">`:''}</div>`;
+  },
+  onAction:{
+    async change(){
+      const r = await Phone.modal({ title:'更换相框图片', fields:[{key:'url',label:'图片 URL',value:''},{key:'file',label:'或上传本地图片',type:'file'}], onOk:async v=>{const d=Phone.getGlobalData('photo');if(v.file)d.image=await Phone.fileToBase64(v.file);else if(v.url.trim())d.image=v.url.trim();Phone.setGlobalData('photo',d);return v;} });
+      if(r) rerender('photo');
+    }
+  }
+});
+
+Phone.registerApp({ key:'wechat', name:'微信', icon:WECHAT_ICON, colStart:3, rowStart:2, onClick: () => openChatPage() });
+Phone.registerApp({ key:'weibo', name:'微博', icon:WEIBO_ICON, colStart:4, rowStart:2, onClick: () => openSocialAppPage('weibo','微博','weiboId') });
+Phone.registerApp({ key:'bubble', name:'泡泡', icon:BUBBLE_ICON, colStart:3, rowStart:3, onClick: () => openSocialAppPage('bubble','泡泡','bubbleId') });
+Phone.registerApp({ key:'taobao', name:'淘宝', icon:TAOBAO_ICON, colStart:4, rowStart:3, onClick: () => openSocialAppPage('taobao','淘宝','taobaoId') });
+Phone.registerApp({ key:'couple', name:'情侣空间', icon:COUPLE_ICON, colStart:1, rowStart:4 });
+Phone.registerApp({
+  key:'settings', name:'设置', icon:SETTINGS_ICON, colStart:2, rowStart:4,
+  onClick: () => {
+    Phone.openPage({ title:'设置', render: renderSettingsPage });
+  }
+});
+Phone.registerApp({ key:'findPhone', name:'查手机', icon:FIND_PHONE_ICON, colStart:1, rowStart:5 });
+Phone.registerApp({
+  key:'world', name:'世界书', icon:WORLD_ICON, colStart:2, rowStart:5,
+  onClick: () => openWorldBookPage()
+});
+
+function openSocialAppPage(appKey, appName, fieldKey){
+  const char = Phone.getCurrentChar();
+  char.social = char.social || { wechatId:'', weiboId:'', bubbleId:'', taobaoId:'' };
+  const page = Phone.openPage({
+    title: appName,
+    render: (body) => {
+      body.innerHTML = `
+        <div style="padding:16px">
+          <div style="background:rgba(255,255,255,.55);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,.6)">
+            <div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:8px">${appName} ID</div>
+            <input type="text" id="socialAppId" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--green-ink);font-family:inherit;outline:none" placeholder="请输入你的${appName} ID" value="${char.social[fieldKey]||''}">
+            <div style="font-size:11px;color:var(--green-ink-soft);margin-top:6px">此处仅同步你的${appName}账号名</div>
+          </div>
+          <button class="settings-btn" id="socialAppSave" style="width:100%;margin-top:14px;padding:12px">保存</button>
+        </div>`;
+      body.querySelector('#socialAppSave').onclick = () => {
+        const val = body.querySelector('#socialAppId').value.trim();
+        const c = Phone.getCurrentChar();
+        c.social = c.social || { wechatId:'', weiboId:'', bubbleId:'', taobaoId:'' };
+        c.social[fieldKey] = val;
+        Phone.saveChar(c);
+        alert(`${appName} ID 已保存`);
+      };
+    }
+  });
+}
+
+function openWorldBookPage(){
+  const state = Phone._getState();
+  const page = Phone.openPage({
+    title: '世界书',
+    render: (body) => renderWorldBookBody(body)
+  });
+
+  function renderWorldBookBody(body){
+    const escAttr = (s) => String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const wbs = state.worldbooks || [];
+    const groups = {};
+    wbs.forEach(wb => {
+      const g = wb.group || '未分组';
+      if(!groups[g]) groups[g] = [];
+      groups[g].push(wb);
+    });
+    const groupNames = Object.keys(groups);
+    let html = '<div style="padding:12px 16px">';
+    html += '<div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:10px">世界书是人物回复必须遵守的守则</div>';
+    if(groupNames.length === 0){
+      html += '<div style="text-align:center;padding:40px 0;color:var(--green-ink-soft);font-size:13px">暂无世界书，点击下方按钮添加</div>';
+    } else {
+      groupNames.forEach((gn, gi) => {
+        html += `<div class="wb-group" style="margin-bottom:8px">
+          <div class="wb-group-header" data-group-idx="${gi}" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.55);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(255,255,255,.6);cursor:pointer;">
+            <div style="font-size:14px;font-weight:600;color:var(--green-ink);display:flex;align-items:center;gap:8px">
+              <svg class="wb-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green-deep)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .25s;transform:rotate(0deg)"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              ${gn}
+              <span style="font-size:11px;font-weight:400;color:var(--green-ink-soft)">${groups[gn].length}条</span>
+            </div>
+          </div>
+          <div class="wb-group-body" data-group-body="${gi}" style="display:none;padding:8px 4px 0">`;
+        groups[gn].forEach(wb => {
+          const fullContent = wb.content || '';
+          const isLong = fullContent.length > 100;
+          const shortContent = isLong ? fullContent.slice(0, 100) + '…' : fullContent;
+          html += `<div class="settings-card" style="margin-bottom:8px;padding:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+              <div style="font-size:14px;font-weight:600;color:var(--green-ink)">${wb.name}</div>
+              <div style="display:flex;gap:6px;align-items:center">
+                ${wb.global ? '<span style="font-size:11px;background:var(--green-deep);color:#fff;padding:2px 8px;border-radius:10px">全局</span>' : ''}
+                <button class="wb-icon-btn" data-act="edit" data-id="${wb.id}" title="编辑" style="width:28px;height:28px;border:none;background:rgba(0,0,0,.05);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--green-deep)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
+                <button class="wb-icon-btn" data-act="del" data-id="${wb.id}" title="删除" style="width:28px;height:28px;border:none;background:rgba(231,76,60,.1);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#e74c3c"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 01-2 2H9a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button>
+              </div>
+            </div>
+            <div class="wb-content-wrap" data-full="${isLong ? escAttr(fullContent) : ''}" data-short="${escAttr(shortContent)}" data-expanded="false" style="font-size:12px;color:var(--green-ink-soft);white-space:pre-wrap;word-break:break-word">${escAttr(shortContent)}${isLong ? '<span class="wb-toggle" style="color:var(--green-deep);cursor:pointer;margin-left:4px;font-weight:500">展开</span>' : ''}</div>
+          </div>`;
+        });
+        html += `</div></div>`;
+      });
+    }
+    html += '<button class="settings-btn" id="wbAddBtn" style="width:100%;margin-top:16px;padding:12px">+ 添加世界书</button>';
+    html += '</div>';
+    body.innerHTML = html;
+
+    body.querySelectorAll('.wb-group-header').forEach(h => {
+      h.onclick = () => {
+        const idx = h.dataset.groupIdx;
+        const bodyEl = body.querySelector(`[data-group-body="${idx}"]`);
+        const arrow = h.querySelector('.wb-arrow');
+        const open = bodyEl.style.display === 'block';
+        bodyEl.style.display = open ? 'none' : 'block';
+        arrow.style.transform = open ? 'rotate(0deg)' : 'rotate(90deg)';
+      };
+    });
+    body.querySelector('#wbAddBtn').onclick = () => openWorldBookEditor(null, () => renderWorldBookBody(body));
+    body.querySelectorAll('[data-act="edit"]').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const wb = wbs.find(w => w.id === btn.dataset.id);
+        if(wb) openWorldBookEditor(wb, () => renderWorldBookBody(body));
+      };
+    });
+    body.querySelectorAll('[data-act="del"]').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        if(confirm('确认删除该世界书？')){
+          state.worldbooks = wbs.filter(w => w.id !== btn.dataset.id);
+          state.characters.forEach(c => {
+            if(c.worldbookIds) c.worldbookIds = c.worldbookIds.filter(id => id !== btn.dataset.id);
+          });
+          Phone._saveState();
+          renderWorldBookBody(body);
+        }
+      };
+    });
+    body.querySelectorAll('.wb-content-wrap').forEach(wrap => {
+      wrap.addEventListener('click', (e) => {
+        if(!e.target.classList.contains('wb-toggle')) return;
+        e.stopPropagation();
+        const expanded = wrap.dataset.expanded === 'true';
+        if(expanded){
+          wrap.dataset.expanded = 'false';
+          wrap.textContent = wrap.dataset.short;
+          const toggle = document.createElement('span');
+          toggle.className = 'wb-toggle';
+          toggle.style.cssText = 'color:var(--green-deep);cursor:pointer;margin-left:4px;font-weight:500';
+          toggle.textContent = '展开';
+          wrap.appendChild(toggle);
+        } else {
+          wrap.dataset.expanded = 'true';
+          wrap.textContent = wrap.dataset.full;
+          const toggle = document.createElement('span');
+          toggle.className = 'wb-toggle';
+          toggle.style.cssText = 'color:var(--green-deep);cursor:pointer;margin-left:4px;font-weight:500';
+          toggle.textContent = '收起';
+          wrap.appendChild(toggle);
+        }
+      });
+    });
+  }
+
+  function openWorldBookEditor(wb, onDone){
+    const isNew = !wb;
+    const editing = wb ? {...wb} : { id:'wb_'+Date.now(), name:'', content:'', group:'', global:false };
+    Phone.modal({
+      title: isNew ? '添加世界书' : '编辑世界书',
+      fields: [
+        { key:'name', label:'名称', value: editing.name, placeholder:'例如:说话风格' },
+        { key:'group', label:'分组', value: editing.group||'', placeholder:'例如:默认/不填则未分组' },
+        { key:'content', label:'内容', type:'textarea', value: editing.content, placeholder:'人物必须遵守的守则...' },
+        { key:'global', label:'全局默认生效', type:'checkbox', checked: !!editing.global }
+      ],
+      onOk: (v) => {
+        if(!v.name.trim()){ alert('请填写名称'); return false; }
+        editing.name = v.name.trim();
+        editing.group = v.group.trim();
+        editing.content = v.content.trim();
+        editing.global = !!v.global;
+        if(isNew){
+          state.worldbooks.push(editing);
+        } else {
+          const idx = state.worldbooks.findIndex(w => w.id === editing.id);
+          if(idx >= 0) state.worldbooks[idx] = editing;
+        }
+        Phone._saveState();
+        onDone();
+        return v;
+      }
+    });
+  }
+}
+
+function openChatPage(){
+  Phone.openPage({
+    title: '',
+    render: async (body) => {
+      const view = body.parentElement;
+      view.querySelector('.page-header').style.display = 'none';
+      body.style.padding = '0';
+      body.style.overflow = 'hidden';
+      try{
+        const res = await fetch('wechat.html');
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        doc.querySelectorAll('style').forEach(s => {
+          const style = document.createElement('style');
+          style.textContent = s.textContent;
+          document.head.appendChild(style);
+        });
+        body.innerHTML = doc.body.innerHTML;
+        const scripts = doc.querySelectorAll('script');
+        for(const s of scripts){
+          const script = document.createElement('script');
+          script.textContent = s.textContent;
+          document.body.appendChild(script);
+        }
+        if(window.mountWeChatApp){
+          window.mountWeChatApp(body, Phone, () => view.querySelector('.page-back').click());
+        }
+      }catch(err){
+        body.innerHTML = '<div style="padding:20px;color:var(--green-ink-soft);font-size:13px">加载微信失败：' + err.message + '</div>';
+      }
+    }
+  });
+}
+
+const PHONE_INIT = Phone.init;
+Phone.init = () => {
+  PHONE_INIT();
+  Desktop.renderDock([
+    { name:'设置', icon:SETTINGS_ICON, onClick: () => { Phone.openPage({ title:'设置', render: renderSettingsPage }); } },
+    { name:'世界书', icon:WORLD_ICON, onClick: openWorldBookPage },
+    { name:'微信', icon:WECHAT_ICON, onClick: openChatPage },
+    { name:'美化', icon:BEAUTY_ICON }
+  ]);
+  document.addEventListener('char-updated', () => {
+    Phone._refreshAll();
+  });
+};
+
+Phone.init();
+</script>
+</body>
+</html>
