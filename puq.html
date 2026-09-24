@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>朋友圈</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#fff;color:#222;font-size:14px;line-height:1.5;-webkit-tap-highlight-color:transparent;user-select:none;height:100%;overflow-y:auto;}
+img{display:block;max-width:100%;}
+.puq-wrap{max-width:480px;margin:0 auto;position:relative;min-height:100%;background:#fff;}
+.puq-banner{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;background:#c8e6c9;cursor:pointer;}
+.puq-banner-slide{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .4s ease;}
+.puq-profile{position:relative;padding:0 16px 18px;margin-top:-48px;z-index:4;display:flex;justify-content:flex-end;align-items:flex-end;gap:12px;}
+.puq-profile-info{text-align:right;padding-bottom:6px;max-width:65%;}
+.puq-profile-name{font-size:17px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);word-break:break-all;}
+.puq-profile-slogan{font-size:12px;color:rgba(255,255,255,.9);margin-top:3px;text-shadow:0 1px 2px rgba(0,0,0,.4);word-break:break-all;}
+.puq-profile-avatar{width:72px;height:72px;border-radius:6px;overflow:hidden;flex-shrink:0;border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.15);background:#e5e5e5;}
+.puq-profile-avatar img{width:100%;height:100%;object-fit:cover;}
+.puq-profile-avatar-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#81c784,#4caf50);color:#fff;font-size:26px;font-weight:600;}
+.puq-list{padding:0 0 40px;}
+.puq-item{padding:14px 16px;border-bottom:1px solid #f0f0f0;display:flex;gap:12px;position:relative;background:#fff;}
+.puq-item-avatar{width:42px;height:42px;border-radius:5px;overflow:hidden;flex-shrink:0;background:#e5e5e5;}
+.puq-item-avatar img{width:100%;height:100%;object-fit:cover;}
+.puq-item-avatar-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#81c784,#4caf50);color:#fff;font-size:16px;font-weight:600;}
+.puq-item-body{flex:1;min-width:0;position:relative;}
+.puq-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:2px;}
+.puq-item-author{font-size:14px;color:#07c160;font-weight:500;cursor:pointer;}
+.puq-item-author:hover{text-decoration:underline;}
+.puq-item-del{cursor:pointer;padding:2px 4px;display:flex;align-items:center;color:#07c160;transition:opacity .15s;flex-shrink:0;border:none;background:transparent;}
+.puq-item-del:hover{opacity:.7;}
+.puq-item-del svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.puq-item-text{font-size:15px;color:#222;line-height:1.5;margin-top:2px;white-space:pre-wrap;word-break:break-all;}
+.puq-item-images{margin-top:8px;display:grid;gap:4px;}
+.puq-item-images.count-1{grid-template-columns:1fr;}
+.puq-item-images.count-2,.puq-item-images.count-4{grid-template-columns:repeat(2,1fr);}
+.puq-item-images.count-3,.puq-item-images.count-5,.puq-item-images.count-6,.puq-item-images.count-7,.puq-item-images.count-8,.puq-item-images.count-9{grid-template-columns:repeat(3,1fr);}
+.puq-item-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:3px;background:#f0f0f0;cursor:pointer;}
+.puq-item-img.text-img{aspect-ratio:1;display:flex;align-items:center;justify-content:center;padding:8px;font-size:12px;text-align:center;color:#555;line-height:1.4;background:var(--ti-bg,#f5f5f5);border:1px dashed #ddd;word-break:break-all;overflow:hidden;}
+.puq-item-footer{margin-top:8px;display:flex;align-items:center;gap:8px;font-size:12px;color:#999;}
+.puq-item-time{flex-shrink:0;color:#bbb;}
+.puq-item-tools{display:flex;gap:6px;margin-left:auto;align-items:center;}
+.puq-item-tool{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#bbb;transition:background .15s,color .15s;}
+.puq-item-tool:hover{background:#f5f5f5;color:#07c160;}
+.puq-item-tool svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.puq-item-tool.liked{color:#e74c3c;}
+.puq-item-tool.liked svg{fill:#e74c3c;}
+.puq-item-tool.refreshing{animation:puqSpin 1s linear infinite;color:#07c160;}
+@keyframes puqSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.puq-item-tool.ai-thinking{color:#07c160;animation:puqPulse 1.2s ease-in-out infinite;}
+@keyframes puqPulse{0%,100%{opacity:.4}50%{opacity:1}}
+.puq-like-list{margin-top:8px;background:#f7f7f7;border-radius:4px;padding:8px 10px;display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:13px;color:#07c160;}
+.puq-like-list svg{width:14px;height:14px;fill:#e74c3c;margin-right:2px;flex-shrink:0;}
+.puq-like-name{color:#07c160;cursor:pointer;margin-right:4px;}
+.puq-like-name:hover{text-decoration:underline;}
+.puq-like-sep{color:#999;margin-right:4px;}
+.puq-comments{margin-top:6px;background:#f7f7f7;border-radius:4px;padding:4px 10px;}
+.puq-comment{padding:6px 0;font-size:13px;color:#333;position:relative;line-height:1.4;cursor:default;}
+.puq-comment + .puq-comment{border-top:1px solid #e8e8e8;}
+.puq-comment-name{color:#07c160;font-weight:500;margin-right:2px;cursor:pointer;}
+.puq-comment-name:hover{text-decoration:underline;}
+.puq-comment-reply-tag{color:#999;margin:0 2px;font-size:12px;}
+.puq-comment-text{color:#333;word-break:break-all;}
+.puq-comment-del{position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:transparent;color:#07c160;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1;z-index:2;font-weight:700;}
+.puq-comment.show-del .puq-comment-del{display:flex;}
+.puq-comment-input-bar{display:none;align-items:center;gap:6px;margin-top:4px;padding:6px;background:#fff;border-radius:6px;border:1px solid #eee;flex-wrap:wrap;}
+.puq-comment-input-bar.show{display:flex;}
+.puq-comment-input{flex:1;border:none;outline:none;font-size:13px;font-family:inherit;background:transparent;min-width:0;}
+.puq-comment-send{padding:5px 12px;background:#07c160;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.puq-comment-send:disabled{background:#ccc;}
+.puq-comment-tool{width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#555;border-radius:4px;flex-shrink:0;transition:background .15s;}
+.puq-comment-tool:hover{background:#f0f0f0;}
+.puq-comment-preview-img{width:40px;height:40px;border-radius:4px;object-fit:cover;margin:2px 0;}
+.puq-comment-preview-img.remove{cursor:pointer;position:relative;}
+.puq-comment-preview-img-wrap{position:relative;display:inline-block;margin:2px 0;}
+.puq-comment-preview-img-wrap .remove-x{position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;}
+.puq-comment-image{max-width:120px;max-height:120px;border-radius:4px;margin-top:2px;cursor:pointer;}
+.puq-emoji-panel{position:absolute;bottom:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid #e0e0e0;border-radius:8px;box-shadow:0 -4px 12px rgba(0,0,0,.1);padding:8px;z-index:50;max-height:180px;overflow-y:auto;}
+.puq-emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;}
+.puq-emoji-item{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border-radius:4px;transition:background .1s;}
+.puq-emoji-item:hover{background:#f5f5f5;}
+.puq-empty{text-align:center;padding:60px 20px;color:#bbb;font-size:13px;}
+.puq-empty svg{width:48px;height:48px;margin-bottom:12px;opacity:.4;}
+.puq-modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;flex-direction:column;animation:puqFadeIn .2s;}
+@keyframes puqFadeIn{from{opacity:0}to{opacity:1}}
+.puq-modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#fff;border-bottom:1px solid #eee;flex-shrink:0;}
+.puq-modal-cancel{font-size:15px;color:#666;cursor:pointer;padding:4px 8px;margin:-4px -8px;}
+.puq-modal-title{font-size:16px;font-weight:500;}
+.puq-modal-publish{font-size:14px;color:#fff;background:#07c160;padding:6px 16px;border-radius:5px;cursor:pointer;font-family:inherit;border:none;}
+.puq-modal-publish:disabled{background:#bcc;cursor:not-allowed;}
+.puq-modal-body{flex:1;background:#fff;overflow-y:auto;padding:14px 16px;}
+.puq-compose-textarea{width:100%;min-height:120px;border:none;outline:none;font-size:16px;font-family:inherit;resize:none;background:transparent;line-height:1.5;color:#222;}
+.puq-compose-textarea::placeholder{color:#bbb;}
+.puq-compose-txt-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;margin-top:10px;background:#f7f7f7;border-radius:6px;cursor:pointer;color:#07c160;font-size:13px;}
+.puq-compose-txt-btn svg{width:16px;height:16px;}
+.puq-compose-images{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.puq-compose-img{width:100%;aspect-ratio:1;border-radius:4px;overflow:hidden;position:relative;background:#f5f5f5;}
+.puq-compose-img img{width:100%;height:100%;object-fit:cover;}
+.puq-compose-img .text-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:6px;font-size:12px;text-align:center;color:#555;line-height:1.3;background:var(--ti-bg,#f5f5f5);border:1px dashed #ddd;word-break:break-all;overflow:hidden;}
+.puq-compose-img-del{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;line-height:1;}
+.puq-compose-add{width:100%;aspect-ratio:1;border-radius:4px;border:1px dashed #ccc;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#bbb;flex-direction:column;gap:4px;font-size:11px;transition:border-color .15s,color .15s;}
+.puq-compose-add:hover{border-color:#07c160;color:#07c160;}
+.puq-compose-add svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.5;}
+.puq-txt-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1100;display:flex;align-items:center;justify-content:center;padding:20px;}
+.puq-txt-box{background:#fff;border-radius:12px;width:100%;max-width:340px;overflow:hidden;}
+.puq-txt-head{padding:14px 16px;border-bottom:1px solid #eee;font-size:15px;font-weight:500;}
+.puq-txt-body{padding:16px;}
+.puq-txt-body textarea{width:100%;min-height:100px;border:1px solid #e0e0e0;border-radius:8px;padding:10px;font-family:inherit;font-size:14px;outline:none;resize:vertical;line-height:1.5;}
+.puq-txt-body textarea:focus{border-color:#07c160;}
+.puq-txt-colors{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center;}
+.puq-txt-colors-label{font-size:12px;color:#999;margin-right:2px;}
+.puq-txt-color{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border-color .15s;}
+.puq-txt-color.active{border-color:#333;}
+.puq-txt-foot{padding:12px 16px;border-top:1px solid #eee;display:flex;gap:10px;justify-content:flex-end;}
+.puq-txt-foot button{padding:6px 16px;border-radius:5px;border:none;cursor:pointer;font-size:14px;font-family:inherit;}
+.puq-txt-foot .cancel-btn{background:#f0f0f0;color:#666;}
+.puq-txt-foot .ok-btn{background:#07c160;color:#fff;}
+.puq-txt-preview{margin-top:12px;aspect-ratio:1;border-radius:8px;padding:12px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;color:#333;border:1px solid #eee;}
+.puq-img-viewer{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:2000;display:flex;align-items:center;justify-content:center;animation:puqFadeIn .2s;}
+.puq-img-viewer img{max-width:95vw;max-height:90vh;object-fit:contain;}
+.puq-img-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;line-height:1;}
+.puq-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;z-index:3000;pointer-events:none;animation:puqFadeIn .2s;}
+.puq-item-del-confirm{position:absolute;top:-5px;right:32px;background:#fff;border:1px solid #e0e0e0;border-radius:6px;box-shadow:0 2px 12px rgba(0,0,0,.15);padding:4px 0;z-index:10;min-width:80px;animation:puqPopIn .15s;}
+@keyframes puqPopIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+@keyframes puqSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.puq-item-del-confirm div{padding:6px 14px;font-size:13px;cursor:pointer;text-align:center;}
+.puq-item-del-confirm div:hover{background:#f5f5f5;}
+.puq-item-del-confirm div.danger{color:#07c160;font-weight:500;}
+.puq-ai-loading{font-size:12px;color:#07c160;font-style:italic;padding:4px 0;}
+</style>
+</head>
+<body>
+<div class="puq-wrap" id="puqRoot">
+  <div class="puq-banner" id="puqBanner">
+    <div class="puq-banner-slide" id="puqBannerSlide"></div>
+  </div>
+  <div class="puq-profile" id="puqProfile"></div>
+  <div class="puq-list" id="puqList"></div>
+</div>
+<input type="file" id="puqFileInput" accept="image/*" multiple style="display:none">
+
+<script>
+(function(){
+  const root = document.getElementById('puqRoot');
+  const bannerEl = document.getElementById('puqBanner');
+  const bannerSlideEl = document.getElementById('puqBannerSlide');
+  const profileEl = document.getElementById('puqProfile');
+  const listEl = document.getElementById('puqList');
+
+  let puqData = loadPuqData();
+  let bannerIdx = 0;
+  let composeImages = [];
+  let composeText = '';
+  let composeReplyTo = null;
+  const puqPendingAIs = new Set();
+
+  function loadPuqData(){
+    const d = Phone.getData('puq');
+    if(!d.posts){
+      d.posts = [];
+      d.banners = d.banners || [
+        'https://a0ai.marscode.cn/api/ide/v1/text_to_image?prompt=WayV%20friends%20gathering%20warm%20evening%20cafe%20photo%20album&image_size=landscape_16_9',
+        'https://a0ai.marscode.cn/api/ide/v1/text_to_image?prompt=sunset%20beach%20peaceful%20film%20photo%20vibe&image_size=landscape_16_9',
+        'https://a0ai.marscode.cn/api/ide/v1/text_to_image?prompt=city%20night%20skyline%20neon%20lights%20moody&image_size=landscape_16_9'
+      ];
+      Phone.setData('puq', d);
+    }
+    return d;
+  }
+  function savePuq(){ Phone.setData('puq', puqData); }
+  function esc(s){ return String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+  function getContactsList(){
+    try{
+      const d = Phone.getData('contacts');
+      return (d && d.list) || [];
+    }catch(e){ return []; }
+  }
+
+  function charAvatar(char){
+    if(char && char.avatar) return '<img src="'+esc(char.avatar)+'" alt="">';
+    const name = (char && char.name) || '?';
+    return '<div class="puq-item-avatar-fallback">'+esc(name.charAt(0))+'</div>';
+  }
+  function nowTs(){ return Date.now(); }
+  function fmtTime(ts){
+    if(!ts) return '';
+    const diff = Date.now() - ts;
+    const m = Math.floor(diff/60000), h = Math.floor(diff/3600000), d = Math.floor(diff/86400000);
+    if(m < 1) return '刚刚';
+    if(m < 60) return m + '分钟前';
+    if(h < 24) return h + '小时前';
+    if(d < 7) return d + '天前';
+    const dt = new Date(ts);
+    return (dt.getMonth()+1) + '月' + dt.getDate() + '日';
+  }
+
+  function findContactById(id){
+    const all = getContactsList();
+    return all.find(c => c.id === id) || null;
+  }
+
+  function pickRandomContact(excludeIds){
+    const all = getContactsList().filter(c => !(excludeIds||[]).includes(c.id));
+    if(all.length === 0) return null;
+    return all[Math.floor(Math.random()*all.length)];
+  }
+
+  function buildContactReply(c, userInput, context){
+    let sys = `你是微信朋友圈里的一个真人，名字叫 ${c.name}。\n`;
+    if(c.roleSetting) sys += `【你的人设】\n${c.roleSetting}\n\n`;
+    if(context && context.posterName){
+      sys += `发这条朋友圈的人（帖子作者）叫 ${context.posterName}。\n`;
+    }
+    if(context && context.isReply && context.replyToName){
+      sys += `\n你在回复 ${context.replyToName}。\n`;
+    }
+    sys += `\n⚠️ 你要发的是朋友圈评论，不是私聊！语气要像微信里真实的朋友留言，简短、口语化。\n`;
+    sys += `⚠️ 10-40字之间，自然活泼。可以带表情但不要太多。\n`;
+    sys += `⚠️ 直接输出评论内容，不要加【名字】：、"说"、引号等任何格式。\n`;
+    sys += `⚠️ 禁止输出任何不在朋友圈评论里出现的内容（如"好的收到"、"我想想"、"以下是评论"等）。`;
+    let userPrompt = '';
+    if(context && context.postContent){
+      userPrompt += `【朋友圈内容】\n"${context.postContent}"\n\n`;
+    }
+    if(context && context.thread && context.thread.length > 0){
+      userPrompt += `【已有评论】\n${context.thread.map(r => r.name+'：'+r.text).join('\n')}\n\n`;
+    }
+    userPrompt += `刚才有人说了："${userInput}"\n请你作为 ${c.name} 评一句：`;
+    return [
+      { role:'system', content: sys },
+      { role:'user', content: userPrompt }
+    ];
+  }
+
+  async function generateContactComment(contact, userInput, context){
+    try{
+      const messages = buildContactReply(contact, userInput, context);
+      const raw = await Phone.chatWithAI(messages);
+      let text = (raw || '').trim();
+      text = text.replace(/^[【\[]?[^】\]]*[】\]]?[:：]\s*/, '');
+      text = text.replace(/^[""「」『』"'']|[""「」『』"'']$/g, '');
+      text = text.replace(/^(评论|回复|回|说|我的评论)[：:]\s*/, '');
+      text = text.trim();
+      if(text.length > 80) text = text.slice(0, 77) + '...';
+      if(text.length === 0) text = '哈哈';
+      return text;
+    }catch(err){
+      const fallbacks = ['哈哈哈哈','有意思～','+1','好看！','笑死','同感同感','确实','666','爱了爱了'];
+      return fallbacks[Math.floor(Math.random()*fallbacks.length)];
+    }
+  }
+
+  function renderBanner(){
+    const banners = puqData.banners || [];
+    if(banners.length === 0){ bannerSlideEl.style.backgroundImage = ''; return; }
+    bannerSlideEl.style.backgroundImage = "url('"+banners[bannerIdx % banners.length]+"')";
+  }
+  bannerEl.addEventListener('click', () => {
+    showBannerMenu();
+  });
+  let bannerFileInput = null;
+  function showBannerMenu(){
+    const mask = document.createElement('div');
+    mask.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1500;display:flex;align-items:flex-end;justify-content:center;';
+    const sheet = document.createElement('div');
+    sheet.style.cssText = 'background:#f5f5f5;width:100%;max-width:480px;border-radius:12px 12px 0 0;padding:6px 0 18px;animation:puqSlideUp .2s ease-out;';
+    const opts = [
+      { label:'切换图片', action:() => {
+          const banners = puqData.banners || [];
+          if(banners.length <= 1){ toast('只有一张图'); return; }
+          bannerIdx = (bannerIdx + 1) % banners.length;
+          renderBanner();
+        }
+      },
+      { label:'从相册选择本地图片', action:() => {
+          if(!bannerFileInput){
+            bannerFileInput = document.createElement('input');
+            bannerFileInput.type = 'file';
+            bannerFileInput.accept = 'image/*';
+          }
+          bannerFileInput.value = '';
+          bannerFileInput.onchange = async (e) => {
+            const file = (e.target.files || [])[0];
+            if(!file) return;
+            const src = await Phone.fileToBase64(file);
+            if(!puqData.banners) puqData.banners = [];
+            puqData.banners.unshift(src);
+            bannerIdx = 0;
+            renderBanner();
+            savePuq();
+            toast('banner 已更新');
+          };
+          bannerFileInput.click();
+        }
+      },
+      { label:'取消', action:() => {} }
+    ];
+    opts.forEach((o, i) => {
+      const btn = document.createElement('div');
+      btn.textContent = o.label;
+      btn.style.cssText = 'margin:'+(i===opts.length-1?'12px':'6px')+'px 14px;padding:12px;background:#fff;border-radius:8px;text-align:center;font-size:15px;color:'+(i===opts.length-1?'#999':'#222')+';cursor:pointer;';
+      btn.onclick = () => { o.action(); mask.remove(); };
+      sheet.appendChild(btn);
+    });
+    mask.onclick = (e) => { if(e.target === mask) mask.remove(); };
+    mask.appendChild(sheet);
+    document.body.appendChild(mask);
+  }
+
+  function renderProfile(){
+    const char = Phone.getCurrentChar() || {};
+    const profile = char.wcProfile || {};
+    const signature = profile.signature || '';
+    profileEl.innerHTML = '<div class="puq-profile-info"><div class="puq-profile-name">'+esc(char.name || '未命名')+'</div>'+(signature ? '<div class="puq-profile-slogan">'+esc(signature)+'</div>' : '')+'</div><div class="puq-profile-avatar">'+(char.avatar ? '<img src="'+esc(char.avatar)+'" alt="">' : '<div class="puq-profile-avatar-fallback">'+esc((char.name||'?').charAt(0))+'</div>')+'</div>';
+  }
+
+  function renderList(){
+    const posts = (puqData.posts || []).slice().sort((a,b) => b.createdAt - a.createdAt);
+    listEl.innerHTML = '';
+    if(posts.length === 0){
+      listEl.innerHTML = '<div class="puq-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>还没有朋友圈内容，点击右上角 + 发表第一条吧~</div>';
+    } else {
+      const curChar = Phone.getCurrentChar();
+      posts.forEach(p => listEl.appendChild(renderPost(p, curChar)));
+      if(!puqData._aiTriggered) puqData._aiTriggered = {};
+      const now = Date.now();
+      posts.forEach(p => {
+        if(puqData._aiTriggered[p.id]) return;
+        if(p.authorId === (curChar && curChar.id)) return;
+        if(now - p.createdAt > 30*60*1000) return;
+        puqData._aiTriggered[p.id] = true;
+        savePuq();
+        setTimeout(() => triggerPostLaunchInteractions(p), 1500 + Math.random()*1500);
+      });
+    }
+    if(window.__puqAutoOpenCompose){
+      delete window.__puqAutoOpenCompose;
+      setTimeout(() => openCompose(), 100);
+    }
+  }
+
+  function renderPost(p, curChar){
+    const div = document.createElement('div');
+    div.className = 'puq-item';
+    const author = findContactById(p.authorId) || { name: p.authorName || '未知', avatar: p.authorAvatar || '' };
+    const imgsHtml = (p.images || []).map((img,idx) => {
+      if(img.type === 'text') return '<div class="puq-item-img text-img" data-idx="'+idx+'" style="--ti-bg:'+esc(img.bg||'#f5f5f5')+'">'+esc(img.text||'')+'</div>';
+      return '<img class="puq-item-img" data-idx="'+idx+'" src="'+esc(img.src)+'" alt="">';
+    }).join('');
+    const imgCount = (p.images||[]).length;
+    const imgClass = imgCount > 0 ? 'puq-item-images count-'+Math.min(imgCount,9) : '';
+    const likes = p.likes || [];
+    const myLike = curChar && likes.find(l => curChar && l.authorId === curChar.id);
+    const likeHtml = likes.length > 0 ? '<div class="puq-like-list"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'+likes.map((l,i)=>'<span class="puq-like-name">'+esc(l.authorName||'?')+'</span>'+(i<likes.length-1?'<span class="puq-like-sep">,</span>':'')).join('')+'</div>' : '';
+    const comments = p.comments || [];
+    const commentsHtml = comments.length > 0 ? '<div class="puq-comments">'+comments.map(c => {
+      let replyTag = '';
+      if(c.replyToId && c.replyToName) replyTag = '<span class="puq-comment-reply-tag">回复</span><span class="puq-comment-name">'+esc(c.replyToName)+'</span><span class="puq-comment-reply-tag">:</span>';
+      let textHtml = '';
+      if(c.text) textHtml = '<span class="puq-comment-text">'+esc(c.text)+'</span>';
+      let imgHtml = '';
+      if(c.image) imgHtml = '<img class="puq-comment-image" src="'+esc(c.image)+'" alt="">';
+      return '<div class="puq-comment" data-cid="'+c.id+'"><span class="puq-comment-name">'+esc(c.authorName||'?')+'</span>'+replyTag+textHtml+imgHtml+'<span class="puq-comment-del" title="删除">×</span></div>';
+    }).join('')+'</div>' : '';
+    const isPending = puqPendingAIs.has(p.id);
+    div.innerHTML = '<div class="puq-item-avatar">'+charAvatar(author)+'</div><div class="puq-item-body"><div class="puq-item-head"><span class="puq-item-author">'+esc(author.name || '未知')+'</span><span class="puq-item-del" title="删除"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span></div>'+(p.text ? '<div class="puq-item-text">'+esc(p.text)+'</div>' : '')+(imgCount > 0 ? '<div class="'+imgClass+'">'+imgsHtml+'</div>' : '')+'<div class="puq-item-footer"><span class="puq-item-time">'+fmtTime(p.createdAt)+'</span><div class="puq-item-tools"><span class="puq-item-tool refresh-btn '+(isPending?'ai-thinking':'')+'" data-refresh="'+p.id+'" title="让共同好友来评论"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></span><span class="puq-item-tool like-btn '+(myLike?'liked':'')+'" data-like="'+p.id+'" title="点赞"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span><span class="puq-item-tool comment-btn" data-comment="'+p.id+'" title="评论"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></div></div>'+likeHtml+commentsHtml+(isPending && comments.length > 0 ? '<div class="puq-ai-loading">AI 正在思考...</div>' : '')+'<div class="puq-comment-input-bar" data-post="'+p.id+'"><input class="puq-comment-input" placeholder="评论..."><span class="puq-comment-tool emoji-btn" title="表情">😊</span><span class="puq-comment-tool img-btn" title="图片">🖼</span><span class="puq-comment-img-preview"></span><button class="puq-comment-send" disabled>发送</button></div></div>';
+    bindPostEvents(div, p, curChar);
+    return div;
+  }
+
+  function bindPostEvents(div, p, curChar){
+    div.querySelectorAll('.puq-item-img').forEach(img => {
+      img.addEventListener('click', (e) => { e.stopPropagation(); openImageViewer(p.images || [], parseInt(img.dataset.idx)); });
+    });
+    const likeBtn = div.querySelector('[data-like]');
+    if(likeBtn) likeBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleLike(p, curChar); });
+    const refreshBtn = div.querySelector('[data-refresh]');
+    if(refreshBtn) refreshBtn.addEventListener('click', (e) => { e.stopPropagation(); triggerFriendCommentAI(p, curChar, refreshBtn); });
+    const commentBtn = div.querySelector('[data-comment]');
+    if(commentBtn) commentBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const bar = div.querySelector('.puq-comment-input-bar');
+      bar.classList.toggle('show');
+      if(bar.classList.contains('show')){
+        const input = bar.querySelector('.puq-comment-input');
+        input.placeholder = '评论...';
+        composeReplyTo = null;
+        bar._puqCommentImage = null;
+        renderCommentInputState(bar);
+        setTimeout(() => input.focus(), 50);
+      } else {
+        closeEmojiPanel(div);
+      }
+    });
+    const bar = div.querySelector('.puq-comment-input-bar');
+    if(bar){
+      const input = bar.querySelector('.puq-comment-input');
+      const send = bar.querySelector('.puq-comment-send');
+      const preview = bar.querySelector('.puq-comment-img-preview');
+      const emojiBtn = bar.querySelector('.emoji-btn');
+      const imgBtn = bar.querySelector('.img-btn');
+      let imgFileInput = null;
+
+      function renderCommentInputState(){
+        const hasImg = !!bar._puqCommentImage;
+        const val = input.value.trim();
+        send.disabled = !val && !hasImg;
+        if(hasImg){
+          preview.innerHTML = '<div class="puq-comment-preview-img-wrap"><img class="puq-comment-preview-img" src="'+esc(bar._puqCommentImage)+'" alt=""><span class="remove-x" title="移除图片">×</span></div>';
+          preview.querySelector('.remove-x').onclick = (e) => { e.stopPropagation(); bar._puqCommentImage = null; renderCommentInputState(); };
+        } else {
+          preview.innerHTML = '';
+        }
+      }
+      input.addEventListener('input', renderCommentInputState);
+
+      emojiBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleEmojiPanel(div, bar, input);
+      });
+
+      imgBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeEmojiPanel(div);
+        if(!imgFileInput){
+          imgFileInput = document.createElement('input');
+          imgFileInput.type = 'file';
+          imgFileInput.accept = 'image/*';
+          imgFileInput.onchange = async (ev) => {
+            const file = (ev.target.files || [])[0];
+            if(!file) return;
+            const src = await Phone.fileToBase64(file);
+            bar._puqCommentImage = src;
+            renderCommentInputState();
+          };
+        }
+        imgFileInput.value = '';
+        imgFileInput.click();
+      });
+
+      const doSend = () => {
+        const val = input.value.trim();
+        const img = bar._puqCommentImage || null;
+        if(!val && !img) return;
+        addComment(p, curChar, val, composeReplyTo, img);
+        const wasReplyTo = composeReplyTo;
+        input.value = ''; composeReplyTo = null; bar._puqCommentImage = null; bar.classList.remove('show');
+        closeEmojiPanel(div);
+        renderList();
+        if(wasReplyTo){
+          setTimeout(() => triggerReplyBackAI(p, curChar, wasReplyTo), 300);
+        }
+      };
+      send.addEventListener('click', (e) => { e.stopPropagation(); doSend(); });
+      input.addEventListener('keydown', (e) => { if(e.key === 'Enter') { e.preventDefault(); doSend(); } });
+    }
+    div.querySelectorAll('.puq-comment').forEach(cc => {
+      cc.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cid = cc.dataset.cid;
+        const delX = cc.querySelector('.puq-comment-del');
+        if(delX && e.target === delX){ deleteComment(p, cid); renderList(); return; }
+        const c = (p.comments||[]).find(x => x.id === cid);
+        if(!c) return;
+        document.querySelectorAll('.puq-comment.show-del').forEach(x => { if(x !== cc) x.classList.remove('show-del'); });
+        cc.classList.toggle('show-del');
+        if(!cc.classList.contains('show-del')){
+          const inputBar = div.querySelector('.puq-comment-input-bar');
+          inputBar.classList.add('show');
+          inputBar._puqCommentImage = null;
+          composeReplyTo = { postId: p.id, userId: c.authorId, userName: c.authorName };
+          const input = inputBar.querySelector('.puq-comment-input');
+          input.placeholder = '回复 ' + c.authorName + '...';
+          inputBar.querySelector('.puq-comment-send').disabled = true;
+          inputBar.querySelector('.puq-comment-img-preview').innerHTML = '';
+          closeEmojiPanel(div);
+          setTimeout(() => input.focus(), 50);
+        }
+      });
+    });
+    const delBtn = div.querySelector('.puq-item-del');
+    if(delBtn){
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const existing = div.querySelector('.puq-item-del-confirm');
+        if(existing){ existing.remove(); return; }
+        const confirm = document.createElement('div');
+        confirm.className = 'puq-item-del-confirm';
+        confirm.innerHTML = '<div class="danger" data-act="delete">删除</div><div data-act="cancel">取消</div>';
+        delBtn.appendChild(confirm);
+        confirm.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          if(ev.target.dataset.act === 'delete'){ puqData.posts = (puqData.posts || []).filter(x => x.id !== p.id); savePuq(); renderList(); }
+          confirm.remove();
+        });
+        setTimeout(() => { document.addEventListener('click', function autoClose(ev){ if(!div.contains(ev.target)){ confirm.remove(); document.removeEventListener('click', autoClose); } }); }, 0);
+      });
+    }
+  }
+
+  function toggleLike(p, curChar){
+    if(!curChar) return;
+    p.likes = p.likes || [];
+    const idx = p.likes.findIndex(l => curChar && l.authorId === curChar.id);
+    if(idx >= 0) p.likes.splice(idx, 1);
+    else p.likes.push({ authorId: curChar.id, authorName: curChar.name, authorAvatar: curChar.avatar });
+    savePuq(); renderList();
+  }
+
+  function addComment(p, curChar, text, replyTo, image){
+    if(!curChar) return;
+    p.comments = p.comments || [];
+    const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:curChar.id, authorName:curChar.name, authorAvatar:curChar.avatar, text, createdAt:nowTs() };
+    if(image) c.image = image;
+    if(replyTo && replyTo.postId === p.id){ c.replyToId = replyTo.userId; c.replyToName = replyTo.userName; }
+    p.comments.push(c); savePuq();
+  }
+
+  function deleteComment(p, cid){ p.comments = (p.comments || []).filter(c => c.id !== cid); savePuq(); }
+
+  function getPostContextForAI(p){
+    const author = findContactById(p.authorId);
+    const imgs = (p.images||[]).map(img => img.type === 'text' ? img.text : '[图片]').join('、');
+    const postContent = (p.text||'') + (imgs ? (' [配图：'+imgs+']') : '');
+    const thread = (p.comments||[]).slice(-6).map(c => ({ name: c.authorName, text: c.text }));
+    return {
+      posterName: (author && author.name) || p.authorName || '帖子作者',
+      postContent: postContent.slice(0, 300),
+      thread
+    };
+  }
+
+  async function triggerFriendCommentAI(p, curChar, btnEl){
+    if(puqPendingAIs.has(p.id)) return;
+    const excludeIds = [curChar && curChar.id].filter(Boolean);
+    const contact = pickRandomContact(excludeIds);
+    if(!contact){ toast('暂无联系人'); return; }
+    puqPendingAIs.add(p.id); renderList();
+    try{
+      const context = getPostContextForAI(p);
+      const userInput = context.thread.length > 0 ? context.thread[context.thread.length-1].text : '（新发了一条朋友圈）';
+      const text = await generateContactComment(contact, userInput, context);
+      p.comments = p.comments || [];
+      const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:contact.id, authorName:contact.name, authorAvatar:contact.avatar, text, createdAt:nowTs() };
+      p.comments.push(c); savePuq();
+    }catch(err){}
+    puqPendingAIs.delete(p.id); renderList();
+  }
+
+  async function triggerReplyBackAI(p, curChar, replyTo){
+    const targetContact = findContactById(replyTo.userId);
+    if(!targetContact || targetContact.id === curChar.id) return;
+    if(puqPendingAIs.has(p.id)) return;
+    puqPendingAIs.add(p.id); renderList();
+    try{
+      await new Promise(r => setTimeout(r, 1000 + Math.random()*1000));
+      const context = getPostContextForAI(p);
+      context.isReply = true;
+      context.replyToName = curChar.name;
+      const myLastComment = (p.comments||[]).filter(c => c.authorId === curChar.id && c.replyToId === targetContact.id).pop();
+      const userInput = myLastComment ? myLastComment.text : '（'+curChar.name+' 回复了你）';
+      const text = await generateContactComment(targetContact, userInput, context);
+      p.comments = p.comments || [];
+      const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:targetContact.id, authorName:targetContact.name, authorAvatar:targetContact.avatar, text, createdAt:nowTs(), replyToId:curChar.id, replyToName:curChar.name };
+      p.comments.push(c); savePuq();
+    }catch(err){}
+    puqPendingAIs.delete(p.id); renderList();
+    setTimeout(() => triggerOtherFriendsComment(p, curChar, targetContact), 1200 + Math.random()*800);
+  }
+
+  async function triggerOtherFriendsComment(p, curChar, excludeContact){
+    const excludeIds = [curChar && curChar.id, excludeContact && excludeContact.id].filter(Boolean);
+    const contact = pickRandomContact(excludeIds);
+    if(!contact) return;
+    if(puqPendingAIs.has(p.id)) return;
+    puqPendingAIs.add(p.id); renderList();
+    try{
+      await new Promise(r => setTimeout(r, 500 + Math.random()*800));
+      const context = getPostContextForAI(p);
+      const allComments = p.comments || [];
+      const lastComment = allComments[allComments.length - 1];
+      let replyToId = null, replyToName = null;
+      if(lastComment){
+        const lastAuthorId = lastComment.authorId;
+        if(lastAuthorId !== contact.id){
+          replyToId = lastAuthorId;
+          replyToName = lastComment.authorName;
+          context.isReply = true;
+          context.replyToName = replyToName;
+        }
+      }
+      const userInput = lastComment ? lastComment.text : '（有新评论）';
+      const text = await generateContactComment(contact, userInput, context);
+      p.comments = p.comments || [];
+      const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:contact.id, authorName:contact.name, authorAvatar:contact.avatar, text, createdAt:nowTs() };
+      if(replyToId && replyToName){ c.replyToId = replyToId; c.replyToName = replyToName; }
+      p.comments.push(c); savePuq();
+    }catch(err){}
+    puqPendingAIs.delete(p.id); renderList();
+  }
+
+  async function triggerPostLaunchInteractions(p){
+    const curChar = Phone.getCurrentChar();
+    const excludeIds = [curChar && curChar.id].filter(Boolean);
+    const all = getContactsList().filter(c => !excludeIds.includes(c.id));
+    if(all.length === 0) return;
+    const shuffled = all.sort(() => Math.random() - 0.5);
+    const likeCount = Math.min(3, shuffled.length);
+    const likeContacts = shuffled.slice(0, likeCount);
+    for(let i = 0; i < likeContacts.length; i++){
+      await new Promise(r => setTimeout(r, 600 + Math.random()*800));
+      const contact = likeContacts[i];
+      if(!(p.likes || []).find(l => l.authorId === contact.id)){
+        p.likes = p.likes || [];
+        p.likes.push({ authorId: contact.id, authorName: contact.name, authorAvatar: contact.avatar });
+        savePuq(); renderList();
+      }
+    }
+    const commentCount = Math.min(2, shuffled.length - likeCount);
+    const commentContacts = shuffled.slice(likeCount, likeCount + commentCount);
+    for(let i = 0; i < commentContacts.length; i++){
+      const contact = commentContacts[i];
+      await new Promise(r => setTimeout(r, 900 + Math.random()*1200));
+      if(puqPendingAIs.has(p.id)) continue;
+      puqPendingAIs.add(p.id); renderList();
+      try{
+        const context = getPostContextForAI(p);
+        const lastComment = (p.comments || [])[p.comments.length - 1];
+        let replyToId = null, replyToName = null;
+        if(lastComment && lastComment.authorId !== contact.id){
+          replyToId = lastComment.authorId;
+          replyToName = lastComment.authorName;
+          context.isReply = true;
+          context.replyToName = replyToName;
+        }
+        const userInput = lastComment ? lastComment.text : '（新发了一条朋友圈）';
+        const text = await generateContactComment(contact, userInput, context);
+        p.comments = p.comments || [];
+        const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:contact.id, authorName:contact.name, authorAvatar:contact.avatar, text, createdAt:nowTs() };
+        if(replyToId && replyToName){ c.replyToId = replyToId; c.replyToName = replyToName; }
+        p.comments.push(c); savePuq(); renderList();
+      }catch(err){}
+      puqPendingAIs.delete(p.id);
+      if(i < commentContacts.length - 1){
+        const prevComment = (p.comments || [])[p.comments.length - 1];
+        if(prevComment){
+          setTimeout(() => triggerOtherFriendsComment(p, curChar, commentContacts[i]), 1500 + Math.random()*1000);
+        }
+      }
+    }
+  }
+
+  function openImageViewer(images, startIdx){
+    const mask = document.createElement('div');
+    mask.className = 'puq-img-viewer';
+    let idx = startIdx || 0;
+    function render(){
+      mask.querySelectorAll('img').forEach(x => x.remove());
+      const imgData = images[idx];
+      const img = document.createElement('img');
+      img.src = imgData.src;
+      mask.appendChild(img);
+    }
+    render();
+    const closeBtn = document.createElement('div');
+    closeBtn.className = 'puq-img-close'; closeBtn.textContent = '×';
+    closeBtn.onclick = () => mask.remove();
+    mask.appendChild(closeBtn);
+    mask.addEventListener('click', (e) => { if(e.target === mask) mask.remove(); });
+    document.body.appendChild(mask);
+  }
+
+  function openCompose(){
+    composeImages = []; composeText = ''; composeReplyTo = null;
+    const char = Phone.getCurrentChar() || {};
+    const modal = document.createElement('div');
+    modal.className = 'puq-modal-mask';
+    modal.innerHTML = '<div class="puq-modal-header"><div class="puq-modal-cancel" data-act="cancel">取消</div><div class="puq-modal-title">发表朋友圈</div><button class="puq-modal-publish" data-act="publish" disabled>发表</button></div><div class="puq-modal-body"><textarea class="puq-compose-textarea" placeholder="这一刻的想法..."></textarea><div class="puq-compose-txt-btn" data-act="text-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg>生成文字图片</div><div class="puq-compose-images"></div></div>';
+    document.body.appendChild(modal);
+    const textarea = modal.querySelector('.puq-compose-textarea');
+    const imagesBox = modal.querySelector('.puq-compose-images');
+    const publishBtn = modal.querySelector('[data-act=publish]');
+    const cancelBtn = modal.querySelector('[data-act=cancel]');
+    function refreshPublish(){ publishBtn.disabled = !composeText.trim() && composeImages.length === 0; }
+    function renderImages(){
+      imagesBox.innerHTML = '';
+      composeImages.forEach((img, idx) => {
+        const div = document.createElement('div');
+        div.className = 'puq-compose-img';
+        if(img.type === 'text') div.innerHTML = '<div class="text-img" style="--ti-bg:'+esc(img.bg||'#f5f5f5')+'">'+esc(img.text)+'</div>';
+        else div.innerHTML = '<img src="'+esc(img.src)+'" alt="">';
+        const del = document.createElement('div');
+        del.className = 'puq-compose-img-del'; del.textContent = '×';
+        del.onclick = (e) => { e.stopPropagation(); composeImages.splice(idx,1); renderImages(); refreshPublish(); };
+        div.appendChild(del); imagesBox.appendChild(div);
+      });
+      if(composeImages.length < 9){
+        const add = document.createElement('div');
+        add.className = 'puq-compose-add';
+        add.innerHTML = '<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>图片</span>';
+        add.onclick = () => { const input = document.getElementById('puqFileInput'); input.value = ''; input.click(); };
+        imagesBox.appendChild(add);
+      }
+    }
+    textarea.addEventListener('input', () => { composeText = textarea.value; refreshPublish(); });
+    modal.querySelector('[data-act=text-img]').onclick = () => openTextImageEditor((img) => { if(img){ if(composeImages.length >= 9){ toast('最多9张'); return; } composeImages.push(img); renderImages(); refreshPublish(); } });
+    cancelBtn.onclick = () => modal.remove();
+    modal.addEventListener('click', (e) => { if(e.target === modal) modal.remove(); });
+    publishBtn.onclick = () => {
+      const post = { id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:char.id, authorName:char.name, authorAvatar:char.avatar, text:composeText.trim(), images:composeImages.slice(), createdAt:nowTs(), likes:[], comments:[] };
+      puqData.posts = puqData.posts || []; puqData.posts.push(post);
+      savePuq(); modal.remove(); renderList(); toast('已发表');
+      setTimeout(() => triggerPostLaunchInteractions(post), 800);
+    };
+    document.getElementById('puqFileInput').onchange = async (e) => {
+      const files = Array.from(e.target.files || []);
+      for(const f of files){ if(composeImages.length >= 9) break; const src = await Phone.fileToBase64(f); composeImages.push({ type:'image', src }); }
+      renderImages(); refreshPublish();
+    };
+    renderImages();
+  }
+
+  function openTextImageEditor(onDone){
+    const mask = document.createElement('div');
+    mask.className = 'puq-txt-modal';
+    const colors = [
+      { name:'浅灰', bg:'#f5f5f5', fg:'#333' },
+      { name:'米白', bg:'#fef9e7', fg:'#5a4a1a' },
+      { name:'淡蓝', bg:'#e8f4fd', fg:'#1a4a7a' },
+      { name:'淡粉', bg:'#fde8f0', fg:'#7a1a4a' },
+      { name:'淡绿', bg:'#e8f8f0', fg:'#1a5a3a' },
+      { name:'纯黑', bg:'#222', fg:'#fff' }
+    ];
+    let selectedBg = colors[0].bg, selectedFg = colors[0].fg;
+    mask.innerHTML = '<div class="puq-txt-box"><div class="puq-txt-head">文字图片</div><div class="puq-txt-body"><textarea placeholder="输入你想写的话..."></textarea><div class="puq-txt-preview" style="background:'+selectedBg+';color:'+selectedFg+'">预览文字</div><div class="puq-txt-colors"><span class="puq-txt-colors-label">背景色:</span>'+colors.map((c,i)=>'<div class="puq-txt-color '+(i===0?'active':'')+'" data-idx="'+i+'" style="background:'+c.bg+'"></div>').join('')+'</div></div><div class="puq-txt-foot"><button class="cancel-btn">取消</button><button class="ok-btn">生成</button></div></div>';
+    document.body.appendChild(mask);
+    const ta = mask.querySelector('textarea');
+    const preview = mask.querySelector('.puq-txt-preview');
+    function updatePreview(){ preview.textContent = ta.value.trim() || '预览文字'; preview.style.background = selectedBg; preview.style.color = selectedFg; }
+    ta.addEventListener('input', updatePreview);
+    mask.querySelectorAll('.puq-txt-color').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const i = parseInt(dot.dataset.idx); selectedBg = colors[i].bg; selectedFg = colors[i].fg;
+        mask.querySelectorAll('.puq-txt-color').forEach(x => x.classList.remove('active')); dot.classList.add('active'); updatePreview();
+      });
+    });
+    mask.querySelector('.cancel-btn').onclick = () => mask.remove();
+    mask.addEventListener('click', (e) => { if(e.target === mask) mask.remove(); });
+    mask.querySelector('.ok-btn').onclick = () => {
+      const text = ta.value.trim();
+      if(!text){ toast('请输入文字'); return; }
+      const cv = document.createElement('canvas'); cv.width = 400; cv.height = 400;
+      const ctx = cv.getContext('2d'); ctx.fillStyle = selectedBg; ctx.fillRect(0,0,400,400);
+      ctx.fillStyle = selectedFg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'bold 26px sans-serif';
+      wrapCanvasText(ctx, text, 200, 200, 32, 10);
+      onDone({ type:'text', src:cv.toDataURL(), text, bg:selectedBg });
+      mask.remove();
+    };
+  }
+
+  function wrapCanvasText(ctx, text, x, y, lineHeight, maxLines){
+    const chars = text.split(''); let line = '', lines = 0;
+    for(let n = 0; n < chars.length; n++){
+      const test = line + chars[n];
+      if(ctx.measureText(test).width > 360 && line.length > 0){
+        ctx.fillText(line, x, y + lines * lineHeight); line = chars[n]; lines++;
+        if(lines >= maxLines - 1){ let rest = text.slice(n); while(ctx.measureText(rest+'...').width>360&&rest.length>0) rest=rest.slice(0,-1); ctx.fillText(rest+(text.slice(n).length>rest.length?'...':''), x, y + lines*lineHeight); return; }
+      } else { line = test; }
+    }
+    if(line) ctx.fillText(line, x, y + lines * lineHeight);
+  }
+
+  function toast(msg){
+    const t = document.createElement('div'); t.className = 'puq-toast'; t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(() => t.remove(), 300); }, 1500);
+  }
+
+  const EMOJI_LIST = ['😀','😁','😂','🤣','😊','😍','😘','🤗','🤩','😎','🤔','😴','😭','😢','😡','🥺','😏','🙄','😅','😆','🥰','😜','😝','🤪','🤭','😱','😳','🤫','🤤','😩','😫','🥳','😇','🤠','🤡','👻','💀','🐶','🐱','🐰','🐼','🦊','🐻','🐨','🐯','🦁','🐸','🐵','🐧','🐦','🦄','🐙','🦋','🌸','🌺','🌻','🌷','🌹','🍀','🌙','☀️','⭐','💫','🌈','🔥','💧','❄️','🍎','🍊','🍋','🍉','🍇','🍓','🍑','🍒','🥝','🍕','🍔','🍟','🌭','🍿','🧀','🍪','🍰','🎂','🍩','🍦','☕','🥤','🍺','🍷','🥂','🍾','📷','🎬','🎮','🎵','🎨','✈️','🚗','🏠','🏖','⛺','🛒','🎁','🎈','🎉','🎊','💝','💖','💗','💓','💞','💘','💌','💋','👍','👎','👌','✌️','🤞','🤟','🤝','🙏','👏','🙌','👋','🤚','👊','✊','🤛','🤜','👀','👂','👃','🦶','👶','👦','👧','👨','👩','🧑','👴','👵','👱','👲','👳','🤑','🤓','🤖','😺','😸','😹','😻','😼','😽','🙀','😿','😾','🎃','👺','👹','😈','👿','💀','☠','💩','🤡','👹','👺','👽','👻'];
+
+  function toggleEmojiPanel(div, bar, input){
+    closeEmojiPanel(div);
+    const panel = document.createElement('div');
+    panel.className = 'puq-emoji-panel';
+    panel.innerHTML = '<div class="puq-emoji-grid">' + EMOJI_LIST.map(e => '<div class="puq-emoji-item">'+e+'</div>').join('') + '</div>';
+    bar.style.position = 'relative';
+    bar.appendChild(panel);
+    panel.querySelectorAll('.puq-emoji-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const emoji = item.textContent;
+        const start = input.selectionStart ?? input.value.length;
+        const end = input.selectionEnd ?? input.value.length;
+        input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
+        input.focus();
+        input.selectionStart = input.selectionEnd = start + emoji.length;
+        const send = bar.querySelector('.puq-comment-send');
+        send.disabled = false;
+      });
+    });
+  }
+  function closeEmojiPanel(div){
+    const old = div.querySelector('.puq-emoji-panel');
+    if(old) old.remove();
+  }
+
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.puq-item')){
+      document.querySelectorAll('.puq-comment.show-del').forEach(c => c.classList.remove('show-del'));
+      document.querySelectorAll('.puq-comment-input-bar.show').forEach(b => b.classList.remove('show'));
+    }
+  });
+
+  renderBanner(); renderProfile(); renderList();
+  document.addEventListener('char-updated', () => { renderProfile(); renderList(); });
+})();
+</script>
+</body>
+</html>

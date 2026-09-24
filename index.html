@@ -230,7 +230,32 @@ const Phone = (() => {
   let apps = [];
   let state = null;
   function loadState(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }catch{ return {}; } }
-  function saveState(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+  function saveState(){
+    try{
+      localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    }catch(e){
+      if(e && e.name === 'QuotaExceededError'){
+        try{
+          const s = JSON.parse(JSON.stringify(state));
+          const wc = s.characters?.[0]?.data?.wechat;
+          if(wc && wc.stickerPacks){
+            wc.stickerPacks.forEach(p => {
+              (p.stickers||[]).forEach(st => {
+                if(st.src && st.src.startsWith('data:image')) st.src = '';
+              });
+            });
+          }
+          if(s.globalData && s.globalData.photo && s.globalData.photo.image && s.globalData.photo.image.startsWith('data:image')){
+            s.globalData.photo.image = '';
+          }
+          localStorage.setItem(STORE_KEY, JSON.stringify(s));
+          toast('存储空间不足，已清理部分图片缓存');
+        }catch(e2){
+          toast('存储空间不足，请清理聊天记录或图片');
+        }
+      }
+    }
+  }
   function init(){
     state = loadState();
     if(!state.globalData) state.globalData = {};
@@ -475,7 +500,38 @@ const Phone = (() => {
       });
     });
   }
-  function fileToBase64(file){ return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);}); }
+  function fileToBase64(file){
+    return new Promise((res,rej)=>{
+      if(file && file.type && file.type.startsWith('image/')){
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const MAX = 900;
+            let w = img.width, h = img.height;
+            if(w > MAX || h > MAX){
+              if(w >= h){ h = Math.round(h * MAX / w); w = MAX; }
+              else { w = Math.round(w * MAX / h); h = MAX; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            res(canvas.toDataURL('image/jpeg', 0.72));
+          };
+          img.onerror = rej;
+          img.src = reader.result;
+        };
+        reader.onerror = rej;
+        reader.readAsDataURL(file);
+      } else {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      }
+    });
+  }
   function getWeekdayCN(d){ return ['礼拜日','礼拜一','礼拜二','礼拜三','礼拜四','礼拜五','礼拜六'][d.getDay()]; }
   function getWeekdayEN(d){ return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()]; }
   function monthDay(d){ return `${d.getMonth()+1}月${d.getDate()}日`; }
@@ -490,7 +546,19 @@ const Phone = (() => {
     root.appendChild(mask);
     setTimeout(() => { mask.style.transition = 'opacity .3s'; mask.style.opacity = '0'; setTimeout(() => mask.remove(), 300); }, 1200);
   }
-  return { init, getCurrentChar, getData, setData, getGlobalData, setGlobalData, updateChar, openPage, modal, fileToBase64, showDeveloping,
+  function toast(msg){
+    const root = document.getElementById('modalRoot');
+    if(!root) return;
+    const mask = document.createElement('div');
+    mask.className = 'modal-mask';
+    mask.style.background = 'transparent';
+    mask.style.backdropFilter = 'none';
+    mask.style.pointerEvents = 'none';
+    mask.innerHTML = `<div style="background:rgba(0,0,0,.6);color:#fff;padding:9px 18px;border-radius:10px;font-size:13px;animation:popIn .2s ease;box-shadow:0 4px 16px rgba(0,0,0,.2)">${String(msg||'').replace(/[<>]/g,'')}</div>`;
+    root.appendChild(mask);
+    setTimeout(() => { mask.style.transition = 'opacity .3s'; mask.style.opacity = '0'; setTimeout(() => mask.remove(), 300); }, 1500);
+  }
+  return { init, getCurrentChar, getData, setData, getGlobalData, setGlobalData, updateChar, openPage, modal, fileToBase64, showDeveloping, toast,
     registerWidget, registerApp, getWeekdayCN, getWeekdayEN, monthDay, _widgetCache:{},
     saveChar, selectChar, deleteChar, getCurrentApi, saveApi, selectApi, deleteApi, fetchModelsForApi, chatWithAI,
     openSettings: () => openPage({ title:'设置', render: renderSettingsPage }),
