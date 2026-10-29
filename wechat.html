@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <style>
 .wc-app{
-  display:flex;flex-direction:column;height:100%;
+  display:flex;flex-direction:column;flex:1;height:0;min-height:0;
   background:linear-gradient(180deg,var(--green-bg),#e6f5ec);
   position:relative;overflow:hidden;
 }
@@ -25,7 +25,7 @@
   display:flex;align-items:center;
   background:rgba(255,255,255,.55);
   backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);
-  border-bottom:1px solid rgba(255,255,255,.6);
+   border-bottom:none;
   position:relative;z-index:5;
 }
 .wc-title{
@@ -366,12 +366,12 @@
   background:rgba(255,255,255,.6);
   backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);
   border-top:1px solid rgba(255,255,255,.6);
-  padding:6px 0 calc(env(safe-area-inset-bottom,0px) + 6px);
+  padding:8px 0 calc(env(safe-area-inset-bottom,0px) + 8px);
   position:relative;z-index:5;
 }
 .wc-tab{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
-  background:none;border:none;cursor:pointer;padding:4px 0;
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:none;border:none;cursor:pointer;padding:6px 0;min-height:46px;
   color:var(--green-ink-soft);transition:color .15s;
 }
 .wc-tab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
@@ -657,10 +657,35 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-mem-section{
   background:#fff;border-radius:16px;padding:16px;
   box-shadow:0 4px 15px rgba(63,169,106,.1);
-  position:relative;min-height:180px;padding-bottom:60px;
+  position:relative;padding-bottom:60px;transition:box-shadow .2s;
 }
-.wc-mem-section-title{font-size:15px;font-weight:600;color:var(--green-ink);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.wc-mem-section-head{
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;
+  padding:4px 0 10px;
+}
+.wc-mem-section-title{font-size:15px;font-weight:600;color:var(--green-ink);display:flex;align-items:center;gap:6px;margin:0;}
 .wc-mem-section-title::before{content:'📝';font-size:16px;}
+.wc-mem-section[data-kind="heart"] .wc-mem-section-title::before{content:'💗';}
+.wc-mem-section[data-kind="core"] .wc-mem-section-title::before{content:'🧠';}
+.wc-mem-section[data-kind="story"] .wc-mem-section-title::before{content:'🎬';}
+.wc-mem-section-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:22px;height:22px;padding:0 7px;border-radius:11px;
+  background:rgba(63,169,106,.12);color:var(--green-deep);
+  font-size:11px;font-weight:600;margin-left:4px;
+}
+.wc-mem-section-toggle{
+  width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(63,169,106,.08);color:var(--green-deep);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .3s,background .2s;flex-shrink:0;
+}
+.wc-mem-section-toggle:hover{background:rgba(63,169,106,.18);}
+.wc-mem-section-toggle svg{width:16px;height:16px;transition:transform .3s;}
+.wc-mem-section.collapsed .wc-mem-section-toggle svg{transform:rotate(-90deg);}
+.wc-mem-section-body{max-height:2000px;overflow:hidden;transition:max-height .35s ease,padding .25s;}
+.wc-mem-section.collapsed .wc-mem-section-body{max-height:0;padding-top:0;padding-bottom:0;}
+.wc-mem-section.collapsed{padding-bottom:16px;}
 .wc-mem-list{display:flex;flex-direction:column;gap:10px;}
 .wc-mem-empty{text-align:center;color:var(--green-ink-soft);padding:40px 16px;font-size:13px;line-height:1.6;}
 .wc-mem-item{
@@ -763,7 +788,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-cd-plus-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .wc-cd-plus-panel{
   position:absolute;left:0;right:0;bottom:0;z-index:5;
-  display:block;background:rgba(255,255,255,.95);
+  display:block;background:#eefaf2;
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   border-top:1px solid var(--line);padding:14px 16px;gap:12px;
   height:240px;box-sizing:border-box;
@@ -775,8 +800,9 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-plus-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
 .wc-plus-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:transform .12s;}
 .wc-plus-item:active{transform:scale(.93);}
-.wc-plus-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
-.wc-plus-item span{font-size:12px;color:#555;}
+.wc-plus-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);border:1px solid rgba(214,236,217,.6);box-shadow:0 2px 8px -3px rgba(40,130,70,.15);color:var(--green-deep);}
+.wc-plus-icon svg{stroke:currentColor !important;fill:none;}
+.wc-plus-item span{font-size:12px;color:var(--green-ink);}
 .wc-voice-modal{
   position:fixed;inset:0;background:rgba(0,0,0,.4);
   display:none;align-items:center;justify-content:center;z-index:1000;
@@ -936,7 +962,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-cd-emoji-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .wc-emoji-picker{
   position:absolute;left:0;right:0;bottom:0;z-index:5;
-  background:rgba(255,255,255,.96);
+  background:#eefaf2;
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border-top:1px solid var(--line);
   display:flex;flex-direction:column;
@@ -964,10 +990,10 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   align-content:start;
 }
 .wc-emoji-grid::-webkit-scrollbar{width:6px;}
-.wc-emoji-grid::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:2px;}
+.wc-emoji-grid::-webkit-scrollbar-thumb{background:rgba(63,169,106,.3);border-radius:2px;}
 .wc-emoji-item{
   border-radius:10px;cursor:pointer;
-  background:rgba(0,0,0,.04);display:flex;flex-direction:column;
+  background:rgba(255,255,255,.6);display:flex;flex-direction:column;
   transition:transform .12s;
   min-height:60px;overflow:hidden;
 }
@@ -978,9 +1004,9 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   grid-column:1/-1;text-align:center;color:var(--green-ink-soft);
   padding:30px 16px;font-size:12px;
 }
-.wc-msg.image{padding:4px;background:none;border:none;max-width:25%;}
-.wc-msg.image img{max-width:100%;border-radius:12px;display:block;}
-.wc-msg-img-cap{font-size:11px;color:var(--green-ink);margin-top:3px;padding:0 4px;line-height:1.3;}
+.wc-msg.image{padding:4px;background:none;border:none;max-width:50%;}
+.wc-msg.image img{max-width:100%;border-radius:10px;display:block;}
+.wc-msg-img-cap{font-size:12px;color:var(--green-ink);margin-top:4px;padding:0 4px;line-height:1.4;}
 
 .wc-msg-bubble{position:relative;-webkit-user-select:none;user-select:none;cursor:default}
 .wc-msg-bubble.selected{box-shadow:0 0 0 2px var(--green-deep)}
@@ -1002,9 +1028,9 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-cm-item svg{width:16px;height:16px;flex-shrink:0}
 .wc-cm-item.danger{color:#ff6b6b}
 .wc-cd-input-area{
-  flex-shrink:0;padding:10px 12px;background:rgba(255,255,255,.4);
+  flex-shrink:0;padding:10px 12px;background:#eefaf2;
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px;
+  border-top:1px solid var(--line);display:flex;flex-direction:row;align-items:center;gap:8px;
 }
 .wc-cd-input-row{
   display:flex;gap:8px;align-items:flex-end;width:100%;
@@ -1373,6 +1399,13 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   font-size:14px;color:var(--green-ink);font-family:inherit;
   outline:none;resize:vertical;padding:8px 0;line-height:1.5;
 }
+.wc-ce-style-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 10px;border:none;border-radius:14px;cursor:pointer;
+  background:rgba(63,169,106,.1);color:var(--green-deep);
+  font-size:12px;font-weight:500;transition:background .15s;
+}
+.wc-ce-style-btn:hover{background:rgba(63,169,106,.2);}
 .wc-ce-input{
   flex:1;border:none;background:transparent;
   font-size:14px;color:var(--green-ink);font-family:inherit;
@@ -1390,54 +1423,121 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-ce-switch.on{background:var(--green-deep);}
 .wc-ce-switch.on::after{left:21px;}
 .wc-ce-npc-list{
-  display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 0 4px;
+  position:relative;width:100%;height:260px;
+  background:rgba(255,255,255,.45);
+  border-radius:14px;
+  border:1px solid rgba(184,226,198,.5);
+  overflow:visible;
 }
-.wc-ce-npc-empty{
-  grid-column:1/-1;color:var(--green-ink-soft);font-size:12px;padding:12px 0;text-align:center;
-  border:1px dashed var(--line);border-radius:10px;
+.wc-ce-mm-svg{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;overflow:visible;
 }
-.wc-ce-npc-item{
-  display:flex;align-items:center;gap:8px;
-  padding:6px 8px;border-radius:10px;
-  background:rgba(184,226,198,.25);
-  border:1px solid rgba(184,226,198,.4);
-  cursor:pointer;transition:all .15s;
-  min-width:0;
+.wc-ce-mm-line{
+  stroke:var(--green-mid);stroke-width:1.5;stroke-dasharray:4 3;
+  fill:none;opacity:.7;
 }
-.wc-ce-npc-item:hover{
-  background:rgba(184,226,198,.4);
+.wc-ce-mm-center{
+  position:absolute;
+  width:56px;height:56px;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:linear-gradient(135deg,var(--green-soft),var(--green-mid));
+  border:3px solid #fff;
+  box-shadow:0 4px 14px -3px rgba(40,130,70,.3);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;z-index:3;
 }
-.wc-ce-npc-item:active{transform:scale(.98);}
-.wc-ce-npc-avatar{
-  width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;
+.wc-ce-mm-center img{width:100%;height:100%;object-fit:cover;}
+.wc-ce-mm-center svg,.wc-ce-mm-center span{color:#fff;width:60%;height:60%;}
+.wc-ce-mm-center-label{
+  position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%);
+  font-size:11px;font-weight:600;color:var(--green-ink);
+  white-space:nowrap;
+}
+.wc-ce-mm-node{
+  position:absolute;
+  width:44px;height:44px;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:linear-gradient(135deg,var(--green-soft),var(--green-mid));
+  border:2px solid #fff;
+  box-shadow:0 3px 10px -2px rgba(40,130,70,.25);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;cursor:pointer;
+  z-index:2;transition:transform .15s;
+}
+.wc-ce-mm-node:active{transform:translate(-50%,-50%) scale(.9);}
+.wc-ce-mm-node img{width:100%;height:100%;object-fit:cover;}
+.wc-ce-mm-node .letter{font-size:18px;color:#fff;font-weight:600;}
+.wc-ce-mm-node-rel{
+  position:absolute;top:calc(100% + 2px);left:50%;transform:translateX(-50%);
+  font-size:10px;font-weight:500;color:var(--green-deep);
+  white-space:nowrap;
+  background:rgba(255,255,255,.85);
+  padding:1px 6px;border-radius:8px;
+  border:1px solid rgba(124,204,155,.4);
+  box-shadow:0 1px 3px rgba(40,130,70,.1);
+  pointer-events:none;
+}
+.wc-ce-mm-node-dot{
+  position:absolute;top:-2px;right:-2px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--green-deep);
+  border:2px solid #fff;
+}
+.wc-ce-mask{
+  position:absolute;inset:0;background:rgba(30,74,48,.25);
+  backdrop-filter:blur(2px);z-index:10;
+  display:flex;align-items:center;justify-content:center;
+  animation:fadeIn .15s ease;
+}
+.wc-ce-detail{
+  background:rgba(255,255,255,.95);backdrop-filter:blur(20px);
+  border-radius:18px;padding:18px;width:82%;max-width:280px;
+  box-shadow:0 20px 50px -15px rgba(20,60,35,.4);
+  border:1px solid rgba(255,255,255,.7);
+  animation:popIn .2s ease;
+}
+.wc-ce-detail-header{
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+  padding-bottom:12px;border-bottom:1px solid var(--line);
+}
+.wc-ce-detail-avatar{
+  width:48px;height:48px;border-radius:50%;overflow:hidden;flex-shrink:0;
   background:linear-gradient(135deg,var(--green-soft),var(--green-mid));
   display:flex;align-items:center;justify-content:center;
-  font-size:14px;
+  border:2px solid var(--green-soft);
 }
-.wc-ce-npc-avatar img{width:100%;height:100%;object-fit:cover;}
-.wc-ce-npc-info{flex:1;min-width:0;overflow:hidden;}
-.wc-ce-npc-name{
-  font-size:13px;font-weight:600;color:var(--green-deep);
-  display:flex;align-items:center;gap:4px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.wc-ce-detail-avatar img{width:100%;height:100%;object-fit:cover;}
+.wc-ce-detail-avatar .letter{font-size:20px;color:#fff;font-weight:600;}
+.wc-ce-detail-name{font-size:15px;font-weight:700;color:var(--green-ink);}
+.wc-ce-detail-remark{font-size:12px;color:var(--green-ink-soft);margin-top:2px;}
+.wc-ce-detail-row{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:8px 0;border-bottom:1px solid rgba(214,236,217,.5);
 }
-.wc-ce-npc-badge{
-  font-size:10px;font-weight:500;padding:1px 5px;border-radius:7px;
-  background:var(--green-deep);color:#fff;flex-shrink:0;
+.wc-ce-detail-row:last-of-type{border-bottom:none;}
+.wc-ce-detail-label{
+  font-size:12px;color:var(--green-ink-soft);flex-shrink:0;width:44px;
 }
-.wc-ce-npc-badge.dedicated{background:rgba(40,130,70,.15);color:var(--green-deep);border:1px solid rgba(40,130,70,.3);}
-.wc-ce-npc-desc{
-  font-size:11px;color:var(--green-ink-soft);margin-top:1px;
-  display:flex;align-items:center;gap:4px;flex-wrap:nowrap;
-  overflow:hidden;
+.wc-ce-detail-value{
+  font-size:13px;color:var(--green-ink);font-weight:500;flex:1;
 }
-.wc-ce-npc-tag-chip{
-  display:inline-flex;align-items:center;
-  padding:0 6px;border-radius:6px;
-  background:rgba(184,226,198,.4);color:var(--green-deep);
-  font-size:10px;font-weight:500;
-  max-width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.wc-ce-detail-actions{
+  display:flex;gap:8px;margin-top:14px;
 }
+.wc-ce-detail-btn{
+  flex:1;padding:9px;border-radius:10px;border:none;font-size:13px;
+  cursor:pointer;font-family:inherit;font-weight:500;
+  transition:transform .1s;
+}
+.wc-ce-detail-btn:active{transform:scale(.96);}
+.wc-ce-detail-btn.primary{background:var(--green-deep);color:#fff;}
+.wc-ce-detail-btn.secondary{background:var(--green-bg);color:var(--green-ink);border:1px solid var(--line);}
+.wc-ce-npc-empty{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:8px;color:var(--green-ink-soft);font-size:12px;text-align:center;
+}
+.wc-ce-npc-empty svg{width:36px;height:36px;stroke:var(--green-mid);fill:none;stroke-width:1.5;}
 .wc-ce-add-npc-row{
   display:flex;flex-direction:row;gap:8px;margin-top:10px;
 }
@@ -1464,10 +1564,185 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-ce-delete-btn:active{opacity:.85;}
 
 @keyframes wcFade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ==== 转账弹窗 ==== */
+.wc-xfer-mask{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;animation:wcFadeIn .25s ease;}
+.wc-xfer-box{width:86%;max-width:340px;background:#fff;border-radius:16px;overflow:hidden;animation:wcPopIn .28s cubic-bezier(.32,.72,0,1);}
+.wc-xfer-head{padding:14px 16px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;}
+.wc-xfer-title{font-size:16px;font-weight:600;color:#1a1a1a;}
+.wc-xfer-close{width:26px;height:26px;border:none;background:none;cursor:pointer;border-radius:50%;color:#999;font-size:18px;display:flex;align-items:center;justify-content:center;}
+.wc-xfer-close:active{background:#f5f5f5;}
+.wc-xfer-body{padding:20px 18px;}
+.wc-xfer-to-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #f0f0f0;}
+.wc-xfer-avatar{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#b8e2c6,#3fa96a);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex-shrink:0;}
+.wc-xfer-to-info{flex:1;min-width:0;}
+.wc-xfer-to-label{font-size:12px;color:#999;margin-bottom:2px;}
+.wc-xfer-to-name{font-size:15px;color:#1a1a1a;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wc-xfer-amount-wrap{display:flex;align-items:center;justify-content:center;margin:10px 0 16px;gap:4px;}
+.wc-xfer-currency{font-size:22px;color:#333;font-weight:500;}
+.wc-xfer-amount{width:140px;border:none;border-bottom:1.5px solid #3fa96a;font-size:34px;font-weight:600;color:#1a1a1a;text-align:center;outline:none;padding:4px 0;background:transparent;}
+.wc-xfer-amount::placeholder{color:#ccc;font-weight:400;font-size:28px;}
+.wc-xfer-note-row{margin-bottom:20px;}
+.wc-xfer-note-input{width:100%;border:none;border-bottom:1px solid #e0e0e0;padding:8px 0;font-size:14px;color:#333;outline:none;background:transparent;}
+.wc-xfer-note-input:focus{border-bottom-color:#3fa96a;}
+.wc-xfer-balance{font-size:12px;color:#999;text-align:center;margin-bottom:12px;}
+.wc-xfer-pay-btn{width:100%;padding:12px;border:none;border-radius:8px;background:linear-gradient(135deg,#3fa96a,#2d8e57);color:#fff;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+.wc-xfer-pay-btn:active{opacity:.85;}
+.wc-xfer-pay-btn:disabled{opacity:.5;cursor:not-allowed;}
+.wc-xfer-pwd-box{width:86%;max-width:300px;background:#fff;border-radius:14px;padding:18px 20px 20px;animation:wcPopIn .25s cubic-bezier(.32,.72,0,1);}
+.wc-xfer-pwd-title{font-size:15px;font-weight:600;text-align:center;margin-bottom:4px;color:#1a1a1a;}
+.wc-xfer-pwd-amount{text-align:center;font-size:22px;font-weight:700;color:#3fa96a;margin-bottom:16px;}
+.wc-xfer-pwd-inputs{display:flex;justify-content:center;gap:6px;margin-bottom:14px;}
+.wc-xfer-pwd-cell{width:36px;height:42px;border:1px solid #d0d0d0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;color:#1a1a1a;background:#fafafa;}
+.wc-xfer-pwd-cell.filled{background:#fff;border-color:#3fa96a;}
+
+/* ==== 红包弹窗 ==== */
+.wc-rp-mask{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);z-index:9999;display:flex;align-items:center;justify-content:center;animation:wcFadeIn .25s ease;}
+.wc-rp-box{width:82%;max-width:320px;background:linear-gradient(180deg,#f55a3b,#e03c1c);border-radius:18px;overflow:hidden;color:#fff;animation:wcPopIn .3s cubic-bezier(.32,.72,0,1);box-shadow:0 16px 48px -8px rgba(224,60,28,.5);}
+.wc-rp-box::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.15),transparent 60%);pointer-events:none;}
+.wc-rp-head{padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;position:relative;}
+.wc-rp-close{width:26px;height:26px;border:none;background:rgba(255,255,255,.2);border-radius:50%;cursor:pointer;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.wc-rp-title{font-size:16px;font-weight:600;}
+.wc-rp-head-spacer{width:26px;}
+.wc-rp-body{padding:12px 20px 22px;}
+.wc-rp-to-wrap{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.25);}
+.wc-rp-avatar{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;border:2px solid rgba(255,255,255,.4);}
+.wc-rp-to-info{flex:1;min-width:0;}
+.wc-rp-to-label{font-size:12px;opacity:.85;margin-bottom:2px;}
+.wc-rp-to-name{font-size:16px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wc-rp-type-row{display:flex;gap:10px;margin-bottom:14px;}
+.wc-rp-type-btn{flex:1;padding:10px 8px;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.08);border-radius:10px;color:#fff;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center;}
+.wc-rp-type-btn.active{background:rgba(255,255,255,.95);color:#e03c1c;border-color:#fff;font-weight:600;}
+.wc-rp-amount-row{display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:8px;}
+.wc-rp-currency{font-size:24px;font-weight:500;}
+.wc-rp-amount{width:120px;border:none;border-bottom:1.5px solid rgba(255,255,255,.8);font-size:36px;font-weight:600;color:#fff;text-align:center;outline:none;padding:4px 0;background:transparent;}
+.wc-rp-amount::placeholder{color:rgba(255,255,255,.5);font-weight:400;font-size:28px;}
+.wc-rp-count-row{display:none;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:rgba(255,255,255,.15);border-radius:10px;}
+.wc-rp-count-row.show{display:flex;}
+.wc-rp-count-label{font-size:13px;opacity:.9;flex-shrink:0;}
+.wc-rp-count-input{width:60px;border:none;border-bottom:1px solid rgba(255,255,255,.6);background:transparent;color:#fff;font-size:15px;text-align:center;outline:none;font-family:inherit;}
+.wc-rp-msg-row{margin-bottom:16px;}
+.wc-rp-msg{width:100%;border:none;background:rgba(255,255,255,.15);border-radius:10px;padding:10px 12px;color:#fff;font-size:13px;outline:none;font-family:inherit;box-sizing:border-box;}
+.wc-rp-msg::placeholder{color:rgba(255,255,255,.6);}
+.wc-rp-balance{font-size:11px;opacity:.75;text-align:center;margin-bottom:12px;}
+.wc-rp-send-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#fff;color:#e03c1c;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+.wc-rp-send-btn:active{opacity:.85;}
+.wc-rp-send-btn:disabled{opacity:.5;cursor:not-allowed;}
+.wc-rp-ornament{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:60px;height:60px;background:radial-gradient(circle,rgba(255,215,0,.6),transparent 70%);pointer-events:none;}
+
+/* ==== 聊天中转账/红包卡片 ==== */
+.wc-xfer-card{width:220px;background:linear-gradient(135deg,#fef9e7,#fff5cc);border:1px solid #f0d88a;border-radius:12px;padding:12px 14px;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s;}
+.wc-xfer-card:active{transform:scale(.98);}
+.wc-xfer-card.claimed{background:linear-gradient(135deg,#f5f5f5,#ebebeb);border-color:#d0d0d0;opacity:.85;}
+.wc-xfer-card.rejected{background:linear-gradient(135deg,#fdf2f2,#fce4e4);border-color:#f5b3b3;opacity:.85;}
+.wc-xfer-card.rejected .wc-xfer-label,.wc-xfer-card.rejected .wc-xfer-amt-symbol,.wc-xfer-card.rejected .wc-xfer-amt-text,.wc-xfer-card.rejected .wc-xfer-note{color:#c05050;}
+.wc-xfer-card-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.wc-xfer-icon{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#3fa96a,#2d8e57);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wc-xfer-icon svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.2;}
+.wc-xfer-label{font-size:13px;color:#8a6e00;font-weight:500;}
+.wc-xfer-body-row{display:flex;align-items:baseline;justify-content:space-between;}
+.wc-xfer-amt-text{font-size:22px;font-weight:700;color:#1a1a1a;}
+.wc-xfer-amt-symbol{font-size:14px;color:#1a1a1a;margin-right:1px;}
+.wc-xfer-note{font-size:11px;color:#999;margin-top:4px;}
+.wc-xfer-status{font-size:11px;color:#b8860b;margin-top:4px;}
+.wc-xfer-card.claimed .wc-xfer-status{color:#888;}
+.wc-xfer-claimed-label{display:inline-block;font-size:11px;color:#999;background:#f1f1f1;padding:3px 10px;border-radius:10px;}
+
+.wc-rp-card{width:220px;background:linear-gradient(135deg,#f55a3b,#e03c1c);border-radius:12px;padding:14px;cursor:pointer;position:relative;overflow:hidden;color:#fff;transition:transform .15s;box-shadow:0 4px 14px -4px rgba(224,60,28,.45);}
+.wc-rp-card:active{transform:scale(.98);}
+.wc-rp-card.claimed{background:linear-gradient(135deg,#b0b0b0,#888);box-shadow:none;opacity:.8;}
+.wc-rp-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:radial-gradient(circle,rgba(255,215,0,.35),transparent 65%);pointer-events:none;}
+.wc-rp-card-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.wc-rp-card-icon{width:26px;height:26px;border-radius:6px;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;}
+.wc-rp-card-label{font-size:13px;font-weight:500;}
+.wc-rp-card-msg{font-size:14px;opacity:.9;margin-bottom:4px;line-height:1.3;min-height:18px;}
+.wc-rp-card-amt{font-size:20px;font-weight:700;}
+.wc-rp-card-amt-symbol{font-size:13px;margin-right:1px;}
+.wc-rp-card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.wc-rp-card-status{font-size:11px;opacity:.85;}
+.wc-rp-card.claimed .wc-rp-card-status{opacity:.95;}
+.wc-rp-card-type{font-size:11px;opacity:.75;background:rgba(255,255,255,.2);padding:2px 6px;border-radius:4px;}
+.wc-rp-card.claimed .wc-rp-card-type{opacity:.7;}
+
+/* ==== 领取红包弹窗 ==== */
+.wc-rp-open-mask{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;animation:wcFadeIn .3s ease;}
+.wc-rp-open-box{width:75%;max-width:280px;background:linear-gradient(180deg,#f55a3b,#c82310);border-radius:50% 50% 20px 20px / 40% 40% 20px 20px;padding:28px 24px 22px;text-align:center;color:#fff;animation:wcPopIn .35s cubic-bezier(.32,.72,0,1);position:relative;box-shadow:0 16px 48px -4px rgba(224,60,28,.55);}
+.wc-rp-open-box.claimed{background:linear-gradient(180deg,#b0b0b0,#777);border-radius:20px;box-shadow:none;animation:wcPopIn .25s ease;}
+.wc-rp-open-avatar{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;margin:0 auto 10px;}
+.wc-rp-open-sender{font-size:14px;font-weight:500;margin-bottom:2px;}
+.wc-rp-open-msg{font-size:12px;opacity:.9;margin-bottom:16px;line-height:1.4;}
+.wc-rp-open-amt-wrap{margin-bottom:18px;}
+.wc-rp-open-amt-label{font-size:11px;opacity:.85;margin-bottom:6px;}
+.wc-rp-open-amt{font-size:38px;font-weight:700;}
+.wc-rp-open-amt-symbol{font-size:18px;margin-right:2px;}
+.wc-rp-open-btn{width:100%;padding:11px;border:none;border-radius:10px;background:#fff;color:#e03c1c;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+.wc-rp-open-btn:active{opacity:.85;}
+.wc-rp-close-btn{position:absolute;top:10px;right:10px;width:28px;height:28px;border:none;background:rgba(255,255,255,.25);border-radius:50%;cursor:pointer;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.wc-rp-open-count{font-size:11px;opacity:.75;margin-top:10px;}
+.wc-rp-open-claimed-list{margin-top:14px;padding:10px;background:rgba(255,255,255,.15);border-radius:8px;text-align:left;font-size:12px;max-height:120px;overflow-y:auto;}
+.wc-rp-open-claimed-item{display:flex;justify-content:space-between;padding:3px 0;}
+.wc-rp-open-claimed-name{opacity:.9;}
+.wc-rp-open-claimed-amt{font-weight:600;}
+
+/* ==== 居中收款/领红包结果弹窗 ==== */
+.wc-pay-result-mask{position:fixed;inset:0;background:rgba(0,0,0,.25);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+.wc-pay-result-mask.show{opacity:1;pointer-events:auto;}
+.wc-pay-result-box{min-width:220px;max-width:280px;padding:24px 22px;border-radius:20px;text-align:center;box-shadow:0 16px 48px -12px rgba(0,0,0,.25);transform:scale(.85);transition:transform .35s cubic-bezier(.32,.72,0,1);border:1px solid rgba(255,255,255,.6);}
+.wc-pay-result-mask.show .wc-pay-result-box{transform:scale(1);}
+.wc-pay-result-icon{font-size:42px;margin-bottom:10px;line-height:1;}
+.wc-pay-result-title{font-size:17px;font-weight:700;color:#1a1a1a;margin-bottom:10px;letter-spacing:.5px;}
+.wc-pay-result-amount{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:1px;}
+.wc-pay-result-sub{font-size:13px;color:#6b7280;line-height:1.5;}
+
+/* ==== 动画 ==== */
+@keyframes wcFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes wcPopIn{from{opacity:0;transform:scale(.85) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes wcShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ==== 转账详情弹窗 ==== */
+.wc-xfer-detail-mask{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;animation:wcFadeIn .25s ease;}
+.wc-xfer-detail-box{width:82%;max-width:320px;background:#fff;border-radius:16px;overflow:hidden;animation:wcPopIn .28s cubic-bezier(.32,.72,0,1);}
+.wc-xfer-detail-head{padding:14px 16px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;}
+.wc-xfer-detail-title{font-size:16px;font-weight:600;color:#1a1a1a;}
+.wc-xfer-detail-close{width:26px;height:26px;border:none;background:none;cursor:pointer;color:#999;font-size:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+.wc-xfer-detail-close:active{background:#f5f5f5;}
+.wc-xfer-detail-body{padding:20px;}
+.wc-xfer-detail-amt-wrap{text-align:center;margin-bottom:20px;}
+.wc-xfer-detail-amt-label{font-size:12px;color:#999;margin-bottom:6px;}
+.wc-xfer-detail-amt{font-size:40px;font-weight:700;color:#1a1a1a;}
+.wc-xfer-detail-amt-symbol{font-size:18px;margin-right:3px;}
+.wc-xfer-detail-rows{border-top:1px solid #f0f0f0;}
+.wc-xfer-detail-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0;}
+.wc-xfer-detail-row-label{font-size:13px;color:#888;}
+.wc-xfer-detail-row-val{font-size:13px;color:#1a1a1a;font-weight:500;max-width:55%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wc-xfer-detail-foot{padding:12px 20px 20px;}
+.wc-xfer-detail-claim-btn{width:100%;padding:12px;border:none;border-radius:8px;background:linear-gradient(135deg,#3fa96a,#2d8e57);color:#fff;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+.wc-xfer-detail-claim-btn:active{opacity:.85;}
+.wc-xfer-detail-claim-btn:disabled{background:#e0e0e0;color:#999;cursor:not-allowed;opacity:1;}
+.wc-xfer-detail-mark-btn{width:100%;padding:12px;border:1.5px solid var(--green-deep);border-radius:8px;background:rgba(124,204,155,.15);color:var(--green-deep);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;}
+.wc-xfer-detail-mark-btn:active{background:rgba(124,204,155,.3);transform:scale(.98);}
+
+.wc-status-bar{height:calc(var(--phone-w,420px)*0.095 + var(--safe-top,0px));
+  padding:calc(var(--safe-top,0px) + var(--phone-w,420px)*0.03) calc(var(--phone-w,420px)*0.064) 0;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:calc(var(--phone-w,420px)*0.04);font-weight:600;color:var(--green-ink);
+     position:relative;z-index:5;flex-shrink:0;
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);}
+.wc-status-bar .wc-status-icons{display:flex;gap:calc(var(--phone-w,420px)*0.016);align-items:center;font-size:calc(var(--phone-w,420px)*0.035);}
+.wc-status-bar .wc-status-icons svg{display:block;flex-shrink:0;}
+.wc-status-bar .sig-icon,.wc-status-bar .wifi-icon{width:calc(var(--phone-w,420px)*0.045);height:calc(var(--phone-w,420px)*0.045);}
+.wc-status-bar .bat-icon{width:calc(var(--phone-w,420px)*0.062);height:calc(var(--phone-w,420px)*0.034);}
+.wc-status-bar .bat-text{font-variant-numeric:tabular-nums;}
+
 </style>
 </head>
 <body>
 <div class="wc-app" id="wcApp">
+<div class="wc-status-bar" id="wcStatusBar">
+  <span id="wcStatusTime">00:00</span>
+  <span class="wc-status-icons" id="wcStatusIcons"></span>
+</div>
   <div class="wc-topbar">
     <button class="wc-icon-btn wc-back-btn" id="wcBackBtn" aria-label="返回">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -1483,25 +1758,54 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   <div class="wc-tabbar">
     <button class="wc-tab active" data-tab="chat">
       <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span class="wc-tab-label">聊天</span>
     </button>
     <button class="wc-tab" data-tab="contacts">
       <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-      <span class="wc-tab-label">通讯录</span>
     </button>
     <button class="wc-tab" data-tab="moments">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-      <span class="wc-tab-label">朋友圈</span>
     </button>
     <button class="wc-tab" data-tab="me">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span class="wc-tab-label">我的</span>
     </button>
   </div>
 </div>
 <script>
 (function(){
   const TAB_TITLES = { chat:'微信', contacts:'通讯录', moments:'朋友圈', me:'我' };
+
+  (function renderStatusBar(){
+    const bar = document.getElementById('wcStatusBar');
+    if(!bar) return;
+    const TIME_EL = document.getElementById('wcStatusTime');
+    const ICONS_EL = document.getElementById('wcStatusIcons');
+    const SIG_SVG = '<svg class="sig-icon" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="2.4" height="4" rx="0.6"/><rect x="3.4" y="6" width="2.4" height="6" rx="0.6"/><rect x="6.8" y="4" width="2.4" height="8" rx="0.6"/><rect x="10.2" y="2" width="2.4" height="10" rx="0.6"/><rect x="13.6" y="0" width="2.4" height="12" rx="0.6"/></svg>';
+    const WIFI_SVG = '<svg class="wifi-icon" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 4.5a10 10 0 0114 0"/><path d="M3.2 7a6 6 0 019.6 0"/><path d="M5.6 9.2a2.5 2.5 0 014.8 0"/><circle cx="8" cy="11" r="0.7" fill="currentColor" stroke="none"/></svg>';
+    let batteryLevel = null;
+    let charging = false;
+    const batterySvg = () => {
+      const lvl = batteryLevel == null ? 1 : batteryLevel;
+      const fillW = Math.max(1, Math.round(lvl * 16));
+      const fillColor = charging ? '#f5b800' : (lvl <= 0.2 ? '#e74c3c' : 'var(--green-deep)');
+      return `<svg class="bat-icon" viewBox="0 0 24 12"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2" y="2" width="${fillW}" height="8" rx="1.5" fill="${fillColor}"/><rect x="21.2" y="4" width="1.8" height="4" rx="0.6" fill="currentColor"/></svg>`;
+    };
+    const batPct = () => batteryLevel == null ? '' : `<span class="bat-text">${Math.round(batteryLevel*100)}%</span>`;
+    const update = () => {
+      const d = new Date();
+      if(TIME_EL) TIME_EL.textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      if(ICONS_EL) ICONS_EL.innerHTML = SIG_SVG + WIFI_SVG + batterySvg() + batPct();
+    };
+    update();
+    setInterval(update, 30000);
+    if(navigator.getBattery){
+      navigator.getBattery().then(bat => {
+        const updBat = () => { batteryLevel = bat.level; charging = bat.charging; update(); };
+        updBat();
+        bat.addEventListener('levelchange', updBat);
+        bat.addEventListener('chargingchange', updBat);
+      }).catch(()=>{});
+    }
+  })();
 
   const SVG = {
     newFriend: '<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>',
@@ -1589,22 +1893,44 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
     return { type:'none', originalLang:'' };
   }
 
-  const MOCK_CHATS = [
-    { id:'c2', name:'WayV 官方群', last:'', time:'11:45', unread:0, isGroup:true, groupId:'g1' },
-    { id:'c4', name:'李永钦', last:'', time:'昨天', unread:0, isGroup:false, contactId:'u2' },
-    { id:'c6', name:'肖俊', last:'', time:'周一', unread:0, isGroup:false, contactId:'u4' },
-    { id:'c7', name:'黄冠亨', last:'', time:'周一', unread:0, isGroup:false, contactId:'u5' },
-    { id:'c8', name:'刘扬扬', last:'', time:'周日', unread:0, isGroup:false, contactId:'u6' }
-  ];
+  const MOCK_CHATS = [];
 
   function getContacts(){
     const d = Phone.getData('contacts');
     const defaults = [
-      { id:'u1', name:'钱锟', avatar:'https://picsum.photos/seed/kun_wx_avatar/200', wechatName:'kun', roleSetting:'姓名：钱锟（Kun），WayV队长，成员称呼他"锟哥""kun"，粉丝称呼他"挪挪""小挪"。\n生日：1996年1月1日，摩羯座，福建三明泰宁人。\n2025年养了一只阿比西尼亚猫，叫cookie。\n业余爱好摄影；解压方式是跳伞（有证）、潜水（有证）、开飞机（学习中），还考了无人机操控证，偶尔打游戏。喜欢去漂亮的地方旅游，喜欢天空。最喜欢用钢琴作曲，不工作时喜欢独处，常常一个人待在房间做音乐。\n喜欢周杰伦，因此学会了魔术，魔术很厉害。\n性格：看似稳重实则很爱撒娇，是温柔下的"强力"定海神针，散发出强烈的男友气息。温柔体贴，但不擅长说肉麻的话。思维活跃，总能想出解决谜题的办法。情绪非常稳定，但其实脾气有点大，会耍小性格；偶尔会撒娇，之后会害羞。不太表达自己的情感，对第一面见到的人不会太热情。有点腹黑的摩羯座，爱吃醋。想法真诚直率，不会轻易抱怨，会静下心努力实现自己的目标。有时说话略显乏味，但偶尔也会冒出一些能让大家捧腹大笑的笑话。行动力强、脾气好，像一只小熊。\n温柔是他经历风雨后的选择，而非天生底色。内心有稳定的精神内核，情绪稳定，包容力强。同时是目标明确的实干家，清楚自己要什么，向往自由并坚定奔赴。' },
-      { id:'u2', name:'李永钦', avatar:'https://picsum.photos/seed/ten_wx_avatar/200' },
-      { id:'u4', name:'肖俊', avatar:'https://picsum.photos/seed/xiaojun_wx_avatar/200' },
-      { id:'u5', name:'黄冠亨', avatar:'https://picsum.photos/seed/hendery_wx_avatar/200' },
-      { id:'u6', name:'刘扬扬', avatar:'https://picsum.photos/seed/yangyang_wx_avatar/200' },
+      { id:'u1', name:'钱锟', avatar:'kun.jpg', wechatName:'kun', roleSetting:'姓名：钱锟（Kun），WayV队长，成员称呼他"锟哥""kun"，粉丝称呼他"挪挪""小挪"。\n生日：1996年1月1日，摩羯座，福建三明泰宁人。\n2025年养了一只阿比西尼亚猫，叫cookie。\n业余爱好摄影；解压方式是跳伞（有证）、潜水（有证）、开飞机（学习中），还考了无人机操控证，偶尔打游戏。喜欢去漂亮的地方旅游，喜欢天空。最喜欢用钢琴作曲，不工作时喜欢独处，常常一个人待在房间做音乐。\n喜欢周杰伦，因此学会了魔术，魔术很厉害。\n性格：看似稳重实则很爱撒娇，是温柔下的"强力"定海神针，散发出强烈的男友气息。温柔体贴，但不擅长说肉麻的话。思维活跃，总能想出解决谜题的办法。情绪非常稳定，但其实脾气有点大，会耍小性格；偶尔会撒娇，之后会害羞。不太表达自己的情感，对第一面见到的人不会太热情。有点腹黑的摩羯座，爱吃醋。想法真诚直率，不会轻易抱怨，会静下心努力实现自己的目标。有时说话略显乏味，但偶尔也会冒出一些能让大家捧腹大笑的笑话。行动力强、脾气好，像一只小熊。\n温柔是他经历风雨后的选择，而非天生底色。内心有稳定的精神内核，情绪稳定，包容力强。同时是目标明确的实干家，清楚自己要什么，向往自由并坚定奔赴。',
+        npcs:[
+    { id:'u2', name:'李永钦', remark:'Ten', relationship:'队友', identity:'WayV成员' },
+    { id:'u4', name:'肖俊', remark:'德俊', relationship:'队友', identity:'WayV成员' },
+    { id:'u5', name:'黄冠亨', remark:'Hendery', relationship:'队友', identity:'WayV成员' },
+    { id:'u6', name:'刘扬扬', remark:'扬扬', relationship:'队友', identity:'WayV成员' }
+  ]
+      },
+      { id:'u2', name:'李永钦', avatar:'ten.jpg', wechatName:'Tenten', roleSetting:'我的人生是绿灯，我可以渡过一切，任何事情都无法阻挡我。\n关键词：像小猫一样，爱与锐利并存，敏感细腻，言语如诗般锋利，艺术家感性，反差萌猫咪，执着敏锐。\n姓名：李永钦（Ten / Tenten），WayV成员，大家称呼他Ten，弟弟们叫Ten哥。\n生日：1996年2月27日，泰籍华裔。\n语言：中文不是特别好，会中英混杂着说话，能正常对话但语序不太流畅，少数不常用的词会用英文表达。学了很多四字成语，偶尔会用，有语不惊人死不休的感觉。\n示例说话方式：\n·"我是李永钦，你可以叫我tenten呀，今天这个是我第一次一个人参加音乐节"\n·"首先我想说，很感谢我们每一个的威珍妮来支持我们，很谢谢你们，然后我觉得我们的爱，不管外面有雨有风，都是永远是我的，心里都有你们的"\n·"现在我到酒店，然后肚子很饿，所以要吃好吃的东西"\n·"你是一个自以为是的人"\n·"我的话呢是刚刚你们也知道我要结束这个演唱会，所以我可以做更好的东西。所以我一定没有理由要帮他。因为其实如果帮他的话，这个演唱会可以是要停，然后我不可以结束这个演唱会。所以现在我的 priority 是做好我的现在工作。"\n温柔毒舌的敏感艺术家，干净纯粹，温柔细腻又通透清醒，成长环境优越但没架子会主动照顾人，熟络后有点毒舌喜欢善意地怼人，待人极度真诚心软。共情力极强，温柔有分寸，自带疏离清冷感，熟了又软萌可爱。内心坚定有主见，三观正、心思细腻敏感，情绪内敛，习惯默默消化情绪，待人谦逊有礼，安静时清冷疏离，笑起来清甜可爱。画画天赋高，审美佳，有文艺才情。外柔内刚，干净纯粹，温柔有底蕴。非常有自己的原则，不吃任何水果但喝果汁（会把喜欢的水果叫成蔬菜），艺术家的敏锐与率直，私下执着、好胜心强；但另一面性格软、甜，反应笨笨的可爱。工作上对舞台有绝对掌控力，追求完美，决定了就拼命去做。生活中是有点粘人的小猫，很爱表达爱意。\n三只公猫：Leon（老二，阿比西尼亚猫，非常亲人，粉丝叫他"山哥"）、Levi（老三，暹罗猫，粘人）、Louis（老大，暹罗猫）。\n2024年因为solo活动搬出宿舍，现在和3L一起住在很大的公寓里。',
+        npcs:[
+    { id:'u1', name:'钱锟', remark:'kun', relationship:'队友', identity:'WayV队长' },
+    { id:'u4', name:'肖俊', remark:'德俊', relationship:'队友', identity:'WayV成员' },
+    { id:'u5', name:'黄冠亨', remark:'Hendery', relationship:'队友', identity:'WayV成员' },
+    { id:'u6', name:'刘扬扬', remark:'扬扬', relationship:'队友', identity:'WayV成员' }
+  ]
+      },
+      { id:'u4', name:'肖俊', avatar:'xiaojun.jpg', wechatName:'肖俊', roleSetting:'爱豆，上戏科班出身，喜欢唱歌喜欢表演。\n气氛制造者，玩世不恭的外表下藏着不为人知的深情和占有欲，真诚的体贴、意外的坚韧、责任感。真挚的搞笑。\n姓名：肖俊，WayV成员。\n生日：1999年8月8日，广东东莞人。\n关键词：坚韧而真诚的热血小狗。\n天生热情开朗，爱撒娇、爱闹，天真，走到哪把笑声带到哪。外浪内纯，敏感共情，表面爱玩爱撩、带坏男孩感，实际心思细腻、柔软敏感，有点钝感幽默，不怯场、放得开；说话有分寸，懂得照顾他人情绪，爱黏人、爱撒娇，喜欢做饭给自己吃，对自己要求极高，非常会给对象安全感，但有时性格有点回避，容易焦虑生气，唱歌非常好听，性感与少年感并存，是越了解越有魅力的类型，有一只特别聪明的母比格犬叫贝拉（Blla），外表蓬松温暖，内里有一根极韧的芯。将活跃气氛视为自己的责任，不是"E"而是担当。真诚到有点笨拙，却因此拥有巨大的善意。乐观、充满希望感，底线清晰，是可靠的好人。',
+        npcs:[
+    { id:'u1', name:'钱锟', remark:'锟哥', relationship:'队友', identity:'WayV队长' },
+    { id:'u2', name:'李永钦', remark:'Ten哥', relationship:'队友', identity:'WayV成员' },
+    { id:'u5', name:'黄冠亨', remark:'Hendery', relationship:'队友', identity:'WayV成员' },
+    { id:'u6', name:'刘扬扬', remark:'扬扬', relationship:'队友', identity:'WayV成员' }
+  ]
+      },
+      { id:'u5', name:'黄冠亨', avatar:'Hendery.jpg', wechatName:'Hendery', roleSetting:'人生不過三萬天，食咗先啦~\nMBTI：entp/enfp\n关键词：性格幽默，但有着细腻的情感，内核强大，知世故而不世故、活在当下、善良纯粹。\n姓名：黄冠亨（Hendery），WayV成员。\n生日：1999年9月28日，澳门人。\n通透轻盈的快乐哲学家。幽默，几乎是话痨的程度，也很喜欢笑。会直接地表达对身边人的爱和赞美，大方真挚，说话很直爽，带有强烈的个人风格，穿搭很潮流。把搞笑当成社交语言、但内心细腻且有点宅、二次元的澳门男孩。他懂得用幽默保护自己和他人，整体上是个真实、没架子、重感情的"喜剧人"，只是他的能量更多时候选择在熟悉的人面前释放，很喜欢吃拉面。思维成熟，做事绝不后悔，有"活在当下"的自由感。知世故而不世故，努力用善意感化他人。擅长赞美和鼓励，会说"你才是生命中最重要的人"。外表王子，性格接地气，是有血有肉的宝物。\n自幼习武，父亲是咏春拳的传承人，但并没有被强制传承；有三个姐姐，从小玩姐姐传下来的玩具等物品，所以并不抗拒女装等，是很细腻温柔的人（家境很好，在世界各地有房产）。',
+        npcs:[
+    { id:'u1', name:'钱锟', remark:'锟哥', relationship:'队友', identity:'WayV队长' },
+    { id:'u2', name:'李永钦', remark:'Ten哥', relationship:'队友', identity:'WayV成员' },
+    { id:'u4', name:'肖俊', remark:'德俊', relationship:'队友', identity:'WayV成员' },
+    { id:'u6', name:'刘扬扬', remark:'扬扬', relationship:'队友', identity:'WayV成员' }
+  ]
+      },
+      { id:'u6', name:'刘扬扬', avatar:'yangyang.jpg' },
       { id:'u8', name:'李秀满', avatar:'https://picsum.photos/seed/sooman_wx_avatar/200' },
       { id:'u9', name:'造型师姐姐', avatar:'https://picsum.photos/seed/stylist_wx_avatar/200' }
     ];
@@ -1632,6 +1958,34 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
       });
     }
     if(changed) Phone.setData('contacts', { list: d.list });
+    const avatarMap = { u2:'ten.jpg', u4:'xiaojun.jpg', u5:'Hendery.jpg', u6:'yangyang.jpg' };
+    let forceSave = false;
+    Object.entries(avatarMap).forEach(([id, newAvatar]) => {
+      const c = d.list.find(x => x.id === id);
+      if(c && c.avatar !== newAvatar){ c.avatar = newAvatar; forceSave = true; }
+    });
+    if(forceSave){ Phone.setData('contacts', { list: d.list }); document.dispatchEvent(new CustomEvent('wechat-data-updated', { detail:{ type:'contacts' } })); }
+    const ten = d.list.find(x => x.id === 'u2');
+    const tenDefault = defaults.find(x => x.id === 'u2');
+    if(ten && tenDefault){
+      if(!ten.roleSetting && tenDefault.roleSetting){ ten.roleSetting = tenDefault.roleSetting; forceSave = true; }
+      if((!ten.npcs || ten.npcs.length === 0) && tenDefault.npcs){ ten.npcs = tenDefault.npcs; forceSave = true; }
+      if(!ten.wechatName && tenDefault.wechatName){ ten.wechatName = tenDefault.wechatName; forceSave = true; }
+    }
+    const xiaojun = d.list.find(x => x.id === 'u4');
+    const xiaojunDefault = defaults.find(x => x.id === 'u4');
+    if(xiaojun && xiaojunDefault){
+      if(!xiaojun.roleSetting && xiaojunDefault.roleSetting){ xiaojun.roleSetting = xiaojunDefault.roleSetting; forceSave = true; }
+      if((!xiaojun.npcs || xiaojun.npcs.length === 0) && xiaojunDefault.npcs){ xiaojun.npcs = xiaojunDefault.npcs; forceSave = true; }
+    }
+    const hendery = d.list.find(x => x.id === 'u5');
+    const henderyDefault = defaults.find(x => x.id === 'u5');
+    if(hendery && henderyDefault){
+      if(!hendery.roleSetting && henderyDefault.roleSetting){ hendery.roleSetting = henderyDefault.roleSetting; forceSave = true; }
+      if((!hendery.npcs || hendery.npcs.length === 0) && henderyDefault.npcs){ hendery.npcs = henderyDefault.npcs; forceSave = true; }
+      if(!hendery.wechatName && henderyDefault.wechatName){ hendery.wechatName = henderyDefault.wechatName; forceSave = true; }
+    }
+    if(forceSave){ Phone.setData('contacts', { list: d.list }); document.dispatchEvent(new CustomEvent('wechat-data-updated', { detail:{ type:'contacts' } })); }
     return d.list;
   }
   function saveContacts(list){ Phone.setData('contacts', { list }); document.dispatchEvent(new CustomEvent('wechat-data-updated', { detail:{ type:'contacts' } })); }
@@ -1640,28 +1994,15 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   function uid2(){ return 'x_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
   function getGroups(){
     const d = Phone.getData('groups');
-    const defaults = [
-      { id:'g1', name:'WayV 官方群', members:['u1','u2','u4','u5','u6'], announcement:'WayV 官方粉丝群 请勿乱发广告\n公演信息第一时间更新', remark:'', doNotDisturb:false, pinned:true, owner:'user' }
-    ];
+    const defaults = [];
     let changed = false;
     if(!d.list || !Array.isArray(d.list)) {
       d.list = defaults;
       changed = true;
     } else {
-      const existingIds = new Set(d.list.map(g => g.id));
-      defaults.forEach(def => {
-        if(!existingIds.has(def.id)){
-          d.list.push(def);
-          changed = true;
-        } else {
-          const g = d.list.find(x => x.id === def.id);
-          if(g){
-            def.members.forEach(mid => {
-              if(!g.members.includes(mid)){ g.members.push(mid); changed = true; }
-            });
-          }
-        }
-      });
+      const beforeLen = d.list.length;
+      d.list = d.list.filter(g => g.id !== 'g1');
+      if(d.list.length !== beforeLen) changed = true;
     }
     if(changed) Phone.setData('groups', { list: d.list });
     return d.list;
@@ -1771,7 +2112,12 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
         const baseTs = Date.now() + (_timeOffsetFromLabel(chat.time) || -3600000);
         if(chat.isGroup){
           const group = getGroups().find(g => g.id === chat.groupId);
-          const members = group?.members.map(id => MOCK_CONTACTS.find(c=>c.id===id)).filter(Boolean) || [];
+          let members = group?.members.map(id => MOCK_CONTACTS.find(c=>c.id===id)).filter(Boolean) || [];
+          if(group){
+            const oid = group.owner || 'user';
+            const ownerMember = oid === 'user' ? null : MOCK_CONTACTS.find(c=>c.id===oid);
+            if(ownerMember){ members = [ownerMember, ...members.filter(m => m.id !== ownerMember.id)]; }
+          }
           chatHistory[chatId] = [];
         } else {
           const contact = MOCK_CONTACTS.find(c => c.id === chat.contactId);
@@ -1801,22 +2147,53 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
       if(existing){ existing.remove(); return; }
       const menu = document.createElement('div');
       menu.className = 'wc-plus-menu';
-            menu.innerHTML = `
+      let items = '';
+      if(currentTab === 'chat' || currentTab === 'contacts'){
+        items = `
+        <div class="wc-plus-item" data-act="start-chat">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>发起私聊</span>
+        </div>
+        <div class="wc-plus-item" data-act="start-group">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>发起群聊</span>
+        </div>`;
+      } else if(currentTab === 'moments'){
+        items = `
+        <div class="wc-plus-item" data-act="puq">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>发朋友圈</span>
+        </div>
+        <div class="wc-plus-item" data-act="char-puq">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M21 3v4M23 5h-4"/></svg>
+          <span>角色朋友圈</span>
+        </div>`;
+      } else {
+        items = `
         <div class="wc-plus-item" data-act="puq">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
           <span>发朋友圈</span>
         </div>`;
-            document.body.appendChild(menu);
+      }
+      menu.innerHTML = items;
+      document.body.appendChild(menu);
       const rect = app.querySelector('#wcPlusBtn').getBoundingClientRect();
       menu.style.top = (rect.bottom + 6) + 'px';
       menu.style.right = (window.innerWidth - rect.right - 4) + 'px';
-            menu.querySelectorAll('.wc-plus-item').forEach(it => {
+      menu.querySelectorAll('.wc-plus-item').forEach(it => {
         it.addEventListener('click', () => {
           const act = it.dataset.act;
           menu.remove();
-          if(act === 'puq'){
+          if(act === 'start-chat'){
+            openStartChat();
+          } else if(act === 'start-group'){
+            openCreateGroup();
+          } else if(act === 'puq'){
             switchTab('moments');
             window.__puqAutoOpenCompose = true;
+          } else if(act === 'char-puq'){
+            switchTab('moments');
+            window.__puqAutoOpenCharPicker = true;
           }
         });
       });
@@ -1839,6 +2216,10 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
                    if(exist){ Phone.modal(null); return false; }
           const newChat = { id:'chat_'+cid, name:c.name, last:'开始聊天吧', time:'刚刚', unread:0, isGroup:false, contactId:cid };
           MOCK_CHATS.unshift(newChat);
+          const d = Phone.getData('wechat') || {};
+          d.chatList = d.chatList || [];
+          d.chatList.unshift(newChat);
+          Phone.setData('wechat', d);
           renderTab(currentTab);
           return v;
         }
@@ -1894,6 +2275,13 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
       const groups = getGroups();
       const contacts = getContacts();
       const allTags = getTags();
+      const wechatData = Phone.getData('wechat') || {};
+      const savedPrivateChats = wechatData.chatList || [];
+      savedPrivateChats.forEach(c => {
+        if(!MOCK_CHATS.some(x => x.id === c.id)){
+          MOCK_CHATS.push(c);
+        }
+      });
       groups.forEach(g => {
         if(!MOCK_CHATS.some(c => c.isGroup && c.groupId === g.id)){
           MOCK_CHATS.unshift({
@@ -1904,7 +2292,6 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
         }
       });
       let html = '';
-      const wechatData = Phone.getData('wechat') || {};
       const allSettings = wechatData.chatSettings || {};
 
       const validChats = MOCK_CHATS.filter(c => {
@@ -2039,7 +2426,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
       }
       body.innerHTML = '<div style="padding:40px 20px;text-align:center;color:#999">加载中...</div>';
       try{
-        const res = await fetch('puq.html');
+        const res = await fetch('puq.html?v=' + Date.now());
         const html = await res.text();
         // inject puq styles
         const m = html.match(/<style>([\s\S]*?)<\/style>/);
@@ -2063,7 +2450,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
       const script = document.createElement('script');
       script.id = 'puqRuntime';
       // fetch puq.html and extract its inline script
-      fetch('puq.html').then(r=>r.text()).then(html=>{
+      fetch('puq.html?v=' + Date.now()).then(r=>r.text()).then(html=>{
         const m = html.match(/<script>([\s\S]*?)<\/script>\s*<\/body>/);
         if(m){ script.textContent = m[1]; document.head.appendChild(script); }
       });
@@ -2120,6 +2507,10 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
     function openWallet(){
       function getWallet(){
         const d = Phone.getData('wechat');
+        if(!d.wallet){
+          d.wallet = { records: [{ type:'in', amount:500, note:'初始余额', source:'system', ts: Date.now() - 86400000 }] };
+          Phone.setData('wechat', d);
+        }
         d.wallet = d.wallet || { records:[] };
         return d.wallet;
       }
@@ -2155,7 +2546,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
         let html = `<div class="wc-wallet-summary">
           <div class="wc-wallet-balance">
             <div class="wc-wallet-balance-label">余额</div>
-            <div class="wc-wallet-balance-amount" style="color:${balance>=0?'#2aa36e':'#e74c3c'}">¥${balance.toFixed(2)}</div>
+            <div class="wc-wallet-balance-amount" style="color:#fff">¥${balance.toFixed(2)}</div>
           </div>
           <div class="wc-wallet-sub-row">
             <div class="wc-wallet-sub-item">
@@ -2767,6 +3158,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
         // 对话设置卡片
         const chatCard = document.createElement('div');
         chatCard.className = 'wc-ce-card';
+        const styleRefs = (contact.writingStyle || []).join('\n');
         chatCard.innerHTML = `
           <div class="wc-ce-section-title">开场白</div>
           <div style="padding:0 14px 14px">
@@ -2780,14 +3172,79 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
               <span class="wc-ce-arrow">›</span>
             </div>
           </div>
+
+          <div class="wc-ce-section-title" style="display:flex;align-items:center;justify-content:space-between">
+            <span>文风参考</span>
+            <div style="display:flex;gap:8px">
+              <button class="wc-ce-style-btn" id="ceStyleImport" title="导入TXT文件">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                导入
+              </button>
+            </div>
+          </div>
+          <div style="padding:0 14px 14px">
+            <textarea class="wc-ce-textarea" id="ceWritingStyle" style="min-height:120px" placeholder="每行写一句参考话法，例如：&#10;你好呀&#10;今天天气真好&#10;在忙什么呢">${styleRefs}</textarea>
+          </div>
         `;
         body.appendChild(chatCard);
 
+        // 文风参考导入
+        const importBtn = chatCard.querySelector('#ceStyleImport');
+        if(importBtn){
+          importBtn.addEventListener('click', () => {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.txt,text/plain';
+            fileInput.addEventListener('change', () => {
+              const file = fileInput.files && fileInput.files[0];
+              if(!file) return;
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                const text = (e.target.result || '').replace(/\r\n/g, '\n').trim();
+                const existing = document.getElementById('ceWritingStyle');
+                const cur = existing ? existing.value.trim() : '';
+                const merged = cur ? (cur + '\n' + text) : text;
+                if(existing) existing.value = merged;
+                contact.writingStyle = merged.split('\n').map(s => s.trim()).filter(Boolean);
+                saveContacts(MOCK_CONTACTS);
+              };
+              reader.readAsText(file, 'UTF-8');
+            });
+            fileInput.click();
+          });
+        }
+
+        // 文风参考文本域保存
+        const styleArea = chatCard.querySelector('#ceWritingStyle');
+        if(styleArea){
+          styleArea.addEventListener('blur', () => {
+            contact.writingStyle = styleArea.value.split('\n').map(s => s.trim()).filter(Boolean);
+            saveContacts(MOCK_CONTACTS);
+          });
+        }
+
         // 渲染NPC列表
-        renderNpcList();
+        requestAnimationFrame(() => renderNpcList());
 
         // 绑定事件
         bindFieldEvents();
+      }
+
+      function getNodeAvatar(npc){
+        if(npc.dedicated && !npc.avatar) return null;
+        const realContact = MOCK_CONTACTS.find(c => c.id === npc.id || c.name === npc.name);
+        const avatarUrl = (realContact && realContact.avatar) || npc.avatar;
+        if(avatarUrl && typeof avatarUrl === 'string') return avatarUrl;
+        return null;
+      }
+
+      function buildAvatarHtml(npc, sizeClass){
+        const url = getNodeAvatar(npc);
+        if(url){
+          return `<img src="${escAttr(url)}" alt="">`;
+        }
+        const letter = (npc.name || '?').charAt(0);
+        return `<span class="letter">${escAttr(letter)}</span>`;
       }
 
       function renderNpcList(){
@@ -2795,45 +3252,135 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
         if(!npcList) return;
         npcList.innerHTML = '';
         const npcs = contact.npcs || [];
+
+        const rect = npcList.getBoundingClientRect();
+        const W = rect.width || 340;
+        const H = rect.height || 260;
+        const cx = W / 2;
+        const cy = H / 2;
+
         if(npcs.length === 0){
           const empty = document.createElement('div');
           empty.className = 'wc-ce-npc-empty';
-          empty.textContent = '暂无关系，点击下方按钮添加';
+          empty.innerHTML = `<svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="11" r="2.5"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M15 14c2 0 5 1.5 5 4"/></svg><div>暂无关系，点击下方按钮添加</div>`;
+          const center = document.createElement('div');
+          center.className = 'wc-ce-mm-center';
+          center.style.left = cx + 'px';
+          center.style.top = cy + 'px';
+          center.innerHTML = buildAvatarHtml(contact);
           npcList.appendChild(empty);
+          npcList.appendChild(center);
           return;
         }
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+        svg.setAttribute('class','wc-ce-mm-svg');
+        svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+        svg.setAttribute('width', W);
+        svg.setAttribute('height', H);
+
+        const maxRadius = Math.min(cx, cy) - 40;
+        const minRadius = 50;
+        const radius = Math.max(minRadius, Math.min(maxRadius, (npcs.length <= 4 ? 65 : npcs.length <= 6 ? 80 : 90)));
+
+        const positions = [];
         npcs.forEach((npc, idx) => {
-          const item = document.createElement('div');
-          item.className = 'wc-ce-npc-item';
-          let avatarHtml;
-          if(npc.dedicated){
-            avatarHtml = `<div class="wc-ce-npc-avatar">${escAttr(npc.avatar || '👤')}</div>`;
-          } else {
-            const realContact = MOCK_CONTACTS.find(c => c.id === npc.id || c.name === npc.name);
-            const avatarUrl = (realContact && realContact.avatar) || npc.avatar;
-            if(avatarUrl && typeof avatarUrl === 'string' && (avatarUrl.startsWith('http') || avatarUrl.startsWith('data:') || avatarUrl.startsWith('//'))){
-              avatarHtml = `<div class="wc-ce-npc-avatar"><img src="${escAttr(avatarUrl)}" alt=""></div>`;
-            } else {
-              const letter = (npc.name || '?').charAt(0);
-              avatarHtml = `<div class="wc-ce-npc-avatar">${letter}</div>`;
-            }
-          }
-          const badge = npc.dedicated
-            ? `<span class="wc-ce-npc-badge dedicated">专属</span>`
-            : `<span class="wc-ce-npc-badge">联系人</span>`;
-          const remarkHtml = npc.remark ? ` <span style="color:var(--green-ink-soft);font-weight:400">(${escAttr(npc.remark)})</span>` : '';
-          const chips = [];
-          if(npc.identity) chips.push(`<span class="wc-ce-npc-tag-chip">${escAttr(npc.identity)}</span>`);
-          if(npc.relationship) chips.push(`<span class="wc-ce-npc-tag-chip">${escAttr(npc.relationship)}</span>`);
-          item.innerHTML = `
-            ${avatarHtml}
-            <div class="wc-ce-npc-info">
-              <div class="wc-ce-npc-name">${escAttr(npc.name || '未命名')}${remarkHtml} ${badge}</div>
-              <div class="wc-ce-npc-desc">${chips.join('')}</div>
-            </div>`;
-          item.addEventListener('click', () => { editNpcRelation(idx); });
-          npcList.appendChild(item);
+          const angle = (2 * Math.PI * idx / npcs.length) - (Math.PI / 2);
+          positions.push({
+            x: cx + radius * Math.cos(angle),
+            y: cy + radius * Math.sin(angle),
+            npc, idx
+          });
         });
+
+        positions.forEach(({x, y}) => {
+          const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+          line.setAttribute('class','wc-ce-mm-line');
+          line.setAttribute('x1', cx);
+          line.setAttribute('y1', cy);
+          line.setAttribute('x2', x);
+          line.setAttribute('y2', y);
+          svg.appendChild(line);
+        });
+        npcList.appendChild(svg);
+
+        const center = document.createElement('div');
+        center.className = 'wc-ce-mm-center';
+        center.style.left = cx + 'px';
+        center.style.top = cy + 'px';
+        center.innerHTML = buildAvatarHtml(contact);
+        const centerLabel = document.createElement('span');
+        centerLabel.className = 'wc-ce-mm-center-label';
+        centerLabel.textContent = (contact.name || '').slice(0, 6) || '中心';
+        center.appendChild(centerLabel);
+        npcList.appendChild(center);
+
+        positions.forEach(({x, y, npc, idx}) => {
+          const node = document.createElement('div');
+          node.className = 'wc-ce-mm-node';
+          node.style.left = x + 'px';
+          node.style.top = y + 'px';
+          node.innerHTML = buildAvatarHtml(npc);
+          const rel = (npc.relationship || '').slice(0, 8);
+          if(rel){
+            const label = document.createElement('span');
+            label.className = 'wc-ce-mm-node-rel';
+            label.textContent = rel;
+            node.appendChild(label);
+          }
+          if(npc.dedicated){
+            const dot = document.createElement('span');
+            dot.className = 'wc-ce-mm-node-dot';
+            node.appendChild(dot);
+          }
+          node.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showNpcDetail(idx);
+          });
+          npcList.appendChild(node);
+        });
+      }
+
+      function showNpcDetail(idx){
+        const npc = contact.npcs[idx];
+        if(!npc) return;
+        const npcList = document.getElementById('ceNpcList');
+        if(!npcList) return;
+        if(npcList.querySelector('.wc-ce-mask')) return;
+
+        const mask = document.createElement('div');
+        mask.className = 'wc-ce-mask';
+        mask.innerHTML = `
+          <div class="wc-ce-detail">
+            <div class="wc-ce-detail-header">
+              <div class="wc-ce-detail-avatar">${buildAvatarHtml(npc)}</div>
+              <div>
+                <div class="wc-ce-detail-name">${escAttr(npc.name || '未命名')}</div>
+                ${npc.remark ? `<div class="wc-ce-detail-remark">备注：${escAttr(npc.remark)}</div>` : ''}
+              </div>
+            </div>
+            <div class="wc-ce-detail-row">
+              <div class="wc-ce-detail-label">身份</div>
+              <div class="wc-ce-detail-value">${escAttr(npc.identity || '-')}</div>
+            </div>
+            <div class="wc-ce-detail-row">
+              <div class="wc-ce-detail-label">关系</div>
+              <div class="wc-ce-detail-value">${escAttr(npc.relationship || '-')}</div>
+            </div>
+            <div class="wc-ce-detail-actions">
+              <button class="wc-ce-detail-btn secondary" data-act="close">关闭</button>
+              <button class="wc-ce-detail-btn primary" data-act="edit">编辑</button>
+            </div>
+          </div>
+        `;
+        function close(){ mask.style.animation='fadeIn .12s ease reverse'; setTimeout(() => mask.remove(), 120); }
+        mask.addEventListener('click', (e) => {
+          if(e.target === mask) close();
+          const act = e.target.dataset.act;
+          if(act === 'close') close();
+          if(act === 'edit') { close(); setTimeout(() => editNpcRelation(idx), 150); }
+        });
+        npcList.appendChild(mask);
       }
 
       function editNpcRelation(idx){
@@ -3115,6 +3662,16 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
           if(act === 'ok'){
             const ids = Array.from(mask.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.dataset.wbId);
             contact.worldbookIds = ids;
+            const allD = Phone.getData('wechat');
+            allD.chatSettings = allD.chatSettings || {};
+            Object.keys(allD.chatSettings).forEach(cid => {
+              const chat = MOCK_CHATS.find(c => c.id === cid);
+              if(chat && !chat.isGroup && chat.contactId === contact.id){
+                allD.chatSettings[cid].worldbookGroupIds = ids.slice();
+              }
+            });
+            Phone.setData('wechat', allD);
+            saveContacts(MOCK_CONTACTS);
             dismiss();
             if(onDone) onDone();
           }
@@ -3514,8 +4071,10 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 const chatId = chat ? chat.id : ('chat_' + groupId);
         const d = Phone.getData('wechat');
         d.memories = d.memories || {};
+        d.heartVoices = d.heartVoices || {};
         const chatMem = d.memories[chatId] || { core:[], storylines:[] };
         if(!d.memories[chatId]){ d.memories[chatId] = chatMem; Phone.setData('wechat', d); }
+        const heartList = d.heartVoices[chatId] || [];
 
         const h = getHistory(chatId);
         const onlineCount = h.filter(m => m.role === 'user').length;
@@ -3543,26 +4102,62 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
                   <div class="wc-mem-stat-num">${chatMem.storylines.length}</div>
                   <div class="wc-mem-stat-label">剧情线</div>
                 </div>
+                <div class="wc-mem-stat">
+                  <div class="wc-mem-stat-num">${heartList.length}</div>
+                  <div class="wc-mem-stat-label">心声</div>
+                </div>
               </div>
             </div>
-            <div class="wc-mem-section">
-              <div class="wc-mem-section-title">核心记忆</div>
-              <div class="wc-mem-list" id="wcCoreMemList"></div>
-              <button class="wc-mem-add-btn" id="wcCoreAdd" title="添加核心记忆">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </button>
+            <div class="wc-mem-section collapsed" data-kind="core">
+              <div class="wc-mem-section-head">
+                <div class="wc-mem-section-title">核心记忆<span class="wc-mem-section-badge">${chatMem.core.length}</span></div>
+                <button class="wc-mem-section-toggle" title="展开/折叠">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </div>
+              <div class="wc-mem-section-body">
+                <div class="wc-mem-list" id="wcCoreMemList"></div>
+                <button class="wc-mem-add-btn" id="wcCoreAdd" title="添加核心记忆">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
             </div>
-            <div class="wc-mem-section">
-              <div class="wc-mem-section-title">剧情线</div>
-              <div class="wc-mem-tip" style="font-size:12px;color:#888;padding:0 16px 8px">剧情线内容会被 AI 读取并据此发挥</div>
-              <div class="wc-mem-list" id="wcStorylineList"></div>
-              <button class="wc-mem-add-btn" id="wcStorylineAdd" title="添加剧情线">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </button>
+            <div class="wc-mem-section collapsed" data-kind="story">
+              <div class="wc-mem-section-head">
+                <div class="wc-mem-section-title">剧情线<span class="wc-mem-section-badge">${chatMem.storylines.length}</span></div>
+                <button class="wc-mem-section-toggle" title="展开/折叠">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </div>
+              <div class="wc-mem-section-body">
+                <div class="wc-mem-tip" style="font-size:12px;color:#888;padding:0 0 8px">剧情线内容会被 AI 读取并据此发挥</div>
+                <div class="wc-mem-list" id="wcStorylineList"></div>
+                <button class="wc-mem-add-btn" id="wcStorylineAdd" title="添加剧情线">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="wc-mem-section collapsed" data-kind="heart">
+              <div class="wc-mem-section-head">
+                <div class="wc-mem-section-title">心声<span class="wc-mem-section-badge">${heartList.length}</span></div>
+                <button class="wc-mem-section-toggle" title="展开/折叠">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </div>
+              <div class="wc-mem-section-body">
+                <div class="wc-mem-tip" style="font-size:12px;color:#888;padding:0 0 8px">群聊中暂无心声生成功能</div>
+                <div class="wc-mem-list" id="wcHeartList"></div>
+              </div>
             </div>
           </div>`;
         page.appendChild(memPage);
         requestAnimationFrame(() => memPage.classList.add('show'));
+
+        memPage.querySelectorAll('.wc-mem-section-head').forEach(head => {
+          head.addEventListener('click', () => {
+            head.parentElement.classList.toggle('collapsed');
+          });
+        });
 
         function renderList(listEl, items, onEdit, onDel, emptyText){
           if(!items.length){
@@ -3574,7 +4169,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               <div class="wc-mem-item-content">${escAttr(mem.content)}</div>
               <div class="wc-mem-item-time">${escAttr(mem.time)}</div>
               <div class="wc-mem-item-actions">
-                <button class="wc-mem-edit-btn" data-i="${i}" title="修改">✎</button>
+                ${onEdit ? `<button class="wc-mem-edit-btn" data-i="${i}" title="修改">✎</button>` : ''}
                 <button class="wc-mem-del-btn" data-i="${i}" title="删除">×</button>
               </div>
             </div>`).join('');
@@ -3582,14 +4177,17 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             const i = parseInt(btn.dataset.i);
             if(confirm('确定删除？')){ onDel(i); Phone.setData('wechat', d); render(); }
           }));
-          listEl.querySelectorAll('.wc-mem-edit-btn').forEach(btn => btn.addEventListener('click', () => {
-            const i = parseInt(btn.dataset.i); onEdit(i);
-          }));
+          if(onEdit){
+            listEl.querySelectorAll('.wc-mem-edit-btn').forEach(btn => btn.addEventListener('click', () => {
+              const i = parseInt(btn.dataset.i); onEdit(i);
+            }));
+          }
         }
 
         function render(){
           const coreList = memPage.querySelector('#wcCoreMemList');
           const slList = memPage.querySelector('#wcStorylineList');
+          const hList = memPage.querySelector('#wcHeartList');
           renderList(coreList, chatMem.core,
             (i) => Phone.modal({ title:'修改核心记忆', fields:[{key:'content',label:'内容',value:chatMem.core[i].content,type:'textarea'}], onOk: v => {
               if(!(v.content||'').trim()) return false; chatMem.core[i].content = v.content.trim(); const now = new Date();
@@ -3607,6 +4205,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             }}),
             (i) => chatMem.storylines.splice(i,1),
             '暂无剧情线'
+          );
+          renderList(hList, heartList, null,
+            (i) => { heartList.splice(i,1); d.heartVoices[chatId] = heartList; },
+            '暂无心声'
           );
         }
         render();
@@ -3633,7 +4235,12 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       function render(){
         body.innerHTML = '';
         const { d, gs } = getSettings();
-        const mems = g.members.map(id => MOCK_CONTACTS.find(c=>c.id===id)).filter(Boolean);
+        let mems = g.members.map(id => MOCK_CONTACTS.find(c=>c.id===id)).filter(Boolean);
+        {
+          const oid = g.owner || 'user';
+          const ownerMember = oid === 'user' ? null : MOCK_CONTACTS.find(c=>c.id===oid);
+          if(ownerMember){ mems = [ownerMember, ...mems.filter(m => m.id !== ownerMember.id)]; }
+        }
         const allChars = (Phone._getState().characters || []);
         const boundChar = allChars.find(c => c.id === g.userCharId) || Phone.getCurrentChar();
         const userName = boundChar.name || '我';
@@ -3860,8 +4467,11 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
                   const d2 = Phone.getData('wechat');
                   if(d2.memories && d2.memories[chatId]){
                     d2.memories[chatId] = { core:[], storylines:[] };
-                    Phone.setData('wechat', d2);
                   }
+                  if(d2.heartVoices && d2.heartVoices[chatId]){
+                    d2.heartVoices[chatId] = [];
+                  }
+                  Phone.setData('wechat', d2);
                   saveHistoryToStorage();
                   document.dispatchEvent(new CustomEvent('wechat-data-updated', { detail:{ type:'chat' } }));
                   alert('会话已重启');
@@ -3940,7 +4550,12 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         const char = Phone.getCurrentChar();
         const userName = char.name || '我';
         const userAvatar = char.avatar || '';
-        const mems = g.members.map(id => MOCK_CONTACTS.find(c=>c.id===id)).filter(Boolean);
+        let mems = g.members.map(id => MOCK_CONTACTS.find(c=>c.id===id)).filter(Boolean);
+        {
+          const oid = g.owner || 'user';
+          const ownerMember = oid === 'user' ? null : MOCK_CONTACTS.find(c=>c.id===oid);
+          if(ownerMember){ mems = [ownerMember, ...mems.filter(m => m.id !== ownerMember.id)]; }
+        }
 
         function mkOwnerItem(id, name, avatar, isOn){
           return `<div class="wc-cg-row ${isOn?'on':''}" data-owner="${id}">
@@ -4446,6 +5061,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             const contact = MOCK_CONTACTS.find(c => c.id === chat.contactId);
             sys = `你正在进行线下角色扮演。你扮演的是 ${chat.name}。\n`;
             if(contact?.roleSetting) sys += `【你的人设】\n${contact.roleSetting}\n`;
+            if(contact?.writingStyle?.length) sys += `【文风参考（请模仿这些话法和语气）】\n${contact.writingStyle.slice(0,15).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
             const userPersona = cs.persona || char.persona || '';
             if(userPersona) sys += `用户 "${userName}" 的人设：${userPersona}\n`;
             sys += `用户给出了一个场景/动作/想法。\n`;
@@ -4465,6 +5081,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             }
             if(cm?.storylines?.length){
               memSys += `\n\n【剧情线 - 必须据此发挥】\n${cm.storylines.map(m => m.content).join('\n')}`;
+            }
+            const hvs = allD.heartVoices?.[chatId];
+            if(hvs?.length){
+              memSys += `\n\n【你的内心独白（心声）- 这些是你曾在心里真实想过的事】\n${hvs.slice(0,5).map(h => h.content).join('\n')}`;
             }
           } catch(e){}
           if(memSys) sys += memSys;
@@ -4622,7 +5242,14 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         const allChars = (Phone._getState().characters || []);
         if(isGroup){
           const g = getGroups().find(gg => gg.id === chat.groupId);
-          members = g ? g.members.map(id => MOCK_CONTACTS.find(c=>c.id===id)).filter(Boolean) : [];
+          if(g){
+            members = g.members.map(id => MOCK_CONTACTS.find(c=>c.id===id)).filter(Boolean);
+            const oid = g.owner || 'user';
+            const ownerMember = oid === 'user' ? null : MOCK_CONTACTS.find(c=>c.id===oid);
+            if(ownerMember){ members = [ownerMember, ...members.filter(m => m.id !== ownerMember.id)]; }
+          } else {
+            members = [];
+          }
           char = (g?.userCharId ? allChars.find(c => c.id === g.userCharId) : null) || Phone.getCurrentChar();
         } else {
           char = Phone.getCurrentChar();
@@ -5091,12 +5718,13 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           sys = `你是 ${chat.name}。\n`;
           const c = MOCK_CONTACTS.find(c=>c.id===chat.contactId);
           if(c?.roleSetting) sys += `【你的人设】\n${c.roleSetting}\n`;
+          if(c?.writingStyle?.length) sys += `【文风参考（请模仿这些话法和语气）】\n${c.writingStyle.slice(0,15).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
           if(cs.persona||char.persona) sys += `用户"${userName}"的人设：${cs.persona||char.persona}\n`;
           sys += `自然活泼地回复，根据时间调整内容。\n`;
           sys += `⚠️ 你是${chat.name}，禁止无关人物出场。\n`;
         }
         let memSys = '';
-        try{ const cm=(Phone.getData('wechat').memories||{})[chatId]; if(cm?.core?.length) memSys+=`\n\n【核心记忆】\n${cm.core.map(m=>m.content).join('\n')}`; if(cm?.storylines?.length) memSys+=`\n\n【剧情线】\n${cm.storylines.map(m=>m.content).join('\n')}`; }catch(e){}
+        try{ const _d=Phone.getData('wechat'); const cm=_d.memories?.[chatId]; if(cm?.core?.length) memSys+=`\n\n【核心记忆】\n${cm.core.map(m=>m.content).join('\n')}`; if(cm?.storylines?.length) memSys+=`\n\n【剧情线】\n${cm.storylines.map(m=>m.content).join('\n')}`; const hvs=_d.heartVoices?.[chatId]; if(hvs?.length) memSys+=`\n\n【你的内心独白（心声）】\n${hvs.slice(0,5).map(h=>h.content).join('\n')}`; }catch(e){}
         if(memSys) sys+=memSys;
         return sys;
       }
@@ -5121,6 +5749,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       function renderOneMessage(m){
         const d = document.createElement('div');
         const isUserMsg = m.role === 'user';
+        const _stickerSrcs = (() => { try { return new Set(getStickerPacks().flatMap(p => p.stickers).map(s => s.src)); } catch(e){ return new Set(); } })();
+        const _isActuallySticker = m.type === 'image' && _stickerSrcs.has(m.content);
+        const _isTextImg = m.type === 'image' && !_isActuallySticker && (m.isTextImg || (m.content || '').startsWith('data:image') && !m.caption);
         if(m.recalled){
           d.className = 'wc-msg system';
           d.style.justifyContent = 'center';
@@ -5144,14 +5775,28 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             ${avatarHTML(speakerName, '', speakerAvatar)}
             <div>
               ${!isUserMsg && isGroup ? `<div class="wc-msg-name">${escAttr(speakerName)}</div>` : ''}
-              <div class="wc-msg-bubble" style="background:transparent;border:none;padding:0">${quoteHtml}<img src="${escAttr(m.content)}" alt="" style="max-width:80px;max-height:80px;border-radius:10px;display:block">${m.caption?`<div class="wc-msg-img-cap" style="margin-top:4px;color:${isUserMsg?'rgba(255,255,255,.85)':'#1e3a50'}">${escAttr(m.caption)}</div>`:''}</div>
+              <div>${quoteHtml}<img src="${escAttr(m.content)}" alt="" style="max-width:54px;max-height:54px;border-radius:8px;display:block"></div>
             </div>`;
-        } else if(m.type === 'image'){
+        } else if(_isTextImg){
           d.innerHTML = `
             ${avatarHTML(speakerName, '', speakerAvatar)}
             <div>
               ${!isUserMsg && isGroup ? `<div class="wc-msg-name">${escAttr(speakerName)}</div>` : ''}
-              <div class="wc-msg-bubble">${quoteHtml}<img src="${escAttr(m.content)}" alt="" style="max-width:160px;border-radius:8px;display:block">${m.caption?`<div class="wc-msg-img-cap" style="margin-top:4px;color:${isUserMsg?'rgba(255,255,255,.85)':'#1e3a50'}">${escAttr(m.caption)}</div>`:''}</div>
+              <div>${quoteHtml}<img src="${escAttr(m.content)}" alt="" style="width:100px;height:100px;object-fit:cover;border-radius:10px;display:block;cursor:pointer" data-full="${escAttr(m.content)}"></div>
+            </div>`;
+        } else if(m.type === 'image' && !_isActuallySticker){
+          d.innerHTML = `
+            ${avatarHTML(speakerName, '', speakerAvatar)}
+            <div>
+              ${!isUserMsg && isGroup ? `<div class="wc-msg-name">${escAttr(speakerName)}</div>` : ''}
+              <div>${quoteHtml}<img src="${escAttr(m.content)}" alt="" style="width:60px;height:60px;object-fit:contain;border-radius:6px;display:block;cursor:pointer" data-full="${escAttr(m.content)}">${m.caption?`<div style="margin-top:2px;color:#4a5568;font-size:10px">${escAttr(m.caption)}</div>`:''}</div>
+            </div>`;
+        } else if(_isActuallySticker){
+          d.innerHTML = `
+            ${avatarHTML(speakerName, '', speakerAvatar)}
+            <div>
+              ${!isUserMsg && isGroup ? `<div class="wc-msg-name">${escAttr(speakerName)}</div>` : ''}
+              <div>${quoteHtml}<img src="${escAttr(m.content)}" alt="" style="max-width:54px;max-height:54px;border-radius:8px;display:block"></div>
             </div>`;
         } else if(m.type === 'voice'){
           const dur = m.duration || 2;
@@ -5178,6 +5823,62 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             setTimeout(() => vb.classList.remove('playing'), 2000);
             if(trans) trans.style.display = trans.style.display === 'none' ? '' : 'none';
           });
+        } else if(m.type === 'transfer'){
+          const claimed = m.status === 'claimed' || m.status === 'completed';
+          const rejected = m.status === 'rejected';
+          const statusClass = claimed ? 'claimed' : (rejected ? 'rejected' : '');
+          const statusText = claimed ? '已收款' : (rejected ? '已退回' : (isUserMsg ? '待对方收款' : '点击领取'));
+          d.innerHTML = `
+            ${avatarHTML(speakerName, '', speakerAvatar)}
+            <div>
+              ${!isUserMsg && isGroup ? `<div class="wc-msg-name">${escAttr(speakerName)}</div>` : ''}
+              ${quoteHtml}
+              <div class="wc-xfer-card${statusClass ? ' ' + statusClass : ''}" data-msg-idx="${m._idx}">
+                <div class="wc-xfer-card-head">
+                  <div class="wc-xfer-icon">
+                    <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  </div>
+                  <span class="wc-xfer-label">转账</span>
+                </div>
+                <div class="wc-xfer-body-row">
+                  <span><span class="wc-xfer-amt-symbol">¥</span><span class="wc-xfer-amt-text">${m.amount.toFixed(2)}</span></span>
+                </div>
+                ${m.note ? `<div class="wc-xfer-note">${escAttr(m.note)}</div>` : ''}
+                <div class="wc-xfer-status">${statusText}</div>
+              </div>
+            </div>`;
+          d.querySelector('.wc-xfer-card').addEventListener('click', () => openTransferDetailMsg(m));
+        } else if(m.type === 'transfer_claimed'){
+          d.className = 'wc-msg system';
+          d.innerHTML = `
+            <div style="width:100%;text-align:center;margin:4px 0">
+              <span class="wc-xfer-claimed-label">${escAttr(m.content)}</span>
+            </div>`;
+          return d;
+        } else if(m.type === 'redpacket'){
+          const allOpened = (m.openList || []).length >= (m.count || 1);
+          const isCompleted = allOpened;
+          const isRandom = m.rpType === 'random';
+          const totalCount = m.count || 1;
+          const openedCount = (m.openList || []).length;
+          d.innerHTML = `
+            ${avatarHTML(speakerName, '', speakerAvatar)}
+            <div>
+              ${!isUserMsg && isGroup ? `<div class="wc-msg-name">${escAttr(speakerName)}</div>` : ''}
+              ${quoteHtml}
+              <div class="wc-rp-card${isCompleted ? ' claimed' : ''}" data-msg-idx="${m._idx}">
+                <div class="wc-rp-card-head">
+                  <div class="wc-rp-card-icon">🧧</div>
+                  <span class="wc-rp-card-label">微信红包</span>
+                </div>
+                <div class="wc-rp-card-msg">${escAttr(m.msg || '恭喜发财，大吉大利')}</div>
+                <div class="wc-rp-card-foot">
+                  <span class="wc-rp-card-status">${isCompleted ? '已被领完' : (isUserMsg ? `${openedCount}/${totalCount}已领` : '点击拆开')}</span>
+                  ${totalCount > 1 ? `<span class="wc-rp-card-type">${isRandom ? '拼手气' : '固定'}</span>` : ''}
+                </div>
+              </div>
+            </div>`;
+          d.querySelector('.wc-rp-card').addEventListener('click', () => openRedPacketOpenMsg(m));
         } else {
           d.innerHTML = `
             ${avatarHTML(speakerName, '', speakerAvatar)}
@@ -5192,6 +5893,16 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         d.dataset.isUser = isUserMsg ? '1' : '0';
         d.dataset.content = m.content || '';
         attachMsgMenu(d, chatId, isUserMsg);
+        d.querySelectorAll('img[data-full]').forEach(img => {
+          img.addEventListener('click', () => {
+            const full = img.dataset.full;
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out';
+            overlay.innerHTML = `<img src="${full}" style="width:min(90vw,90vh);height:min(90vw,90vh);object-fit:contain;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,.5);background:#fff">`;
+            overlay.addEventListener('click', () => overlay.remove());
+            document.body.appendChild(overlay);
+          });
+        });
         return d;
       }
 
@@ -5264,8 +5975,8 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         active.stickers.forEach(s => {
           const item = document.createElement('div');
           item.className = 'wc-emoji-item';
-          item.innerHTML = `<img src="${escAttr(s.src)}" alt="">${s.caption?`<div class="wc-emoji-cap">${escAttr(s.caption)}</div>`:''}`;
-          item.addEventListener('click', () => { sendImage(s); closePanels(); });
+          item.innerHTML = `<img src="${escAttr(s.src)}" alt="">`;
+          item.addEventListener('click', () => { sendSticker(s); closePanels(); });
           emojiGrid.appendChild(item);
         });
       }
@@ -5332,22 +6043,74 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       });
 
       msgs.addEventListener('click', closePanels);
-      plusPanel.addEventListener('click', e => {
+      plusPanel.addEventListener('click', async e => {
         const item = e.target.closest('.wc-plus-item');
         if(!item) return;
         const act = item.dataset.act;
         plusPanel.classList.remove('show');
         if(act === 'image'){
-          const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = 'image/*';
-          inp.onchange = async () => {
-            const f = inp.files[0]; if(!f) return;
-            const url = await Phone.fileToBase64(f);
-            sendImage({ src:url, caption:'' });
-          };
-          inp.click();
+          const r = await Phone.modal({
+            title:'发送图片',
+            fields:[{
+              key:'mode', label:'图片来源', value:'local', type:'select',
+              opts:'<option value="local">本地图片</option><option value="text">文字生成图片</option>'
+            }]
+          });
+          if(!r) return;
+          if(r.mode === 'text'){
+            const t = await Phone.modal({
+              title:'文字生成图片',
+              fields:[
+                { key:'text', label:'文字内容', value:'', type:'textarea', placeholder:'输入要渲染成图片的文字' },
+                { key:'bg', label:'背景色', value:'#ffffff', type:'color' },
+                { key:'fg', label:'文字颜色', value:'#1a1a1a', type:'color' }
+              ]
+            });
+            if(!t) return;
+            const txt = (t.text||'').trim(); if(!txt){ Phone.toast('请输入文字'); return; }
+            const src = await genTextImage(txt, t.bg || '#ffffff', t.fg || '#1a1a1a');
+            sendImage({ src, caption:'', isTextImg:true });
+          } else {
+            const inp = document.createElement('input');
+            inp.type = 'file'; inp.accept = 'image/*';
+            inp.onchange = async () => {
+              const f = inp.files[0]; if(!f) return;
+              const compressImg = await new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const img = new Image();
+                  img.onload = () => {
+                    const maxSide = 600;
+                    let { width:w, height:h } = img;
+                    if(w > maxSide || h > maxSide){
+                      if(w >= h){ h = Math.round(h * maxSide / w); w = maxSide; }
+                      else { w = Math.round(w * maxSide / h); h = maxSide; }
+                    }
+                    const cv = document.createElement('canvas');
+                    cv.width = w; cv.height = h;
+                    cv.getContext('2d').drawImage(img, 0, 0, w, h);
+                    resolve(cv.toDataURL('image/jpeg', 0.75));
+                  };
+                  img.src = reader.result;
+                };
+                reader.readAsDataURL(f);
+              });
+              const r2 = await Phone.modal({
+                title:'发送图片',
+                fields:[{ key:'caption', label:'配文（可选）', value:'', type:'textarea' }]
+              });
+              sendImage({ src:compressImg, caption: r2 ? (r2.caption || '').trim() : '' });
+            };
+            inp.click();
+          }
+        } else if(act === 'transfer'){
+          if(isGroup){ Phone.toast('群聊中请使用红包功能'); return; }
+          openTransferModal();
+        } else if(act === 'redpacket'){
+          openRedPacketModal();
+        } else if(act === 'video' || act === 'call'){
+          Phone.toast(`${act === 'video' ? '视频通话' : '语音通话'}功能暂未开放`);
         } else {
-          Phone.modal({ title:'提示', fields:[{key:'x',label:act,value:'',readonly:true,textarea:true}].slice(0,0) });
           Phone.showDeveloping();
         }
       });
@@ -5411,10 +6174,48 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           triggerAIReply();
         }, delay);
       }
-      function sendImage(sticker){
+      function genTextImage(text, bg='#ffffff', fg='#1a1a1a'){
+        return new Promise(resolve => {
+          const CW = 600, CH = 600, pad = 40;
+          const c = document.createElement('canvas');
+          c.width = CW; c.height = CH;
+          const ctx = c.getContext('2d');
+          let fs = 36, lineH, lines2;
+          while(fs >= 18){
+            lineH = fs * 1.5;
+            ctx.font = fs + 'px "PingFang SC","Microsoft YaHei",sans-serif';
+            lines2 = []; let cur = '';
+            for(const ch of (text||'').split('')){
+              const t2 = cur + ch;
+              if(ctx.measureText(t2).width > CW - pad*2){ lines2.push(cur); cur = ch; }
+              else cur = t2;
+            }
+            if(cur) lines2.push(cur);
+            if(lines2.length * lineH + pad*2 <= CH) break;
+            fs -= 2;
+          }
+          ctx.fillStyle = bg; ctx.fillRect(0,0,CW,CH);
+          ctx.fillStyle = fg; ctx.font = fs + 'px "PingFang SC","Microsoft YaHei",sans-serif';
+          ctx.textBaseline = 'top';
+          const startY = (CH - lines2.length * lineH) / 2;
+          lines2.forEach((ln,i) => ctx.fillText(ln, pad, startY + i*lineH));
+          resolve(c.toDataURL('image/png'));
+        });
+      }
+
+      function sendImage(img){
         emojiPicker.classList.remove('show');
         const ts = Date.now();
-        history.push({ role:'user', type:'sticker', content:sticker.src, caption: sticker.caption||'', ts });
+        history.push({ role:'user', type:'image', content:img.src, caption: img.caption||'', isTextImg: !!img.isTextImg, ts });
+        saveHistoryToStorage();
+        _notifyChatUpdated();
+        scheduleAutoReply();
+      }
+      function sendSticker(sk){
+        emojiPicker.classList.remove('show');
+        plusPanel.classList.remove('show');
+        const ts = Date.now();
+        history.push({ role:'user', type:'sticker', content:sk.src, caption:'', ts });
         saveHistoryToStorage();
         _notifyChatUpdated();
         scheduleAutoReply();
@@ -5426,6 +6227,512 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         saveHistoryToStorage();
         _notifyChatUpdated();
         scheduleAutoReply();
+      }
+
+      function _walletOp(){
+        const d = Phone.getData('wechat') || {};
+        if(!d.wallet){
+          d.wallet = { records: [{ type:'in', amount:500, note:'初始余额', source:'system', ts: Date.now() - 86400000 }] };
+          Phone.setData('wechat', d);
+        }
+        d.wallet = d.wallet || { records:[] };
+        const get = () => {
+          let totalIn = 0, totalOut = 0;
+          (d.wallet.records || []).forEach(r => { if(r.type==='in') totalIn+=r.amount; else totalOut+=r.amount; });
+          return { records: d.wallet.records, balance: totalIn - totalOut, totalIn, totalOut };
+        };
+        const save = (records) => {
+          d.wallet.records = records;
+          Phone.setData('wechat', d);
+        };
+        const add = (type, amount, note, source) => {
+          const recs = d.wallet.records || [];
+          recs.push({ type, amount, note: note || (type==='in'?'收入':'支出'), source: source || 'transfer', ts: Date.now() });
+          d.wallet.records = recs;
+          Phone.setData('wechat', d);
+        };
+        return { get, save, add };
+      }
+
+      function _avatarInitial(name){
+        if(!name) return '?';
+        const s = String(name).trim();
+        return s.charAt(0);
+      }
+
+            function openTransferModal(){
+        const wop = _walletOp();
+        const { balance } = wop.get();
+        const toName = chat.name || '对方';
+        let toSelf = false;
+        const currentTargetName = () => toSelf ? userName : toName;
+        const currentTargetInitial = () => _avatarInitial(currentTargetName());
+
+        const mask = document.createElement('div');
+        mask.className = 'wc-xfer-mask';
+        mask.innerHTML = `
+          <div class="wc-xfer-box">
+            <div class="wc-xfer-head">
+              <span class="wc-xfer-title">转账</span>
+              <button class="wc-xfer-close">×</button>
+            </div>
+            <div class="wc-xfer-body">
+              <div class="wc-xfer-to-row" data-toggle-to>
+                <div class="wc-xfer-avatar" style="cursor:pointer">${escAttr(currentTargetInitial())}</div>
+                <div class="wc-xfer-to-info" style="cursor:pointer">
+                  <div class="wc-xfer-to-label">收款方 <span style="font-size:10px;color:#999">（点击切换）</span></div>
+                  <div class="wc-xfer-to-name">${escAttr(currentTargetName())}</div>
+                </div>
+              </div>
+              <div class="wc-xfer-amount-wrap">
+                <span class="wc-xfer-currency">¥</span>
+                <input class="wc-xfer-amount" type="number" placeholder="0.00" min="0" step="0.01" inputmode="decimal">
+              </div>
+              <div class="wc-xfer-note-row">
+                <input class="wc-xfer-note-input" type="text" placeholder="添加转账说明（可选）" maxlength="30">
+              </div>
+              <div class="wc-xfer-balance">钱包余额：¥${balance.toFixed(2)}</div>
+              <button class="wc-xfer-pay-btn">转账</button>
+            </div>
+          </div>`;
+        document.body.appendChild(mask);
+
+        const box = mask.querySelector('.wc-xfer-box');
+        const close = () => {
+          box.style.animation = 'wcPopIn .22s cubic-bezier(.32,.72,0,1) reverse';
+          setTimeout(() => mask.remove(), 220);
+        };
+        mask.querySelector('.wc-xfer-close').addEventListener('click', close);
+        mask.addEventListener('click', e => { if(e.target === mask) close(); });
+
+        const avatarEl = mask.querySelector('.wc-xfer-avatar');
+        const nameEl = mask.querySelector('.wc-xfer-to-name');
+        mask.querySelector('[data-toggle-to]').addEventListener('click', () => {
+          toSelf = !toSelf;
+          avatarEl.textContent = currentTargetInitial();
+          nameEl.textContent = currentTargetName();
+        });
+
+        const amountEl = mask.querySelector('.wc-xfer-amount');
+        const noteEl = mask.querySelector('.wc-xfer-note-input');
+        const payBtn = mask.querySelector('.wc-xfer-pay-btn');
+        setTimeout(() => amountEl.focus(), 100);
+
+        amountEl.addEventListener('input', () => {
+          const v = parseFloat(amountEl.value);
+          payBtn.disabled = !v || v <= 0;
+        });
+
+        payBtn.addEventListener('click', () => {
+          const amt = parseFloat(amountEl.value);
+          if(!amt || amt <= 0){ Phone.toast('请输入有效金额'); return; }
+          if(amt > balance){ Phone.toast('余额不足'); return; }
+          const note = (noteEl.value || '').trim();
+          showTransferPayPwd(amt, note);
+        });
+
+        function showTransferPayPwd(amt, note){
+          const oldBox = mask.querySelector('.wc-xfer-box');
+          oldBox.innerHTML = `
+            <div class="wc-xfer-head">
+              <span class="wc-xfer-title">确认支付</span>
+              <button class="wc-xfer-close">×</button>
+            </div>
+            <div class="wc-xfer-body">
+              <div class="wc-xfer-pwd-box" style="animation:none;box-shadow:none;padding:0">
+                <div class="wc-xfer-pwd-title">转账给 ${escAttr(currentTargetName())}</div>
+                <div class="wc-xfer-pwd-amount">¥${amt.toFixed(2)}</div>
+                <div class="wc-xfer-pwd-inputs">
+                  ${Array.from({length:6},()=>'<div class="wc-xfer-pwd-cell"></div>').join('')}
+                </div>
+              </div>
+            </div>`;
+          const cells = oldBox.querySelectorAll('.wc-xfer-pwd-cell');
+          let pwd = '';
+          cells.forEach((cell, i) => {
+            cell.addEventListener('click', () => {
+              if(pwd.length >= 6) return;
+              const n = Math.floor(Math.random()*9)+1;
+              pwd += String(n);
+              cell.textContent = '•';
+              cell.classList.add('filled');
+              if(pwd.length === 6){
+                setTimeout(() => { finalizeTransfer(amt, note, toSelf); }, 350);
+              }
+            });
+          });
+          oldBox.querySelector('.wc-xfer-close').addEventListener('click', close);
+        }
+      }
+
+            function finalizeTransfer(amt, note, toSelf){
+        const wop = _walletOp();
+        const ts = Date.now();
+        if(toSelf){
+          history.push({
+            role: 'ai', type: 'transfer', source: 'char',
+            content: `[转账 ¥${amt.toFixed(2)}]`,
+            amount: amt, note: note || '转账',
+            toName: userName, toContactId: '',
+            status:'pending', speakerName: chat.name,
+            openList:[], ts, msgId:'xfer_char_' + ts
+          });
+        } else {
+          wop.add('out', amt, note || `转账给 ${chat.name}`, 'transfer_' + chatId);
+          history.push({
+            role: 'user', type: 'transfer',
+            content: `[转账 ¥${amt.toFixed(2)}]`,
+            amount: amt, note: note || '',
+            toName: chat.name, toContactId: chat.contactId || '',
+            status: 'pending', source: 'self', ts, msgId: 'xfer_' + ts
+          });
+        }
+        saveHistoryToStorage();
+        _notifyChatUpdated();
+        Phone.toast(toSelf ? '已模拟转账，请在详情页收款' : '转账已发送');
+        document.querySelectorAll('.wc-xfer-mask').forEach(m => { m.remove(); });
+      }
+
+            function openRedPacketModal(){
+        const wop = _walletOp();
+        const { balance } = wop.get();
+        const toName = chat.name || '大家';
+        const isGroupRP = isGroup;
+        let toSelf = false;
+        const currentTargetName = () => toSelf ? userName : toName;
+        const currentTargetInitial = () => _avatarInitial(currentTargetName());
+
+        const mask = document.createElement('div');
+        mask.className = 'wc-rp-mask';
+        mask.innerHTML = `
+          <div class="wc-rp-box" style="position:relative">
+            <div class="wc-rp-ornament"></div>
+            <div class="wc-rp-head">
+              <span class="wc-rp-title">发红包</span>
+              <div class="wc-rp-head-spacer"></div>
+              <button class="wc-rp-close">×</button>
+            </div>
+            <div class="wc-rp-body">
+              <div class="wc-rp-to-wrap" ${isGroupRP?'':'data-toggle-rp'}>
+                <div class="wc-rp-avatar" style="${isGroupRP?'':'cursor:pointer'}">${escAttr(currentTargetInitial())}</div>
+                <div class="wc-rp-to-info" style="${isGroupRP?'':'cursor:pointer'}">
+                  <div class="wc-rp-to-label">发给 ${isGroupRP?'':'<span style="font-size:10px;color:#999">（点击切换）</span>'}</div>
+                  <div class="wc-rp-to-name">${escAttr(currentTargetName())}</div>
+                </div>
+              </div>
+              <div class="wc-rp-type-row">
+                ${isGroupRP ? `
+                  <button class="wc-rp-type-btn active" data-type="fixed">固定金额</button>
+                  <button class="wc-rp-type-btn" data-type="random">拼手气</button>
+                ` : `<button class="wc-rp-type-btn active" data-type="fixed" style="flex:1">普通红包</button>`}
+              </div>
+              <div class="wc-rp-amount-row">
+                <span class="wc-rp-currency">¥</span>
+                <input class="wc-rp-amount" type="number" placeholder="0.00" min="0" step="0.01" inputmode="decimal">
+              </div>
+              ${isGroupRP ? `
+              <div class="wc-rp-count-row ${false ? 'show':''}">
+                <span class="wc-rp-count-label">个数</span>
+                <input class="wc-rp-count-input" type="number" value="1" min="1" max="50">
+                <span class="wc-rp-count-label">个</span>
+              </div>` : ''}
+              <div class="wc-rp-msg-row">
+                <input class="wc-rp-msg" type="text" value="恭喜发财，大吉大利" maxlength="30">
+              </div>
+              <div class="wc-rp-balance">钱包余额：¥${balance.toFixed(2)}</div>
+              <button class="wc-rp-send-btn">塞钱进红包</button>
+            </div>
+          </div>`;
+        document.body.appendChild(mask);
+
+        const box = mask.querySelector('.wc-rp-box');
+        const close = () => {
+          box.style.animation = 'wcPopIn .22s cubic-bezier(.32,.72,0,1) reverse';
+          setTimeout(() => mask.remove(), 220);
+        };
+        mask.querySelector('.wc-rp-close').addEventListener('click', close);
+        mask.addEventListener('click', e => { if(e.target === mask) close(); });
+
+        if(!isGroupRP){
+          const avatarEl = mask.querySelector('.wc-rp-avatar');
+          const nameEl = mask.querySelector('.wc-rp-to-name');
+          mask.querySelector('[data-toggle-rp]').addEventListener('click', () => {
+            toSelf = !toSelf;
+            avatarEl.textContent = currentTargetInitial();
+            nameEl.textContent = currentTargetName();
+          });
+        }
+
+        let rpType = 'fixed';
+        mask.querySelectorAll('.wc-rp-type-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            mask.querySelectorAll('.wc-rp-type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            rpType = btn.dataset.type;
+            const countRow = mask.querySelector('.wc-rp-count-row');
+            if(countRow){ countRow.classList.toggle('show', rpType === 'random'); }
+          });
+        });
+
+        const amountEl = mask.querySelector('.wc-rp-amount');
+        const countEl = mask.querySelector('.wc-rp-count-input');
+        const msgEl = mask.querySelector('.wc-rp-msg');
+        const sendBtn = mask.querySelector('.wc-rp-send-btn');
+        setTimeout(() => amountEl.focus(), 100);
+
+        sendBtn.addEventListener('click', () => {
+          const amt = parseFloat(amountEl.value);
+          if(!amt || amt <= 0){ Phone.toast('请输入有效金额'); return; }
+          if(amt > balance){ Phone.toast('余额不足'); return; }
+          let count = 1;
+          if(isGroupRP && rpType === 'random'){
+            count = parseInt(countEl.value) || 1;
+            if(count < 1){ Phone.toast('请输入红包个数'); return; }
+            if(amt < count){ Phone.toast('总金额必须大于红包个数'); return; }
+            if(amt / count > 200){ Phone.toast('单个红包金额不能超过200元'); return; }
+          } else {
+            if(amt > 200){ Phone.toast('单个红包金额不能超过200元'); return; }
+          }
+          const msg = (msgEl.value || '').trim();
+          finalizeRedPacket(amt, count, rpType, msg, toSelf);
+        });
+      }
+
+            function finalizeRedPacket(totalAmount, count, rpType, msg, toSelf){
+        const wop = _walletOp();
+        const ts = Date.now();
+        if(toSelf){
+          history.push({
+            role: 'ai', type: 'redpacket', source: 'char',
+            content: `[微信红包 ¥${totalAmount.toFixed(2)}]`,
+            amount: totalAmount,
+            count: count || 1,
+            rpType: rpType || 'fixed',
+            msg: msg || '恭喜发财，大吉大利',
+            toName: userName, toContactId: '',
+            status: 'pending', speakerName: chat.name,
+            openList: [], ts, msgId:'rp_char_' + ts
+          });
+        } else {
+          wop.add('out', totalAmount, msg || '发红包', 'redpacket_' + chatId);
+          history.push({
+            role: 'user', type: 'redpacket',
+            content: `[微信红包 ¥${totalAmount.toFixed(2)}]`,
+            amount: totalAmount,
+            count: count || 1,
+            rpType: rpType || 'fixed',
+            msg: msg || '恭喜发财，大吉大利',
+            toName: chat.name, toContactId: chat.contactId || '',
+            status: 'pending', source: 'self',
+            openList: [], ts, msgId: 'rp_' + ts
+          });
+        }
+        saveHistoryToStorage();
+        _notifyChatUpdated();
+        Phone.toast(toSelf ? '已模拟红包，请在详情页领取' : '红包已发送');
+        document.querySelectorAll('.wc-rp-mask').forEach(m => { m.remove(); });
+      }
+
+      function openTransferDetailMsg(msgData){
+        const mask = document.createElement('div');
+        mask.className = 'wc-xfer-detail-mask';
+        const isUserOutgoing = msgData.source === 'self';
+        const isCharOutgoing = msgData.source === 'char';
+        const claimed = msgData.status === 'claimed';
+        const rejected = msgData.status === 'rejected';
+        const isClosed = claimed || rejected;
+        const canUserAccept = isCharOutgoing && !isClosed;
+        const canUserReject = isCharOutgoing && !isClosed;
+        const canMarkClaimedByOther = isUserOutgoing && !isClosed;
+        const isExpired = (msgData.ts || 0) + 24 * 3600 * 1000 < Date.now() && !isClosed;
+
+        const payerName = isUserOutgoing ? userName : (msgData.speakerName || chat.name);
+        const payeeName = isUserOutgoing ? (msgData.toName || chat.name) : userName;
+        const statusText = isExpired ? '已超时退回' : (rejected ? '已退回' : (claimed ? '已收款' : '待收款'));
+        const statusColor = isExpired || rejected ? '#c05050' : (claimed ? '#2aa36e' : '#b8860b');
+
+        mask.innerHTML = `
+          <div class="wc-xfer-detail-box">
+            <div class="wc-xfer-detail-head">
+              <span class="wc-xfer-detail-title">转账详情</span>
+              <button class="wc-xfer-detail-close">×</button>
+            </div>
+            <div class="wc-xfer-detail-body">
+              <div class="wc-xfer-detail-amt-wrap">
+                <div class="wc-xfer-detail-amt-label">转账金额</div>
+                <div class="wc-xfer-detail-amt"><span class="wc-xfer-detail-amt-symbol">¥</span>${msgData.amount.toFixed(2)}</div>
+              </div>
+              <div class="wc-xfer-detail-rows">
+                <div class="wc-xfer-detail-row">
+                  <span class="wc-xfer-detail-row-label">付款方</span>
+                  <span class="wc-xfer-detail-row-val">${escAttr(payerName)}</span>
+                </div>
+                <div class="wc-xfer-detail-row">
+                  <span class="wc-xfer-detail-row-label">收款方</span>
+                  <span class="wc-xfer-detail-row-val">${escAttr(payeeName)}</span>
+                </div>
+                <div class="wc-xfer-detail-row">
+                  <span class="wc-xfer-detail-row-label">转账说明</span>
+                  <span class="wc-xfer-detail-row-val">${escAttr(msgData.note || '转账')}</span>
+                </div>
+                <div class="wc-xfer-detail-row">
+                  <span class="wc-xfer-detail-row-label">收款状态</span>
+                  <span class="wc-xfer-detail-row-val" style="color:${statusColor}">${statusText}</span>
+                </div>
+                <div class="wc-xfer-detail-row">
+                  <span class="wc-xfer-detail-row-label">发起时间</span>
+                  <span class="wc-xfer-detail-row-val">${escAttr(new Date(msgData.ts).toLocaleString('zh-CN'))}</span>
+                </div>
+              </div>
+              ${canMarkClaimedByOther ? `
+              <div style="margin-top:12px;padding:10px 12px;background:rgba(184,226,198,.35);border-radius:8px;font-size:12px;color:var(--green-ink-soft);line-height:1.6">
+                💡 转账已发送，等待${escAttr(chat.name)}收款。<br>
+                可点击下方按钮模拟对方已收到。
+              </div>` : ''}
+            </div>
+            ${canUserAccept ? `
+            <div class="wc-xfer-detail-foot" style="display:flex;gap:8px">
+              <button class="wc-xfer-detail-reject-btn" style="flex:1;padding:11px;border:1px solid #c05050;border-radius:10px;background:#fff;color:#c05050;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">退回</button>
+              <button class="wc-xfer-detail-claim-btn" style="flex:1">确认收款</button>
+            </div>` : ''}
+            ${canMarkClaimedByOther ? `
+            <div class="wc-xfer-detail-foot">
+              <button class="wc-xfer-detail-mark-btn">标记对方已收款</button>
+            </div>` : ''}
+          </div>`;
+        document.body.appendChild(mask);
+        const box = mask.querySelector('.wc-xfer-detail-box');
+        const close = () => { box.style.animation='wcPopIn .2s reverse'; setTimeout(()=>mask.remove(),200); };
+        mask.querySelector('.wc-xfer-detail-close').addEventListener('click', close);
+        mask.addEventListener('click', e => { if(e.target===mask) close(); });
+        if(canUserAccept){
+          mask.querySelector('.wc-xfer-detail-claim-btn').addEventListener('click', () => {
+            msgData.status = 'claimed';
+            const wop = _walletOp();
+            wop.add('in', msgData.amount, msgData.note || `来自 ${payerName} 的转账`, 'transfer_claim');
+            history.push({
+              role: 'user', type: 'transfer_claimed',
+              content: `🎉 已收款 ¥${msgData.amount.toFixed(2)}`,
+              amount: msgData.amount,
+              xferMsgId: msgData.msgId,
+              ts: Date.now()
+            });
+            saveHistoryToStorage();
+            _notifyChatUpdated();
+            Phone.toast('已收款');
+            close();
+          });
+          mask.querySelector('.wc-xfer-detail-reject-btn').addEventListener('click', () => {
+            msgData.status = 'rejected';
+            saveHistoryToStorage();
+            _notifyChatUpdated();
+            Phone.toast('已退回转账');
+            close();
+          });
+        }
+        if(canMarkClaimedByOther){
+          mask.querySelector('.wc-xfer-detail-mark-btn').addEventListener('click', () => {
+            msgData.status = 'claimed';
+            saveHistoryToStorage();
+            _notifyChatUpdated();
+            Phone.toast('已标记：对方已收款');
+            close();
+          });
+        }
+      }
+
+      function openRedPacketOpenMsg(msgData){
+        const mask = document.createElement('div');
+        mask.className = 'wc-rp-open-mask';
+        const isUser = msgData.source === 'self';
+        const isRandom = msgData.rpType === 'random';
+        const totalAmt = msgData.amount;
+        const totalCount = msgData.count || 1;
+        const openedList = msgData.openList || [];
+        const remainCount = totalCount - openedList.length;
+        const allOpened = remainCount <= 0;
+        const myRecord = openedList.find(o => o.name === userName);
+        const myAmt = myRecord ? myRecord.amount : 0;
+        const IOpened = !!myRecord;
+        const isExpired = (msgData.ts || 0) + 24 * 3600 * 1000 < Date.now() && !allOpened;
+        const canOpen = !isUser && !IOpened && remainCount > 0 && !isExpired;
+
+        const senderName = isUser ? userName : (msgData.speakerName || chat.name);
+        let senderAvatar = isUser ? userAvatar : '';
+        if(!isUser && senderName){
+          const member = isGroup
+            ? members.find(m => m.name === senderName)
+            : (chat.contactId ? MOCK_CONTACTS.find(c => c.id === chat.contactId) : MOCK_CONTACTS.find(c => c.name === senderName));
+          if(member) senderAvatar = member.avatar || '';
+        }
+        const senderAvatarHtml = senderAvatar
+          ? `<img src="${escAttr(senderAvatar)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+          : escAttr(_avatarInitial(senderName));
+
+        mask.innerHTML = `
+          <button class="wc-rp-close-btn">×</button>
+          <div class="wc-rp-open-box${allOpened?' claimed':''}">
+            <div class="wc-rp-open-avatar">${senderAvatarHtml}</div>
+            <div class="wc-rp-open-sender">${escAttr(senderName)} 的红包</div>
+            <div class="wc-rp-open-msg">${escAttr(msgData.msg || '恭喜发财，大吉大利')}</div>
+            ${!IOpened && !isUser ? `
+            <div class="wc-rp-open-amt-wrap">
+              <div class="wc-rp-open-amt-label">拆开红包</div>
+              <div class="wc-rp-open-amt"><span class="wc-rp-open-amt-symbol">¥</span>${isRandom ? 'X.X' : (totalAmt / totalCount).toFixed(2)}</div>
+              ${(isGroup || totalCount > 1) ? `<div class="wc-rp-open-count">${remainCount > 0 ? `还有 ${remainCount} 个红包` : '红包已全部领取'}</div>` : ''}
+            </div>
+            ${canOpen ? `<button class="wc-rp-open-btn">开 红包</button>` : ''}
+            ${!canOpen && !IOpened && !isUser ? `<div class="wc-rp-open-amt-label" style="opacity:.8">${isExpired ? '红包已过期退回' : (remainCount <= 0 ? '红包已被领完' : '你已领过这个红包')}</div>` : ''}
+            ` : `
+            <div class="wc-rp-open-amt-wrap">
+              <div class="wc-rp-open-amt-label">${isUser?'红包总金额':'已领取'}</div>
+              <div class="wc-rp-open-amt"><span class="wc-rp-open-amt-symbol">¥</span>${isUser ? totalAmt.toFixed(2) : myAmt.toFixed(2)}</div>
+            </div>
+            ${!isUser ? `<div class="wc-rp-open-btn" style="background:rgba(255,255,255,.3);color:#fff">已领取</div>` : ''}
+            `}
+            ${openedList.length > 0 ? `
+            <div class="wc-rp-open-claimed-list">
+              ${openedList.map(o => `<div class="wc-rp-open-claimed-item"><span class="wc-rp-open-claimed-name">${escAttr(o.name)}</span><span class="wc-rp-open-claimed-amt">¥${o.amount.toFixed(2)}</span></div>`).join('')}
+            </div>
+            ` : ''}
+          </div>`;
+        document.body.appendChild(mask);
+        const close = () => mask.remove();
+        mask.querySelector('.wc-rp-close-btn').addEventListener('click', close);
+        mask.addEventListener('click', e => { if(e.target===mask) close(); });
+
+        const openBtn = mask.querySelector('.wc-rp-open-btn');
+        if(canOpen && openBtn){
+          openBtn.addEventListener('click', () => {
+            let amt;
+            if(isRandom){
+              const remainingAmt = totalAmt - openedList.reduce((s,o)=>s+o.amount,0);
+              if(remainCount === 1){
+                amt = remainingAmt;
+              } else {
+                const max = Math.max(0.01, Math.min(remainingAmt / remainCount * 2, remainingAmt - (remainCount - 1) * 0.01));
+                amt = Math.max(0.01, Math.random() * max);
+                amt = Math.round(amt * 100) / 100;
+              }
+            } else {
+              amt = totalAmt / totalCount;
+              amt = Math.round(amt * 100) / 100;
+            }
+            openedList.push({ name: userName, amount: amt });
+            msgData.openList = openedList;
+            const allDone = openedList.length >= totalCount;
+            if(allDone){ msgData.status = 'completed'; }
+
+            const wop = _walletOp();
+            wop.add('in', amt, `来自 ${chat.name} 的红包`, 'redpacket_claim');
+            saveHistoryToStorage();
+            _notifyChatUpdated();
+            Phone.toast(`已领取 ¥${amt.toFixed(2)}`);
+
+            mask.querySelector('.wc-rp-open-box').classList.add('claimed');
+            setTimeout(close, 400);
+          });
+        }
       }
 
       async function doSend(text){
@@ -5447,6 +6754,270 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         const qbar = inputArea.querySelector('.wc-cm-quote-bar');
         if(qbar) qbar.remove();
         scheduleAutoReply();
+      }
+
+      function parseAISendCommands(rawReply, defaultSpeakerName){
+        let text = rawReply;
+        const commands = [];
+
+        const transferRe = /[\[【]转账[：:]\s*([0-9]+(?:\.[0-9]+)?)(?:\s*[：:]\s*([^\]】]*))?[\]】]/g;
+        let m;
+        while((m = transferRe.exec(text)) !== null){
+          const amt = parseFloat(m[1]);
+          const note = (m[2] || '').trim();
+          if(amt > 0 && amt <= 50000){
+            commands.push({ speakerName: defaultSpeakerName, type:'transfer', amount: amt, note });
+          }
+        }
+        text = text.replace(transferRe, '');
+
+        const rpRe = /[\[【]红包[：:]\s*([0-9]+(?:\.[0-9]+)?)(?:\s*[：:]\s*([^\]】]*))?[\]】]/g;
+        while((m = rpRe.exec(text)) !== null){
+          const amt = parseFloat(m[1]);
+          const msg = (m[2] || '').trim() || '恭喜发财，大吉大利';
+          if(amt > 0 && amt <= 50000){
+            commands.push({ speakerName: defaultSpeakerName, type:'redpacket', amount: amt, count: 1, rpType:'fixed', msg });
+          }
+        }
+        text = text.replace(rpRe, '');
+
+        const rpRandomRe = /[\[【]红包拼手气[：:]\s*([0-9]+(?:\.[0-9]+)?)\s*[：:]\s*([0-9]+)(?:\s*[：:]\s*([^\]】]*))?[\]】]/g;
+        while((m = rpRandomRe.exec(text)) !== null){
+          const amt = parseFloat(m[1]);
+          const cnt = parseInt(m[2]) || 1;
+          const msg = (m[3] || '').trim() || '恭喜发财，大吉大利';
+          if(amt > 0 && cnt > 0 && cnt <= 100 && amt / cnt <= 200){
+            commands.push({ speakerName: defaultSpeakerName, type:'redpacket', amount: amt, count: cnt, rpType:'random', msg });
+          }
+        }
+        text = text.replace(rpRandomRe, '');
+
+        text = text.replace(/\|\|\|\|/g, '|||').replace(/^\|\|\|?/g, '').replace(/\|\|\|?$/g, '').trim();
+        return { replyText: text, commands };
+      }
+
+      function executeAISendCommands(commands){
+        if(!commands || !commands.length) return;
+        const tsBase = Date.now();
+        commands.forEach((c, i) => {
+          const ts = tsBase + i;
+          if(c.type === 'transfer'){
+            history.push({
+              role:'ai', type:'transfer', source:'char',
+              content:`[转账 ¥${c.amount.toFixed(2)}]`,
+              amount: c.amount, note: c.note || '转账',
+              toName: userName, toContactId: '',
+              status:'pending', speakerName: c.speakerName,
+              openList:[], ts, msgId:'xfer_char_' + ts
+            });
+          } else if(c.type === 'redpacket'){
+            history.push({
+              role:'ai', type:'redpacket', source:'char',
+              content:`[微信红包 ¥${c.amount.toFixed(2)}]`,
+              amount: c.amount, count: c.count || 1,
+              rpType: c.rpType || 'fixed',
+              msg: c.msg || '恭喜发财，大吉大利',
+              toName: userName, toContactId: '',
+              speakerName: c.speakerName,
+              openList:[], ts, msgId:'rp_char_' + ts
+            });
+          }
+        });
+        saveHistoryToStorage();
+        _notifyChatUpdated();
+      }
+
+      function collectPendingIncomingPayments(){
+        const pending = [];
+        const scanCount = Math.min(30, history.length);
+        for(let i = history.length - 1; i >= Math.max(0, history.length - scanCount); i--){
+          const m = history[i];
+          if(!m) continue;
+
+          const isUserOutgoingXfer = m.role === 'user' && m.source === 'self' && m.type === 'transfer';
+          const isUserOutgoingRP  = m.role === 'user' && m.source === 'self' && m.type === 'redpacket';
+          const isCharOutgoingXfer = m.role === 'ai' && m.source === 'char' && m.type === 'transfer';
+          const isCharOutgoingRP  = m.role === 'ai' && m.source === 'char' && m.type === 'redpacket';
+
+          if(isUserOutgoingXfer && m.status !== 'claimed' && m.status !== 'rejected'){
+            pending.push({ direction:'toAI', kind:'transfer', ref:m, amount:m.amount, note:m.note||'' });
+          } else if(isUserOutgoingRP){
+            const openedList = m.openList || [];
+            const totalCount = m.count || 1;
+            if(openedList.some(o => o.name === chat.name)) continue;
+            if(openedList.length < totalCount){
+              pending.push({ direction:'toAI', kind:'redpacket', ref:m, amount:m.amount, msg:m.msg||'', rpType:m.rpType||'fixed', count:totalCount });
+            }
+          } else if(isCharOutgoingXfer && m.status !== 'claimed' && m.status !== 'rejected'){
+            pending.push({ direction:'toUser', kind:'transfer', ref:m, amount:m.amount, note:m.note||'' });
+          } else if(isCharOutgoingRP){
+            const openedList = m.openList || [];
+            const totalCount = m.count || 1;
+            if(openedList.some(o => o.name === userName)) continue;
+            if(openedList.length < totalCount){
+              pending.push({ direction:'toUser', kind:'redpacket', ref:m, amount:m.amount, msg:m.msg||'', rpType:m.rpType||'fixed', count:totalCount });
+            }
+          }
+        }
+        return pending.length ? pending : null;
+      }
+
+      function showPaymentResultModal({ kind, action, amount, otherName, note }){
+        const isTransfer = kind === 'transfer';
+        const isAccept = action === 'accept';
+        const isDecline = action === 'decline';
+        const isOpen = action === 'open';
+
+        let title, subtitle, bodyHtml, bgColor, iconEmoji;
+        if(isTransfer && isAccept){
+          title = '已收款'; subtitle = note || '转账说明';
+          bgColor = 'linear-gradient(135deg,#f0fff4,#dcfce7)';
+          iconEmoji = '✅';
+          bodyHtml = `<div class="wc-pay-result-amount" style="color:#16a34a">+ ¥${amount.toFixed(2)}</div>
+                      <div class="wc-pay-result-sub">${escAttr(otherName)} 已收下这笔转账</div>`;
+        } else if(isTransfer && isDecline){
+          title = '已退回'; subtitle = note || '转账说明';
+          bgColor = 'linear-gradient(135deg,#fff5f5,#fee2e2)';
+          iconEmoji = '↩️';
+          bodyHtml = `<div class="wc-pay-result-amount" style="color:#dc2626">- ¥${amount.toFixed(2)}</div>
+                      <div class="wc-pay-result-sub">${escAttr(otherName)} 婉拒了这笔转账，钱已退回</div>`;
+        } else if(isOpen){
+          title = '领取红包';
+          bgColor = 'linear-gradient(135deg,#fff7ed,#fed7aa)';
+          iconEmoji = '🧧';
+          bodyHtml = `<div class="wc-pay-result-amount" style="color:#c2410c">+ ¥${amount.toFixed(2)}</div>
+                      <div class="wc-pay-result-sub">${escAttr(otherName)} 已领取你发的红包</div>`;
+        } else {
+          return;
+        }
+
+        const mask = document.createElement('div');
+        mask.className = 'wc-pay-result-mask';
+        mask.innerHTML = `
+          <div class="wc-pay-result-box" style="background:${bgColor}">
+            <div class="wc-pay-result-icon">${iconEmoji}</div>
+            <div class="wc-pay-result-title">${escAttr(title)}</div>
+            <div class="wc-pay-result-body">${bodyHtml}</div>
+          </div>`;
+        document.body.appendChild(mask);
+        setTimeout(() => mask.classList.add('show'), 10);
+        setTimeout(() => {
+          mask.classList.remove('show');
+          setTimeout(() => mask.remove(), 400);
+        }, 2200);
+      }
+
+      function applyPaymentsToParts(parts){
+        const pendingAll = collectPendingIncomingPayments();
+        if(!pendingAll) return;
+        const pending = pendingAll.filter(p => p.direction === 'toAI');
+        if(!pending.length) return;
+
+        const memberDecisions = {};
+        parts.forEach(p => {
+          const sn = p.speakerName;
+          let tx = p.text || '';
+          const decisions = [];
+
+          if(/[\[【]确认收款[\]】]/.test(tx)){
+            decisions.push({ kind:'transfer', action:'accept' });
+            tx = tx.replace(/[\[【]确认收款[\]】]\s*/g, '');
+          }
+          if(/[\[【]拒绝收款/.test(tx)){
+            decisions.push({ kind:'transfer', action:'decline' });
+            tx = tx.replace(/[\[【]拒绝收款[\]】]?\s*[:：]?\s*[^\]】]*[\]】]?\s*/g, '');
+          }
+          if(/[\[【]领取红包[\]】]/.test(tx)){
+            decisions.push({ kind:'redpacket', action:'open' });
+            tx = tx.replace(/[\[【]领取红包[\]】]\s*/g, '');
+          }
+          if(/[\[【]不领红包/.test(tx)){
+            decisions.push({ kind:'redpacket', action:'skip' });
+            tx = tx.replace(/[\[【]不领红包[\]】]?\s*[:：]?\s*[^\]】]*[\]】]?\s*/g, '');
+          }
+
+          p.text = tx.replace(/\|\|\|\|\|/g, '|||').replace(/^\|\|\|?/g, '').replace(/\|\|\|?$/g, '').trim();
+          if(decisions.length) memberDecisions[sn] = decisions;
+        });
+
+        const changes = [];
+
+        Object.entries(memberDecisions).forEach(([memberName, decisions]) => {
+          decisions.forEach(d => {
+            pending.forEach(p => {
+              if(p.kind !== d.kind) return;
+              if(p.ref.openList && p.ref.openList.some(o => o.name === memberName)) return;
+
+              if(p.kind === 'transfer'){
+                if(d.action === 'accept'){
+                  p.ref.status = 'claimed';
+                  changes.push({ kind:'transfer', action:'accept', amount:p.ref.amount, otherName:memberName, note:p.ref.note||'' });
+                } else if(d.action === 'decline'){
+                  p.ref.status = 'rejected';
+                  changes.push({ kind:'transfer', action:'decline', amount:p.ref.amount, otherName:memberName, note:p.ref.note||'' });
+                }
+              } else if(p.kind === 'redpacket'){
+                if(d.action === 'open'){
+                  let amt;
+                  if(p.rpType === 'random' && (p.ref.count||1) > 1){
+                    const remainingAmt = p.ref.amount - (p.ref.openList||[]).reduce((s,o)=>s+o.amount,0);
+                    const remainCount = (p.ref.count||1) - (p.ref.openList||[]).length;
+                    if(remainCount <= 1) amt = remainingAmt;
+                    else {
+                      const max = Math.max(0.01, Math.min(remainingAmt / remainCount * 2, remainingAmt - (remainCount - 1) * 0.01));
+                      amt = Math.round(Math.max(0.01, Math.random() * max) * 100) / 100;
+                    }
+                  } else {
+                    amt = Math.round((p.ref.amount / (p.ref.count||1)) * 100) / 100;
+                  }
+                  p.ref.openList = p.ref.openList || [];
+                  p.ref.openList.push({ name: memberName, amount: amt });
+                  if(p.ref.openList.length >= (p.ref.count||1)){ p.ref.status = 'completed'; }
+                  changes.push({ kind:'redpacket', action:'open', amount:amt, otherName:memberName });
+                }
+              }
+            });
+          });
+        });
+
+        if(!isGroup){
+          pending.forEach(p => {
+            const alreadyHandled = p.ref.openList && p.ref.openList.some(o => o.name === chat.name);
+            const hasDecision = !!memberDecisions[chat.name];
+            if(alreadyHandled || hasDecision) return;
+
+            if(p.kind === 'transfer' && p.ref.status === 'pending'){
+              p.ref.status = 'claimed';
+              changes.push({ kind:'transfer', action:'accept', amount:p.ref.amount, otherName:chat.name, note:p.ref.note||'' });
+            } else if(p.kind === 'redpacket'){
+              let amt;
+              if(p.rpType === 'random' && (p.ref.count||1) > 1){
+                const remainingAmt = p.ref.amount - (p.ref.openList||[]).reduce((s,o)=>s+o.amount,0);
+                const remainCount = (p.ref.count||1) - (p.ref.openList||[]).length;
+                if(remainCount <= 1) amt = remainingAmt;
+                else {
+                  const max = Math.max(0.01, Math.min(remainingAmt / remainCount * 2, remainingAmt - (remainCount - 1) * 0.01));
+                  amt = Math.round(Math.max(0.01, Math.random() * max) * 100) / 100;
+                }
+              } else {
+                amt = Math.round((p.ref.amount / (p.ref.count||1)) * 100) / 100;
+              }
+              p.ref.openList = p.ref.openList || [];
+              p.ref.openList.push({ name: chat.name, amount: amt });
+              if(p.ref.openList.length >= (p.ref.count||1)){ p.ref.status = 'completed'; }
+              changes.push({ kind:'redpacket', action:'open', amount:amt, otherName:chat.name });
+            }
+          });
+        }
+
+        if(changes.length){
+          saveHistoryToStorage();
+          renderMsgs();
+          msgs.scrollTop = msgs.scrollHeight;
+          changes.forEach((c, idx) => {
+            setTimeout(() => showPaymentResultModal(c), 300 + idx * 400);
+          });
+        }
       }
 
       async function triggerAIReply(){
@@ -5483,6 +7054,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               const contact = MOCK_CONTACTS.find(c => c.id === chat.contactId);
               sys = `你正在进行线下角色扮演。你扮演的是 ${chat.name}。\n`;
               if(contact?.roleSetting) sys += `【你的人设】\n${contact.roleSetting}\n`;
+              if(contact?.writingStyle?.length) sys += `【文风参考（请模仿这些话法和语气）】\n${contact.writingStyle.slice(0,15).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
               const userPersona = cs.persona || char.persona || '';
               if(userPersona) sys += `用户 "${userName}" 的人设：${userPersona}\n`;
               sys += `用户给出了一个场景/动作/想法。\n`;
@@ -5502,6 +7074,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               }
               if(cm?.storylines?.length){
                 memSys += `\n\n【剧情线 - 必须据此发挥】\n${cm.storylines.map(m => m.content).join('\n')}`;
+              }
+              const hvs = allD.heartVoices?.[chatId];
+              if(hvs?.length){
+                memSys += `\n\n【你的内心独白（心声）- 这些是你曾在心里真实想过的事】\n${hvs.slice(0,5).map(h => h.content).join('\n')}`;
               }
             } catch(e){}
             if(memSys) sys += memSys;
@@ -5610,6 +7186,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             if(contact?.roleSetting){
               sys += `\n【角色人设】\n${contact.roleSetting}\n`;
             }
+            if(contact?.writingStyle?.length){
+              sys += `\n【文风参考（请模仿这些话法和语气）】\n${contact.writingStyle.slice(0,15).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
+            }
             if(contact?.fontType || contact?.voice){
               const fv = [];
               if(contact.fontType) fv.push(`字体：${contact.fontType}`);
@@ -5629,6 +7208,55 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             sys += `⚠️ 这是线上真实聊天场景！严禁使用括号、方括号或任何形式描述角色的动作、表情、心理活动（如：微笑、点头、心里想着xxx）。只输出纯粹的对白，像微信聊天一样。\n`;
             sys += `⚠️ 每次回复**最多80字**，就像真实微信聊天一样简短。如果想说的内容较多，必须拆分成多条消息依次发送，用 ||| 分隔。示例：第一句话|||第二句话|||第三句话`;
           }
+          const pendingAll = collectPendingIncomingPayments();
+          const pendingToAI = pendingAll ? pendingAll.filter(p => p.direction === 'toAI') : null;
+          if(pendingToAI && pendingToAI.length){
+            if(isGroup){
+              sys += `\n\n【${userName} 在群里发了 ${pendingToAI.length} 条转账/红包！群成员各自判断要不要收。】\n`;
+            } else {
+              sys += `\n\n【你收到了 ${pendingToAI.length} 条待处理的转账/红包，请严肃判断要不要收！】\n`;
+            }
+            pendingToAI.forEach((p, i) => {
+              if(p.kind === 'transfer'){
+                sys += `${i+1}. ${isGroup ? '群里' : '对方'}给你发了 ¥${p.amount.toFixed(2)} 的转账`;
+                if(p.note) sys += `，说明：${p.note}`;
+                sys += `。`;
+              } else if(p.kind === 'redpacket'){
+                sys += `${i+1}. ${isGroup ? '群里' : '对方'}给你发了一个红包，金额 ¥${p.amount.toFixed(2)}`;
+                if(p.msg) sys += `，留言：${p.msg}`;
+                const remainCount = (p.ref.count||1) - (p.ref.openList||[]).length;
+                if(remainCount > 0) sys += `（还剩 ${remainCount} 个可领）`;
+                sys += `。`;
+              }
+            });
+            sys += `\n\n【核心原则】\n`;
+            sys += `⚠️ 如果**之前对话里已经约定好/说好要发/打赌输了/AA后还钱/份子钱**等明确语境，必须收！不能以任何理由拒绝！\n`;
+            sys += `⚠️ 只有在没有任何前置约定、对方突然给你发钱时，才使用以下拒绝原则：\n`;
+            sys += `1. 金额：超100必拒，超50大概率拒，小额(<20)才考虑。\n`;
+            sys += `2. 关系：陌生人/普通朋友→拒；熟人/家人/恋人→才可能收。\n`;
+            sys += `3. 理由：合理(还钱/谢礼/份子钱)→可收；模糊("给你花花"/没理由)→必须拒！\n`;
+            sys += `4. 人设：高冷/傲娇→几乎不收；软萌/老实→偶尔收小额；贪财→可能都收。\n`;
+            sys += `5. 语境：对方有求于你/刚吵架讨好你/喝多了→都拒。\n`;
+            sys += `\n【输出格式 —— ${isGroup ? '每个成员' : '你'}自己决定】\n`;
+            sys += `- 转账接受→在对白里单独加一行 [确认收款]；拒绝→单独加一行 [拒绝收款: 拒绝原因]\n`;
+            sys += `- 红包领取→在对白里单独加一行 [领取红包]；不领→单独加一行 [不领红包: 不领原因]\n`;
+            if(isGroup){
+              sys += `⚠️ 群聊场景：**每个成员**都要根据自己的人设独立判断！如果领，就在该成员的回复块里加 [领取红包]；如果不领，就加 [不领红包: 原因]。\n`;
+              sys += `⚠️ 红包有剩余数量时（如还剩3个），应该让多个成员各自领一个。转账一般只有一个收款人，通常只有一个成员收。\n`;
+            }
+            sys += `⚠️ 决策标记必须单独占一行，和对白分开。90%情况应该拒绝！\n`;
+           }
+
+          sys += `\n\n【主动发红包/转账能力】\n`;
+          sys += `在合适的场景下，你也可以主动给 ${userName} 发红包或转账（比如生日、节日庆祝、感谢对方、道歉、关系亲密的互动等），使用以下指令格式：\n`;
+          sys += `- 转账：单独一行写 [转账:金额:备注]  例如 [转账:520:生日快乐] 或 [转账:100]\n`;
+          sys += `- 红包（固定金额）：单独一行写 [红包:金额:留言]  例如 [红包:66.66:恭喜发财]\n`;
+          sys += `- 红包（拼手气）：单独一行写 [红包拼手气:总金额:个数:留言]  例如 [红包拼手气:200:5:新年红包]\n`;
+          sys += `【发钱原则 —— 谨慎 > 主动】\n`;
+          sys += `1. 只有在特殊场景（生日/节日/重大感谢/道歉/亲密关系撒娇）才发，日常闲聊不要发。\n`;
+          sys += `2. 金额要符合人设：普通朋友<50，亲密关系可稍大(但一般不超200)，土豪人设例外。\n`;
+          sys += `3. 发钱指令和对白分开写，单独占一行。\n`;
+          sys += `4. 不要连续发多个红包/转账，一次最多发一个。\n`;
           if(activeWbs.length){
             sys += '\n\n【必须遵守的守则】';
             activeWbs.forEach(wb => { sys += `\n- ${wb.name}：${wb.content}`; });
@@ -5638,8 +7266,15 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           if(allStickers.length){
             sys += `\n\n【可用表情包】\n`;
             sys += allStickers.map(s => `- ${s.caption || '无含义'}：[表情：${s.id}]`).join('\n');
-            sys += `\n\n当你想发表情时，直接发送 [表情：表情ID] 即可，不要加其他文字。例如想发含义为"开心"的表情，就只发 [表情：xxx]。`;
+            sys += `\n\n⚠️ 发表情时，必须根据当前对话的**具体场景和情绪**，挑选最贴切的表情。选表情之前，先想清楚：
+- 对方刚才说了什么？（是开心、难过、生气、撒娇、感动...？）
+- 当前聊天氛围是什么？（甜蜜、打闹、认真、日常...？）
+- 挑一个 caption（含义）最匹配这个场景的表情，而不是随便发一个。
+选好后直接发送 [表情：表情ID] 即可，不要加其他文字。
+例如：对方说了好消息想庆祝，就选含义"开心/庆祝/棒棒"的；对方难过安慰他，就选含义"安慰/抱抱/别难过"的。`;
           }
+
+          sys += `\n\n【生成文字图片】\n如果想发送一张纯文字图片（适合用来发鸡汤、金句、心情语录等），直接在回复中写 [文字图:要渲染的文字内容] 即可。例如：[文字图:今天也要元气满满呀]。文字图会自动生成正方形图片发送。`;
 
           try {
             const allD = Phone.getData('wechat');
@@ -5649,6 +7284,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             }
             if(cm?.storylines?.length){
               sys += `\n\n【剧情线 - 必须据此发挥】\n${cm.storylines.map(m => m.content).join('\n')}`;
+            }
+            const hvs = allD.heartVoices?.[chatId];
+            if(hvs?.length){
+              sys += `\n\n【你的内心独白（心声）- 这些是你曾在心里真实想过的事】\n${hvs.slice(0,5).map(h => h.content).join('\n')}`;
             }
           } catch(e){}
 
@@ -5719,9 +7358,30 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           const parts = isGroup
             ? splitGroupReply(rawReply)
             : rawReply.split(/\|\|\|/).map(s => s.trim()).filter(Boolean).map(p => ({ speakerName: chat.name, text: p }));
+
+          applyPaymentsToParts(parts);
+
+          const allCommands = [];
+          parts.forEach(p => {
+            const { speakerName, text } = isGroup ? p : (typeof p === 'string' ? parseSpeakerAndText(p) : p);
+            const { replyText, commands } = parseAISendCommands(text, speakerName);
+            p.text = replyText;
+            if(commands.length) allCommands.push(...commands);
+          });
+          executeAISendCommands(allCommands);
+
+          const finalParts = parts
+            .filter(p => p.text && p.text.trim())
+            .reduce((acc, p) => {
+              const last = acc[acc.length - 1];
+              if(last && last.speakerName === p.speakerName && last.text === p.text) return acc;
+              acc.push(p);
+              return acc;
+            }, []);
+
           const stickerMap = {};
           allStickers.forEach(s => { stickerMap[s.id] = s; });
-          const parsedMessages = parts.map((p, i) => {
+          const parsedMessagesRaw = await Promise.all(finalParts.map(async (p, i) => {
             const { speakerName, text } = isGroup ? p : (typeof p === 'string' ? parseSpeakerAndText(p) : p);
             const stickerMatch = text.match(/\[表情[：:]([^\]]+)\]/);
             if(stickerMatch){
@@ -5730,6 +7390,12 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               if(sk){
                 return { role:'ai', type:'sticker', content: sk.src, caption: sk.caption||'', speakerName, ts: Date.now() + i };
               }
+            }
+            const textImgMatch = text.match(/\[文字图[：:]([^\]]+)\]/);
+            if(textImgMatch){
+              const imgText = textImgMatch[1].trim();
+              const src = await genTextImage(imgText);
+              return { role:'ai', type:'image', content: src, caption:'', isTextImg:true, speakerName, ts: Date.now() + i };
             }
             let ft = '';
             if(isGroup){
@@ -5740,6 +7406,19 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             }
             const finalText = (ft === '繁体') ? toTraditional(text) : text;
             return { role:'ai', content:finalText, speakerName, ts: Date.now() + i };
+          }));
+          const parsedMessages = parsedMessagesRaw.filter((m, i, arr) => {
+            if(!m.type){
+              const prev = arr[i - 1];
+              if(prev && prev.type === 'sticker' && prev.speakerName === m.speakerName){
+                const txt = (m.content || '').trim().replace(/[-—~～！!。.？?]+$/g,'');
+                const cap = (prev.caption || '').trim().replace(/[-—~～！!。.？?]+$/g,'');
+                if(cap && (txt === cap || txt.startsWith(cap) || cap.startsWith(txt))){
+                  return false;
+                }
+              }
+            }
+            return true;
           });
           parsedMessages.forEach(m => history.push(m));
           saveHistoryToStorage();
@@ -5847,6 +7526,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           let sys = `你正在扮演角色「${chat.name}」，现在需要你说出TA的"心声"——也就是TA内心真实的想法、感受、小情绪或秘密，不会直接说出口的那种。`;
           if(contact?.roleSetting){
             sys += `\n\n【角色人设】\n${contact.roleSetting}\n`;
+          }
+          if(contact?.writingStyle?.length){
+            sys += `\n【文风参考（请模仿这些话法和语气）】\n${contact.writingStyle.slice(0,15).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
           }
           sys += `\n最近的对话记录如下：\n${recent}\n\n请以第一人称（我）写出 ${chat.name} 此刻的心声，可以是对 ${userName} 的感觉、对刚才对话的想法、或者藏在心里的小秘密。语气要自然、细腻、有情感，不要太官方，像在写私密日记一样。篇幅适中，50-150字。`;
           if(activeWbs.length){
@@ -6036,6 +7718,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
 
       function render(){
         const { d, cs } = getSettings();
+        const allChars = (Phone._getState().characters || []);
+        const personaChar = allChars.find(c => c.id === (cs.personaId || char.id));
+        const personaDisplayName = personaChar ? personaChar.name : '未选择';
         body.innerHTML = '';
 
         const profileCard = document.createElement('div');
@@ -6060,7 +7745,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           </div>
           <div class="wc-set-row" data-act="persona">
             <span class="wc-set-label">当前用户人设</span>
-            <span class="wc-set-val"><span class="wc-set-val-text">${cs.persona || char.persona || '未选择'}</span><span class="wc-set-arrow">›</span></span>
+            <span class="wc-set-val"><span class="wc-set-val-text">${personaDisplayName}</span><span class="wc-set-arrow">›</span></span>
           </div>
           <div class="wc-set-row" data-act="stickerGroups">
             <span class="wc-set-label">表情包分组绑定</span>
@@ -6227,7 +7912,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             break;
           case 'worldbookGroups':
             openMultiPicker('选择世界书分组', (Phone._getState().worldbooks||[]).map(w=>({id:w.id,name:w.name})), cs.worldbookGroupIds, (ids) => {
-              cs.worldbookGroupIds = ids; saveSettings(d); render();
+              cs.worldbookGroupIds = ids;
+              if(contact){ contact.worldbookIds = ids.slice(); saveContacts(MOCK_CONTACTS); }
+              saveSettings(d); render();
             });
             break;
           case 'shareGroups': {
@@ -6262,19 +7949,37 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
                 const timeStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
                 let sys = `你是 ${posterName}，现在要在微信朋友圈发一条动态。\n当前时间：${timeStr}\n`;
                 if(posterPersona) sys += `【你的人设】\n${posterPersona}\n`;
-                sys += `风格：符合你作为 ${posterName} 的性格和身份，自然、生活化。\n要求：只用一段简短的文字，像真实的朋友圈一样，不要加标点符号以外的格式，不要说自己是AI，不要用表情符号以外的东西。控制在1-3句话。`;
+                if(contact?.writingStyle?.length) sys += `【文风参考（请模仿这些话法和语气）】\n${contact.writingStyle.slice(0,15).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
+                sys += `风格：符合你作为 ${posterName} 的性格和身份，自然、生活化。\n要求：只用一段简短的文字，像真实的朋友圈一样，不要加标点符号以外的格式，不要说自己是AI，不要用表情符号以外的东西。控制在1-3句话。\n如果想配一张纯文字图片，在行尾加上 [文字图:要渲染的文字内容] 即可生成一张配图。`;
                 const reply = await Phone.chatWithAI([{ role:'system', content:sys }, { role:'user', content:'发一条朋友圈吧' }]);
                 let content = (reply || '').trim().replace(/^["「『]|["」』]$/g, '');
                 if(posterFontType === '繁体') content = toTraditional(content);
-                MOCK_MOMENTS.unshift({
-                  id:'m_'+Date.now(),
-                  name: posterName,
-                  content: content || '今天也是美好的一天~',
-                  images: [],
-                  time: '刚刚',
+                const images = [];
+                content = content.replace(/\[文字图[：:]([^\]]+)\]/g, (m, txt) => {
+                  images.push({ type:'text', text: txt.trim(), bg:'#ffffff', fg:'#1a1a1a' });
+                  return '';
+                }).trim();
+                const puqData = Phone.getData('puq') || { posts:[] };
+                const post = {
+                  id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
+                  authorId: contact?.id || '',
+                  authorName: posterName,
+                  authorAvatar: posterAvatar,
+                  text: content || '今天也是美好的一天~',
+                  images,
+                  createdAt: Date.now(),
                   likes: [],
                   comments: []
-                });
+                };
+                puqData.posts = puqData.posts || [];
+                puqData.posts.push(post);
+                Phone.setData('puq', puqData);
+                if(window.__puqRuntime && window.__puqRuntime.renderList){
+                  window.__puqRuntime.renderList();
+                }
+                if(window.__puqRuntime && window.__puqRuntime.triggerPostLaunchInteractions){
+                  window.__puqRuntime.triggerPostLaunchInteractions(post);
+                }
                 tip.textContent = '朋友圈已发布！';
                 setTimeout(() => tip.remove(), 1200);
               } catch(e) {
@@ -6290,8 +7995,11 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               const d2 = Phone.getData('wechat');
               if(d2.memories && d2.memories[chatId]){
                 d2.memories[chatId] = { core:[], storylines:[] };
-                Phone.setData('wechat', d2);
               }
+              if(d2.heartVoices && d2.heartVoices[chatId]){
+                d2.heartVoices[chatId] = [];
+              }
+              Phone.setData('wechat', d2);
               const c = MOCK_CHATS.find(x=>x.id===chatId);
               let fresh = [];
               if(c){
@@ -6321,6 +8029,11 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             if(confirm(`确定删除与「${contact?.name||chat.name}」的会话？此操作不可恢复。`)){
               const idx = MOCK_CHATS.findIndex(c=>c.id===chatId);
               if(idx>-1) MOCK_CHATS.splice(idx,1);
+              const wd = Phone.getData('wechat') || {};
+              if(wd.chatList){
+                const sIdx = wd.chatList.findIndex(c=>c.id===chatId);
+                if(sIdx>-1){ wd.chatList.splice(sIdx,1); Phone.setData('wechat', wd); }
+              }
               delete chatHistory[chatId];
               page.classList.remove('show');
               setTimeout(()=>{ page.remove(); if(parentDetail){ parentDetail.classList.remove('show'); setTimeout(()=>parentDetail.remove(),300); } },300);
@@ -6333,8 +8046,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       function openMemoryPage(){
         const d = Phone.getData('wechat');
         d.memories = d.memories || {};
+        d.heartVoices = d.heartVoices || {};
         const chatMem = d.memories[chatId] || { core:[], storylines:[] };
         if(!d.memories[chatId]){ d.memories[chatId] = chatMem; Phone.setData('wechat', d); }
+        const heartList = d.heartVoices[chatId] || [];
 
         const h = getHistory(chatId);
         const onlineCount = h.filter(m => m.role === 'user').length;
@@ -6367,26 +8082,62 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
                   <div class="wc-mem-stat-num">${chatMem.storylines.length}</div>
                   <div class="wc-mem-stat-label">剧情线</div>
                 </div>
+                <div class="wc-mem-stat">
+                  <div class="wc-mem-stat-num">${heartList.length}</div>
+                  <div class="wc-mem-stat-label">心声</div>
+                </div>
               </div>
             </div>
-            <div class="wc-mem-section">
-              <div class="wc-mem-section-title">核心记忆</div>
-              <div class="wc-mem-list" id="wcCoreMemList"></div>
-              <button class="wc-mem-add-btn" id="wcCoreAdd" title="添加核心记忆">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </button>
+            <div class="wc-mem-section collapsed" data-kind="core">
+              <div class="wc-mem-section-head">
+                <div class="wc-mem-section-title">核心记忆<span class="wc-mem-section-badge">${chatMem.core.length}</span></div>
+                <button class="wc-mem-section-toggle" title="展开/折叠">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </div>
+              <div class="wc-mem-section-body">
+                <div class="wc-mem-list" id="wcCoreMemList"></div>
+                <button class="wc-mem-add-btn" id="wcCoreAdd" title="添加核心记忆">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
             </div>
-            <div class="wc-mem-section">
-              <div class="wc-mem-section-title">剧情线</div>
-              <div class="wc-mem-tip" style="font-size:12px;color:#888;padding:0 16px 8px">剧情线内容会被 AI 读取并据此发挥</div>
-              <div class="wc-mem-list" id="wcStorylineList"></div>
-              <button class="wc-mem-add-btn" id="wcStorylineAdd" title="添加剧情线">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </button>
+            <div class="wc-mem-section collapsed" data-kind="story">
+              <div class="wc-mem-section-head">
+                <div class="wc-mem-section-title">剧情线<span class="wc-mem-section-badge">${chatMem.storylines.length}</span></div>
+                <button class="wc-mem-section-toggle" title="展开/折叠">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </div>
+              <div class="wc-mem-section-body">
+                <div class="wc-mem-tip" style="font-size:12px;color:#888;padding:0 0 8px">剧情线内容会被 AI 读取并据此发挥</div>
+                <div class="wc-mem-list" id="wcStorylineList"></div>
+                <button class="wc-mem-add-btn" id="wcStorylineAdd" title="添加剧情线">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="wc-mem-section collapsed" data-kind="heart">
+              <div class="wc-mem-section-head">
+                <div class="wc-mem-section-title">心声<span class="wc-mem-section-badge">${heartList.length}</span></div>
+                <button class="wc-mem-section-toggle" title="展开/折叠">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </div>
+              <div class="wc-mem-section-body">
+                <div class="wc-mem-tip" style="font-size:12px;color:#888;padding:0 0 8px">在聊天室点击爱心生成，记录角色内心的真实想法</div>
+                <div class="wc-mem-list" id="wcHeartList"></div>
+              </div>
             </div>
           </div>`;
         page.appendChild(memPage);
         requestAnimationFrame(() => memPage.classList.add('show'));
+
+        memPage.querySelectorAll('.wc-mem-section-head').forEach(head => {
+          head.addEventListener('click', () => {
+            head.parentElement.classList.toggle('collapsed');
+          });
+        });
 
         function renderList(listEl, items, onEdit, onDel, emptyText){
           if(!items.length){
@@ -6398,7 +8149,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               <div class="wc-mem-item-content">${escAttr(mem.content)}</div>
               <div class="wc-mem-item-time">${escAttr(mem.time)}</div>
               <div class="wc-mem-item-actions">
-                <button class="wc-mem-edit-btn" data-i="${i}" title="修改">✎</button>
+                ${onEdit ? `<button class="wc-mem-edit-btn" data-i="${i}" title="修改">✎</button>` : ''}
                 <button class="wc-mem-del-btn" data-i="${i}" title="删除">×</button>
               </div>
             </div>`).join('');
@@ -6406,14 +8157,17 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             const i = parseInt(btn.dataset.i);
             if(confirm('确定删除？')){ onDel(i); Phone.setData('wechat', d); render(); }
           }));
-          listEl.querySelectorAll('.wc-mem-edit-btn').forEach(btn => btn.addEventListener('click', () => {
-            const i = parseInt(btn.dataset.i); onEdit(i);
-          }));
+          if(onEdit){
+            listEl.querySelectorAll('.wc-mem-edit-btn').forEach(btn => btn.addEventListener('click', () => {
+              const i = parseInt(btn.dataset.i); onEdit(i);
+            }));
+          }
         }
 
         function render(){
           const coreList = memPage.querySelector('#wcCoreMemList');
           const slList = memPage.querySelector('#wcStorylineList');
+          const hList = memPage.querySelector('#wcHeartList');
           renderList(coreList, chatMem.core,
             (i) => Phone.modal({ title:'修改核心记忆', fields:[{key:'content',label:'内容',value:chatMem.core[i].content,type:'textarea'}], onOk: v => {
               if(!(v.content||'').trim()) return false; chatMem.core[i].content = v.content.trim(); const now = new Date();
@@ -6431,6 +8185,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             }}),
             (i) => chatMem.storylines.splice(i,1),
             '暂无剧情线'
+          );
+          renderList(hList, heartList, null,
+            (i) => { heartList.splice(i,1); d.heartVoices[chatId] = heartList; },
+            '还没有心声<br>去聊天室点击爱心生成'
           );
         }
         render();

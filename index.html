@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -25,7 +25,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#d4f0de,#e8f6dd 60%,#f0fbf0);display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .phone-shell{width:var(--phone-w);height:var(--phone-h);background:#0d1a12;border-radius:var(--radius);padding:calc(var(--phone-w)*0.027);box-shadow:0 40px 80px -20px rgba(20,60,35,.35),inset 0 0 0 1.5px rgba(255,255,255,.08);position:relative;transition:all .15s ease;}
-.phone-shell::before{content:"";position:absolute;top:calc(var(--phone-w)*0.048);left:50%;transform:translateX(-50%);width:calc(var(--phone-w)*0.293);height:calc(var(--phone-w)*0.08);background:#0d1a12;border-radius:calc(var(--phone-w)*0.048);z-index:10;}
+.phone-shell::before{display:none;}
 .phone-screen{width:100%;height:100%;background:var(--green-bg);border-radius:calc(var(--radius) - var(--phone-w)*0.016);overflow:hidden;position:relative;display:flex;flex-direction:column;}
 .phone-screen::before{content:"";position:absolute;top:-20%;left:-20%;width:80%;height:60%;background:radial-gradient(circle,rgba(124,204,155,.45) 0%,transparent 70%);pointer-events:none;}
 .phone-screen::after{content:"";position:absolute;bottom:-15%;right:-15%;width:70%;height:55%;background:radial-gradient(circle,rgba(184,226,198,.55) 0%,transparent 70%);pointer-events:none;}
@@ -35,17 +35,17 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
 .status-bar .sig-icon,.status-bar .wifi-icon{width:calc(var(--phone-w)*0.045);height:calc(var(--phone-w)*0.045);}
 .status-bar .bat-icon{width:calc(var(--phone-w)*0.062);height:calc(var(--phone-w)*0.034);}
 .status-bar .bat-text{font-variant-numeric:tabular-nums;}
-.desktop{flex:1;padding:10px 10px calc(var(--phone-w)*0.027);display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:calc(var(--phone-w)*0.213);gap:calc(var(--phone-w)*0.032);overflow-y:auto;align-content:start;position:relative;z-index:1;}
+.desktop{flex:0 0 auto;padding:8px 10px calc(var(--phone-w)*0.015);display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:calc(var(--phone-w)*0.19);gap:calc(var(--phone-w)*0.018);overflow-y:auto;align-content:start;position:relative;z-index:1;}
 .desktop::-webkit-scrollbar{display:none;}
 .tile{border-radius:calc(var(--phone-w)*0.04);cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .6s cubic-bezier(.32,2,.4,1);}
 .tile:active{transform:scale(.88);transition:transform .08s ease-out;}
-.tile .app-icon{width:calc(var(--phone-w)*0.117);height:calc(var(--phone-w)*0.117);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:calc(var(--phone-w)*0.059);background:rgba(255,255,255,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--green-deep);border:1px solid rgba(255,255,255,.8);box-shadow:0 4px 14px -4px rgba(40,130,70,.2);}
-.tile .app-label{font-size:calc(var(--phone-w)*0.029);color:var(--green-ink);margin-top:calc(var(--phone-w)*0.01);font-weight:500;}
+.tile .app-icon{width:calc(var(--phone-w)*0.105);height:calc(var(--phone-w)*0.105);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:calc(var(--phone-w)*0.052);background:rgba(255,255,255,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--green-deep);border:1px solid rgba(255,255,255,.8);box-shadow:0 4px 14px -4px rgba(40,130,70,.2);}
+.tile .app-label{font-size:calc(var(--phone-w)*0.026);color:var(--green-ink);margin-top:calc(var(--phone-w)*0.005);font-weight:500;}
 .tile.widget{transition:none;align-items:stretch;height:auto;min-height:calc(var(--phone-w)*0.213 + 24px);background:rgba(255,255,255,.42);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border:1px solid rgba(255,255,255,.5);box-shadow:0 8px 32px -8px rgba(40,130,70,.18);}
 .tile.widget:active{transform:none;}
 .tile.widget-disk{transition:none;height:auto;align-items:center;justify-content:center;background:none;box-shadow:none;border:none;overflow:visible;border-radius:0;}
 .tile.widget-photo{transition:none;height:auto;align-items:center;justify-content:center;background:rgba(255,255,255,.42);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border:1px solid rgba(255,255,255,.5);box-shadow:0 8px 32px -8px rgba(40,130,70,.18);}
-.tile[data-app-key="wechat"],.tile[data-app-key="weibo"]{margin-top:20px;}
+.widget-disk{transform:translateY(6px) !important;} .tile[data-app-key="wechat"],.tile[data-app-key="weibo"]{transform:translateY(20px) !important;overflow:visible !important;} .tile[data-app-key="bubble"],.tile[data-app-key="taobao"]{transform:translateY(12px) !important;overflow:visible !important;}
 
 .dock{display:flex;justify-content:space-around;align-items:center;margin:calc(var(--phone-w)*0.016) 10px calc(var(--phone-w)*0.01);padding:calc(var(--phone-w)*0.016) calc(var(--phone-w)*0.02);background:rgba(255,255,255,.32);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);border-radius:calc(var(--phone-w)*0.05);border:1px solid rgba(255,255,255,.55);gap:calc(var(--phone-w)*0.01);position:relative;z-index:1;box-shadow:0 8px 30px -10px rgba(40,130,70,.2);}
 .dock-item{display:flex;flex-direction:column;align-items:center;gap:calc(var(--phone-w)*0.006);cursor:pointer;transition:transform .2s;}
@@ -64,6 +64,12 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
 .photo-widget img{width:100%;height:100%;object-fit:cover;}
 .photo-widget .photo-placeholder{display:flex;flex-direction:column;align-items:center;gap:calc(var(--phone-w)*0.01);color:var(--green-ink-soft);font-size:calc(var(--phone-w)*0.028);}
 .photo-widget .photo-placeholder svg{width:calc(var(--phone-w)*0.06);height:calc(var(--phone-w)*0.06);stroke:var(--green-deep);fill:none;stroke-width:1.8;}
+.photo-strip{display:flex;justify-content:space-between;align-items:stretch;gap:calc(var(--phone-w)*0.01);padding:calc(var(--phone-w)*0.016) calc(var(--phone-w)*0.027);position:relative;z-index:1;background:rgba(255,255,255,.3);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border:1px solid rgba(255,255,255,.55);border-radius:calc(var(--phone-w)*0.043);box-shadow:0 6px 22px -8px rgba(40,130,70,.22);margin:calc(var(--phone-w)*0.008) calc(var(--phone-w)*0.027) calc(var(--phone-w)*0.016);flex:1;min-height:0;}
+.photo-strip-item{flex:1;min-width:0;border-radius:calc(var(--phone-w)*0.02);overflow:hidden;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.6);cursor:pointer;transition:transform .2s;display:flex;align-items:center;justify-content:center;}
+.photo-strip-item img{width:100%;height:100%;object-fit:cover;}
+.photo-strip-item:active{transform:scale(.94);}
+.photo-strip-item img{width:100%;height:100%;object-fit:cover;}
+.photo-strip-item .photo-strip-plus{color:var(--green-deep);font-size:calc(var(--phone-w)*0.06);font-weight:300;}
 .home-indicator{width:calc(var(--phone-w)*0.357);height:calc(var(--phone-w)*0.013);background:rgba(30,74,48,.35);border-radius:calc(var(--phone-w)*0.008);margin:calc(var(--phone-w)*0.016) auto calc(var(--phone-w)*0.021 + var(--safe-bottom));}
 .widget-homeinfo{padding:calc(var(--phone-w)*0.012) calc(var(--phone-w)*0.035);display:flex;flex-direction:column;justify-content:space-between;background:rgba(255,255,255,.25);backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3);height:100%;gap:calc(var(--phone-w)*0.012);}
 .hi-row{display:flex;align-items:center;justify-content:space-between;}
@@ -190,7 +196,7 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
   html,body{background:var(--green-bg);overflow:hidden;}
   .phone-shell{width:100vw;height:100dvh;border-radius:0;padding:0;box-shadow:none;background:var(--green-bg);}
   .phone-shell::before{display:none;}
-  .phone-screen{border-radius:0;}
+  .phone-screen{width:100%;height:100%;background:var(--green-bg);border-radius:calc(var(--radius) - var(--phone-w)*0.016);overflow:hidden;position:relative;display:flex;flex-direction:column;}
   .status-bar{height:calc(var(--phone-w)*0.11 + var(--safe-top));padding-top:calc(var(--safe-top) + var(--phone-w)*0.045);}
   .desktop{padding:10px calc(var(--phone-w)*0.03) calc(var(--phone-w)*0.027);}
   .dock{margin:calc(var(--phone-w)*0.016) calc(var(--phone-w)*0.03) calc(var(--phone-w)*0.01);}
@@ -207,7 +213,7 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
   html,body{background:var(--green-bg);}
   .phone-shell{width:100vw;height:100dvh;border-radius:0;padding:0;box-shadow:none;background:var(--green-bg);}
   .phone-shell::before{display:none;}
-  .phone-screen{border-radius:0;}
+  .phone-screen{width:100%;height:100%;background:var(--green-bg);border-radius:calc(var(--radius) - var(--phone-w)*0.016);overflow:hidden;position:relative;display:flex;flex-direction:column;}
 }
 </style>
 </head>
@@ -216,6 +222,7 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
   <div class="phone-screen" id="phoneScreen">
     <div class="status-bar" id="statusBar"></div>
     <div class="desktop" id="desktop"></div>
+    <div class="photo-strip" id="photoStrip"></div>
     <div class="dock" id="dock"></div>
     <div class="home-indicator"></div>
   </div>
@@ -258,6 +265,11 @@ const Phone = (() => {
   }
   function init(){
     state = loadState();
+    const SCHEMA_VER = 3;
+    if((state.schemaVersion || 0) < SCHEMA_VER){
+      state.schemaVersion = SCHEMA_VER;
+      saveState();
+    }
     if(!state.globalData) state.globalData = {};
     if(!state.characters){
       state.characters = [{
@@ -268,6 +280,16 @@ const Phone = (() => {
         worldbookIds:[],
         data:{ homeInfo:{ slogan:'we are your vision', location:'Shanghai', weather:null } }
       }];
+    }
+    if(state.characters && state.characters[0] && state.characters[0].id === 'char_default' && state.characters[0].name === '钱锟'){
+      state.characters[0].name = 'WayZenNi';
+      state.characters[0].avatar = '';
+      state.characters[0].age = '';
+      state.characters[0].identity = '';
+      state.characters[0].relationships = '';
+      state.characters[0].persona = '';
+      delete state.characters[0].relationshipList;
+      saveState();
     }
     if(!state.currentCharId) state.currentCharId = state.characters[0].id;
     state.characters.forEach(c => {
@@ -623,7 +645,71 @@ const Desktop = (() => {
       dock.appendChild(div);
     });
   }
-  return { mount, renderDock };
+  function renderPhotoStrip(){
+    const strip = document.getElementById('photoStrip');
+    if(!strip || strip._mounted) return;
+    strip._mounted = true;
+    const d = Phone.getGlobalData('photoStrip');
+    const images = d.images || [];
+    for(let i=0; i<5; i++){
+      const div = document.createElement('div');
+      div.className = 'photo-strip-item';
+      if(images[i]){
+        div.innerHTML = '<img src="'+images[i]+'" alt="">';
+        div.onclick = async () => {
+          const idx = i;
+          const r = await Phone.modal({
+            title:'替换第 '+(idx+1)+' 张图片',
+            fields:[
+              { key:'url', label:'图片 URL', value:'' },
+              { key:'file', label:'或上传本地图片', type:'file' },
+              { key:'remove', label:'移除这张图', type:'checkbox', checked:false }
+            ],
+            onOk: async v => {
+              const dd = Phone.getGlobalData('photoStrip');
+              dd.images = dd.images || [];
+              if(v.remove){
+                dd.images[idx] = '';
+              } else if(v.file){
+                dd.images[idx] = await Phone.fileToBase64(v.file);
+              } else if(v.url.trim()){
+                dd.images[idx] = v.url.trim();
+              }
+              Phone.setGlobalData('photoStrip', dd);
+              return v;
+            }
+          });
+          if(r){ strip.innerHTML = ''; strip._mounted = false; renderPhotoStrip(); }
+        };
+      } else {
+        div.innerHTML = '<span class="photo-strip-plus">+</span>';
+        div.onclick = async () => {
+          const idx = i;
+          const r = await Phone.modal({
+            title:'添加第 '+(idx+1)+' 张图片',
+            fields:[
+              { key:'url', label:'图片 URL', value:'' },
+              { key:'file', label:'或上传本地图片', type:'file' }
+            ],
+            onOk: async v => {
+              const dd = Phone.getGlobalData('photoStrip');
+              dd.images = dd.images || [];
+              if(v.file){
+                dd.images[idx] = await Phone.fileToBase64(v.file);
+              } else if(v.url.trim()){
+                dd.images[idx] = v.url.trim();
+              }
+              Phone.setGlobalData('photoStrip', dd);
+              return v;
+            }
+          });
+          if(r){ strip.innerHTML = ''; strip._mounted = false; renderPhotoStrip(); }
+        };
+      }
+      strip.appendChild(div);
+    }
+  }
+  return { mount, renderDock, renderPhotoStrip };
 })();
 
 /* ============ home-info widget ============ */
@@ -1332,8 +1418,10 @@ function openChatPage(){
       view.querySelector('.page-header').style.display = 'none';
       body.style.padding = '0';
       body.style.overflow = 'hidden';
+      body.style.display = 'flex';
+      body.style.flexDirection = 'column';
       try{
-        const res = await fetch('wechat.html');
+        const res = await fetch('wechat.html?v=' + Date.now());
         const html = await res.text();
         const doc = new DOMParser().parseFromString(html, 'text/html');
         doc.querySelectorAll('style').forEach(s => {
@@ -1367,6 +1455,7 @@ Phone.init = () => {
     { name:'微信', icon:WECHAT_ICON, onClick: openChatPage },
     { name:'美化', icon:BEAUTY_ICON }
   ]);
+  Desktop.renderPhotoStrip();
   document.addEventListener('char-updated', () => {
     Phone._refreshAll();
   });

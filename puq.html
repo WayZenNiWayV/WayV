@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -6,9 +6,9 @@
 <title>朋友圈</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#fff;color:#222;font-size:14px;line-height:1.5;-webkit-tap-highlight-color:transparent;user-select:none;height:100%;overflow-y:auto;}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#e8f5e9;color:#222;font-size:14px;line-height:1.5;-webkit-tap-highlight-color:transparent;user-select:none;height:100%;overflow-y:auto;}
 img{display:block;max-width:100%;}
-.puq-wrap{max-width:480px;margin:0 auto;position:relative;min-height:100%;background:#fff;}
+.puq-wrap{max-width:480px;margin:0 auto;position:relative;min-height:100%;background:#e8f5e9;}
 .puq-banner{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;background:#c8e6c9;cursor:pointer;}
 .puq-banner-slide{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .4s ease;}
 .puq-profile{position:relative;padding:0 16px 18px;margin-top:-48px;z-index:4;display:flex;justify-content:flex-end;align-items:flex-end;gap:12px;}
@@ -19,7 +19,7 @@ img{display:block;max-width:100%;}
 .puq-profile-avatar img{width:100%;height:100%;object-fit:cover;}
 .puq-profile-avatar-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#81c784,#4caf50);color:#fff;font-size:26px;font-weight:600;}
 .puq-list{padding:0 0 40px;}
-.puq-item{padding:14px 16px;border-bottom:1px solid #f0f0f0;display:flex;gap:12px;position:relative;background:#fff;}
+.puq-item{padding:14px 16px;border-bottom:1px solid #c8e6c9;display:flex;gap:12px;position:relative;background:#e8f5e9;}
 .puq-item-avatar{width:42px;height:42px;border-radius:5px;overflow:hidden;flex-shrink:0;background:#e5e5e5;}
 .puq-item-avatar img{width:100%;height:100%;object-fit:cover;}
 .puq-item-avatar-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#81c784,#4caf50);color:#fff;font-size:16px;font-weight:600;}
@@ -47,23 +47,22 @@ img{display:block;max-width:100%;}
 .puq-item-tool.liked svg{fill:#e74c3c;}
 .puq-item-tool.refreshing{animation:puqSpin 1s linear infinite;color:#07c160;}
 @keyframes puqSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.puq-item-tool.ai-thinking{color:#07c160;animation:puqPulse 1.2s ease-in-out infinite;}
-@keyframes puqPulse{0%,100%{opacity:.4}50%{opacity:1}}
-.puq-like-list{margin-top:8px;background:#f7f7f7;border-radius:4px;padding:8px 10px;display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:13px;color:#07c160;}
+.puq-like-list{margin-top:8px;background:#e8f5e9;border-radius:4px;padding:8px 10px;display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:13px;color:#07c160;}
 .puq-like-list svg{width:14px;height:14px;fill:#e74c3c;margin-right:2px;flex-shrink:0;}
 .puq-like-name{color:#07c160;cursor:pointer;margin-right:4px;}
 .puq-like-name:hover{text-decoration:underline;}
 .puq-like-sep{color:#999;margin-right:4px;}
-.puq-comments{margin-top:6px;background:#f7f7f7;border-radius:4px;padding:4px 10px;}
+.puq-comments{margin-top:6px;background:#e8f5e9;border-radius:4px;padding:4px 10px;}
 .puq-comment{padding:6px 0;font-size:13px;color:#333;position:relative;line-height:1.4;cursor:default;}
-.puq-comment + .puq-comment{border-top:1px solid #e8e8e8;}
+.puq-comment + .puq-comment{border-top:1px solid #c8e6c9;}
 .puq-comment-name{color:#07c160;font-weight:500;margin-right:2px;cursor:pointer;}
 .puq-comment-name:hover{text-decoration:underline;}
 .puq-comment-reply-tag{color:#999;margin:0 2px;font-size:12px;}
 .puq-comment-text{color:#333;word-break:break-all;}
+.puq-comment-inline-img{display:inline-block;height:18px;width:auto;max-width:60px;vertical-align:middle;margin:0 2px;cursor:pointer;border-radius:2px;}
 .puq-comment-del{position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:transparent;color:#07c160;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1;z-index:2;font-weight:700;}
 .puq-comment.show-del .puq-comment-del{display:flex;}
-.puq-comment-input-bar{display:none;align-items:center;gap:6px;margin-top:4px;padding:6px;background:#fff;border-radius:6px;border:1px solid #eee;flex-wrap:wrap;}
+.puq-comment-input-bar{display:none;align-items:center;gap:6px;margin-top:4px;padding:6px;background:#e8f5e9;border-radius:6px;border:1px solid #c8e6c9;flex-wrap:wrap;}
 .puq-comment-input-bar.show{display:flex;}
 .puq-comment-input{flex:1;border:none;outline:none;font-size:13px;font-family:inherit;background:transparent;min-width:0;}
 .puq-comment-send{padding:5px 12px;background:#07c160;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer;font-family:inherit;flex-shrink:0;}
@@ -74,14 +73,15 @@ img{display:block;max-width:100%;}
 .puq-comment-preview-img.remove{cursor:pointer;position:relative;}
 .puq-comment-preview-img-wrap{position:relative;display:inline-block;margin:2px 0;}
 .puq-comment-preview-img-wrap .remove-x{position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;}
-.puq-comment-image{max-width:120px;max-height:120px;border-radius:4px;margin-top:2px;cursor:pointer;}
-.puq-emoji-panel{position:absolute;bottom:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid #e0e0e0;border-radius:8px;box-shadow:0 -4px 12px rgba(0,0,0,.1);padding:8px;z-index:50;max-height:180px;overflow-y:auto;}
-.puq-emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;}
-.puq-emoji-item{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border-radius:4px;transition:background .1s;}
-.puq-emoji-item:hover{background:#f5f5f5;}
+.puq-comment-inline-img{display:inline-block;height:18px;width:auto;max-width:60px;vertical-align:middle;margin:0 2px;cursor:pointer;border-radius:2px;}
+.puq-emoji-panel{position:absolute;bottom:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid #e0e0e0;border-radius:8px;box-shadow:0 -4px 12px rgba(0,0,0,.1);padding:8px;z-index:50;max-height:200px;overflow-y:auto;}
+.puq-emoji-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;}
+.puq-emoji-item{aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;overflow:hidden;transition:background .1s,transform .1s;background:#fafafa;}
+.puq-emoji-item img{width:100%;height:100%;object-fit:contain;}
+.puq-emoji-item:hover{background:#f0f0f0;transform:scale(1.05);}
 .puq-empty{text-align:center;padding:60px 20px;color:#bbb;font-size:13px;}
 .puq-empty svg{width:48px;height:48px;margin-bottom:12px;opacity:.4;}
-.puq-modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;flex-direction:column;animation:puqFadeIn .2s;}
+.puq-modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2500;display:flex;flex-direction:column;animation:puqFadeIn .2s;}
 @keyframes puqFadeIn{from{opacity:0}to{opacity:1}}
 .puq-modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#fff;border-bottom:1px solid #eee;flex-shrink:0;}
 .puq-modal-cancel{font-size:15px;color:#666;cursor:pointer;padding:4px 8px;margin:-4px -8px;}
@@ -91,8 +91,6 @@ img{display:block;max-width:100%;}
 .puq-modal-body{flex:1;background:#fff;overflow-y:auto;padding:14px 16px;}
 .puq-compose-textarea{width:100%;min-height:120px;border:none;outline:none;font-size:16px;font-family:inherit;resize:none;background:transparent;line-height:1.5;color:#222;}
 .puq-compose-textarea::placeholder{color:#bbb;}
-.puq-compose-txt-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;margin-top:10px;background:#f7f7f7;border-radius:6px;cursor:pointer;color:#07c160;font-size:13px;}
-.puq-compose-txt-btn svg{width:16px;height:16px;}
 .puq-compose-images{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
 .puq-compose-img{width:100%;aspect-ratio:1;border-radius:4px;overflow:hidden;position:relative;background:#f5f5f5;}
 .puq-compose-img img{width:100%;height:100%;object-fit:cover;}
@@ -101,7 +99,7 @@ img{display:block;max-width:100%;}
 .puq-compose-add{width:100%;aspect-ratio:1;border-radius:4px;border:1px dashed #ccc;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#bbb;flex-direction:column;gap:4px;font-size:11px;transition:border-color .15s,color .15s;}
 .puq-compose-add:hover{border-color:#07c160;color:#07c160;}
 .puq-compose-add svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.5;}
-.puq-txt-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1100;display:flex;align-items:center;justify-content:center;padding:20px;}
+.puq-txt-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2700;display:flex;align-items:center;justify-content:center;padding:20px;}
 .puq-txt-box{background:#fff;border-radius:12px;width:100%;max-width:340px;overflow:hidden;}
 .puq-txt-head{padding:14px 16px;border-bottom:1px solid #eee;font-size:15px;font-weight:500;}
 .puq-txt-body{padding:16px;}
@@ -116,7 +114,7 @@ img{display:block;max-width:100%;}
 .puq-txt-foot .cancel-btn{background:#f0f0f0;color:#666;}
 .puq-txt-foot .ok-btn{background:#07c160;color:#fff;}
 .puq-txt-preview{margin-top:12px;aspect-ratio:1;border-radius:8px;padding:12px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;color:#333;border:1px solid #eee;}
-.puq-img-viewer{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:2000;display:flex;align-items:center;justify-content:center;animation:puqFadeIn .2s;}
+.puq-img-viewer{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:2800;display:flex;align-items:center;justify-content:center;animation:puqFadeIn .2s;}
 .puq-img-viewer img{max-width:95vw;max-height:90vh;object-fit:contain;}
 .puq-img-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;line-height:1;}
 .puq-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;z-index:3000;pointer-events:none;animation:puqFadeIn .2s;}
@@ -127,6 +125,48 @@ img{display:block;max-width:100%;}
 .puq-item-del-confirm div:hover{background:#f5f5f5;}
 .puq-item-del-confirm div.danger{color:#07c160;font-weight:500;}
 .puq-ai-loading{font-size:12px;color:#07c160;font-style:italic;padding:4px 0;}
+.puq-sheet-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:2600;animation:puqFadeIn .2s;}
+.puq-sheet{position:fixed;left:0;right:0;bottom:0;z-index:2601;background:#fff;border-radius:14px 14px 0 0;animation:puqSlideUp .25s ease;max-height:85vh;overflow-y:auto;}
+.puq-sheet-title{padding:14px 16px;font-size:13px;color:#999;text-align:center;border-bottom:1px solid #f0f0f0;}
+.puq-sheet-item{padding:14px 16px;font-size:16px;color:#222;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f5f5f5;}
+.puq-sheet-item:hover{background:#f7f7f7;}
+.puq-sheet-item svg{width:20px;height:20px;color:#07c160;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.puq-sheet-cancel{margin-top:6px;background:#f7f7f7;border-bottom:none;border-radius:0 0 14px 14px;justify-content:center;color:#666;font-weight:500;}
+.puq-char-picker{display:flex;flex-direction:column;gap:0;}
+.puq-char-row{padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid #f0f0f0;}
+.puq-char-row:hover{background:#f7f7f7;}
+.puq-char-row.active{background:#e8f5e9;}
+.puq-char-avatar{width:36px;height:36px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#e5e5e5;}
+.puq-char-avatar img{width:100%;height:100%;object-fit:cover;}
+.puq-char-avatar-fb{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#81c784,#4caf50);color:#fff;font-size:14px;font-weight:600;}
+.puq-char-name{font-size:15px;color:#222;flex:1;}
+.puq-char-check{color:#07c160;font-size:18px;font-weight:600;}
+.puq-char-compose-mask{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2500;display:flex;flex-direction:column;animation:puqFadeIn .2s;}
+.puq-char-compose-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#fff;border-bottom:1px solid #eee;flex-shrink:0;}
+.puq-char-compose-cancel{font-size:15px;color:#666;cursor:pointer;padding:4px 8px;margin:-4px -8px;}
+.puq-char-compose-title{font-size:16px;font-weight:500;}
+.puq-char-compose-publish{font-size:14px;color:#fff;background:#07c160;padding:6px 16px;border-radius:5px;cursor:pointer;font-family:inherit;border:none;}
+.puq-char-compose-publish:disabled{background:#bcc;cursor:not-allowed;}
+.puq-char-compose-body{flex:1;background:#fff;overflow-y:auto;padding:14px 16px;}
+.puq-char-compose-body textarea{width:100%;min-height:100px;border:1px solid #e0e0e0;border-radius:8px;padding:10px;font-family:inherit;font-size:14px;outline:none;resize:vertical;line-height:1.5;}
+.puq-char-compose-body textarea:focus{border-color:#07c160;}
+.puq-char-section-title{font-size:13px;color:#999;margin:10px 0 6px;}
+.puq-char-mode-row{display:flex;gap:8px;margin-bottom:12px;}
+.puq-char-mode-btn{flex:1;padding:10px;border:1px solid #e0e0e0;border-radius:8px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#666;transition:all .15s;}
+.puq-char-mode-btn.active{border-color:#07c160;color:#07c160;background:#f0faf3;}
+.puq-char-images{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.puq-char-img{width:100%;aspect-ratio:1;border-radius:4px;overflow:hidden;position:relative;background:#f5f5f5;}
+.puq-char-img img{width:100%;height:100%;object-fit:cover;}
+.puq-char-img-del{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;line-height:1;}
+.puq-char-add-img{width:100%;aspect-ratio:1;border-radius:4px;border:1px dashed #ccc;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#bbb;flex-direction:column;gap:4px;font-size:11px;transition:border-color .15s,color .15s;}
+.puq-char-add-img:hover{border-color:#07c160;color:#07c160;}
+.puq-char-add-img svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;}
+.puq-char-generate-btn{width:100%;padding:12px;background:#07c160;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;margin-top:8px;}
+.puq-char-generate-btn:disabled{background:#bcc;cursor:not-allowed;}
+.puq-char-generate-btn.loading{display:flex;align-items:center;justify-content:center;gap:8px;}
+.puq-char-generate-btn.loading::before{content:'';width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:puqSpin .8s linear infinite;}
+.puq-char-preview-author{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px;background:#f7f7f7;border-radius:8px;}
+.puq-char-preview-author-name{font-size:14px;font-weight:500;color:#07c160;}
 </style>
 </head>
 <body>
@@ -152,7 +192,7 @@ img{display:block;max-width:100%;}
   let composeImages = [];
   let composeText = '';
   let composeReplyTo = null;
-  const puqPendingAIs = new Set();
+  const puqPendingAIs = new Map();
 
   function loadPuqData(){
     const d = Phone.getData('puq');
@@ -167,7 +207,79 @@ img{display:block;max-width:100%;}
     }
     return d;
   }
-  function savePuq(){ Phone.setData('puq', puqData); }
+  function savePuq(){
+    if(_savePuqTimer) clearTimeout(_savePuqTimer);
+    _savePuqTimer = setTimeout(async () => {
+      try{
+        Phone.setData('puq', puqData);
+      }catch(err){
+        console.warn('[puq] savePuq failed, retrying after cleanup...', err);
+        try{
+          const d = JSON.parse(JSON.stringify(puqData || {}));
+          let cleaned = false;
+          if(d.banners){
+            const newBanners = [];
+            for(const b of d.banners){
+              if(b && typeof b === 'string' && b.startsWith('data:image')){
+                try{
+                  const compressed = await _compressDataImage(b, 800, 0.6);
+                  if(compressed && compressed.length < b.length){ cleaned = true; newBanners.push(compressed); continue; }
+                }catch(_){}
+              }
+              newBanners.push(b);
+            }
+            d.banners = newBanners;
+          }
+          if(d.posts){
+            for(const p of d.posts){
+              if(p.images){
+                const newImages = [];
+                for(const img of p.images){
+                  if(img && img.type !== 'text' && img.src && img.src.startsWith('data:image')){
+                    try{
+                      const compressed = await _compressDataImage(img.src, 600, 0.5);
+                      if(compressed && compressed.length < img.src.length){ cleaned = true; newImages.push({ ...img, src: compressed }); continue; }
+                    }catch(_){}
+                  }
+                  newImages.push(img);
+                }
+                p.images = newImages;
+              }
+            }
+          }
+          if(cleaned){
+            Phone.setData('puq', d);
+            puqData = d;
+            toast('已自动压缩图片节省空间');
+          }else{
+            toast('存储空间不足，请清理聊天记录或图片');
+          }
+        }catch(err2){
+          console.error('[puq] savePuq retry also failed:', err2);
+          toast('存储空间不足，请清理聊天记录或图片');
+        }
+      }
+    }, 200);
+  }
+  let _savePuqTimer = null;
+
+  function _compressDataImage(dataUrl, maxSide, quality){
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const ratio = Math.min(1, maxSide / Math.max(img.width, img.height));
+        const w = Math.round(img.width * ratio);
+        const h = Math.round(img.height * ratio);
+        const cv = document.createElement('canvas');
+        cv.width = w; cv.height = h;
+        const ctx = cv.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(cv.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  }
   function esc(s){ return String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
 
   function getContactsList(){
@@ -207,24 +319,24 @@ img{display:block;max-width:100%;}
   }
 
   function buildContactReply(c, userInput, context){
-    let sys = `你是微信朋友圈里的一个真人，名字叫 ${c.name}。\n`;
+    let sys = `你是微信朋友圈里的一个真人，名字叫${c.name}。\n`;
     if(c.roleSetting) sys += `【你的人设】\n${c.roleSetting}\n\n`;
     if(context && context.posterName){
-      sys += `发这条朋友圈的人（帖子作者）叫 ${context.posterName}。\n`;
+      sys += `发这条朋友圈的人（帖子作者）是${context.posterName}。\n`;
     }
     if(context && context.isReply && context.replyToName){
       sys += `\n你在回复 ${context.replyToName}。\n`;
     }
     sys += `\n⚠️ 你要发的是朋友圈评论，不是私聊！语气要像微信里真实的朋友留言，简短、口语化。\n`;
     sys += `⚠️ 10-40字之间，自然活泼。可以带表情但不要太多。\n`;
-    sys += `⚠️ 直接输出评论内容，不要加【名字】：、"说"、引号等任何格式。\n`;
-    sys += `⚠️ 禁止输出任何不在朋友圈评论里出现的内容（如"好的收到"、"我想想"、"以下是评论"等）。`;
+    sys += `⚠️ 直接输出评论内容，不要加【名字】：好、请、引号等任何格式。\n`;
+    sys += `⚠️ 禁止输出任何不在朋友圈评论里出现的内容（例如：好的收到、我想想、以下是评论列表等）`;
     let userPrompt = '';
     if(context && context.postContent){
       userPrompt += `【朋友圈内容】\n"${context.postContent}"\n\n`;
     }
     if(context && context.thread && context.thread.length > 0){
-      userPrompt += `【已有评论】\n${context.thread.map(r => r.name+'：'+r.text).join('\n')}\n\n`;
+      userPrompt += `【已有评论】\n${context.thread.map(r => r.name+': '+r.text).join('\n')}\n\n`;
     }
     userPrompt += `刚才有人说了："${userInput}"\n请你作为 ${c.name} 评一句：`;
     return [
@@ -236,17 +348,25 @@ img{display:block;max-width:100%;}
   async function generateContactComment(contact, userInput, context){
     try{
       const messages = buildContactReply(contact, userInput, context);
+      console.log('[puq-comment] request for', contact.name, 'messages:', messages);
       const raw = await Phone.chatWithAI(messages);
+      console.log('[puq-comment] raw response:', JSON.stringify(raw));
       let text = (raw || '').trim();
-      text = text.replace(/^[【\[]?[^】\]]*[】\]]?[:：]\s*/, '');
-      text = text.replace(/^[""「」『』"'']|[""「」『』"'']$/g, '');
-      text = text.replace(/^(评论|回复|回|说|我的评论)[：:]\s*/, '');
+      const orig = text;
+      text = text.replace(/^[【「『][^】」』]*[】」』][:：\s]*/, '');
+      text = text.replace(/^[""「『"'']+|[""」』"'']+$/g, '');
+      text = text.replace(/^(评论|回复)[：:]\s*/, '');
+      text = text.replace(/^\S+?[说道曰][：:]\s*/, '');
+      text = text.replace(/^(好的收到|收到|我想想|以下是|这是|我的)[^，。！？]*[：:]\s*/, '');
       text = text.trim();
+      console.log('[puq-comment] cleaned:', JSON.stringify(text), '(orig:', JSON.stringify(orig), ')');
       if(text.length > 80) text = text.slice(0, 77) + '...';
+      if(text.length === 0 && orig.length > 0) text = orig.slice(0, Math.min(40, orig.length));
       if(text.length === 0) text = '哈哈';
       return text;
     }catch(err){
-      const fallbacks = ['哈哈哈哈','有意思～','+1','好看！','笑死','同感同感','确实','666','爱了爱了'];
+      console.error('[puq-comment] AI error:', err);
+      const fallbacks = ['哈哈哈','有意思~','+1','好看','笑死','同感同感','确实','666','爱了爱了'];
       return fallbacks[Math.floor(Math.random()*fallbacks.length)];
     }
   }
@@ -262,13 +382,13 @@ img{display:block;max-width:100%;}
   let bannerFileInput = null;
   function showBannerMenu(){
     const mask = document.createElement('div');
-    mask.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1500;display:flex;align-items:flex-end;justify-content:center;';
+    mask.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2900;display:flex;align-items:flex-end;justify-content:center;';
     const sheet = document.createElement('div');
     sheet.style.cssText = 'background:#f5f5f5;width:100%;max-width:480px;border-radius:12px 12px 0 0;padding:6px 0 18px;animation:puqSlideUp .2s ease-out;';
     const opts = [
       { label:'切换图片', action:() => {
           const banners = puqData.banners || [];
-          if(banners.length <= 1){ toast('只有一张图'); return; }
+          if(banners.length <= 1){ toast('鍙湁涓€寮犲浘'); return; }
           bannerIdx = (bannerIdx + 1) % banners.length;
           renderBanner();
         }
@@ -319,7 +439,7 @@ img{display:block;max-width:100%;}
     const posts = (puqData.posts || []).slice().sort((a,b) => b.createdAt - a.createdAt);
     listEl.innerHTML = '';
     if(posts.length === 0){
-      listEl.innerHTML = '<div class="puq-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>还没有朋友圈内容，点击右上角 + 发表第一条吧~</div>';
+      listEl.innerHTML = '<div class="puq-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 7h18M7 3v18"/></svg><div>还没有朋友圈内容</div><div class="puq-empty-hint">点击右上角 + 发表第一条吧</div></div>';
     } else {
       const curChar = Phone.getCurrentChar();
       posts.forEach(p => listEl.appendChild(renderPost(p, curChar)));
@@ -327,7 +447,6 @@ img{display:block;max-width:100%;}
       const now = Date.now();
       posts.forEach(p => {
         if(puqData._aiTriggered[p.id]) return;
-        if(p.authorId === (curChar && curChar.id)) return;
         if(now - p.createdAt > 30*60*1000) return;
         puqData._aiTriggered[p.id] = true;
         savePuq();
@@ -338,12 +457,16 @@ img{display:block;max-width:100%;}
       delete window.__puqAutoOpenCompose;
       setTimeout(() => openCompose(), 100);
     }
+    if(window.__puqAutoOpenCharPicker){
+      delete window.__puqAutoOpenCharPicker;
+      setTimeout(() => openCharPicker(), 100);
+    }
   }
 
   function renderPost(p, curChar){
     const div = document.createElement('div');
     div.className = 'puq-item';
-    const author = findContactById(p.authorId) || { name: p.authorName || '未知', avatar: p.authorAvatar || '' };
+    const author = findContactById(p.authorId) || { name: p.authorName || '鏈煡', avatar: p.authorAvatar || '' };
     const imgsHtml = (p.images || []).map((img,idx) => {
       if(img.type === 'text') return '<div class="puq-item-img text-img" data-idx="'+idx+'" style="--ti-bg:'+esc(img.bg||'#f5f5f5')+'">'+esc(img.text||'')+'</div>';
       return '<img class="puq-item-img" data-idx="'+idx+'" src="'+esc(img.src)+'" alt="">';
@@ -356,15 +479,15 @@ img{display:block;max-width:100%;}
     const comments = p.comments || [];
     const commentsHtml = comments.length > 0 ? '<div class="puq-comments">'+comments.map(c => {
       let replyTag = '';
-      if(c.replyToId && c.replyToName) replyTag = '<span class="puq-comment-reply-tag">回复</span><span class="puq-comment-name">'+esc(c.replyToName)+'</span><span class="puq-comment-reply-tag">:</span>';
-      let textHtml = '';
-      if(c.text) textHtml = '<span class="puq-comment-text">'+esc(c.text)+'</span>';
-      let imgHtml = '';
-      if(c.image) imgHtml = '<img class="puq-comment-image" src="'+esc(c.image)+'" alt="">';
-      return '<div class="puq-comment" data-cid="'+c.id+'"><span class="puq-comment-name">'+esc(c.authorName||'?')+'</span>'+replyTag+textHtml+imgHtml+'<span class="puq-comment-del" title="删除">×</span></div>';
+      if(c.replyToId && c.replyToName) replyTag = '<span class="puq-comment-reply-tag">回复</span><span class="puq-comment-name">'+esc(c.replyToName)+'</span><span class="puq-comment-reply-sym">:</span>';
+      const textHtml = c.text ? esc(c.text) : '';
+      const imgs = c.images || (c.image ? [c.image] : []);
+      const imgsHtml = imgs.map(src => '<img class="puq-comment-inline-img" src="'+esc(src)+'" alt="">').join('');
+      return '<div class="puq-comment" data-cid="'+c.id+'"><span class="puq-comment-name">'+esc(c.authorName||'?')+'</span>'+replyTag+textHtml+imgsHtml+'<span class="puq-comment-del" title="删除">×</span></div>';
     }).join('')+'</div>' : '';
-    const isPending = puqPendingAIs.has(p.id);
-    div.innerHTML = '<div class="puq-item-avatar">'+charAvatar(author)+'</div><div class="puq-item-body"><div class="puq-item-head"><span class="puq-item-author">'+esc(author.name || '未知')+'</span><span class="puq-item-del" title="删除"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span></div>'+(p.text ? '<div class="puq-item-text">'+esc(p.text)+'</div>' : '')+(imgCount > 0 ? '<div class="'+imgClass+'">'+imgsHtml+'</div>' : '')+'<div class="puq-item-footer"><span class="puq-item-time">'+fmtTime(p.createdAt)+'</span><div class="puq-item-tools"><span class="puq-item-tool refresh-btn '+(isPending?'ai-thinking':'')+'" data-refresh="'+p.id+'" title="让共同好友来评论"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></span><span class="puq-item-tool like-btn '+(myLike?'liked':'')+'" data-like="'+p.id+'" title="点赞"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span><span class="puq-item-tool comment-btn" data-comment="'+p.id+'" title="评论"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></div></div>'+likeHtml+commentsHtml+(isPending && comments.length > 0 ? '<div class="puq-ai-loading">AI 正在思考...</div>' : '')+'<div class="puq-comment-input-bar" data-post="'+p.id+'"><input class="puq-comment-input" placeholder="评论..."><span class="puq-comment-tool emoji-btn" title="表情">😊</span><span class="puq-comment-tool img-btn" title="图片">🖼</span><span class="puq-comment-img-preview"></span><button class="puq-comment-send" disabled>发送</button></div></div>';
+    const pendingCount = puqPendingAIs.get(p.id) || 0;
+    const isPending = pendingCount > 0;
+    div.innerHTML = '<div class="puq-item-avatar">'+charAvatar(author)+'</div><div class="puq-item-body"><div class="puq-item-head"><span class="puq-item-author">'+esc(author.name || '鏈煡')+'</span><span class="puq-item-del" title="删除"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span></div>'+(p.text ? '<div class="puq-item-text">'+esc(p.text)+'</div>' : '')+(imgCount > 0 ? '<div class="'+imgClass+'">'+imgsHtml+'</div>' : '')+'<div class="puq-item-footer"><span class="puq-item-time">'+fmtTime(p.createdAt)+'</span><div class="puq-item-tools"><span class="puq-item-tool refresh-btn '+(isPending?'refreshing':'')+'" data-refresh="'+p.id+'" title="璁╁叡鍚屽ソ鍙嬫潵评论"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></span><span class="puq-item-tool like-btn '+(myLike?'liked':'')+'" data-like="'+p.id+'" title="鐐硅禐"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span><span class="puq-item-tool comment-btn" data-comment="'+p.id+'" title="评论"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></div></div>'+likeHtml+commentsHtml+'<div class="puq-comment-input-bar" data-post="'+p.id+'"><input class="puq-comment-input" placeholder="评论..."><span class="puq-comment-tool emoji-btn" title="琛ㄦ儏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></span><span class="puq-comment-tool img-btn" title="图片"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span><span class="puq-comment-img-preview"></span><button class="puq-comment-send" disabled>发送/button></div></div>';
     bindPostEvents(div, p, curChar);
     return div;
   }
@@ -372,6 +495,9 @@ img{display:block;max-width:100%;}
   function bindPostEvents(div, p, curChar){
     div.querySelectorAll('.puq-item-img').forEach(img => {
       img.addEventListener('click', (e) => { e.stopPropagation(); openImageViewer(p.images || [], parseInt(img.dataset.idx)); });
+    });
+    div.querySelectorAll('.puq-comment-inline-img').forEach(img => {
+      img.addEventListener('click', (e) => { e.stopPropagation(); openImageViewer([{ src: img.src }], 0); });
     });
     const likeBtn = div.querySelector('[data-like]');
     if(likeBtn) likeBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleLike(p, curChar); });
@@ -386,7 +512,7 @@ img{display:block;max-width:100%;}
         const input = bar.querySelector('.puq-comment-input');
         input.placeholder = '评论...';
         composeReplyTo = null;
-        bar._puqCommentImage = null;
+        bar._puqCommentImages = [];
         renderCommentInputState(bar);
         setTimeout(() => input.focus(), 50);
       } else {
@@ -403,12 +529,14 @@ img{display:block;max-width:100%;}
       let imgFileInput = null;
 
       function renderCommentInputState(){
-        const hasImg = !!bar._puqCommentImage;
+        const imgs = bar._puqCommentImages || [];
         const val = input.value.trim();
-        send.disabled = !val && !hasImg;
-        if(hasImg){
-          preview.innerHTML = '<div class="puq-comment-preview-img-wrap"><img class="puq-comment-preview-img" src="'+esc(bar._puqCommentImage)+'" alt=""><span class="remove-x" title="移除图片">×</span></div>';
-          preview.querySelector('.remove-x').onclick = (e) => { e.stopPropagation(); bar._puqCommentImage = null; renderCommentInputState(); };
+        send.disabled = !val && imgs.length === 0;
+        if(imgs.length > 0){
+          preview.innerHTML = imgs.map((src, i) => '<div class="puq-comment-preview-img-wrap"><img class="puq-comment-preview-img" src="'+esc(src)+'" alt=""><span class="remove-x" data-i="'+i+'" title="移除">×</span></div>').join('');
+          preview.querySelectorAll('.remove-x').forEach(x => {
+            x.onclick = (e) => { e.stopPropagation(); imgs.splice(parseInt(x.dataset.i), 1); renderCommentInputState(); };
+          });
         } else {
           preview.innerHTML = '';
         }
@@ -427,11 +555,12 @@ img{display:block;max-width:100%;}
           imgFileInput = document.createElement('input');
           imgFileInput.type = 'file';
           imgFileInput.accept = 'image/*';
+          imgFileInput.multiple = false;
           imgFileInput.onchange = async (ev) => {
             const file = (ev.target.files || [])[0];
             if(!file) return;
             const src = await Phone.fileToBase64(file);
-            bar._puqCommentImage = src;
+            bar._puqCommentImages = [src];
             renderCommentInputState();
           };
         }
@@ -441,11 +570,11 @@ img{display:block;max-width:100%;}
 
       const doSend = () => {
         const val = input.value.trim();
-        const img = bar._puqCommentImage || null;
-        if(!val && !img) return;
-        addComment(p, curChar, val, composeReplyTo, img);
+        const imgs = bar._puqCommentImages || [];
+        if(!val && imgs.length === 0) return;
+        addComment(p, curChar, val, composeReplyTo, imgs);
         const wasReplyTo = composeReplyTo;
-        input.value = ''; composeReplyTo = null; bar._puqCommentImage = null; bar.classList.remove('show');
+        input.value = ''; composeReplyTo = null; bar._puqCommentImages = []; bar.classList.remove('show');
         closeEmojiPanel(div);
         renderList();
         if(wasReplyTo){
@@ -468,7 +597,7 @@ img{display:block;max-width:100%;}
         if(!cc.classList.contains('show-del')){
           const inputBar = div.querySelector('.puq-comment-input-bar');
           inputBar.classList.add('show');
-          inputBar._puqCommentImage = null;
+          inputBar._puqCommentImages = [];
           composeReplyTo = { postId: p.id, userId: c.authorId, userName: c.authorName };
           const input = inputBar.querySelector('.puq-comment-input');
           input.placeholder = '回复 ' + c.authorName + '...';
@@ -508,11 +637,11 @@ img{display:block;max-width:100%;}
     savePuq(); renderList();
   }
 
-  function addComment(p, curChar, text, replyTo, image){
+  function addComment(p, curChar, text, replyTo, images){
     if(!curChar) return;
     p.comments = p.comments || [];
     const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:curChar.id, authorName:curChar.name, authorAvatar:curChar.avatar, text, createdAt:nowTs() };
-    if(image) c.image = image;
+    if(images && images.length > 0) c.images = images.slice();
     if(replyTo && replyTo.postId === p.id){ c.replyToId = replyTo.userId; c.replyToName = replyTo.userName; }
     p.comments.push(c); savePuq();
   }
@@ -525,84 +654,76 @@ img{display:block;max-width:100%;}
     const postContent = (p.text||'') + (imgs ? (' [配图：'+imgs+']') : '');
     const thread = (p.comments||[]).slice(-6).map(c => ({ name: c.authorName, text: c.text }));
     return {
-      posterName: (author && author.name) || p.authorName || '帖子作者',
+      posterName: (author && author.name) || p.authorName || '匿名作者',
       postContent: postContent.slice(0, 300),
       thread
     };
   }
 
   async function triggerFriendCommentAI(p, curChar, btnEl){
-    if(puqPendingAIs.has(p.id)) return;
-    const excludeIds = [curChar && curChar.id].filter(Boolean);
-    const contact = pickRandomContact(excludeIds);
-    if(!contact){ toast('暂无联系人'); return; }
-    puqPendingAIs.add(p.id); renderList();
+    const excludeIds = [curChar && curChar.id, p.authorId].filter(Boolean);
+    const allContacts = getContactsList().filter(c => !excludeIds.includes(c.id));
+    if(allContacts.length === 0){ toast('暂无联系人'); return; }
+    const shuffled = allContacts.sort(() => Math.random() - 0.5);
+    const batchSize = Math.min(shuffled.length, 2 + Math.floor(Math.random()*2));
+    const batch = shuffled.slice(0, batchSize);
+    batch.forEach(contact => {
+      bumpPending(p.id, 1);
+      setTimeout(() => runSingleCommentAI(p, curChar, contact, null, null), 200 + Math.random()*1200);
+    });
+  }
+
+  function bumpPending(postId, delta){
+    const cur = puqPendingAIs.get(postId) || 0;
+    const next = cur + delta;
+    if(next <= 0) puqPendingAIs.delete(postId);
+    else puqPendingAIs.set(postId, next);
+    renderList();
+  }
+
+  async function runSingleCommentAI(p, curChar, contact, replyToId, replyToName){
     try{
+      const lastComment = (p.comments || [])[p.comments.length - 1];
+      if(!replyToId && !replyToName && lastComment && lastComment.authorId !== contact.id){
+        replyToId = lastComment.authorId;
+        replyToName = lastComment.authorName;
+      }
       const context = getPostContextForAI(p);
-      const userInput = context.thread.length > 0 ? context.thread[context.thread.length-1].text : '（新发了一条朋友圈）';
+      if(replyToId && replyToName){
+        context.isReply = true;
+        context.replyToName = replyToName;
+      }
+      const userInput = lastComment ? lastComment.text : '（有新评论）';
       const text = await generateContactComment(contact, userInput, context);
       p.comments = p.comments || [];
-      const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:contact.id, authorName:contact.name, authorAvatar:contact.avatar, text, createdAt:nowTs() };
+      const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6)+'_'+contact.id, authorId:contact.id, authorName:contact.name, authorAvatar:contact.avatar, text, createdAt:nowTs() };
+      if(replyToId && replyToName){ c.replyToId = replyToId; c.replyToName = replyToName; }
       p.comments.push(c); savePuq();
-    }catch(err){}
-    puqPendingAIs.delete(p.id); renderList();
+    }catch(err){
+      console.error('[puq-comment] runSingleCommentAI error for', contact?.name, err);
+    }
+    bumpPending(p.id, -1);
   }
 
   async function triggerReplyBackAI(p, curChar, replyTo){
     const targetContact = findContactById(replyTo.userId);
     if(!targetContact || targetContact.id === curChar.id) return;
-    if(puqPendingAIs.has(p.id)) return;
-    puqPendingAIs.add(p.id); renderList();
-    try{
-      await new Promise(r => setTimeout(r, 1000 + Math.random()*1000));
-      const context = getPostContextForAI(p);
-      context.isReply = true;
-      context.replyToName = curChar.name;
-      const myLastComment = (p.comments||[]).filter(c => c.authorId === curChar.id && c.replyToId === targetContact.id).pop();
-      const userInput = myLastComment ? myLastComment.text : '（'+curChar.name+' 回复了你）';
-      const text = await generateContactComment(targetContact, userInput, context);
-      p.comments = p.comments || [];
-      const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:targetContact.id, authorName:targetContact.name, authorAvatar:targetContact.avatar, text, createdAt:nowTs(), replyToId:curChar.id, replyToName:curChar.name };
-      p.comments.push(c); savePuq();
-    }catch(err){}
-    puqPendingAIs.delete(p.id); renderList();
-    setTimeout(() => triggerOtherFriendsComment(p, curChar, targetContact), 1200 + Math.random()*800);
+    bumpPending(p.id, 1);
+    setTimeout(() => {
+      runSingleCommentAI(p, curChar, targetContact, curChar.id, curChar.name);
+    }, 500 + Math.random()*1500);
   }
 
   async function triggerOtherFriendsComment(p, curChar, excludeContact){
-    const excludeIds = [curChar && curChar.id, excludeContact && excludeContact.id].filter(Boolean);
+    const excludeIds = [curChar && curChar.id, excludeContact && excludeContact.id, p.authorId].filter(Boolean);
     const contact = pickRandomContact(excludeIds);
     if(!contact) return;
-    if(puqPendingAIs.has(p.id)) return;
-    puqPendingAIs.add(p.id); renderList();
-    try{
-      await new Promise(r => setTimeout(r, 500 + Math.random()*800));
-      const context = getPostContextForAI(p);
-      const allComments = p.comments || [];
-      const lastComment = allComments[allComments.length - 1];
-      let replyToId = null, replyToName = null;
-      if(lastComment){
-        const lastAuthorId = lastComment.authorId;
-        if(lastAuthorId !== contact.id){
-          replyToId = lastAuthorId;
-          replyToName = lastComment.authorName;
-          context.isReply = true;
-          context.replyToName = replyToName;
-        }
-      }
-      const userInput = lastComment ? lastComment.text : '（有新评论）';
-      const text = await generateContactComment(contact, userInput, context);
-      p.comments = p.comments || [];
-      const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:contact.id, authorName:contact.name, authorAvatar:contact.avatar, text, createdAt:nowTs() };
-      if(replyToId && replyToName){ c.replyToId = replyToId; c.replyToName = replyToName; }
-      p.comments.push(c); savePuq();
-    }catch(err){}
-    puqPendingAIs.delete(p.id); renderList();
+    bumpPending(p.id, 1);
+    setTimeout(() => runSingleCommentAI(p, curChar, contact, null, null), 300 + Math.random()*1000);
   }
 
   async function triggerPostLaunchInteractions(p){
-    const curChar = Phone.getCurrentChar();
-    const excludeIds = [curChar && curChar.id].filter(Boolean);
+    const excludeIds = [p.authorId].filter(Boolean);
     const all = getContactsList().filter(c => !excludeIds.includes(c.id));
     if(all.length === 0) return;
     const shuffled = all.sort(() => Math.random() - 0.5);
@@ -617,38 +738,12 @@ img{display:block;max-width:100%;}
         savePuq(); renderList();
       }
     }
-    const commentCount = Math.min(2, shuffled.length - likeCount);
-    const commentContacts = shuffled.slice(likeCount, likeCount + commentCount);
-    for(let i = 0; i < commentContacts.length; i++){
-      const contact = commentContacts[i];
-      await new Promise(r => setTimeout(r, 900 + Math.random()*1200));
-      if(puqPendingAIs.has(p.id)) continue;
-      puqPendingAIs.add(p.id); renderList();
-      try{
-        const context = getPostContextForAI(p);
-        const lastComment = (p.comments || [])[p.comments.length - 1];
-        let replyToId = null, replyToName = null;
-        if(lastComment && lastComment.authorId !== contact.id){
-          replyToId = lastComment.authorId;
-          replyToName = lastComment.authorName;
-          context.isReply = true;
-          context.replyToName = replyToName;
-        }
-        const userInput = lastComment ? lastComment.text : '（新发了一条朋友圈）';
-        const text = await generateContactComment(contact, userInput, context);
-        p.comments = p.comments || [];
-        const c = { id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:contact.id, authorName:contact.name, authorAvatar:contact.avatar, text, createdAt:nowTs() };
-        if(replyToId && replyToName){ c.replyToId = replyToId; c.replyToName = replyToName; }
-        p.comments.push(c); savePuq(); renderList();
-      }catch(err){}
-      puqPendingAIs.delete(p.id);
-      if(i < commentContacts.length - 1){
-        const prevComment = (p.comments || [])[p.comments.length - 1];
-        if(prevComment){
-          setTimeout(() => triggerOtherFriendsComment(p, curChar, commentContacts[i]), 1500 + Math.random()*1000);
-        }
-      }
-    }
+    const commentCount = Math.min(2 + Math.floor(Math.random()*2), shuffled.length - likeCount);
+    const commentContacts = shuffled.slice(likeCount, likeCount + Math.max(commentCount, 1));
+    commentContacts.forEach((contact, i) => {
+      bumpPending(p.id, 1);
+      setTimeout(() => runSingleCommentAI(p, null, contact, null, null), 800 + Math.random()*1800);
+    });
   }
 
   function openImageViewer(images, startIdx){
@@ -671,12 +766,34 @@ img{display:block;max-width:100%;}
     document.body.appendChild(mask);
   }
 
+  function showImageSourceSheet(onPick){
+    var mask = document.createElement('div');
+    mask.className = 'puq-sheet-mask';
+    var sheet = document.createElement('div');
+    sheet.className = 'puq-sheet';
+    sheet.innerHTML = '<div class="puq-sheet-title">选择图片来源</div>' +
+      '<div class="puq-sheet-item" data-src="local">本地图片</div>' +
+      '<div class="puq-sheet-item" data-src="text">文字图片</div>' +
+      '<div class="puq-sheet-item puq-sheet-cancel" data-src="cancel">取消</div>';
+    mask.appendChild(sheet);
+    document.body.appendChild(mask);
+    var items = sheet.querySelectorAll('.puq-sheet-item');
+    for(var i = 0; i < items.length; i++){
+      items[i].addEventListener('click', function(){
+        var src = this.getAttribute('data-src');
+        mask.remove();
+        if(src !== 'cancel') onPick(src);
+      });
+    }
+    mask.addEventListener('click', function(e){ if(e.target === mask) mask.remove(); });
+  }
+
   function openCompose(){
     composeImages = []; composeText = ''; composeReplyTo = null;
     const char = Phone.getCurrentChar() || {};
     const modal = document.createElement('div');
     modal.className = 'puq-modal-mask';
-    modal.innerHTML = '<div class="puq-modal-header"><div class="puq-modal-cancel" data-act="cancel">取消</div><div class="puq-modal-title">发表朋友圈</div><button class="puq-modal-publish" data-act="publish" disabled>发表</button></div><div class="puq-modal-body"><textarea class="puq-compose-textarea" placeholder="这一刻的想法..."></textarea><div class="puq-compose-txt-btn" data-act="text-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg>生成文字图片</div><div class="puq-compose-images"></div></div>';
+    modal.innerHTML = '<div class="puq-modal-header"><div class="puq-modal-cancel" data-act="cancel">取消</div><div class="puq-modal-title">发表朋友圈</div><button class="puq-modal-publish" data-act="publish" disabled>发表</button></div><div class="puq-modal-body"><textarea class="puq-compose-textarea" placeholder="这一刻的想法..."></textarea><div class="puq-compose-images"></div></div>';
     document.body.appendChild(modal);
     const textarea = modal.querySelector('.puq-compose-textarea');
     const imagesBox = modal.querySelector('.puq-compose-images');
@@ -699,12 +816,14 @@ img{display:block;max-width:100%;}
         const add = document.createElement('div');
         add.className = 'puq-compose-add';
         add.innerHTML = '<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>图片</span>';
-        add.onclick = () => { const input = document.getElementById('puqFileInput'); input.value = ''; input.click(); };
+        add.onclick = () => showImageSourceSheet((src) => {
+          if(src === 'local'){ const input = document.getElementById('puqFileInput'); input.value = ''; input.click(); }
+          else if(src === 'text'){ openTextImageEditor((img) => { if(img){ if(composeImages.length >= 9){ toast('最多9张'); return; } composeImages.push(img); renderImages(); refreshPublish(); } }); }
+        });
         imagesBox.appendChild(add);
       }
     }
     textarea.addEventListener('input', () => { composeText = textarea.value; refreshPublish(); });
-    modal.querySelector('[data-act=text-img]').onclick = () => openTextImageEditor((img) => { if(img){ if(composeImages.length >= 9){ toast('最多9张'); return; } composeImages.push(img); renderImages(); refreshPublish(); } });
     cancelBtn.onclick = () => modal.remove();
     modal.addEventListener('click', (e) => { if(e.target === modal) modal.remove(); });
     publishBtn.onclick = () => {
@@ -725,15 +844,15 @@ img{display:block;max-width:100%;}
     const mask = document.createElement('div');
     mask.className = 'puq-txt-modal';
     const colors = [
-      { name:'浅灰', bg:'#f5f5f5', fg:'#333' },
-      { name:'米白', bg:'#fef9e7', fg:'#5a4a1a' },
-      { name:'淡蓝', bg:'#e8f4fd', fg:'#1a4a7a' },
-      { name:'淡粉', bg:'#fde8f0', fg:'#7a1a4a' },
-      { name:'淡绿', bg:'#e8f8f0', fg:'#1a5a3a' },
-      { name:'纯黑', bg:'#222', fg:'#fff' }
+      { name:'娴呯伆', bg:'#f5f5f5', fg:'#333' },
+      { name:'绫崇櫧', bg:'#fef9e7', fg:'#5a4a1a' },
+      { name:'娣¤摑', bg:'#e8f4fd', fg:'#1a4a7a' },
+      { name:'娣＄矇', bg:'#fde8f0', fg:'#7a1a4a' },
+      { name:'娣＄豢', bg:'#e8f8f0', fg:'#1a5a3a' },
+      { name:'绾粦', bg:'#222', fg:'#fff' }
     ];
     let selectedBg = colors[0].bg, selectedFg = colors[0].fg;
-    mask.innerHTML = '<div class="puq-txt-box"><div class="puq-txt-head">文字图片</div><div class="puq-txt-body"><textarea placeholder="输入你想写的话..."></textarea><div class="puq-txt-preview" style="background:'+selectedBg+';color:'+selectedFg+'">预览文字</div><div class="puq-txt-colors"><span class="puq-txt-colors-label">背景色:</span>'+colors.map((c,i)=>'<div class="puq-txt-color '+(i===0?'active':'')+'" data-idx="'+i+'" style="background:'+c.bg+'"></div>').join('')+'</div></div><div class="puq-txt-foot"><button class="cancel-btn">取消</button><button class="ok-btn">生成</button></div></div>';
+    mask.innerHTML = '<div class="puq-txt-box"><div class="puq-txt-head">文字图片</div><div class="puq-txt-body"><textarea placeholder="输入你想写的话..."></textarea><div class="puq-txt-preview" style="background:'+selectedBg+';color:'+selectedFg+'">预览文字</div><div class="puq-txt-colors"><span class="puq-txt-colors-label">背景色</span>'+colors.map((c,i)=>'<div class="puq-txt-color '+(i===0?'active':'')+'" data-idx="'+i+'" style="background:'+c.bg+'"></div>').join('')+'</div></div><div class="puq-txt-foot"><button class="cancel-btn">取消</button><button class="ok-btn">生成</button></div></div>';
     document.body.appendChild(mask);
     const ta = mask.querySelector('textarea');
     const preview = mask.querySelector('.puq-txt-preview');
@@ -777,28 +896,38 @@ img{display:block;max-width:100%;}
     setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(() => t.remove(), 300); }, 1500);
   }
 
-  const EMOJI_LIST = ['😀','😁','😂','🤣','😊','😍','😘','🤗','🤩','😎','🤔','😴','😭','😢','😡','🥺','😏','🙄','😅','😆','🥰','😜','😝','🤪','🤭','😱','😳','🤫','🤤','😩','😫','🥳','😇','🤠','🤡','👻','💀','🐶','🐱','🐰','🐼','🦊','🐻','🐨','🐯','🦁','🐸','🐵','🐧','🐦','🦄','🐙','🦋','🌸','🌺','🌻','🌷','🌹','🍀','🌙','☀️','⭐','💫','🌈','🔥','💧','❄️','🍎','🍊','🍋','🍉','🍇','🍓','🍑','🍒','🥝','🍕','🍔','🍟','🌭','🍿','🧀','🍪','🍰','🎂','🍩','🍦','☕','🥤','🍺','🍷','🥂','🍾','📷','🎬','🎮','🎵','🎨','✈️','🚗','🏠','🏖','⛺','🛒','🎁','🎈','🎉','🎊','💝','💖','💗','💓','💞','💘','💌','💋','👍','👎','👌','✌️','🤞','🤟','🤝','🙏','👏','🙌','👋','🤚','👊','✊','🤛','🤜','👀','👂','👃','🦶','👶','👦','👧','👨','👩','🧑','👴','👵','👱','👲','👳','🤑','🤓','🤖','😺','😸','😹','😻','😼','😽','🙀','😿','😾','🎃','👺','👹','😈','👿','💀','☠','💩','🤡','👹','👺','👽','👻'];
+  function getStickerLib(){
+    try{
+      const d = Phone.getData('sticker');
+      if(!d || !d.packs || !Array.isArray(d.packs)) return [];
+      const all = [];
+      d.packs.forEach(p => {
+        (p.stickers || []).forEach(s => { if(s && s.src) all.push(s.src); });
+      });
+      return all;
+    }catch(e){ return []; }
+  }
 
   function toggleEmojiPanel(div, bar, input){
     closeEmojiPanel(div);
+    const stickers = getStickerLib();
     const panel = document.createElement('div');
     panel.className = 'puq-emoji-panel';
-    panel.innerHTML = '<div class="puq-emoji-grid">' + EMOJI_LIST.map(e => '<div class="puq-emoji-item">'+e+'</div>').join('') + '</div>';
+    if(stickers.length === 0){
+      panel.innerHTML = '<div style="padding:16px;text-align:center;color:#bbb;font-size:12px;">还没有表情包<br>去微信「我 → 设置」里添加吧</div>';
+    } else {
+      panel.innerHTML = '<div class="puq-emoji-grid">' + stickers.map(src => '<div class="puq-emoji-item"><img src="'+esc(src)+'" alt=""></div>').join('') + '</div>';
+      panel.querySelectorAll('.puq-emoji-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const src = item.querySelector('img').src;
+          bar._puqCommentImages = [src];
+          renderCommentInputState();
+        });
+      });
+    }
     bar.style.position = 'relative';
     bar.appendChild(panel);
-    panel.querySelectorAll('.puq-emoji-item').forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const emoji = item.textContent;
-        const start = input.selectionStart ?? input.value.length;
-        const end = input.selectionEnd ?? input.value.length;
-        input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
-        input.focus();
-        input.selectionStart = input.selectionEnd = start + emoji.length;
-        const send = bar.querySelector('.puq-comment-send');
-        send.disabled = false;
-      });
-    });
   }
   function closeEmojiPanel(div){
     const old = div.querySelector('.puq-emoji-panel');
@@ -814,6 +943,142 @@ img{display:block;max-width:100%;}
 
   renderBanner(); renderProfile(); renderList();
   document.addEventListener('char-updated', () => { renderProfile(); renderList(); });
+  window.__puqRuntime = { renderList, triggerPostLaunchInteractions };
+
+  function openCharPicker(){
+    const all = getContactsList();
+    if(!all.length){ toast('通讯录为空'); return; }
+    const mask = document.createElement('div');
+    mask.className = 'puq-sheet-mask';
+    const sheet = document.createElement('div');
+    sheet.className = 'puq-sheet';
+    sheet.innerHTML = '<div class="puq-sheet-title">选择要发表的角色</div><div class="puq-char-picker" id="puqCharPicker"></div><div class="puq-sheet-item puq-sheet-cancel" id="puqCharCancel">取消</div>';
+    mask.appendChild(sheet);
+    document.body.appendChild(mask);
+    const listEl = sheet.querySelector('#puqCharPicker');
+    all.forEach(c => {
+      const row = document.createElement('div');
+      row.className = 'puq-char-row';
+      row.innerHTML = '<div class="puq-char-avatar">' + (c.avatar ? '<img src="'+esc(c.avatar)+'" alt="">' : '<div class="puq-char-avatar-fb">'+esc((c.name||'?').charAt(0))+'</div>') + '</div><div class="puq-char-name">'+esc(c.name)+'</div><div class="puq-char-check">›</div>';
+      row.addEventListener('click', () => { mask.remove(); openCharCompose(c); });
+      listEl.appendChild(row);
+    });
+    sheet.querySelector('#puqCharCancel').addEventListener('click', () => mask.remove());
+    mask.addEventListener('click', (e) => { if(e.target === mask) mask.remove(); });
+  }
+
+  function openCharCompose(char){
+    let charComposeImages = [];
+    let charComposeText = '';
+    const mask = document.createElement('div');
+    mask.className = 'puq-char-compose-mask';
+    mask.innerHTML = `
+      <div class="puq-char-compose-head">
+        <div class="puq-char-compose-cancel" data-act="cancel">取消</div>
+        <div class="puq-char-compose-title"> 发朋友圈</div>
+        <button class="puq-char-compose-publish" data-act="publish" disabled>发表</button>
+      </div>
+      <div class="puq-char-compose-body">
+        <div class="puq-char-preview-author">
+          <div class="puq-char-avatar" style="width:32px;height:32px;border-radius:7px"></div>
+          <div class="puq-char-preview-author-name">@${esc(char.name||'')}</div>
+        </div>
+        <textarea id="puqCharMainText" placeholder="写点什么...（也可以只发图片）" style="width:100%;min-height:120px;border:1px solid #e0e0e0;border-radius:8px;padding:10px;font-family:inherit;font-size:14px;outline:none;resize:vertical;line-height:1.5;"></textarea>
+        <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button class="puq-char-generate-btn" id="puqCharGenBtn" style="width:auto;padding:8px 16px;font-size:13px;flex-shrink:0;">让 TA 帮写 / 润色</button>
+          <span id="puqCharGenHint" style="font-size:12px;color:#aaa;">留空也可以点，TA会自由发挥</span>
+        </div>
+        <div class="puq-char-section-title">配图（可选，最多9张）</div>
+        <div class="puq-char-images" id="puqCharImages"></div>
+      </div>
+    `;
+    document.body.appendChild(mask);
+
+    const mainTextArea = mask.querySelector('#puqCharMainText');
+    const genBtn = mask.querySelector('#puqCharGenBtn');
+    const publishBtn = mask.querySelector('[data-act=publish]');
+    const imagesBox = mask.querySelector('#puqCharImages');
+
+    function refreshPublish(){
+      publishBtn.disabled = !charComposeText.trim() && charComposeImages.length === 0;
+    }
+
+    function renderCharImages(){
+      imagesBox.innerHTML = '';
+      charComposeImages.forEach((img, idx) => {
+        const div = document.createElement('div');
+        div.className = 'puq-char-img';
+        div.innerHTML = '<img src="'+esc(img.src)+'" alt=""><div class="puq-char-img-del">×</div>';
+        div.querySelector('.puq-char-img-del').onclick = () => { charComposeImages.splice(idx,1); renderCharImages(); };
+        imagesBox.appendChild(div);
+      });
+      if(charComposeImages.length < 9){
+        const add = document.createElement('div');
+        add.className = 'puq-char-add-img';
+        add.innerHTML = '<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>图片</span>';
+        add.onclick = () => showImageSourceSheet((src) => {
+          if(src === 'local'){ const input = document.getElementById('puqFileInput'); input.value = ''; input.click(); }
+          else if(src === 'text'){ openTextImageEditor((img) => { if(img){ if(charComposeImages.length >= 9){ toast('最多9张'); return; } charComposeImages.push(img); renderCharImages(); refreshPublish(); } }); }
+        });
+        imagesBox.appendChild(add);
+      }
+    }
+    renderCharImages();
+
+    mainTextArea.addEventListener('input', () => { charComposeText = mainTextArea.value; refreshPublish(); });
+
+    genBtn.addEventListener('click', async () => {
+      const now = new Date();
+      const timeStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      let sys = `你是${char.name}，现在要在微信朋友圈发一条动态。\n当前时间：${timeStr}\n`;
+      if(char.roleSetting) sys += `【你的人设】${char.roleSetting}\n\n`;
+      if(char.writingStyle?.length) sys += `【文风参考（请模仿这些话法和语气）】${char.writingStyle}\n\n`;
+      sys += `风格：符合你作为${char.name}的性格和身份，自然、生活化。\n要求：只用一段简短的文字，像真实的朋友圈一样，不要加标点符号以外的格式，不要说自己是AI。控制在1-3句话。`;
+      const currentText = mainTextArea.value.trim();
+      const userPrompt = currentText
+        ? `请帮我润色/扩展这条朋友圈，让它更自然有味道：\n${currentText}`
+        : '自由发挥发一条朋友圈吧';
+      genBtn.disabled = true;
+      genBtn.classList.add('loading');
+      genBtn.textContent = '生成中';
+      try {
+        const reply = await Phone.chatWithAI([{ role:'system', content:sys }, { role:'user', content:userPrompt }]);
+        let content = (reply || '').trim().replace(/^["「『]|["」』]$/g, '');
+        charComposeText = content;
+        mainTextArea.value = content;
+        refreshPublish();
+        toast('已生成，可继续修改');
+      } catch(err){
+        toast('生成失败');
+      } finally {
+        genBtn.disabled = false;
+        genBtn.classList.remove('loading');
+        genBtn.textContent = '让 TA 帮写 / 润色';
+      }
+    });
+
+    document.getElementById('puqFileInput').onchange = async (e) => {
+      const files = Array.from(e.target.files || []);
+      for(const f of files){ if(charComposeImages.length >= 9) break; const src = await Phone.fileToBase64(f); charComposeImages.push({ type:'image', src }); }
+      renderCharImages();
+      refreshPublish();
+    };
+
+    publishBtn.addEventListener('click', () => {
+      const text = mainTextArea.value.trim();
+      if(!text && charComposeImages.length === 0) return;
+      const post = { id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), authorId:char.id, authorName:char.name, authorAvatar:char.avatar, text, images:charComposeImages.slice(), createdAt:nowTs(), likes:[], comments:[] };
+      puqData.posts = puqData.posts || []; puqData.posts.push(post);
+      savePuq();
+      mask.remove();
+      renderList();
+      toast('已发表');
+      setTimeout(() => triggerPostLaunchInteractions(post), 800);
+    });
+    mask.querySelector('[data-act=cancel]').addEventListener('click', () => mask.remove());
+    mask.addEventListener('click', (e) => { if(e.target === mask) mask.remove(); });
+  }
+
 })();
 </script>
 </body>
