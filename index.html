@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -29,7 +29,7 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
 .phone-screen{width:100%;height:100%;background:var(--green-bg);border-radius:calc(var(--radius) - var(--phone-w)*0.016);overflow:hidden;position:relative;display:flex;flex-direction:column;}
 .phone-screen::before{content:"";position:absolute;top:-20%;left:-20%;width:80%;height:60%;background:radial-gradient(circle,rgba(124,204,155,.45) 0%,transparent 70%);pointer-events:none;}
 .phone-screen::after{content:"";position:absolute;bottom:-15%;right:-15%;width:70%;height:55%;background:radial-gradient(circle,rgba(184,226,198,.55) 0%,transparent 70%);pointer-events:none;}
-.status-bar{height:calc(var(--phone-w)*0.128 + var(--safe-top));padding:calc(var(--safe-top) + var(--phone-w)*0.053) calc(var(--phone-w)*0.064) 0;display:flex;justify-content:space-between;align-items:center;font-size:calc(var(--phone-w)*0.04);font-weight:600;color:var(--green-ink);position:relative;z-index:1;}
+.status-bar{height:calc(var(--phone-w)*0.095 + var(--safe-top));padding:calc(var(--safe-top) + var(--phone-w)*0.015) calc(var(--phone-w)*0.064) 0;display:flex;justify-content:space-between;align-items:center;font-size:calc(var(--phone-w)*0.04);font-weight:600;color:var(--green-ink);position:relative;z-index:1;}
 .status-bar .icons{display:flex;gap:calc(var(--phone-w)*0.016);align-items:center;font-size:calc(var(--phone-w)*0.035);}
 .status-bar .icons svg{display:block;flex-shrink:0;}
 .status-bar .sig-icon,.status-bar .wifi-icon{width:calc(var(--phone-w)*0.045);height:calc(var(--phone-w)*0.045);}
@@ -197,7 +197,7 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
   .phone-shell{width:100vw;height:100dvh;border-radius:0;padding:0;box-shadow:none;background:var(--green-bg);}
   .phone-shell::before{display:none;}
   .phone-screen{width:100%;height:100%;background:var(--green-bg);border-radius:calc(var(--radius) - var(--phone-w)*0.016);overflow:hidden;position:relative;display:flex;flex-direction:column;}
-  .status-bar{height:calc(var(--phone-w)*0.11 + var(--safe-top));padding-top:calc(var(--safe-top) + var(--phone-w)*0.045);}
+  .status-bar{height:calc(var(--phone-w)*0.095 + var(--safe-top));padding-top:calc(var(--safe-top) + var(--phone-w)*0.015);}
   .desktop{padding:10px calc(var(--phone-w)*0.03) calc(var(--phone-w)*0.027);}
   .dock{margin:calc(var(--phone-w)*0.016) calc(var(--phone-w)*0.03) calc(var(--phone-w)*0.01);}
   .modal-mask{padding:var(--safe-top) env(safe-area-inset-right,0px) var(--safe-bottom) env(safe-area-inset-left,0px);}
@@ -1002,9 +1002,9 @@ function renderSettingsPage(body){
         <div class="char-identity">${c.identity || '未设置身份'}${c.age ? ' · '+c.age+'岁' : ''}</div>
       </div>
       <div class="char-actions">
-        <button class="char-icon-btn" data-act="editChar" title="编辑"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
-        ${chars.length > 1 ? `<button class="char-icon-btn danger" data-act="delChar" title="删除"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 012-2h2a2 2 0 012 2v2"/></svg></button>` : ''}
-      </div>
+               <button class="char-icon-btn" data-act="editChar" title="编辑"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
+        <button class="char-icon-btn danger" data-act="delChar" title="删除"><span style="font-size:15px;line-height:1">🗑</span></button>
+        </div>
     </div>`;
     const temp = document.createElement('div'); temp.innerHTML = html.trim();
     const card = temp.firstChild;

@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -23,9 +23,8 @@
 .wc-topbar{flex-shrink:0;min-height:48px;padding:0 14px;padding-top:env(safe-area-inset-top,0px);
   ;
   display:flex;align-items:center;
-  background:rgba(255,255,255,.55);
-  backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);
-   border-bottom:none;
+    background:transparent;
+  border-bottom:none;
   position:relative;z-index:5;
 }
 .wc-title{
@@ -1013,16 +1012,17 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-msg.selected{opacity:.6}
 .wc-cm-menu{
   position:fixed;z-index:9999;background:#4a4a4a;border-radius:10px;
-  padding:5px 3px;display:flex;gap:2px;align-items:center;
+  padding:4px;display:grid;grid-template-columns:repeat(5,minmax(40px,auto));
+  gap:2px;justify-content:center;box-sizing:border-box;
+  max-width:calc(100vw - 16px);
   box-shadow:0 4px 20px rgba(0,0,0,.3);animation:cmPopIn .15s ease;
-  max-width:95vw;overflow-x:auto;
 }
 @keyframes cmPopIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
 .wc-cm-item{
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  padding:5px 7px;border-radius:7px;cursor:pointer;color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  padding:5px 6px;border-radius:7px;cursor:pointer;color:#fff;
   font-size:10px;white-space:nowrap;font-family:inherit;
-  transition:background .1s;min-width:38px;
+  transition:background .1s;min-width:0;
 }
 .wc-cm-item:hover,.wccm-item:active{background:rgba(255,255,255,.15)}
 .wc-cm-item svg{width:16px;height:16px;flex-shrink:0}
@@ -1664,6 +1664,59 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-rp-card-type{font-size:11px;opacity:.75;background:rgba(255,255,255,.2);padding:2px 6px;border-radius:4px;}
 .wc-rp-card.claimed .wc-rp-card-type{opacity:.7;}
 
+/* ==== 位置消息卡片 ==== */
+.wc-loc-card{width:184px;border-radius:13px;overflow:hidden;cursor:pointer;transition:transform .15s;
+  background:linear-gradient(180deg,#f4fbf7,#eef8f1);
+  border:1px solid #d5ebde;
+  box-shadow:0 7px 16px -13px rgba(45,142,87,.55);}
+.wc-loc-card:active{transform:scale(.98);}
+.wc-loc-map{position:relative;height:84px;background-color:#eaf6ee;
+  background-image:linear-gradient(rgba(63,169,106,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(63,169,106,.09) 1px,transparent 1px);
+  background-size:16px 16px,16px 16px;}
+.wc-loc-shadow{position:absolute;left:50%;top:50%;width:14px;height:4px;margin:4px 0 0 -7px;border-radius:50%;
+  background:rgba(45,142,87,.2);}
+.wc-loc-pin{position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-19px 0 0 -9px;
+  background:linear-gradient(160deg,#5cc489,#2d8e57);
+  border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+  box-shadow:0 4px 10px -4px rgba(45,142,87,.5);}
+.wc-loc-pin::after{content:'';position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:#eefaf2;}
+.wc-loc-info{padding:7px 10px 9px;}
+.wc-loc-name{font-size:12.5px;font-weight:700;color:var(--green-ink);line-height:1.3;}
+.wc-loc-addr{font-size:10px;color:#5f8a71;line-height:1.35;margin-top:2px;word-break:break-word;}
+.wc-loc-dist{font-size:9.5px;color:#9abfab;margin-top:3px;}
+
+/* ==== 发送位置弹窗 ==== */
+.wc-loc-mask{position:fixed;inset:0;background:rgba(24,64,40,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;animation:wcFadeIn .22s ease;}
+.wc-loc-box{position:relative;width:86%;max-width:330px;background:#fff;border-radius:20px;overflow:hidden;animation:wcPopIn .3s cubic-bezier(.32,.72,0,1);box-shadow:0 22px 56px -20px rgba(20,60,35,.5);}
+.wc-loc-box-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px 12px;font-size:15px;font-weight:700;color:var(--green-ink);}
+.wc-loc-box-close{border:none;background:none;color:#a3c0b0;font-size:20px;line-height:1;cursor:pointer;padding:0 2px;}
+.wc-loc-row{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;border-bottom:1px solid #f1f7f3;}
+.wc-loc-row-label{font-size:12.5px;color:#8ba99a;}
+.wc-loc-row-val{display:inline-flex;align-items:center;gap:6px;border:none;background:none;padding:4px 0;font-size:13.5px;font-weight:600;color:var(--green-ink);font-family:inherit;cursor:pointer;max-width:180px;}
+.wc-loc-row-val span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wc-loc-chev{font-size:13px;color:#b6cdc0;line-height:1;}
+.wc-loc-picker{position:absolute;inset:0;background:#fff;border-radius:20px;display:flex;flex-direction:column;z-index:2;animation:wcFadeIn .16s ease;}
+.wc-loc-picker-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px 10px;font-size:15px;font-weight:700;color:var(--green-ink);}
+.wc-loc-picker-list{overflow-y:auto;padding:0 8px 12px;max-height:300px;}
+.wc-loc-picker-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:none;background:none;border-radius:10px;cursor:pointer;font-family:inherit;text-align:left;}
+.wc-loc-picker-item:active{background:#f2faf5;}
+.wc-loc-picker-item.on{background:#eaf6ee;}
+.wc-loc-picker-av{width:28px;height:28px;border-radius:8px;object-fit:cover;background:#eaf6ee;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#2d8e57;flex:0 0 auto;overflow:hidden;}
+.wc-loc-picker-name{font-size:13.5px;color:var(--green-ink);font-weight:500;}
+.wc-loc-preview{position:relative;height:132px;background-color:#eaf6ee;
+  background-image:linear-gradient(rgba(63,169,106,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(63,169,106,.09) 1px,transparent 1px);
+  background-size:24px 24px,24px 24px;}
+.wc-loc-chip{position:absolute;left:12px;bottom:12px;max-width:70%;padding:5px 10px;border-radius:10px;
+  background:rgba(255,255,255,.85);font-size:12px;color:#8bb09c;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wc-loc-chip.filled{color:var(--green-ink);font-weight:600;}
+.wc-loc-box-body{padding:2px 16px 16px;}
+.wc-loc-field{width:100%;box-sizing:border-box;border:none;border-bottom:1px solid #e8f2ea;padding:11px 0;font-size:14px;color:var(--green-ink);font-family:inherit;outline:none;background:transparent;}
+.wc-loc-field::placeholder{color:#a9c2b4;}
+.wc-loc-field:focus{border-bottom-color:#3fa96a;}
+.wc-loc-send-btn{width:100%;margin-top:16px;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#3fa96a,#2d8e57);color:#fff;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+.wc-loc-send-btn:active{opacity:.85;}
+
 /* ==== 领取红包弹窗 ==== */
 .wc-rp-open-mask{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;animation:wcFadeIn .3s ease;}
 .wc-rp-open-box{width:75%;max-width:280px;background:linear-gradient(180deg,#f55a3b,#c82310);border-radius:50% 50% 20px 20px / 40% 40% 20px 20px;padding:28px 24px 22px;text-align:center;color:#fff;animation:wcPopIn .35s cubic-bezier(.32,.72,0,1);position:relative;box-shadow:0 16px 48px -4px rgba(224,60,28,.55);}
@@ -1723,17 +1776,153 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-xfer-detail-mark-btn:active{background:rgba(124,204,155,.3);transform:scale(.98);}
 
 .wc-status-bar{height:calc(var(--phone-w,420px)*0.095 + var(--safe-top,0px));
-  padding:calc(var(--safe-top,0px) + var(--phone-w,420px)*0.03) calc(var(--phone-w,420px)*0.064) 0;
+   padding:calc(var(--safe-top,0px) + var(--phone-w,420px)*0.015) calc(var(--phone-w,420px)*0.064) 0;
   display:flex;justify-content:space-between;align-items:center;
   font-size:calc(var(--phone-w,420px)*0.04);font-weight:600;color:var(--green-ink);
      position:relative;z-index:5;flex-shrink:0;
-  background:rgba(255,255,255,.55);
-  backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);}
+   background:transparent;}
 .wc-status-bar .wc-status-icons{display:flex;gap:calc(var(--phone-w,420px)*0.016);align-items:center;font-size:calc(var(--phone-w,420px)*0.035);}
 .wc-status-bar .wc-status-icons svg{display:block;flex-shrink:0;}
 .wc-status-bar .sig-icon,.wc-status-bar .wifi-icon{width:calc(var(--phone-w,420px)*0.045);height:calc(var(--phone-w,420px)*0.045);}
 .wc-status-bar .bat-icon{width:calc(var(--phone-w,420px)*0.062);height:calc(var(--phone-w,420px)*0.034);}
 .wc-status-bar .bat-text{font-variant-numeric:tabular-nums;}
+
+/* ===== 语音通话（小剧场） ===== */
+.wc-call{
+  position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;overflow:hidden;
+  background:linear-gradient(175deg,#f6fdf9 0%,#eaf8ef 40%,#daf0e3 100%);
+  opacity:0;transition:opacity .28s ease;color:#1d4a33;
+}
+.wc-call.show{opacity:1;}
+.wc-call-bg{
+  position:absolute;inset:-12%;background-position:center;background-size:cover;background-color:#e9f7ef;
+  filter:blur(34px) brightness(1.3) saturate(1.05) opacity(.5);transform:scale(1.16);
+}
+.wc-call-mask{
+  position:absolute;inset:0;
+  background:radial-gradient(110% 56% at 50% 4%,rgba(148,214,175,.3),transparent 72%),
+             linear-gradient(180deg,rgba(250,254,251,.82),rgba(216,239,226,.9));
+}
+.wc-call-inner{
+  position:relative;z-index:2;flex:1;min-height:0;display:flex;flex-direction:column;
+  padding-top:calc(var(--phone-w,380px)*0.09);
+}
+.wc-call-header{flex-shrink:0;text-align:center;padding:8px 24px 4px;}
+.wc-call-name{font-size:20px;font-weight:600;letter-spacing:.6px;color:#14452c;}
+.wc-call-status{
+  margin-top:8px;font-size:13px;color:rgba(29,74,51,.6);min-height:18px;
+  font-variant-numeric:tabular-nums;letter-spacing:.4px;
+}
+.wc-call.connected .wc-call-status::before{
+  content:'';display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#3fa96a;margin-right:6px;vertical-align:middle;
+  animation:wcCallPulse 1.8s ease-in-out infinite;
+}
+@keyframes wcCallPulse{0%,100%{opacity:.3;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
+.wc-call-wait{display:inline-flex;align-items:center;gap:4px;margin-left:6px;vertical-align:middle;}
+.wc-call-wait i{width:4px;height:4px;border-radius:50%;background:rgba(63,169,106,.85);display:inline-block;animation:wcCallWaitDot 1.2s infinite;}
+.wc-call-wait i:nth-child(2){animation-delay:.2s;}
+.wc-call-wait i:nth-child(3){animation-delay:.4s;}
+@keyframes wcCallWaitDot{0%,80%,100%{opacity:.2;transform:scale(.75)}40%{opacity:1;transform:scale(1.2)}}
+
+.wc-call-stage{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:0 18px;}
+.wc-call-avatar-wrap{position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.wc-call-ring{
+  position:absolute;width:150px;height:150px;border-radius:50%;
+  border:2px solid rgba(96,186,133,.42);animation:wcCallRing 2.8s ease-out infinite;
+}
+.wc-call-ring.r2{animation-delay:1.4s;}
+@keyframes wcCallRing{0%{transform:scale(.7);opacity:.85}75%{opacity:0}100%{transform:scale(1.72);opacity:0}}
+.wc-call-avatar{
+  width:112px;height:112px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  font-size:42px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--green-mid),var(--green-deep));
+  box-shadow:0 14px 34px rgba(52,124,86,.28),0 0 0 5px rgba(255,255,255,.72),0 0 0 11px rgba(255,255,255,.32);
+  z-index:2;animation:wcCallBreath 2.6s ease-in-out infinite;
+}
+.wc-call-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+@keyframes wcCallBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+
+.wc-call-bubbles{
+  display:none;flex-direction:column;gap:10px;width:100%;flex:1;min-height:0;overflow-y:auto;
+  padding:16px 2px 10px;-webkit-overflow-scrolling:touch;
+}
+.wc-call-bubbles::-webkit-scrollbar{width:0;}
+.wc-call.connected .wc-call-avatar-wrap{display:none;}
+.wc-call.connected .wc-call-stage{justify-content:flex-start;align-items:stretch;padding:0 16px;}
+.wc-call.connected .wc-call-stage::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:20px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(219,241,229,0),rgba(219,241,229,.85));
+}
+.wc-call.connected .wc-call-bubbles{display:flex;}
+.wc-call-bubble-row{display:flex;gap:8px;align-items:flex-end;max-width:86%;animation:wcCallBubbleIn .28s ease both;}
+.wc-call-bubble-row.ai{align-self:flex-start;}
+.wc-call-bubble-row.user{align-self:flex-end;flex-direction:row-reverse;}
+@keyframes wcCallBubbleIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+.wc-call-bubble-mini{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--green-mid),var(--green-deep));
+  box-shadow:0 2px 8px rgba(52,124,86,.22);
+}
+.wc-call-bubble-mini img{width:100%;height:100%;object-fit:cover;display:block;}
+.wc-call-bubble{padding:9px 14px;border-radius:16px;font-size:14px;line-height:1.58;word-break:break-word;white-space:pre-wrap;}
+.wc-call-bubble-row.ai .wc-call-bubble{
+  background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);color:#22503a;
+  border-bottom-left-radius:6px;box-shadow:0 4px 14px rgba(38,94,66,.09);
+}
+.wc-call-bubble-row.user .wc-call-bubble{
+  background:linear-gradient(135deg,#6fd193,#3fa96a);color:#fff;border-bottom-right-radius:6px;
+  box-shadow:0 5px 16px rgba(63,169,106,.32);
+}
+.wc-call-bubble.typing{display:flex;align-items:center;background:rgba(255,255,255,.94);}
+.wc-call-typing{display:flex;gap:5px;align-items:center;height:20px;}
+.wc-call-typing span{width:6px;height:6px;border-radius:50%;background:rgba(63,169,106,.65);animation:wcCallTypingDot 1.2s ease-in-out infinite;}
+.wc-call-typing span:nth-child(2){animation-delay:.18s;}
+.wc-call-typing span:nth-child(3){animation-delay:.36s;}
+@keyframes wcCallTypingDot{0%,80%,100%{transform:translateY(0);opacity:.35}40%{transform:translateY(-4px);opacity:1}}
+
+.wc-call-composer{display:none;flex-shrink:0;align-items:center;gap:8px;padding:8px 16px 4px;}
+.wc-call.connected .wc-call-composer{display:flex;}
+.wc-call-input{
+  flex:1;border:1px solid rgba(63,169,106,.18);border-radius:20px;padding:9px 15px;font-size:14px;
+  color:#1d4a33;background:rgba(255,255,255,.92);outline:none;font-family:inherit;
+  min-height:40px;max-height:76px;resize:none;line-height:1.4;
+  box-shadow:0 2px 10px rgba(38,94,66,.07);transition:border-color .15s,box-shadow .15s;
+}
+.wc-call-input::placeholder{color:rgba(29,74,51,.38);}
+.wc-call-input:focus{border-color:rgba(63,169,106,.55);box-shadow:0 3px 14px rgba(63,169,106,.18);}
+.wc-call-send{
+  width:40px;height:40px;border-radius:50%;border:none;flex-shrink:0;cursor:pointer;
+  background:linear-gradient(135deg,#6fd193,#3fa96a);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(63,169,106,.32);transition:transform .1s,opacity .15s;
+}
+.wc-call-send:active{transform:scale(.9);}
+.wc-call-send:disabled{opacity:.4;cursor:not-allowed;}
+.wc-call-send svg{width:17px;height:17px;fill:currentColor;}
+
+.wc-call-actions{
+  flex-shrink:0;display:flex;justify-content:center;align-items:center;gap:44px;
+  padding:12px 0 calc(var(--phone-w,380px)*0.06);
+}
+.wc-call-btn{
+  width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .12s,background .15s,color .15s,box-shadow .15s;
+}
+.wc-call-btn:active{transform:scale(.9);}
+.wc-call-btn svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.wc-call-hangup{background:linear-gradient(135deg,#ff6b6b,#e8453c);color:#fff;box-shadow:0 10px 26px rgba(232,69,60,.38);}
+.wc-call-hangup svg{transform:rotate(135deg);}
+.wc-call-aux{
+  background:rgba(255,255,255,.86);color:#3f8a63;border:1px solid rgba(63,169,106,.16);
+  box-shadow:0 6px 18px rgba(38,94,66,.1);
+}
+.wc-call-aux.on{background:linear-gradient(135deg,#6fd193,#3fa96a);color:#fff;border-color:transparent;}
+
+.wc-call-log-tip{
+  display:inline-block;color:#5c8b72;background:rgba(255,255,255,.75);
+  font-size:12px;padding:4px 14px;border-radius:12px;
+}
 
 </style>
 </head>
@@ -1931,7 +2120,6 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   ]
       },
       { id:'u6', name:'刘扬扬', avatar:'yangyang.jpg' },
-      { id:'u8', name:'李秀满', avatar:'https://picsum.photos/seed/sooman_wx_avatar/200' },
       { id:'u9', name:'造型师姐姐', avatar:'https://picsum.photos/seed/stylist_wx_avatar/200' }
     ];
     let changed = false;
@@ -2012,7 +2200,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
     const d = Phone.getData('tags');
     const defaults = [
       { id:'t1', name:'WayV 成员', memberIds:['u1','u2','u4','u5','u6'] },
-      { id:'t2', name:'工作人员', memberIds:['u8','u9'] }
+      { id:'t2', name:'工作人员', memberIds:['u9'] }
     ];
     let changed = false;
     if(!d.list || !Array.isArray(d.list)) {
@@ -5404,8 +5592,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         const rect = menu.getBoundingClientRect();
         let left = x, top = y;
         if(left + rect.width > window.innerWidth - 8) left = window.innerWidth - rect.width - 8;
+        if(left < 8) left = 8;
         if(top + rect.height > window.innerHeight - 8) top = y - rect.height - 8;
         if(top < 8) top = 8;
+        if(top + rect.height > window.innerHeight - 8) top = Math.max(8, window.innerHeight - rect.height - 8);
         menu.style.left = left + 'px';
         menu.style.top = top + 'px';
 
@@ -5879,6 +6069,24 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               </div>
             </div>`;
           d.querySelector('.wc-rp-card').addEventListener('click', () => openRedPacketOpenMsg(m));
+        } else if(m.type === 'location'){
+          d.innerHTML = `
+            ${avatarHTML(speakerName, '', speakerAvatar)}
+            <div>
+              ${!isUserMsg && isGroup ? `<div class="wc-msg-name">${escAttr(speakerName)}</div>` : ''}
+              ${quoteHtml}
+              <div class="wc-loc-card">
+                <div class="wc-loc-map">
+                  <div class="wc-loc-shadow"></div>
+                  <div class="wc-loc-pin"></div>
+                </div>
+                <div class="wc-loc-info">
+                  <div class="wc-loc-name">${escAttr(m.placeName || m.content)}</div>
+                  ${m.address ? `<div class="wc-loc-addr">${escAttr(m.address)}</div>` : ''}
+                  ${m.distance ? `<div class="wc-loc-dist">${escAttr(m.distance)}</div>` : ''}
+                </div>
+              </div>
+            </div>`;
         } else {
           d.innerHTML = `
             ${avatarHTML(speakerName, '', speakerAvatar)}
@@ -6042,6 +6250,329 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         }
       });
 
+      let callEl = null;
+      let callConnected = false;
+      let callEnded = false;
+      let callBusy = false;
+      let callSeconds = 0;
+      let connectTimer = null;
+      let callTimer = null;
+      let replyTimer = null;
+      let callTranscript = [];
+
+      function callClock(sec){
+        const m = Math.floor(sec / 60), s = sec % 60;
+        return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+      }
+
+      function callPartner(){
+        if(isGroup) return members[0] || null;
+        return MOCK_CONTACTS.find(c => c.id === chat.contactId) || null;
+      }
+
+      function callMiniAvatar(who){
+        const av = who === 'ai' ? (callPartner()?.avatar || '') : userAvatar;
+        const nm = who === 'ai' ? displayName : userName;
+        if(av) return `<div class="wc-call-bubble-mini"><img src="${escAttr(av)}" alt=""></div>`;
+        const col = colorFor(nm || '我');
+        return `<div class="wc-call-bubble-mini" style="background:linear-gradient(135deg,${col},${shade(col,-20)})">${escAttr((nm || '我').charAt(0))}</div>`;
+      }
+
+      function buildCallSystem(){
+        const c = callPartner();
+        const speaker = isGroup ? (c?.name || chat.name) : displayName;
+        let sys = `你正在扮演「${speaker}」，此刻正和「${userName}」打一通真实的语音电话。\n`;
+        if(c?.roleSetting) sys += `\n【角色人设】\n${c.roleSetting}\n`;
+        if(c?.writingStyle?.length){
+          sys += `\n【说话风格参考（模仿这种语气）】\n${c.writingStyle.slice(0,12).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
+        }
+        if(c?.fontType || c?.voice){
+          const fv = [];
+          if(c.fontType) fv.push(`字体：${c.fontType}`);
+          if(c.voice) fv.push(`语音：${c.voice}`);
+          sys += `\n【语言设置】${fv.join('，')}\n`;
+        }
+        if(c?.npcs && c.npcs.length){
+          const rels = c.npcs.map(n => `${n.name}（${n.identity||''}${n.relationship ? '，'+n.relationship : ''}）`).filter(Boolean).join('、');
+          if(rels) sys += `\n【关系网】${rels}\n`;
+        }
+        const userPersona = cs.persona || char.persona || '';
+        if(userPersona) sys += `\n「${userName}」的人设：${userPersona}\n`;
+        try{
+          const allD = Phone.getData('wechat');
+          const cm = allD.memories?.[chatId];
+          if(cm?.core?.length) sys += `\n【核心记忆 - 必须牢记】\n${cm.core.map(m => m.content).join('\n')}\n`;
+          if(cm?.storylines?.length) sys += `\n【剧情线 - 必须据此发挥】\n${cm.storylines.map(m => m.content).join('\n')}\n`;
+          const hvs = allD.heartVoices?.[chatId];
+          if(hvs?.length) sys += `\n【你的心声（只在心里想过，不要直接说出来）】\n${hvs.slice(0,4).map(h => h.content).join('\n')}\n`;
+        }catch(e){}
+        try{
+          const state = Phone._getState();
+          const wbs = state.worldbooks || [];
+          const ids = new Set();
+          (c?.worldbookIds || []).forEach(id => ids.add(id));
+          (cs.worldbookGroupIds || []).forEach(id => ids.add(id));
+          wbs.forEach(w => { if(w.global) ids.add(w.id); });
+          const active = wbs.filter(w => ids.has(w.id));
+          if(active.length){
+            sys += '\n【必须遵守的设定】';
+            active.forEach(w => { sys += `\n- ${w.name}：${w.content}`; });
+            sys += '\n';
+          }
+        }catch(e){}
+        sys += `\n【通话规则】\n`;
+        sys += `1. 这是打电话，不是发微信。用口语说话，像真的在电话里随口说出来的，不要书面语。\n`;
+        sys += `2. 每次只说 1~3 句，最多 60 字。想多说就拆成几条，用 ||| 分隔。\n`;
+        sys += `3. 允许在括号内写极少量语气或动作描写，例如（停顿了一下）（笑），一条消息最多一处，不要堆砌。\n`;
+        sys += `4. 必须延续之前微信聊天里的话题和关系，也要接住电话里刚说过的话，不要重复说过的话。\n`;
+        sys += `5. 只输出说出来的话，不要写【角色名】，不要写第三人称旁白。\n`;
+        return sys;
+      }
+
+      async function callAI(extraUser){
+        const VALID = ['system','user','assistant','tool'];
+        const ctx = [];
+        history.filter(m => m.role && m.content !== undefined).slice(-24).forEach(m => {
+          const raw = m.role === 'ai' ? 'assistant' : (m.role === 'user' ? 'user' : null);
+          if(!raw) return;
+          ctx.push({
+            role: VALID.includes(raw) ? raw : 'user',
+            content: m.type === 'image' ? (m.caption ? `[图片：${m.caption}]` : '[图片]') : String(m.content)
+          });
+        });
+        const messages = [{ role:'system', content: buildCallSystem() }, ...ctx, ...callTranscript];
+        if(extraUser) messages.push({ role:'user', content: extraUser });
+        const rawReply = await Phone.chatWithAI(messages);
+        let text = (rawReply || '').trim();
+        const ft = callPartner()?.fontType || '';
+        if(ft === '繁体') text = toTraditional(text);
+        return text;
+      }
+
+      function callScroll(){
+        if(!callEl) return;
+        const b = callEl.querySelector('.wc-call-bubbles');
+        if(b) b.scrollTop = b.scrollHeight;
+      }
+
+      function callAddBubble(who, text){
+        if(!callEl || callEnded) return;
+        const b = callEl.querySelector('.wc-call-bubbles');
+        if(!b) return;
+        const row = document.createElement('div');
+        row.className = 'wc-call-bubble-row ' + (who === 'ai' ? 'ai' : 'user');
+        row.innerHTML = `${callMiniAvatar(who)}<div class="wc-call-bubble">${escAttr(text)}</div>`;
+        b.appendChild(row);
+        callScroll();
+      }
+
+      function callShowTyping(){
+        if(!callEl || callEnded) return;
+        callRemoveTyping();
+        const b = callEl.querySelector('.wc-call-bubbles');
+        if(!b) return;
+        const row = document.createElement('div');
+        row.className = 'wc-call-bubble-row ai wc-call-typing-row';
+        row.innerHTML = `${callMiniAvatar('ai')}<div class="wc-call-bubble typing"><div class="wc-call-typing"><span></span><span></span><span></span></div></div>`;
+        b.appendChild(row);
+        callScroll();
+      }
+
+      function callRemoveTyping(){
+        if(!callEl) return;
+        const t = callEl.querySelector('.wc-call-typing-row');
+        if(t) t.remove();
+      }
+
+      function callAddAiText(text){
+        const parts = String(text || '').replace(/\r/g,'').split(/\|\|\||\n+/).map(s => s.trim()).filter(Boolean);
+        if(!parts.length) return Promise.resolve();
+        return new Promise(resolve => {
+          let i = 0;
+          const step = () => {
+            if(callEnded || !callEl){ resolve(); return; }
+            const p = parts[i++];
+            callTranscript.push({ role:'assistant', content: p });
+            callAddBubble('ai', p);
+            if(i < parts.length) setTimeout(step, 420);
+            else resolve();
+          };
+          step();
+        });
+      }
+
+      function callCharOpening(){
+        if(callEnded || !callEl) return;
+        callBusy = true;
+        callShowTyping();
+        (async () => {
+          let text = '';
+          try{
+            text = await callAI('（电话接通了，你们刚开始通话。请你先开口说第一句话，自然地打招呼或关心对方。）');
+          }catch(e){}
+          if(callEnded){ callBusy = false; return; }
+          callRemoveTyping();
+          if(!text){
+            const pool = ['喂？今天怎么样呀？','喂——想我了吗？','怎么突然打电话过来啦？','喂，听得见吗？'];
+            text = pool[Math.floor(Math.random() * pool.length)];
+          }
+          await callAddAiText(text);
+          callBusy = false;
+        })();
+      }
+
+      function connectCall(){
+        if(callConnected || callEnded || !callEl) return;
+        callConnected = true;
+        callEl.classList.add('connected');
+        const statusEl = callEl.querySelector('.wc-call-status');
+        if(statusEl) statusEl.textContent = '00:00';
+        callSeconds = 0;
+        callTimer = setInterval(() => {
+          if(callEnded){ clearInterval(callTimer); callTimer = null; return; }
+          callSeconds++;
+          if(statusEl) statusEl.textContent = callClock(callSeconds);
+        }, 1000);
+        setTimeout(callCharOpening, 650);
+      }
+
+      function sendCallMessage(){
+        if(!callEl || !callConnected || callEnded || callBusy) return;
+        const inp = callEl.querySelector('.wc-call-input');
+        if(!inp) return;
+        const val = inp.value.trim();
+        if(!val) return;
+        inp.value = '';
+        inp.style.height = 'auto';
+        callTranscript.push({ role:'user', content: val });
+        callAddBubble('user', val);
+        callShowTyping();
+        callBusy = true;
+        replyTimer = setTimeout(async () => {
+          replyTimer = null;
+          if(callEnded){ callBusy = false; return; }
+          let text = '';
+          try{ text = await callAI(); }catch(e){}
+          if(callEnded){ callBusy = false; return; }
+          callRemoveTyping();
+          if(!text) text = '（停顿了一下）…怎么不说话了？';
+          await callAddAiText(text);
+          callBusy = false;
+        }, 3000);
+      }
+
+      function endCall(){
+        if(callEnded) return;
+        callEnded = true;
+        callBusy = false;
+        if(connectTimer){ clearTimeout(connectTimer); connectTimer = null; }
+        if(replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
+        if(callTimer){ clearInterval(callTimer); callTimer = null; }
+      }
+
+      function hangupCall(){
+        if(!callEl) return;
+        endCall();
+        const statusEl = callEl.querySelector('.wc-call-status');
+        if(statusEl) statusEl.textContent = '通话已结束';
+        const el = callEl;
+        el.classList.remove('show');
+        setTimeout(() => { if(el.parentNode) el.remove(); }, 320);
+      }
+
+      function openVoiceCall(){
+        if(document.querySelector('.wc-call')) return;
+        closePanels();
+        const partner = callPartner();
+        const pAvatar = partner?.avatar || '';
+        const pName = displayName;
+        const pColor = colorFor(pName || '友');
+        const avatarInner = pAvatar
+          ? `<img src="${escAttr(pAvatar)}" alt="">`
+          : escAttr((pName || '友').charAt(0));
+        const avatarBg = pAvatar ? '' : `background:linear-gradient(135deg,${pColor},${shade(pColor,-20)})`;
+
+        const el = document.createElement('div');
+        el.className = 'wc-call';
+        el.innerHTML = `
+          <div class="wc-call-bg"></div>
+          <div class="wc-call-mask"></div>
+          <div class="wc-call-inner">
+            <div class="wc-call-header">
+              <div class="wc-call-name">${escAttr(pName)}</div>
+              <div class="wc-call-status">正在等待对方接听<span class="wc-call-wait"><i></i><i></i><i></i></span></div>
+            </div>
+            <div class="wc-call-stage">
+              <div class="wc-call-avatar-wrap" id="wcCallAvatarWrap">
+                <div class="wc-call-ring"></div>
+                <div class="wc-call-ring r2"></div>
+                <div class="wc-call-avatar" style="${avatarBg}">${avatarInner}</div>
+              </div>
+              <div class="wc-call-bubbles"></div>
+            </div>
+            <div class="wc-call-composer">
+              <textarea class="wc-call-input" rows="1" placeholder="轻声说点什么…"></textarea>
+              <button class="wc-call-send" aria-label="发送">
+                <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+              </button>
+            </div>
+            <div class="wc-call-actions">
+              <button class="wc-call-btn wc-call-aux" id="wcCallMute" aria-label="静音">
+                <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+              </button>
+              <button class="wc-call-btn wc-call-hangup" id="wcCallHangup" aria-label="挂断">
+                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              </button>
+            </div>
+          </div>`;
+        detail.appendChild(el);
+
+        callEl = el;
+        callConnected = false;
+        callEnded = false;
+        callBusy = false;
+        callTranscript = [];
+        callSeconds = 0;
+        if(connectTimer){ clearTimeout(connectTimer); connectTimer = null; }
+        if(replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
+        if(callTimer){ clearInterval(callTimer); callTimer = null; }
+
+        const bg = el.querySelector('.wc-call-bg');
+        if(pAvatar) bg.style.backgroundImage = `url("${pAvatar}")`;
+        else bg.style.backgroundColor = pColor;
+
+        requestAnimationFrame(() => el.classList.add('show'));
+
+        el.querySelector('#wcCallHangup').addEventListener('click', hangupCall);
+        el.querySelector('#wcCallAvatarWrap').addEventListener('click', connectCall);
+        const muteBtn = el.querySelector('#wcCallMute');
+        muteBtn.addEventListener('click', () => {
+          const on = muteBtn.classList.toggle('on');
+          muteBtn.setAttribute('aria-label', on ? '取消静音' : '静音');
+        });
+        const callInput = el.querySelector('.wc-call-input');
+        callInput.addEventListener('input', () => {
+          callInput.style.height = 'auto';
+          callInput.style.height = Math.min(callInput.scrollHeight, 76) + 'px';
+        });
+        callInput.addEventListener('keydown', e => {
+          if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendCallMessage(); }
+        });
+        el.querySelector('.wc-call-send').addEventListener('click', sendCallMessage);
+
+        if(!detail._callHooked){
+          detail._callHooked = true;
+          const prevRemove = detail.remove.bind(detail);
+          detail.remove = () => {
+            endCall();
+            if(callEl && callEl.parentNode) callEl.remove();
+            prevRemove();
+          };
+        }
+
+        connectTimer = setTimeout(connectCall, 3000);
+      }
+
       msgs.addEventListener('click', closePanels);
       plusPanel.addEventListener('click', async e => {
         const item = e.target.closest('.wc-plus-item');
@@ -6108,8 +6639,12 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           openTransferModal();
         } else if(act === 'redpacket'){
           openRedPacketModal();
-        } else if(act === 'video' || act === 'call'){
-          Phone.toast(`${act === 'video' ? '视频通话' : '语音通话'}功能暂未开放`);
+        } else if(act === 'location'){
+          openLocationModal();
+        } else if(act === 'call'){
+          openVoiceCall();
+        } else if(act === 'video'){
+          Phone.toast('视频通话功能暂未开放');
         } else {
           Phone.showDeveloping();
         }
@@ -6227,6 +6762,153 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         saveHistoryToStorage();
         _notifyChatUpdated();
         scheduleAutoReply();
+      }
+
+      function sendLocation(loc, opts){
+        opts = opts || {};
+        const role = opts.role === 'assistant' ? 'assistant' : 'user';
+        const ts = Date.now();
+        const msg = {
+          role, type:'location',
+          content: loc.name, placeName: loc.name,
+          address: loc.address || '', distance: loc.distance || '', ts
+        };
+        if(role === 'assistant' && opts.speakerName) msg.speakerName = opts.speakerName;
+        history.push(msg);
+        saveHistoryToStorage();
+        _notifyChatUpdated();
+        if(role === 'user') scheduleAutoReply();
+      }
+
+      function openLocationModal(){
+        const mask = document.createElement('div');
+        mask.className = 'wc-loc-mask';
+        mask.innerHTML = `
+          <div class="wc-loc-box">
+            <div class="wc-loc-box-head">
+              <span>发送位置</span>
+              <button class="wc-loc-box-close">×</button>
+            </div>
+            <div class="wc-loc-row">
+              <span class="wc-loc-row-label">发送者</span>
+              <button class="wc-loc-row-val" id="wcLocToPick">
+                <span id="wcLocToName"></span><span class="wc-loc-chev" id="wcLocToIcon">›</span>
+              </button>
+            </div>
+            <div class="wc-loc-preview">
+              <div class="wc-loc-shadow"></div>
+              <div class="wc-loc-pin"></div>
+              <div class="wc-loc-chip" id="wcLocChip">未选择地点</div>
+            </div>
+            <div class="wc-loc-box-body">
+              <input class="wc-loc-field" id="wcLocName" type="text" placeholder="地点名称，例如：仁川机场" maxlength="30">
+              <input class="wc-loc-field" id="wcLocAddr" type="text" placeholder="详细地址（可选）" maxlength="60">
+              <input class="wc-loc-field" id="wcLocDist" type="text" placeholder="距离（可选），例如：12km" maxlength="20">
+              <button class="wc-loc-send-btn">发送</button>
+            </div>
+          </div>`;
+        document.body.appendChild(mask);
+
+        const box = mask.querySelector('.wc-loc-box');
+        const nameEl = mask.querySelector('#wcLocName');
+        const addrEl = mask.querySelector('#wcLocAddr');
+        const distEl = mask.querySelector('#wcLocDist');
+        const chip = mask.querySelector('#wcLocChip');
+        const toNameEl = mask.querySelector('#wcLocToName');
+
+        const selfName = () => userName || '我';
+        const candidates = (() => {
+          const list = [{ name: selfName(), avatar: userAvatar || '', isMe: true }];
+          if(isGroup){
+            members.forEach(m => {
+              if(m && m.name && m.name !== selfName()) list.push({ name: m.name, avatar: m.avatar || '', isMe: false });
+            });
+          } else {
+            const contact = chat.contactId ? MOCK_CONTACTS.find(c => c.id === chat.contactId) : null;
+            const nm = chat.name || contact?.name || '';
+            if(nm && nm !== selfName()) list.push({ name: nm, avatar: contact?.avatar || '', isMe: false });
+          }
+          return list;
+        })();
+        let senderIdx = 0;
+        const curSender = () => candidates[senderIdx] || candidates[0];
+
+        const refreshRoute = () => {
+          const s = curSender();
+          toNameEl.textContent = s.isMe ? `${s.name}（我）` : s.name;
+          const pickBtn = mask.querySelector('#wcLocToPick');
+          pickBtn.title = isGroup ? '选择发送者' : '点击切换发送者';
+          mask.querySelector('#wcLocToIcon').textContent = isGroup ? '›' : '⇄';
+        };
+        refreshRoute();
+
+        const close = () => {
+          box.style.animation = 'wcPopIn .22s cubic-bezier(.32,.72,0,1) reverse';
+          setTimeout(() => mask.remove(), 220);
+        };
+
+        mask.querySelector('.wc-loc-box-close').addEventListener('click', close);
+        mask.addEventListener('click', e => { if(e.target === mask) close(); });
+
+        mask.querySelector('#wcLocToPick').addEventListener('click', () => {
+          if(!isGroup && candidates.length > 1){
+            senderIdx = (senderIdx + 1) % candidates.length;
+            refreshRoute();
+            return;
+          }
+          const picker = document.createElement('div');
+          picker.className = 'wc-loc-picker';
+          const items = candidates.map((p, i) => {
+            const avHtml = p.avatar
+              ? `<img class="wc-loc-picker-av" src="${escAttr(p.avatar)}" alt="">`
+              : `<div class="wc-loc-picker-av">${escAttr(p.name.charAt(0))}</div>`;
+            return `<button class="wc-loc-picker-item${i === senderIdx ? ' on' : ''}" data-idx="${i}">
+                ${avHtml}<span class="wc-loc-picker-name">${escAttr(p.isMe ? `${p.name}（我）` : p.name)}</span>
+              </button>`;
+          }).join('');
+          picker.innerHTML = `
+            <div class="wc-loc-picker-head">
+              <span>选择发送者</span>
+              <button class="wc-loc-box-close">×</button>
+            </div>
+            <div class="wc-loc-picker-list">${items}</div>`;
+          box.appendChild(picker);
+
+          picker.querySelector('.wc-loc-box-close').addEventListener('click', () => picker.remove());
+          picker.querySelectorAll('.wc-loc-picker-item').forEach(item => {
+            item.addEventListener('click', () => {
+              senderIdx = parseInt(item.dataset.idx) || 0;
+              refreshRoute();
+              picker.remove();
+            });
+          });
+        });
+
+        nameEl.addEventListener('input', () => {
+          const v = nameEl.value.trim();
+          chip.textContent = v || '未选择地点';
+          chip.classList.toggle('filled', !!v);
+        });
+
+        const doSend = () => {
+          const name = nameEl.value.trim();
+          if(!name){ Phone.toast('请输入地点名称'); nameEl.focus(); return; }
+          const s = curSender();
+          close();
+          sendLocation({
+            name,
+            address: addrEl.value.trim(),
+            distance: distEl.value.trim()
+          }, { role: s.isMe ? 'user' : 'assistant', speakerName: s.isMe ? '' : s.name });
+          Phone.toast(s.isMe ? '位置已发送' : `已以${s.name}的身份发送`);
+        };
+
+        mask.querySelector('.wc-loc-send-btn').addEventListener('click', doSend);
+        [nameEl, addrEl, distEl].forEach(el => {
+          el.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); doSend(); } });
+        });
+
+        setTimeout(() => nameEl.focus(), 120);
       }
 
       function _walletOp(){
