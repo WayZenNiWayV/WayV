@@ -1,4 +1,4 @@
-﻿﻿﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -1809,6 +1809,11 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 }
 .wc-call-header{flex-shrink:0;text-align:center;padding:8px 24px 4px;}
 .wc-call-name{font-size:20px;font-weight:600;letter-spacing:.6px;color:#14452c;}
+.wc-call-party{
+  margin-top:6px;display:inline-block;padding:3px 10px;border-radius:10px;
+  max-width:78%;line-height:1.5;word-break:break-word;
+  font-size:11px;color:rgba(20,69,44,.62);background:rgba(255,255,255,.6);
+}
 .wc-call-status{
   margin-top:8px;font-size:13px;color:rgba(29,74,51,.6);min-height:18px;
   font-variant-numeric:tabular-nums;letter-spacing:.4px;
@@ -1873,6 +1878,8 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   background:linear-gradient(135deg,#6fd193,#3fa96a);color:#fff;border-bottom-right-radius:6px;
   box-shadow:0 5px 16px rgba(63,169,106,.32);
 }
+.wc-call-bubble-wrap{display:flex;flex-direction:column;gap:4px;min-width:0;}
+.wc-call-bubble-name{font-size:11px;color:rgba(29,74,51,.5);line-height:1;padding-left:4px;}
 .wc-call-bubble.typing{display:flex;align-items:center;background:rgba(255,255,255,.94);}
 .wc-call-typing{display:flex;gap:5px;align-items:center;height:20px;}
 .wc-call-typing span{width:6px;height:6px;border-radius:50%;background:rgba(63,169,106,.65);animation:wcCallTypingDot 1.2s ease-in-out infinite;}
@@ -1924,6 +1931,216 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   font-size:12px;padding:4px 14px;border-radius:12px;
 }
 
+/* ===== 聊天里的通话记录 ===== */
+.wc-call-log{
+  display:inline-flex;align-items:center;gap:7px;
+  background:#f2f2f2;color:#6b6b6b;font-size:12px;
+  padding:6px 14px;border-radius:6px;cursor:pointer;
+  transition:background .15s;
+}
+.wc-call-log:active{background:#e8e8e8;}
+.wc-call-log svg{width:14px;height:14px;fill:none;stroke:#9a9a9a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.wc-call-log .wc-call-log-dur{color:#a5a5a5;font-variant-numeric:tabular-nums;}
+.wc-call-miss{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;color:#8b9aab;background:rgba(226,238,250,.85);
+  padding:5px 14px;border-radius:12px;line-height:1;
+}
+.wc-call-miss svg{width:14px;height:14px;fill:none;stroke:#e2695f;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+
+/* ===== 通话记录详情 ===== */
+.wc-callrec-mask{
+  position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.34);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+  animation:wcFadeIn .22s ease;padding:18px;
+}
+.wc-callrec-box{
+  width:88%;max-width:360px;max-height:78vh;display:flex;flex-direction:column;
+  background:#fff;border-radius:16px;overflow:hidden;
+  animation:wcPopIn .28s cubic-bezier(.32,.72,0,1);
+  box-shadow:0 18px 50px rgba(0,0,0,.24);
+}
+.wc-callrec-head{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:18px 18px 0;
+}
+.wc-callrec-title{font-size:16px;font-weight:600;color:#1a1a1a;line-height:1.4;}
+.wc-callrec-close{
+  width:26px;height:26px;border:none;background:none;color:#b0b0b0;font-size:20px;line-height:1;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;
+}
+.wc-callrec-close:active{background:#f5f5f5;}
+.wc-callrec-meta{
+  padding:6px 18px 0;font-size:13px;color:#9a9a9a;font-variant-numeric:tabular-nums;
+  display:flex;align-items:center;gap:8px;
+}
+.wc-callrec-del{
+  border:none;background:none;padding:0;cursor:pointer;
+  font-size:14px;line-height:1;font-family:inherit;
+}
+.wc-callrec-del:active{opacity:.7;}
+.wc-callrec-body{
+  flex:1;min-height:0;overflow-y:auto;padding:14px 18px 20px;margin-top:10px;
+  border-top:1px solid #f2f2f2;background:#fff;
+}
+.wc-callrec-body::-webkit-scrollbar{width:0;}
+.wc-callrec-row{display:flex;gap:8px;margin-bottom:16px;}
+.wc-callrec-row.user{flex-direction:row-reverse;}
+.wc-callrec-avatar{
+  width:34px;height:34px;border-radius:6px;overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;
+  background:linear-gradient(135deg,var(--green-mid),var(--green-deep));
+}
+.wc-callrec-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.wc-callrec-main{max-width:76%;display:flex;flex-direction:column;gap:5px;align-items:flex-start;}
+.wc-callrec-row.user .wc-callrec-main{align-items:flex-end;}
+.wc-callrec-name{font-size:11px;color:#a8a8a8;line-height:1;}
+.wc-callrec-bubble{
+  padding:9px 13px;border-radius:6px;background:#f2f2f2;color:#2b2b2b;
+  font-size:14px;line-height:1.6;word-break:break-word;white-space:pre-wrap;
+}
+.wc-callrec-row.user .wc-callrec-bubble{background:#e6eefb;}
+.wc-callrec-empty{padding:28px 0;text-align:center;font-size:12px;color:#bbb;}
+
+/* ===== 来电（角色主动打来） ===== */
+.wc-incoming{
+  position:absolute;inset:0;z-index:55;display:flex;flex-direction:column;overflow:hidden;
+  background:linear-gradient(175deg,#f7fdfa 0%,#e8f7ee 42%,#d7efe1 100%);
+  opacity:0;transition:opacity .28s ease;color:#1d4a33;
+}
+.wc-incoming.show{opacity:1;}
+.wc-incoming-inner{
+  position:relative;z-index:2;flex:1;min-height:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:0 24px;
+}
+.wc-incoming-avatar{
+  width:112px;height:112px;border-radius:50%;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,var(--green-mid),var(--green-deep));
+  box-shadow:0 14px 34px rgba(52,124,86,.28),0 0 0 5px rgba(255,255,255,.72),0 0 0 11px rgba(255,255,255,.32);
+  animation:wcCallBreath 2.6s ease-in-out infinite;
+}
+.wc-incoming-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.wc-incoming-name{margin-top:22px;font-size:21px;font-weight:600;letter-spacing:.5px;color:#14452c;max-width:80%;line-height:1.35;word-break:break-word;}
+.wc-incoming-tip{
+  margin-top:10px;font-size:13px;color:rgba(29,74,51,.6);
+  display:flex;align-items:center;gap:2px;
+}
+.wc-incoming-actions{
+  position:relative;z-index:2;flex-shrink:0;display:flex;justify-content:center;align-items:center;gap:56px;
+  padding:0 0 calc(var(--phone-w,380px)*0.08);
+}
+.wc-incoming-btn{
+  width:62px;height:62px;border-radius:50%;border:none;cursor:pointer;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .12s,opacity .15s;
+}
+.wc-incoming-btn:active{transform:scale(.9);}
+.wc-incoming-btn svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.wc-incoming-btn.decline{background:linear-gradient(135deg,#ff6b6b,#e8453c);box-shadow:0 10px 26px rgba(232,69,60,.38);}
+.wc-incoming-btn.decline svg{transform:rotate(135deg);}
+.wc-incoming-btn.accept{
+  background:linear-gradient(135deg,#6fd193,#3fa96a);
+  box-shadow:0 10px 26px rgba(63,169,106,.38);
+  animation:wcCallAcceptPulse 1.6s ease-in-out infinite;
+}
+@keyframes wcCallAcceptPulse{
+  0%,100%{box-shadow:0 10px 26px rgba(63,169,106,.38)}
+  50%{box-shadow:0 10px 36px rgba(63,169,106,.62)}
+}
+
+/* ===== 群聊选择通话成员 · 绿色主题 ===== */
+.wc-callpick-mask{
+  position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;
+  background:rgba(14,48,30,.42);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  animation:wcFadeIn .22s ease;padding:18px;
+}
+.wc-callpick-box{
+  width:88%;max-width:340px;max-height:80vh;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#f4fcf7 0%,#ffffff 36%);
+  border-radius:18px;overflow:hidden;
+  border:1px solid rgba(63,169,106,.18);
+  animation:wcPopIn .3s cubic-bezier(.32,.72,0,1);
+  box-shadow:0 20px 54px -12px rgba(20,74,44,.38),inset 0 0 0 1px rgba(255,255,255,.6);
+}
+.wc-callpick-head{
+  flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  padding:18px 16px 14px;
+  background:linear-gradient(135deg,rgba(184,226,198,.5),rgba(255,255,255,.15));
+  border-bottom:1px solid rgba(63,169,106,.14);
+}
+.wc-callpick-title-row{display:flex;flex-direction:column;gap:5px;min-width:0;}
+.wc-callpick-title{font-size:17px;font-weight:700;color:var(--green-ink,#1e4a30);letter-spacing:.3px;}
+.wc-callpick-sub{font-size:12px;color:#5a8d6e;}
+.wc-callpick-count{font-weight:700;color:#3fa96a;font-variant-numeric:tabular-nums;}
+.wc-callpick-close{
+  width:28px;height:28px;border:1px solid rgba(63,169,106,.22);border-radius:50%;
+  background:rgba(255,255,255,.8);color:#7aa58c;font-size:18px;line-height:1;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background .15s,color .15s,transform .12s;
+}
+.wc-callpick-close:active{background:#e8f6ee;color:#3fa96a;transform:scale(.94);}
+.wc-callpick-list{flex:1;min-height:0;overflow-y:auto;padding:10px 8px 6px;}
+.wc-callpick-list::-webkit-scrollbar{width:0;}
+.wc-callpick-row{
+  display:flex;align-items:center;gap:12px;padding:9px 10px;margin-bottom:6px;
+  cursor:pointer;border-radius:12px;
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(63,169,106,.1);
+  transition:background .15s,border-color .15s,box-shadow .15s,transform .12s;
+}
+.wc-callpick-row.on{
+  background:linear-gradient(135deg,rgba(184,226,198,.45),rgba(238,250,242,.92));
+  border-color:rgba(63,169,106,.42);
+  box-shadow:0 4px 14px -6px rgba(40,130,70,.34);
+}
+.wc-callpick-row:active{transform:scale(.985);}
+.wc-callpick-avatar{
+  width:44px;height:44px;border-radius:12px;overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:600;color:#fff;
+  background:linear-gradient(135deg,var(--green-mid,#7ccc9b),var(--green-deep,#3fa96a));
+  box-shadow:0 4px 10px -4px rgba(40,130,70,.45);
+  transition:box-shadow .15s;
+}
+.wc-callpick-row.on .wc-callpick-avatar{
+  box-shadow:0 0 0 2px rgba(255,255,255,.92),0 0 0 4px rgba(63,169,106,.45);
+}
+.wc-callpick-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.wc-callpick-name{flex:1;font-size:15px;color:var(--green-ink,#1e4a30);word-break:break-word;}
+.wc-callpick-check{
+  width:22px;height:22px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid rgba(63,169,106,.3);background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:12px;line-height:1;
+  transition:background .18s,border-color .18s,transform .18s,box-shadow .18s;
+}
+.wc-callpick-check.on{
+  background:linear-gradient(135deg,#7ccc9b,#3fa96a);
+  border-color:transparent;
+  transform:scale(1.06);
+  box-shadow:0 3px 10px -3px rgba(40,130,70,.55);
+}
+.wc-callpick-check.on::after{content:'✓';font-size:12px;}
+.wc-callpick-foot{
+  flex-shrink:0;display:flex;gap:10px;padding:12px 16px 16px;
+  background:linear-gradient(180deg,rgba(255,255,255,0),rgba(238,250,242,.9));
+  border-top:1px solid rgba(63,169,106,.12);
+}
+.wc-callpick-cancel,.wc-callpick-ok{
+  height:46px;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;
+  transition:transform .12s,opacity .15s,box-shadow .15s;
+}
+.wc-callpick-cancel{
+  flex:0 0 34%;
+  background:#fff;color:#5a8d6e;border:1px solid rgba(63,169,106,.28);
+}
+.wc-callpick-ok{
+  flex:1;border:none;font-weight:600;letter-spacing:.5px;
+  background:linear-gradient(135deg,#7ccc9b,#3fa96a);color:#fff;
+  box-shadow:0 8px 20px -8px rgba(40,130,70,.65);
+}
+.wc-callpick-cancel:active,.wc-callpick-ok:active{transform:scale(.97);opacity:.9;}
 </style>
 </head>
 <body>
@@ -2447,6 +2664,10 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
       if(m.type === 'image') return '[图片]';
       if(m.type === 'video') return '[视频]';
       if(m.type === 'file') return '[文件]';
+      if(m.type === 'call'){
+        const w = m.kind === 'video' ? '视频通话' : '语音通话';
+        return m.status === 'connected' ? `[${w}]` : `[未接${w}]`;
+      }
       let txt = m.content || '';
       txt = txt.replace(/\[表情[：:][^\]]*\]/g, '[表情]');
       if(isGroup && m.role !== 'user' && m.speakerName){
@@ -5317,6 +5538,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       });
     }
 
+    let lastCharCallAt = 0;
+    let aiReplyCountSinceCall = 0;
+
     function openChat(chatId){
       const chat = MOCK_CHATS.find(c => c.id === chatId);
       if(!chat) return;
@@ -5480,6 +5704,20 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       const voiceBtn = detail.querySelector('#wcCdVoice');
       const plusBtn = detail.querySelector('#wcCdPlus');
       const plusPanel = detail.querySelector('#wcCdPlusPanel');
+
+      if(!detail._callHooked){
+        detail._callHooked = true;
+        const prevRemove = detail.remove.bind(detail);
+        detail.remove = () => {
+          if(callEl && !callSaved) addCallRecord(callConnected ? 'connected' : 'cancelled');
+          endCall();
+          if(callEl && callEl.parentNode) callEl.remove();
+          stopRingtone();
+          const inc = detail.querySelector('.wc-incoming');
+          if(inc) inc.remove();
+          prevRemove();
+        };
+      }
       const voiceModal = detail.querySelector('#wcVoiceModal');
       const moreBtn = detail.querySelector('#wcChatMore');
       const heartBtn = detail.querySelector('#wcChatHeart');
@@ -5950,6 +6188,33 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           d.dataset.isUser = isUserMsg ? '1' : '0';
           return d;
         }
+        if(m.type === 'call'){
+          d.className = 'wc-msg system';
+          d.style.justifyContent = 'center';
+          d.dataset.msgIdx = m._idx !== undefined ? m._idx : -1;
+          d.dataset.isUser = isUserMsg ? '1' : '0';
+          const phoneSvg = `<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>`;
+          const isVideo = m.kind === 'video';
+          const kindWord = isVideo ? '视频通话' : '语音通话';
+          const camSvg = `<svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
+          if(m.status === 'connected'){
+            d.innerHTML = `<div class="wc-call-log">${isVideo ? camSvg : phoneSvg}<span>${kindWord}</span><span class="wc-call-log-dur">${callClock(m.duration || 0)}</span></div>`;
+            const logEl = d.querySelector('.wc-call-log');
+            if(logEl) logEl.addEventListener('click', () => openCallRecord(m));
+          } else {
+            let label;
+            if(m.direction === 'incoming'){
+              label = m.status === 'declined' ? `你已拒绝${kindWord}` : (isVideo ? '未接视频来电' : '未接来电');
+            } else if(m.status === 'cancelled'){
+              label = `已取消${kindWord}`;
+            } else {
+              const who = m.speakerName || chat.name;
+              label = m.status === 'declined' ? `${who} 已拒绝${kindWord}` : `${who} 未接${kindWord}`;
+            }
+            d.innerHTML = `<div class="wc-call-miss">${isVideo ? camSvg : phoneSvg}<span>${escAttr(label)}</span></div>`;
+          }
+          return d;
+        }
         const speakerName = isUserMsg ? userName : (m.speakerName || chat.name);
         let speakerAvatar = isUserMsg ? userAvatar : '';
         if(!isUserMsg && speakerName){
@@ -6259,20 +6524,162 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       let callTimer = null;
       let replyTimer = null;
       let callTranscript = [];
+      let callDirection = 'outgoing';
+      let callSaved = false;
+      let callTier = 'normal';
+      let callScore = 0;
+      let callTargets = [];
+      let pendingCharCall = null;
+      let ringCtx = null;
+      let ringTimer = null;
+      let ringOn = false;
+      let callMedia = 'voice';
+      let videoOpening = false;
+      let videoSaved = false;
+      let videoModuleLoading = null;
 
       function callClock(sec){
         const m = Math.floor(sec / 60), s = sec % 60;
         return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
       }
 
+      const RING_BEEP_GAP = 0.85;
+      const RING_GROUP_GAP = 1400;
+      let ringStep = 0;
+
+      function ringBeepOnce(){
+        if(!ringOn || !ringCtx) return;
+        if(ringCtx.state === 'suspended') ringCtx.resume().catch(() => {});
+        const t0 = ringCtx.currentTime + 0.04;
+        const osc = ringCtx.createOscillator();
+        const gain = ringCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 442;
+        gain.gain.setValueAtTime(0, t0);
+        gain.gain.linearRampToValueAtTime(0.055, t0 + 0.03);
+        gain.gain.setValueAtTime(0.055, t0 + 0.34);
+        gain.gain.linearRampToValueAtTime(0, t0 + 0.40);
+        osc.connect(gain);
+        gain.connect(ringCtx.destination);
+        osc.start(t0);
+        osc.stop(t0 + 0.42);
+      }
+
+      function startRingtone(){
+        if(ringOn) return;
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if(!AC) return;
+        try{
+          if(!ringCtx || ringCtx.state === 'closed') ringCtx = new AC();
+          if(ringCtx.state === 'suspended') ringCtx.resume().catch(() => {});
+        }catch(e){ return; }
+        ringOn = true;
+        ringStep = 0;
+        const tick = () => {
+          if(!ringOn || !ringCtx) return;
+          try{ ringBeepOnce(); }catch(e){}
+          ringStep = (ringStep + 1) % 3;
+          ringTimer = setTimeout(tick, ringStep === 0 ? RING_BEEP_GAP * 1000 + RING_GROUP_GAP : RING_BEEP_GAP * 1000);
+        };
+        tick();
+      }
+
+      function stopRingtone(){
+        ringOn = false;
+        if(ringTimer){ clearTimeout(ringTimer); ringTimer = null; }
+        if(ringCtx){
+          try{ ringCtx.close(); }catch(e){}
+          ringCtx = null;
+        }
+      }
+
+      function callCloseness(){
+        const c = callPartner();
+        let score = 34;
+        if(c?.roleSetting) score += 18;
+        const h = Array.isArray(history) ? history.length : 0;
+        score += Math.min(h, 40) * 0.7;
+        if(cs.remark) score += 5;
+        try{
+          const allD = Phone.getData('wechat') || {};
+          const cm = allD.memories?.[chatId];
+          if(cm?.core?.length) score += 6;
+          if(cm?.storylines?.length) score += 5;
+          if(allD.heartVoices?.[chatId]?.length) score += 4;
+        }catch(e){}
+        if(cs.persona || char.persona) score += 3;
+        return Math.min(100, Math.round(score));
+      }
+
+      function callPlan(){
+        const score = callCloseness();
+        if(score >= 65){
+          return { score, tier:'close', answer:true, delay: 1800 + Math.random() * 1100 };
+        }
+        if(score >= 45){
+          return { score, tier:'normal', answer:true, delay: 3000 + Math.random() * 2000 };
+        }
+        if(score >= 30){
+          const yes = Math.random() < 0.45;
+          return {
+            score, tier:'far', answer: yes,
+            delay: yes ? 6200 + Math.random() * 2800 : 0,
+            ringMs: yes ? 0 : 9000
+          };
+        }
+        const yes = Math.random() < 0.12;
+        return {
+          score, tier:'cold', answer: yes,
+          delay: yes ? 7000 + Math.random() * 2000 : 0,
+          ringMs: yes ? 0 : 5600
+        };
+      }
+
+      function callNoAnswer(kind){
+        if(!callEl || callConnected || callEnded) return;
+        stopRingtone();
+        endCall();
+        addCallRecord(kind === 'reject' ? 'declined' : 'missed');
+        const statusEl = callEl.querySelector('.wc-call-status');
+        if(statusEl) statusEl.textContent = kind === 'reject' ? '对方已拒绝' : '对方无应答';
+        const wrap = callEl.querySelector('.wc-call-avatar-wrap');
+        if(wrap) wrap.style.opacity = '.5';
+        const el = callEl;
+        setTimeout(() => {
+          el.classList.remove('show');
+          setTimeout(() => { if(el.parentNode) el.remove(); }, 320);
+        }, 1900);
+      }
+
       function callPartner(){
+        if(callTargets.length) return callTargets[0];
         if(isGroup) return members[0] || null;
         return MOCK_CONTACTS.find(c => c.id === chat.contactId) || null;
       }
 
-      function callMiniAvatar(who){
-        const av = who === 'ai' ? (callPartner()?.avatar || '') : userAvatar;
-        const nm = who === 'ai' ? displayName : userName;
+      function callPartyName(){
+        const names = callTargets.map(t => t.name).filter(Boolean);
+        if(names.length > 1) return names.join('、');
+        return names[0] || displayName;
+      }
+
+      function callRecordName(){
+        if(callTargets.length > 1) return callTargets.map(t => t.name).filter(Boolean).join('、');
+        return displayName;
+      }
+
+      function resolveCallMember(name){
+        if(!callTargets.length) return null;
+        if(!name) return callTargets[0];
+        return callTargets.find(t => t.name === name)
+          || callTargets.find(t => t.name && (t.name.includes(name) || name.includes(t.name)))
+          || callTargets[0];
+      }
+
+      function callMiniAvatar(who, member){
+        const m = member || callTargets[0] || null;
+        const av = who === 'ai' ? (m?.avatar || '') : userAvatar;
+        const nm = who === 'ai' ? (m?.name || displayName) : userName;
         if(av) return `<div class="wc-call-bubble-mini"><img src="${escAttr(av)}" alt=""></div>`;
         const col = colorFor(nm || '我');
         return `<div class="wc-call-bubble-mini" style="background:linear-gradient(135deg,${col},${shade(col,-20)})">${escAttr((nm || '我').charAt(0))}</div>`;
@@ -6280,19 +6687,29 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
 
       function buildCallSystem(){
         const c = callPartner();
-        const speaker = isGroup ? (c?.name || chat.name) : displayName;
-        let sys = `你正在扮演「${speaker}」，此刻正和「${userName}」打一通真实的语音电话。\n`;
-        if(c?.roleSetting) sys += `\n【角色人设】\n${c.roleSetting}\n`;
-        if(c?.writingStyle?.length){
+        const multi = callTargets.length > 1;
+        const mediaWord = callMedia === 'video' ? '视频' : '语音';
+        let sys;
+        if(multi){
+          sys = `你正在同时扮演「${callTargets.map(t => t.name).join('」「')}」这几位角色，此刻正和「${userName}」打一通真实的多人${mediaWord}电话。\n`;
+          sys += `\n【本次通话成员】${callTargets.map(t => t.name).join('、')}（共 ${callTargets.length} 人在线）\n`;
+          const settingText = callTargets.filter(t => t.roleSetting).map(t => `${t.name}：\n${t.roleSetting}`).join('\n\n');
+          if(settingText) sys += `\n【各成员人设】\n${settingText}\n`;
+        } else {
+          const speaker = isGroup ? (c?.name || chat.name) : displayName;
+          sys = `你正在扮演「${speaker}」，此刻正和「${userName}」打一通真实的${mediaWord}电话。\n`;
+        }
+        if(!multi && c?.roleSetting) sys += `\n【角色人设】\n${c.roleSetting}\n`;
+        if(!multi && c?.writingStyle?.length){
           sys += `\n【说话风格参考（模仿这种语气）】\n${c.writingStyle.slice(0,12).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
         }
-        if(c?.fontType || c?.voice){
+        if(!multi && (c?.fontType || c?.voice)){
           const fv = [];
           if(c.fontType) fv.push(`字体：${c.fontType}`);
           if(c.voice) fv.push(`语音：${c.voice}`);
           sys += `\n【语言设置】${fv.join('，')}\n`;
         }
-        if(c?.npcs && c.npcs.length){
+        if(!multi && c?.npcs && c.npcs.length){
           const rels = c.npcs.map(n => `${n.name}（${n.identity||''}${n.relationship ? '，'+n.relationship : ''}）`).filter(Boolean).join('、');
           if(rels) sys += `\n【关系网】${rels}\n`;
         }
@@ -6325,27 +6742,59 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         sys += `2. 每次只说 1~3 句，最多 60 字。想多说就拆成几条，用 ||| 分隔。\n`;
         sys += `3. 允许在括号内写极少量语气或动作描写，例如（停顿了一下）（笑），一条消息最多一处，不要堆砌。\n`;
         sys += `4. 必须延续之前微信聊天里的话题和关系，也要接住电话里刚说过的话，不要重复说过的话。\n`;
-        sys += `5. 只输出说出来的话，不要写【角色名】，不要写第三人称旁白。\n`;
+        if(multi){
+          sys += `5. 这是多人${mediaWord}通话：**每一条都必须以【角色名】：开头**，例如 【${callTargets[0]?.name||'钱锟'}】：喂？听得见吗。\n`;
+          sys += `6. 不同成员轮流说话，不要同一个人连续说很多条；只使用【本次通话成员】里的人。\n`;
+          sys += `7. 只输出说出来的话，不要写旁白，不要写群名。\n`;
+        } else {
+          sys += `5. 只输出说出来的话，不要写【角色名】，不要写第三人称旁白。\n`;
+        }
+        if(callMedia === 'video'){
+          sys += `\n【视频画面】你们正开着视频，能看见对方。可以偶尔自然地提到画面里的细节（表情、穿着、身后的环境），但不要刻意描述。\n`;
+        }
+        sys += `\n【你和「${userName}」的关系】${callTierText()}\n`;
         return sys;
+      }
+
+      function callTierText(){
+        if(callTier === 'close') return '你们很亲近。说话随意、亲昵，可以撒娇、打趣、直接表达想念，不用客套。';
+        if(callTier === 'normal') return '你们关系平常，能正常聊天，带一点熟络但不黏腻，语气自然。';
+        if(callTier === 'far') return '你们还不算熟，关系有点距离。语气要克制、略带疏离和客气，回答简短，不会一上来就热情。';
+        return '你们几乎没什么交情。语气疏远、冷淡，话少，不主动示好，回答要短。';
       }
 
       async function callAI(extraUser){
         const VALID = ['system','user','assistant','tool'];
         const ctx = [];
-        history.filter(m => m.role && m.content !== undefined).slice(-24).forEach(m => {
+        history.filter(m => m.role && (m.content !== undefined || m.type === 'call')).slice(-24).forEach(m => {
           const raw = m.role === 'ai' ? 'assistant' : (m.role === 'user' ? 'user' : null);
           if(!raw) return;
           ctx.push({
             role: VALID.includes(raw) ? raw : 'user',
-            content: m.type === 'image' ? (m.caption ? `[图片：${m.caption}]` : '[图片]') : String(m.content)
+            content: m.type === 'image'
+              ? (m.caption ? `[图片：${m.caption}]` : '[图片]')
+              : (m.type === 'call'
+                  ? (m.status === 'connected'
+                      ? `[${m.kind === 'video' ? '视频' : '语音'}通话 ${callClock(m.duration || 0)}]`
+                      : `[${m.kind === 'video' ? '视频' : '语音'}通话未接通]`)
+                  : String(m.content || ''))
           });
         });
-        const messages = [{ role:'system', content: buildCallSystem() }, ...ctx, ...callTranscript];
+        const multi = callTargets.length > 1;
+        const transcriptMsgs = callTranscript.map(t => ({
+          role: t.role,
+          content: (multi && t.role === 'assistant' && t.speakerName)
+            ? `【${t.speakerName}】：${t.content}`
+            : t.content
+        }));
+        const messages = [{ role:'system', content: buildCallSystem() }, ...ctx, ...transcriptMsgs];
         if(extraUser) messages.push({ role:'user', content: extraUser });
         const rawReply = await Phone.chatWithAI(messages);
         let text = (rawReply || '').trim();
-        const ft = callPartner()?.fontType || '';
-        if(ft === '繁体') text = toTraditional(text);
+        if(!multi){
+          const ft = callPartner()?.fontType || '';
+          if(ft === '繁体') text = toTraditional(text);
+        }
         return text;
       }
 
@@ -6355,25 +6804,26 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         if(b) b.scrollTop = b.scrollHeight;
       }
 
-      function callAddBubble(who, text){
+      function callAddBubble(who, text, member){
         if(!callEl || callEnded) return;
         const b = callEl.querySelector('.wc-call-bubbles');
         if(!b) return;
         const row = document.createElement('div');
         row.className = 'wc-call-bubble-row ' + (who === 'ai' ? 'ai' : 'user');
-        row.innerHTML = `${callMiniAvatar(who)}<div class="wc-call-bubble">${escAttr(text)}</div>`;
+        const showName = who === 'ai' && callTargets.length > 1 && member?.name;
+        row.innerHTML = `${callMiniAvatar(who, member)}<div class="wc-call-bubble-wrap">${showName ? `<div class="wc-call-bubble-name">${escAttr(member.name)}</div>` : ''}<div class="wc-call-bubble">${escAttr(text)}</div></div>`;
         b.appendChild(row);
         callScroll();
       }
 
-      function callShowTyping(){
+      function callShowTyping(member){
         if(!callEl || callEnded) return;
         callRemoveTyping();
         const b = callEl.querySelector('.wc-call-bubbles');
         if(!b) return;
         const row = document.createElement('div');
         row.className = 'wc-call-bubble-row ai wc-call-typing-row';
-        row.innerHTML = `${callMiniAvatar('ai')}<div class="wc-call-bubble typing"><div class="wc-call-typing"><span></span><span></span><span></span></div></div>`;
+        row.innerHTML = `${callMiniAvatar('ai', member)}<div class="wc-call-bubble-wrap"><div class="wc-call-bubble typing"><div class="wc-call-typing"><span></span><span></span><span></span></div></div></div>`;
         b.appendChild(row);
         callScroll();
       }
@@ -6384,16 +6834,38 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         if(t) t.remove();
       }
 
+      function callParseLines(text){
+        const multi = callTargets.length > 1;
+        const lines = String(text || '').replace(/\r/g,'').replace(/\|\|\|/g,'\n').split('\n').map(s => s.trim()).filter(Boolean);
+        if(!multi){
+          return lines.map(t => ({ member: callTargets[0] || null, text: t }));
+        }
+        let last = callTargets[0] || null;
+        return lines.map(line => {
+          const m = line.match(/^[【〖\[［「『]\s*([^】〗\]］」』]{1,24}?)\s*[】〗\]］」』]\s*[：:．.]\s*/);
+          if(m){
+            const who = resolveCallMember(m[1].trim());
+            last = who || last;
+            return { member: last, text: line.slice(m[0].length).trim() };
+          }
+          return { member: last, text: line };
+        }).filter(p => p.text);
+      }
+
       function callAddAiText(text){
-        const parts = String(text || '').replace(/\r/g,'').split(/\|\|\||\n+/).map(s => s.trim()).filter(Boolean);
+        const parts = callParseLines(text);
         if(!parts.length) return Promise.resolve();
         return new Promise(resolve => {
           let i = 0;
           const step = () => {
             if(callEnded || !callEl){ resolve(); return; }
             const p = parts[i++];
-            callTranscript.push({ role:'assistant', content: p });
-            callAddBubble('ai', p);
+            const body = (callTargets.length > 1 && p.member?.fontType === '繁体')
+              ? toTraditional(p.text)
+              : p.text;
+            const speakerName = (callTargets.length > 1 ? (p.member?.name || callPartyName()) : callPartyName());
+            callTranscript.push({ role:'assistant', content: body, speakerName, ts: Date.now() });
+            callAddBubble('ai', body, p.member);
             if(i < parts.length) setTimeout(step, 420);
             else resolve();
           };
@@ -6404,17 +6876,37 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       function callCharOpening(){
         if(callEnded || !callEl) return;
         callBusy = true;
-        callShowTyping();
+        const opener = callTargets.length > 1
+          ? callTargets[Math.floor(Math.random() * callTargets.length)]
+          : (callTargets[0] || null);
+        callShowTyping(opener);
         (async () => {
           let text = '';
+          const multi = callTargets.length > 1;
+          const toneHint = callTier === 'close'
+            ? '语气亲近自然，可以直接关心对方或表达想念。'
+            : (callTier === 'normal'
+              ? '语气自然平常，像平时聊天一样开口。'
+              : '你们关系还生疏，语气要克制客气，别一上来就太热络。');
+          const openHint = multi
+            ? `（这是 ${callTargets.length} 人语音通话，刚接通。请让其中 1~2 个人先开口，每条都要用【角色名】：开头。${toneHint}）`
+            : `（电话接通了，你们刚开始通话。请你先开口说第一句话。${toneHint}）`;
           try{
-            text = await callAI('（电话接通了，你们刚开始通话。请你先开口说第一句话，自然地打招呼或关心对方。）');
+            text = await callAI(openHint);
           }catch(e){}
           if(callEnded){ callBusy = false; return; }
           callRemoveTyping();
           if(!text){
-            const pool = ['喂？今天怎么样呀？','喂——想我了吗？','怎么突然打电话过来啦？','喂，听得见吗？'];
+            const closePool = ['喂？今天怎么样呀？','喂——想我了吗？','怎么突然打电话过来啦？','喂，听得见吗？'];
+            const farPool = ['喂，哪位？','喂？有事吗？','……你好。','喂，我在，你说。'];
+            const pool = callTier === 'close' ? closePool : (callTier === 'normal' ? closePool.concat(farPool) : farPool);
             text = pool[Math.floor(Math.random() * pool.length)];
+            if(multi){
+              const a = callTargets[Math.floor(Math.random() * callTargets.length)];
+              const b = callTargets[Math.floor(Math.random() * callTargets.length)];
+              const line2 = '听得见吗？';
+              text = `【${a.name}】：${text}\n【${b.name}】：${line2}`;
+            }
           }
           await callAddAiText(text);
           callBusy = false;
@@ -6423,6 +6915,8 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
 
       function connectCall(){
         if(callConnected || callEnded || !callEl) return;
+        if(connectTimer){ clearTimeout(connectTimer); connectTimer = null; }
+        stopRingtone();
         callConnected = true;
         callEl.classList.add('connected');
         const statusEl = callEl.querySelector('.wc-call-status');
@@ -6444,9 +6938,12 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         if(!val) return;
         inp.value = '';
         inp.style.height = 'auto';
-        callTranscript.push({ role:'user', content: val });
+        callTranscript.push({ role:'user', content: val, ts: Date.now() });
         callAddBubble('user', val);
-        callShowTyping();
+        const typist = callTargets.length > 1
+          ? callTargets[Math.floor(Math.random() * callTargets.length)]
+          : (callTargets[0] || null);
+        callShowTyping(typist);
         callBusy = true;
         replyTimer = setTimeout(async () => {
           replyTimer = null;
@@ -6455,16 +6952,119 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           try{ text = await callAI(); }catch(e){}
           if(callEnded){ callBusy = false; return; }
           callRemoveTyping();
-          if(!text) text = '（停顿了一下）…怎么不说话了？';
+          if(!text){
+            text = callTargets.length > 1
+              ? `【${typist?.name || callTargets[0].name}】：（停顿了一下）…怎么不说话了？`
+              : '（停顿了一下）…怎么不说话了？';
+          }
           await callAddAiText(text);
           callBusy = false;
         }, 3000);
+      }
+
+      function pushCallRecord(status, direction, duration, transcript, kind){
+        const participants = callTargets.map(t => ({ name: t.name || '', avatar: t.avatar || '' })).filter(p => p.name);
+        const msg = {
+          role:'ai', type:'call',
+          kind: kind === 'video' ? 'video' : 'voice',
+          direction: direction || 'outgoing',
+          status: status,
+          duration: duration || 0,
+          transcript: Array.isArray(transcript) ? transcript : [],
+          participants: participants,
+          speakerName: callRecordName(),
+          ts: Date.now()
+        };
+        history.push(msg);
+        msg._idx = history.length - 1;
+        saveHistoryToStorage();
+        _notifyChatUpdated();
+        if(document.body.contains(msgs)){
+          msgs.scrollTop = msgs.scrollHeight;
+        }
+        return msg;
+      }
+
+      function addCallRecord(status){
+        if(callSaved) return;
+        callSaved = true;
+        const dur = callConnected ? callSeconds : 0;
+        const transcript = callTranscript
+          .filter(t => t && t.content)
+          .map(t => ({ role: t.role, content: t.content, speakerName: t.speakerName || '', ts: t.ts || Date.now() }));
+        pushCallRecord(status || (callConnected ? 'connected' : 'missed'), callDirection, dur, transcript);
+      }
+
+      function openCallRecord(m){
+        const existing = document.querySelector('.wc-callrec-mask');
+        if(existing) existing.remove();
+        const parts = Array.isArray(m.participants) && m.participants.length
+          ? m.participants
+          : [{ name: m.speakerName || displayName || chat.name, avatar: (callPartner()?.avatar || '') }];
+        const whoName = parts.length > 1 ? parts.map(p => p.name).join('、') : (parts[0].name || displayName || chat.name);
+        const trans = Array.isArray(m.transcript) ? m.transcript : [];
+        const dur = m.duration || 0;
+        const mask = document.createElement('div');
+        mask.className = 'wc-callrec-mask';
+        mask.innerHTML = `
+          <div class="wc-callrec-box">
+            <div class="wc-callrec-head">
+              <span class="wc-callrec-title">与 ${escAttr(whoName)} 的${m.kind === 'video' ? '视频' : '语音'}通话</span>
+              <button class="wc-callrec-close" aria-label="关闭">×</button>
+            </div>
+            <div class="wc-callrec-meta">
+              <span>通话时长 ${callClock(dur)}</span>
+              <button class="wc-callrec-del" aria-label="删除记录">🗑️</button>
+            </div>
+            <div class="wc-callrec-body"></div>
+          </div>`;
+        document.body.appendChild(mask);
+        const body = mask.querySelector('.wc-callrec-body');
+        if(!trans.length){
+          body.innerHTML = '<div class="wc-callrec-empty">暂无通话内容</div>';
+        } else {
+          trans.forEach(t => {
+            const isUser = t.role === 'user';
+            const speaker = isUser ? null : (parts.find(p => p.name === t.speakerName) || parts[0]);
+            const nm = isUser ? (userName || '我') : (speaker?.name || whoName);
+            const av = isUser ? (userAvatar || '') : (speaker?.avatar || '');
+            const tm = t.ts ? new Date(t.ts) : null;
+            const hhmm = tm ? `${String(tm.getHours()).padStart(2,'0')}:${String(tm.getMinutes()).padStart(2,'0')}` : '';
+            const col = colorFor(nm || '友');
+            const avatarInner = av ? `<img src="${escAttr(av)}" alt="">` : escAttr((nm || '友').charAt(0));
+            const avatarStyle = av ? '' : ` style="background:linear-gradient(135deg,${col},${shade(col,-20)})"`;
+            const row = document.createElement('div');
+            row.className = 'wc-callrec-row' + (isUser ? ' user' : '');
+            row.innerHTML = `
+              <div class="wc-callrec-avatar"${avatarStyle}>${avatarInner}</div>
+              <div class="wc-callrec-main">
+                <div class="wc-callrec-name">${escAttr(nm)}${hhmm ? '  ' + hhmm : ''}</div>
+                <div class="wc-callrec-bubble">${escAttr(t.content)}</div>
+              </div>`;
+            body.appendChild(row);
+          });
+        }
+        const close = () => {
+          mask.style.animation = 'wcFadeIn .18s ease reverse';
+          setTimeout(() => mask.remove(), 180);
+        };
+        mask.querySelector('.wc-callrec-close').addEventListener('click', close);
+        mask.addEventListener('click', e => { if(e.target === mask) close(); });
+        mask.querySelector('.wc-callrec-del').addEventListener('click', () => {
+          const idx = m._idx !== undefined ? m._idx : history.indexOf(m);
+          if(idx >= 0) history.splice(idx, 1);
+          saveHistoryToStorage();
+          _notifyChatUpdated();
+          close();
+          renderMsgs();
+        });
       }
 
       function endCall(){
         if(callEnded) return;
         callEnded = true;
         callBusy = false;
+        stopRingtone();
         if(connectTimer){ clearTimeout(connectTimer); connectTimer = null; }
         if(replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
         if(callTimer){ clearInterval(callTimer); callTimer = null; }
@@ -6472,25 +7072,120 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
 
       function hangupCall(){
         if(!callEl) return;
+        const already = callEnded;
         endCall();
-        const statusEl = callEl.querySelector('.wc-call-status');
-        if(statusEl) statusEl.textContent = '通话已结束';
+        if(!already){
+          addCallRecord(callConnected ? 'connected' : 'cancelled');
+          const statusEl = callEl.querySelector('.wc-call-status');
+          if(statusEl) statusEl.textContent = '通话已结束';
+        }
         const el = callEl;
         el.classList.remove('show');
         setTimeout(() => { if(el.parentNode) el.remove(); }, 320);
       }
 
-      function openVoiceCall(){
-        if(document.querySelector('.wc-call')) return;
+      function openCallMemberPicker(media){
+        const isVideo = media === true || media === 'video';
+        if(!isGroup){ if(isVideo) openVideoCall(); else openVoiceCall(); return; }
+        const existing = document.querySelector('.wc-callpick-mask');
+        if(existing) existing.remove();
         closePanels();
+        const list = members.filter(m => m && m.name);
+        if(!list.length){ Phone.toast('群内暂无可通话成员'); return; }
+        const picked = new Set(list.map(m => m.id));
+        const mask = document.createElement('div');
+        mask.className = 'wc-callpick-mask';
+        mask.innerHTML = `
+          <div class="wc-callpick-box">
+            <div class="wc-callpick-head">
+              <span class="wc-callpick-title">选择${isVideo ? '视频' : '通话'}成员</span>
+              <button class="wc-callpick-close" aria-label="关闭">×</button>
+            </div>
+            <div class="wc-callpick-list"></div>
+            <div class="wc-callpick-foot">
+              <button class="wc-callpick-cancel">取消</button>
+              <button class="wc-callpick-ok">发起${isVideo ? '视频' : '通话'}</button>
+            </div>
+          </div>`;
+        document.body.appendChild(mask);
+        const listEl = mask.querySelector('.wc-callpick-list');
+                const headEl = mask.querySelector('.wc-callpick-head');
+        if(headEl){
+          const titleEl = headEl.querySelector('.wc-callpick-title');
+          const rowEl = document.createElement('div');
+          rowEl.className = 'wc-callpick-title-row';
+          if(titleEl) rowEl.appendChild(titleEl);
+          const subEl = document.createElement('span');
+          subEl.className = 'wc-callpick-sub';
+          subEl.innerHTML = '已选 <b class="wc-callpick-count">' + list.length + '</b> / ' + list.length + ' 人';
+          rowEl.appendChild(subEl);
+          headEl.insertBefore(rowEl, headEl.firstChild);
+        }
+        list.forEach(m => {
+          const col = colorFor(m.name || '友');
+          const avatarInner = m.avatar
+            ? `<img src="${escAttr(m.avatar)}" alt="">`
+            : escAttr((m.name || '友').charAt(0));
+          const avatarStyle = m.avatar ? '' : ` style="background:linear-gradient(135deg,${col},${shade(col,-20)})"`;
+          const row = document.createElement('div');
+                    row.className = 'wc-callpick-row' + (picked.has(m.id) ? ' on' : '');
+          row.dataset.mid = m.id;
+          row.innerHTML = `
+            <div class="wc-callpick-avatar"${avatarStyle}>${avatarInner}</div>
+            <div class="wc-callpick-name">${escAttr(m.name)}</div>
+            <div class="wc-callpick-check${picked.has(m.id) ? ' on' : ''}"></div>`;
+          row.addEventListener('click', () => {
+            if(picked.has(m.id)) picked.delete(m.id);
+            else picked.add(m.id);
+                       const on = picked.has(m.id);
+            row.classList.toggle('on', on);
+            row.querySelector('.wc-callpick-check').classList.toggle('on', on);
+            const cntEl = mask.querySelector('.wc-callpick-count');
+            if(cntEl) cntEl.textContent = picked.size;
+          });
+          listEl.appendChild(row);
+        });
+        const close = () => {
+          mask.style.animation = 'wcFadeIn .18s ease reverse';
+          setTimeout(() => mask.remove(), 180);
+        };
+        mask.querySelector('.wc-callpick-close').addEventListener('click', close);
+        mask.querySelector('.wc-callpick-cancel').addEventListener('click', close);
+        mask.addEventListener('click', e => { if(e.target === mask) close(); });
+        mask.querySelector('.wc-callpick-ok').addEventListener('click', () => {
+          const targets = list.filter(m => picked.has(m.id));
+          if(!targets.length){ Phone.toast('请至少选择一位通话成员'); return; }
+          close();
+          setTimeout(() => {
+            if(isVideo) openVideoCall({ targets });
+            else openVoiceCall({ targets });
+          }, 60);
+        });
+      }
+
+      function openVoiceCall(opts){
+        opts = opts || {};
+        const incoming = !!opts.incoming;
+        if(document.querySelector('.wc-call') || document.querySelector('.vc-call')) return;
+        closePanels();
+        const defaultTargets = opts.targets && opts.targets.length
+          ? opts.targets.slice()
+          : (isGroup ? (members[0] ? [members[0]] : []) : (MOCK_CONTACTS.find(c => c.id === chat.contactId) ? [MOCK_CONTACTS.find(c => c.id === chat.contactId)] : []));
+        callTargets = defaultTargets.filter(t => t && t.name);
         const partner = callPartner();
         const pAvatar = partner?.avatar || '';
-        const pName = displayName;
-        const pColor = colorFor(pName || '友');
+        const multiCall = callTargets.length > 1;
+        const pName = multiCall
+          ? (chat.name || callTargets.map(t => t.name).join('、'))
+          : (isGroup ? (partner?.name || chat.name) : displayName);
+        const pColor = colorFor((partner?.name || pName) || '友');
         const avatarInner = pAvatar
           ? `<img src="${escAttr(pAvatar)}" alt="">`
           : escAttr((pName || '友').charAt(0));
         const avatarBg = pAvatar ? '' : `background:linear-gradient(135deg,${pColor},${shade(pColor,-20)})`;
+        const subLine = multiCall
+          ? `<div class="wc-call-party">${callTargets.map(t => t.name).join('、')}</div>`
+          : '';
 
         const el = document.createElement('div');
         el.className = 'wc-call';
@@ -6500,6 +7195,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           <div class="wc-call-inner">
             <div class="wc-call-header">
               <div class="wc-call-name">${escAttr(pName)}</div>
+              ${subLine}
               <div class="wc-call-status">正在等待对方接听<span class="wc-call-wait"><i></i><i></i><i></i></span></div>
             </div>
             <div class="wc-call-stage">
@@ -6533,9 +7229,17 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         callBusy = false;
         callTranscript = [];
         callSeconds = 0;
+        callDirection = incoming ? 'incoming' : 'outgoing';
+        callMedia = 'voice';
+        callSaved = false;
+        stopRingtone();
         if(connectTimer){ clearTimeout(connectTimer); connectTimer = null; }
         if(replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
         if(callTimer){ clearInterval(callTimer); callTimer = null; }
+
+        const plan = callPlan();
+        callTier = plan.tier;
+        callScore = plan.score;
 
         const bg = el.querySelector('.wc-call-bg');
         if(pAvatar) bg.style.backgroundImage = `url("${pAvatar}")`;
@@ -6549,6 +7253,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         muteBtn.addEventListener('click', () => {
           const on = muteBtn.classList.toggle('on');
           muteBtn.setAttribute('aria-label', on ? '取消静音' : '静音');
+          if(!callConnected){
+            if(on) stopRingtone();
+            else startRingtone();
+          }
         });
         const callInput = el.querySelector('.wc-call-input');
         callInput.addEventListener('input', () => {
@@ -6560,17 +7268,358 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         });
         el.querySelector('.wc-call-send').addEventListener('click', sendCallMessage);
 
-        if(!detail._callHooked){
-          detail._callHooked = true;
-          const prevRemove = detail.remove.bind(detail);
-          detail.remove = () => {
-            endCall();
-            if(callEl && callEl.parentNode) callEl.remove();
-            prevRemove();
-          };
+        if(incoming){
+          const st = el.querySelector('.wc-call-status');
+          if(st) st.textContent = '正在接通…';
+          connectTimer = setTimeout(connectCall, 650);
+          return;
         }
 
-        connectTimer = setTimeout(connectCall, 3000);
+        startRingtone();
+        if(plan.answer){
+          connectTimer = setTimeout(connectCall, plan.delay);
+          if(plan.delay > 5200){
+            setTimeout(() => {
+              if(callConnected || callEnded || !callEl) return;
+              const st = callEl.querySelector('.wc-call-status');
+              if(st) st.innerHTML = '对方迟迟没有接听<span class="wc-call-wait"><i></i><i></i><i></i></span>';
+            }, 4800);
+          }
+        } else {
+          const kind = plan.tier === 'cold' ? 'reject' : 'miss';
+          connectTimer = setTimeout(() => callNoAnswer(kind), plan.ringMs || 8000);
+        }
+      }
+
+      const VIDEO_BG_MAP = {
+        '钱锟':'kunv.mp4', 'kun':'kunv.mp4', '锟哥':'kunv.mp4', '锟':'kunv.mp4',
+        '李永钦':'tenv.mp4', 'ten':'tenv.mp4', 'ten哥':'tenv.mp4', '永钦':'tenv.mp4',
+        '肖俊':'xiaov.mp4', 'xiaojun':'xiaov.mp4', '德俊':'xiaov.mp4', '肖德俊':'xiaov.mp4',
+        '黄冠亨':'henv.mp4', 'hendery':'henv.mp4', '冠亨':'henv.mp4',
+        '刘扬扬':'yangv.mp4', 'yangyang':'yangv.mp4', '扬扬':'yangv.mp4'
+      };
+
+      function videoBgFor(list){
+        for(const t of (list || [])){
+          if(!t) continue;
+          const keys = [t.name, t.remark, t.contactName, t.remarkName]
+            .filter(Boolean)
+            .map(s => String(s).trim());
+          for(const k of keys){
+            const hit = VIDEO_BG_MAP[k] || VIDEO_BG_MAP[k.toLowerCase()];
+            if(hit) return hit;
+          }
+        }
+        return '';
+      }
+
+      function loadVideoModule(){
+        if(window.mountVideoCall) return Promise.resolve(true);
+        if(videoModuleLoading) return videoModuleLoading;
+        videoModuleLoading = (async () => {
+          try{
+            const res = await fetch('video.html?v=' + Date.now());
+            const html = await res.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            doc.querySelectorAll('style').forEach(s => {
+              const style = document.createElement('style');
+              style.textContent = s.textContent;
+              document.head.appendChild(style);
+            });
+            const scripts = doc.querySelectorAll('script');
+            for(const s of scripts){
+              const script = document.createElement('script');
+              script.textContent = s.textContent;
+              document.body.appendChild(script);
+            }
+          }catch(e){}
+          if(!window.mountVideoCall) videoModuleLoading = null;
+          return !!window.mountVideoCall;
+        })();
+        return videoModuleLoading;
+      }
+
+      function videoParseParts(text){
+        const fallbackName = callTargets.length > 1
+          ? (callPartner()?.name || callTargets[0]?.name || displayName)
+          : (callTargets[0]?.name || displayName);
+        return callParseLines(text).map(p => {
+          const member = p.member || callTargets[0] || null;
+          const name = callTargets.length > 1 ? (member?.name || fallbackName) : fallbackName;
+          const body = (callTargets.length > 1 && member?.fontType === '繁体') ? toTraditional(p.text) : p.text;
+          return { name, text: body };
+        }).filter(p => p.text);
+      }
+
+      async function videoAI(hint){
+        let text = '';
+        try{ text = await callAI(hint); }catch(e){}
+        if(!text){
+          const warm = ['喂？看得见我吗？', '怎么突然视频呀？', '喂——想我了吗？'];
+          const cold = ['喂？有事吗？', '……你好。', '喂，我在。'];
+          const pool = callTier === 'close' ? warm : (callTier === 'normal' ? warm.concat(cold) : cold);
+          text = pool[Math.floor(Math.random() * pool.length)];
+          if(callTargets.length > 1){
+            const a = callTargets[Math.floor(Math.random() * callTargets.length)];
+            text = `【${a.name}】：${text}\n【${a.name}】：看得见。`;
+          }
+        }
+        return videoParseParts(text);
+      }
+
+      async function openVideoCall(opts){
+        opts = opts || {};
+        if(videoOpening && !document.querySelector('.vc-call')){ videoOpening = false; stopRingtone(); }
+        if(videoOpening) return;
+        if(!document.body.contains(detail)) return;
+        if(document.querySelector('.wc-call') || document.querySelector('.vc-call') || document.querySelector('.wc-incoming')) return;
+        videoOpening = true;
+        closePanels();
+        const defaultTargets = opts.targets && opts.targets.length
+          ? opts.targets.slice()
+          : (isGroup ? (members[0] ? [members[0]] : []) : (MOCK_CONTACTS.find(c => c.id === chat.contactId) ? [MOCK_CONTACTS.find(c => c.id === chat.contactId)] : []));
+        callTargets = defaultTargets.filter(t => t && t.name);
+        if(!callTargets.length){ videoOpening = false; Phone.toast('暂无可通话对象'); return; }
+        const partner = callPartner();
+        const pAvatar = partner?.avatar || '';
+        const multiCall = callTargets.length > 1;
+        const pName = multiCall
+          ? (chat.name || callTargets.map(t => t.name).join('、'))
+          : (isGroup ? (partner?.name || chat.name) : displayName);
+        const pColor = colorFor((partner?.name || pName) || '友');
+        const plan = callPlan();
+        callMedia = 'video';
+        callDirection = 'outgoing';
+        callTier = plan.tier;
+        callScore = plan.score;
+        callTranscript = [];
+        videoSaved = false;
+        const openingHint = multiCall
+          ? `（这是 ${callTargets.length} 人视频通话，刚接通。请让其中 1~2 个人先开口，每条都要用【角色名】：开头。语气要符合你们的关系。）`
+          : `（视频电话接通了，你们刚开始视频通话。请你先开口说第一句话，语气要符合你们的关系。）`;
+        const ok = await loadVideoModule();
+        if(!ok){ videoOpening = false; callMedia = 'voice'; Phone.toast('视频通话加载失败'); return; }
+        if(!document.body.contains(detail)){ videoOpening = false; callMedia = 'voice'; return; }
+        const cfg = {
+          name: pName,
+          avatar: pAvatar,
+          color: pColor,
+          video: videoBgFor(callTargets),
+          userName: userName || '我',
+          userAvatar: userAvatar || '',
+          incoming: false,
+          plan,
+          targets: callTargets.map(t => ({ name: t.name || '', avatar: t.avatar || '', fontType: t.fontType || '' })),
+          transcript: callTranscript,
+          ring: { start: startRingtone, stop: stopRingtone },
+          ai: {
+            opening: () => videoAI(openingHint),
+            reply: () => videoAI()
+          },
+          onEnd: (info) => {
+            videoOpening = false;
+            callMedia = 'voice';
+            stopRingtone();
+            if(videoSaved) return;
+            videoSaved = true;
+            const status = info?.status || (info?.connected ? 'connected' : 'missed');
+            const dur = info?.connected ? (info?.seconds || 0) : 0;
+            const tr = callTranscript
+              .filter(t => t && t.content)
+              .map(t => ({ role: t.role, content: t.content, speakerName: t.speakerName || '', ts: t.ts || Date.now() }));
+            pushCallRecord(status, 'outgoing', dur, tr, 'video');
+          }
+        };
+        window.mountVideoCall(detail, cfg);
+      }
+
+      function startIncomingCall(member){
+        if(!document.body.contains(detail)) return;
+        if(document.querySelector('.wc-call') || document.querySelector('.vc-call') || document.querySelector('.wc-incoming')) return;
+        closePanels();
+        const incomingList = Array.isArray(member) ? member.filter(x => x && x.name) : (member && member.name ? [member] : []);
+        const caller = incomingList[0] || callPartner();
+        if(caller && caller.name) callTargets = incomingList.length ? incomingList : [caller];
+        const score = callCloseness();
+        callScore = score;
+        callTier = score >= 65 ? 'close' : (score >= 45 ? 'normal' : (score >= 30 ? 'far' : 'cold'));
+        const pAvatar = caller?.avatar || '';
+        const pName = callTargets.length > 1
+          ? callTargets.map(t => t.name).join('、')
+          : (isGroup ? (caller?.name || chat.name) : displayName);
+        const pColor = colorFor((caller?.name || pName) || '友');
+        const avatarInner = pAvatar
+          ? `<img src="${escAttr(pAvatar)}" alt="">`
+          : escAttr((pName || '友').charAt(0));
+        const avatarBg = pAvatar ? '' : ` style="background:linear-gradient(135deg,${pColor},${shade(pColor,-20)})"`;
+        const tipText = callTargets.length > 1 ? `${callTargets.length} 人邀请你进行语音通话…` : '邀请你进行语音通话…';
+        const el = document.createElement('div');
+        el.className = 'wc-incoming';
+        el.innerHTML = `
+          <div class="wc-incoming-inner">
+            <div class="wc-incoming-avatar"${avatarBg}>${avatarInner}</div>
+            <div class="wc-incoming-name">${escAttr(pName)}</div>
+            <div class="wc-incoming-tip">${escAttr(tipText)}</div>
+          </div>
+          <div class="wc-incoming-actions">
+            <button class="wc-incoming-btn decline" aria-label="拒绝">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            </button>
+            <button class="wc-incoming-btn accept" aria-label="接听">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            </button>
+          </div>`;
+        detail.appendChild(el);
+        requestAnimationFrame(() => el.classList.add('show'));
+        try{ startRingtone(); }catch(e){}
+        let done = false;
+        let autoTimer = null;
+        const finish = () => {
+          if(done) return false;
+          done = true;
+          if(autoTimer){ clearTimeout(autoTimer); autoTimer = null; }
+          stopRingtone();
+          el.classList.remove('show');
+          setTimeout(() => { if(el.parentNode) el.remove(); }, 280);
+          return true;
+        };
+        autoTimer = setTimeout(() => {
+          if(finish()) pushCallRecord('missed', 'incoming', 0, []);
+        }, 26000);
+        el.querySelector('.wc-incoming-btn.decline').addEventListener('click', () => {
+          if(!finish()) return;
+          pushCallRecord('declined', 'incoming', 0, []);
+          charAfterDeclinedCall();
+        });
+        el.querySelector('.wc-incoming-btn.accept').addEventListener('click', () => {
+          if(!finish()) return;
+          const targets = callTargets.slice();
+          setTimeout(() => openVoiceCall({ incoming: true, targets }), 240);
+        });
+      }
+
+      function buildDeclineCallSystem(){
+        const c = callPartner();
+        const who = isGroup ? (c?.name || chat.name) : displayName;
+        let sys = `你正在扮演「${who}」，此刻和「${userName}」在微信上聊天。\n`;
+        sys += `你刚刚主动给「${userName}」打了一通语音电话，但被对方拒绝了（没接）。\n`;
+        if(c?.roleSetting) sys += `\n【角色人设】\n${c.roleSetting}\n`;
+        if(c?.writingStyle?.length){
+          sys += `\n【说话风格参考（模仿这种语气）】\n${c.writingStyle.slice(0,12).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
+        }
+        const userPersona = cs.persona || char.persona || '';
+        if(userPersona) sys += `\n「${userName}」的人设：${userPersona}\n`;
+        try{
+          const allD = Phone.getData('wechat');
+          const cm = allD.memories?.[chatId];
+          if(cm?.core?.length) sys += `\n【核心记忆】\n${cm.core.map(m => m.content).join('\n')}\n`;
+        }catch(e){}
+        sys += `\n【现在要做的事】\n`;
+        sys += `你要在微信里接着发 2~3 条消息，追问对方为什么没接，表达疑惑、关心或撒娇（例如：怎么不接？/ 有什么事吗？/ 别生气啦）。\n`;
+        sys += `【规则】\n1. 只输出你说的话，不要写角色名，不要旁白和括号动作。\n2. 每条不超过 30 字，用 ||| 分隔。\n3. 语气必须符合你们的关系。\n`;
+        sys += `\n【你和「${userName}」的关系】${callTierText()}\n`;
+        return sys;
+      }
+
+      function charAfterDeclinedCall(retry){
+        retry = retry || 0;
+        if(isOfflineMode) return;
+        if(!document.body.contains(msgs)) return;
+        if(isReplying){
+          if(retry < 6) setTimeout(() => charAfterDeclinedCall(retry + 1), 1500);
+          return;
+        }
+        isReplying = true;
+        const t = document.createElement('div');
+        t.className = 'wc-msg typing';
+        t.innerHTML = '<div class="wc-typing-dots"><span></span><span></span><span></span></div>';
+        msgs.appendChild(t);
+        msgs.scrollTop = msgs.scrollHeight;
+
+        (async () => {
+          let text = '';
+          try{
+            const VALID_ROLES = ['system','user','assistant','tool'];
+            const messages = [{ role:'system', content: buildDeclineCallSystem() }, ...history
+              .filter(m => m.role && m.content !== undefined)
+              .map(m => ({
+                role: (() => {
+                  const raw = m.role === 'typing' ? 'user' : (m.role === 'ai' ? 'assistant' : m.role);
+                  return VALID_ROLES.includes(raw) ? raw : 'user';
+                })(),
+                content: m.type === 'image' ? (m.caption ? `[图片：${m.caption}]` : '[图片]')
+                  : (m.type === 'call' ? (m.kind === 'video' ? '[视频通话]' : '[语音通话]') : String(m.content || ''))
+              }))];
+            text = await Phone.chatWithAI(messages);
+          }catch(e){}
+          if(!document.body.contains(msgs)){ isReplying = false; return; }
+          t.remove();
+          const contact = MOCK_CONTACTS.find(c => c.id === chat.contactId);
+          const speaker = isGroup ? (callPartner()?.name || displayName) : displayName;
+          const ft = isGroup ? (callPartner()?.fontType || '') : (contact?.fontType || '');
+          let parts = String(text || '').replace(/\r/g,'').split(/\|\|\||\n+/).map(s => s.trim()).filter(Boolean);
+          if(!parts.length){
+            parts = (callScore >= 65)
+              ? ['怎么不接？', '有什么事吗？', '别生气啦，等你有空再打给我。']
+              : ['怎么不接？', '有什么事吗？', '看到回我一下。'];
+          }
+          parts = parts.slice(0, 3);
+          const toPush = parts.map((p, i) => ({
+            role:'ai',
+            content: (ft === '繁体') ? toTraditional(p) : p,
+            speakerName: speaker,
+            ts: Date.now() + i
+          }));
+          toPush.forEach(mm => history.push(mm));
+          saveHistoryToStorage();
+          let i = 0;
+          const reveal = () => {
+            if(i >= toPush.length){
+              _notifyChatUpdated();
+              isReplying = false;
+              return;
+            }
+            const mm = toPush[i];
+            mm._idx = history.indexOf(mm);
+            msgs.appendChild(renderOneMessage(mm));
+            msgs.scrollTop = msgs.scrollHeight;
+            i++;
+            setTimeout(reveal, 550 + Math.random() * 450);
+          };
+          reveal();
+        })();
+      }
+
+      function maybeCharInitiateCall(){
+        try{
+          if(isOfflineMode) return;
+          if(!document.body.contains(detail) || isReplying) return;
+          if(document.querySelector('.wc-call') || document.querySelector('.wc-incoming')) return;
+          if(!history.some(m => m.role === 'user')) return;
+          let caller = null;
+          if(isGroup){
+            const pool = members.filter(m => m && m.name);
+            if(!pool.length) return;
+            caller = pool[Math.floor(Math.random() * pool.length)];
+          }
+          aiReplyCountSinceCall++;
+          const now = Date.now();
+          if(now - lastCharCallAt < 6 * 60 * 1000) return;
+          const score = callCloseness();
+          let prob = 0.12;
+          if(score >= 65) prob = 0.3;
+          else if(score >= 45) prob = 0.2;
+          const force = aiReplyCountSinceCall >= 12;
+          if(!force && Math.random() > prob) return;
+          setTimeout(() => {
+            if(!document.body.contains(detail) || isReplying) return;
+            if(document.querySelector('.wc-call') || document.querySelector('.wc-incoming')) return;
+            if(Date.now() - lastCharCallAt < 6 * 60 * 1000) return;
+            lastCharCallAt = Date.now();
+            aiReplyCountSinceCall = 0;
+            startIncomingCall(caller || undefined);
+          }, 1600 + Math.random() * 1600);
+        }catch(e){}
       }
 
       msgs.addEventListener('click', closePanels);
@@ -6642,9 +7691,11 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         } else if(act === 'location'){
           openLocationModal();
         } else if(act === 'call'){
-          openVoiceCall();
+          if(isGroup) openCallMemberPicker();
+          else openVoiceCall();
         } else if(act === 'video'){
-          Phone.toast('视频通话功能暂未开放');
+          if(isGroup) openCallMemberPicker(true);
+          else openVideoCall();
         } else {
           Phone.showDeveloping();
         }
@@ -6934,6 +7985,19 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           Phone.setData('wechat', d);
         };
         return { get, save, add };
+      }
+
+      function _refundOutgoingTransfer(msgData){
+        if(!msgData || msgData.source !== 'self') return false;
+        if(msgData.refunded) return false;
+        const wop = _walletOp();
+        const src = 'transfer_refund_' + (msgData.msgId || msgData.ts || '');
+        const recs = wop.get().records || [];
+        if(!recs.some(r => r.source === src)){
+          wop.add('in', msgData.amount, '转账退回：' + (msgData.note || '转账'), src);
+        }
+        msgData.refunded = true;
+        return true;
       }
 
       function _avatarInitial(name){
@@ -7227,7 +8291,11 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         const canUserReject = isCharOutgoing && !isClosed;
         const canMarkClaimedByOther = isUserOutgoing && !isClosed;
         const isExpired = (msgData.ts || 0) + 24 * 3600 * 1000 < Date.now() && !isClosed;
-
+        if(isExpired && msgData.status === 'pending'){
+          msgData.status = 'rejected';
+          _refundOutgoingTransfer(msgData);
+          saveHistoryToStorage();
+        }
         const payerName = isUserOutgoing ? userName : (msgData.speakerName || chat.name);
         const payeeName = isUserOutgoing ? (msgData.toName || chat.name) : userName;
         const statusText = isExpired ? '已超时退回' : (rejected ? '已退回' : (claimed ? '已收款' : '待收款'));
@@ -7291,6 +8359,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           mask.querySelector('.wc-xfer-detail-claim-btn').addEventListener('click', () => {
             msgData.status = 'claimed';
             const wop = _walletOp();
+                       if(msgData.refunded) return;
             wop.add('in', msgData.amount, msgData.note || `来自 ${payerName} 的转账`, 'transfer_claim');
             history.push({
               role: 'user', type: 'transfer_claimed',
@@ -7337,6 +8406,11 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         const myAmt = myRecord ? myRecord.amount : 0;
         const IOpened = !!myRecord;
         const isExpired = (msgData.ts || 0) + 24 * 3600 * 1000 < Date.now() && !allOpened;
+                if(isExpired && msgData.status === 'pending'){
+          msgData.status = 'rejected';
+          _refundOutgoingTransfer(msgData);
+          saveHistoryToStorage();
+        }
         const canOpen = !isUser && !IOpened && remainCount > 0 && !isExpired;
 
         const senderName = isUser ? userName : (msgData.speakerName || chat.name);
@@ -7474,6 +8548,12 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         }
         text = text.replace(rpRandomRe, '');
 
+        const callRe = /[\[【](?:语音通话|打电话|来电|语音电话)(?:[：:]\s*([^\]】]*))?[\]】]/g;
+        while((m = callRe.exec(text)) !== null){
+          commands.push({ speakerName: defaultSpeakerName, type:'call', target: (m[1] || '').trim() });
+        }
+        text = text.replace(callRe, '');
+
         text = text.replace(/\|\|\|\|/g, '|||').replace(/^\|\|\|?/g, '').replace(/\|\|\|?$/g, '').trim();
         return { replyText: text, commands };
       }
@@ -7503,6 +8583,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               speakerName: c.speakerName,
               openList:[], ts, msgId:'rp_char_' + ts
             });
+          } else if(c.type === 'call'){
+            if(!pendingCharCall) pendingCharCall = { callers: [], ts };
+            pendingCharCall.callers.push({ speakerName: c.speakerName || '', target: c.target || '' });
           }
         });
         saveHistoryToStorage();
@@ -7561,7 +8644,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           title = '已退回'; subtitle = note || '转账说明';
           bgColor = 'linear-gradient(135deg,#fff5f5,#fee2e2)';
           iconEmoji = '↩️';
-          bodyHtml = `<div class="wc-pay-result-amount" style="color:#dc2626">- ¥${amount.toFixed(2)}</div>
+                    bodyHtml = `<div class="wc-pay-result-amount" style="color:#16a34a">+ ¥${amount.toFixed(2)}</div>
                       <div class="wc-pay-result-sub">${escAttr(otherName)} 婉拒了这笔转账，钱已退回</div>`;
         } else if(isOpen){
           title = '领取红包';
@@ -7635,7 +8718,8 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
                   p.ref.status = 'claimed';
                   changes.push({ kind:'transfer', action:'accept', amount:p.ref.amount, otherName:memberName, note:p.ref.note||'' });
                 } else if(d.action === 'decline'){
-                  p.ref.status = 'rejected';
+                                   p.ref.status = 'rejected';
+                  _refundOutgoingTransfer(p.ref);
                   changes.push({ kind:'transfer', action:'decline', amount:p.ref.amount, otherName:memberName, note:p.ref.note||'' });
                 }
               } else if(p.kind === 'redpacket'){
@@ -7939,6 +9023,14 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           sys += `2. 金额要符合人设：普通朋友<50，亲密关系可稍大(但一般不超200)，土豪人设例外。\n`;
           sys += `3. 发钱指令和对白分开写，单独占一行。\n`;
           sys += `4. 不要连续发多个红包/转账，一次最多发一个。\n`;
+          sys += `\n\n【主动打电话能力】\n`;
+          sys += `当话题到了该直接说话的时候（想念、着急、有重要的事、想听听声音、吵架后想哄人），你可以主动给 ${userName} 打语音电话。\n`;
+          sys += `- 格式：单独一行写 [语音通话]，不要加任何参数。\n`;
+          if(isGroup){
+            sys += `- 群聊里写 [语音通话] 时，就代表「你」本人要打电话；同一条回复里多人各写一次会变成多人通话。\n`;
+          }
+          sys += `- 发出后你会真的打电话过去，对方可以选择接听或拒绝；被拒绝后你会再发消息追问。\n`;
+          sys += `- 不要频繁使用，一天最多一次，只有在情绪或话题足够强烈时才用。\n`;
           if(activeWbs.length){
             sys += '\n\n【必须遵守的守则】';
             activeWbs.forEach(wb => { sys += `\n- ${wb.name}：${wb.content}`; });
@@ -7975,13 +9067,17 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
 
           const VALID_ROLES = ['system','user','assistant','tool'];
           const messages = [{ role:'system', content:sys }, ...history
-            .filter(m => m.role && m.content !== undefined)
+            .filter(m => m.role && (m.content !== undefined || m.type === 'call'))
             .map(m => ({
               role: (() => {
                 const raw = m.role === 'typing' ? 'user' : (m.role === 'ai' ? 'assistant' : m.role);
                 return VALID_ROLES.includes(raw) ? raw : 'user';
               })(),
-              content: m.type==='image' ? (m.caption?`[图片：${m.caption}]`:'[图片]') : m.content
+              content: m.type === 'call'
+                ? (m.status === 'connected'
+                    ? `[${m.kind === 'video' ? '视频' : '语音'}通话 ${callClock(m.duration || 0)}]`
+                    : `[${m.kind === 'video' ? '视频' : '语音'}通话未接通]`)
+                : (m.type==='image' ? (m.caption?`[图片：${m.caption}]`:'[图片]') : m.content)
             }))];
           const rawReply = await Phone.chatWithAI(messages);
 
@@ -8112,6 +9208,29 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               _notifyChatUpdated();
               isReplying = false;
               input.focus();
+              if(pendingCharCall){
+                const req = pendingCharCall;
+                pendingCharCall = null;
+                const callers = (req.callers || []).map(c => {
+                  if(!isGroup) return null;
+                  const byName = members.find(mm => mm.name === c.speakerName);
+                  if(byName) return byName;
+                  if(c.target) return members.find(mm => mm.name === c.target || (mm.name && c.target.includes(mm.name))) || null;
+                  return null;
+                }).filter(Boolean);
+                const callerArg = isGroup
+                  ? (callers.length ? callers : (members[0] ? [members[0]] : null))
+                  : undefined;
+                lastCharCallAt = Date.now();
+                aiReplyCountSinceCall = 0;
+                setTimeout(() => {
+                  if(!document.body.contains(detail) || isReplying) return;
+                  if(document.querySelector('.wc-call') || document.querySelector('.wc-incoming')) return;
+                  startIncomingCall(callerArg || undefined);
+                }, 1200);
+                return;
+              }
+              maybeCharInitiateCall();
               return;
             }
             msgs.appendChild(renderOneMessage(parsedMessages[idx]));

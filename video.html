@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+.vc-call{
+  position:absolute;inset:0;z-index:55;overflow:hidden;
+  background:linear-gradient(180deg,#f2fcf6 0%,#e4f7ec 45%,#d3efdf 100%);
+  color:#1b4a34;font-family:inherit;
+  opacity:0;transition:opacity .3s ease;
+}
+.vc-call.show{opacity:1;}
+.vc-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,#f4fdf8 0%,#ddf4e8 55%,#c9eeda 100%);
+  transform:scale(1.06);
+}
+.vc-bg-video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  background:#e4f7ec;opacity:0;transition:opacity .4s ease;
+}
+.vc-call.vc-video .vc-bg-video{opacity:1;}
+.vc-call.vc-video .vc-bg{animation:vcKen 22s ease-in-out infinite alternate;}
+.vc-call.vc-video .vc-bg::after{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(120% 85% at 18% -5%,rgba(255,255,255,.22) 0%,rgba(255,255,255,0) 60%),
+    radial-gradient(95% 70% at 92% 102%,rgba(174,226,196,.30) 0%,rgba(174,226,196,0) 62%);
+}
+@keyframes vcKen{from{transform:scale(1.04)}to{transform:scale(1.14)}}
+.vc-veil{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,
+    rgba(240,252,245,.62) 0%,
+    rgba(233,249,240,.30) 28%,
+    rgba(226,246,235,.44) 62%,
+    rgba(210,239,224,.80) 100%);
+}
+.vc-call.vc-video .vc-veil{
+  background:linear-gradient(180deg,
+    rgba(245,253,248,.50) 0%,
+    rgba(240,252,245,.08) 26%,
+    rgba(232,250,240,.16) 60%,
+    rgba(214,241,226,.62) 100%);
+}
+
+.vc-ring{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  padding:calc(var(--phone-w,380px)*0.10) calc(var(--phone-w,380px)*0.06) 0;
+  transition:opacity .3s ease;
+}
+.vc-ring.hide{opacity:0;pointer-events:none;}
+.vc-ring-inner{
+  flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.vc-mode{
+  flex-shrink:0;align-self:center;display:inline-flex;align-items:center;gap:5px;
+  padding:5px 12px;border-radius:999px;
+  font-size:11px;letter-spacing:.6px;color:#2d7a58;
+  background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 4px 14px rgba(46,122,84,.14);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.vc-mode svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.vc-ring-avatar-wrap{position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center;}
+.vc-ring-avatar-wrap::before{
+  content:"";position:absolute;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.92) 0%,rgba(255,255,255,.35) 45%,rgba(255,255,255,0) 70%);
+}
+.vc-ring-pulse{
+  position:absolute;width:150px;height:150px;border-radius:50%;
+  border:2px solid rgba(63,169,106,.42);animation:vcPulse 2.8s ease-out infinite;
+}
+.vc-ring-pulse.r2{animation-delay:1.4s;}
+@keyframes vcPulse{0%{transform:scale(.72);opacity:.75}75%{opacity:0}100%{transform:scale(1.7);opacity:0}}
+.vc-ring-avatar{
+  position:relative;z-index:2;width:112px;height:112px;border-radius:50%;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,#8bd8a8,#3fa96a);
+  box-shadow:0 14px 32px rgba(46,122,84,.26),0 0 0 5px rgba(255,255,255,.9),0 0 0 6px rgba(160,222,186,.5);
+  animation:vcBreath 2.6s ease-in-out infinite;
+}
+.vc-ring-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+@keyframes vcBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+.vc-ring-name{
+  margin-top:22px;font-size:20px;font-weight:700;letter-spacing:.5px;line-height:1.35;
+  max-width:82%;word-break:break-word;color:#14543a;
+  padding:3px 14px;border-radius:999px;
+  background:rgba(255,255,255,.66);
+  border:1px solid rgba(255,255,255,.92);
+  box-shadow:0 6px 18px rgba(46,122,84,.14);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.vc-ring-status{
+  margin-top:10px;font-size:13px;color:#3f8163;letter-spacing:.4px;min-height:18px;
+  padding:3px 12px;border-radius:999px;
+  background:rgba(255,255,255,.56);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.vc-dots{display:inline-flex;align-items:center;gap:4px;margin-left:5px;vertical-align:middle;}
+.vc-dots i{width:4px;height:4px;border-radius:50%;background:rgba(63,169,106,.85);display:inline-block;animation:vcDot 1.2s infinite;}
+.vc-dots i:nth-child(2){animation-delay:.2s;}
+.vc-dots i:nth-child(3){animation-delay:.4s;}
+@keyframes vcDot{0%,80%,100%{opacity:.25;transform:scale(.75)}40%{opacity:1;transform:scale(1.2)}}
+
+.vc-live{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  padding-top:calc(var(--phone-w,380px)*0.10);
+  opacity:0;pointer-events:none;transition:opacity .3s ease;
+}
+.vc-live.show{opacity:1;pointer-events:auto;}
+.vc-live-top{
+  flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  padding:0 calc(var(--phone-w,380px)*0.045);
+}
+.vc-live-meta{
+  min-width:0;padding:5px 11px;border-radius:13px;
+  background:rgba(255,255,255,.62);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 4px 14px rgba(46,122,84,.14);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.vc-live-name{
+  font-size:15px;font-weight:600;line-height:1.35;max-width:calc(var(--phone-w,380px)*0.6);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#14543a;
+}
+.vc-live-time{
+  margin-top:2px;font-size:12px;color:#3f8163;
+  font-variant-numeric:tabular-nums;letter-spacing:.5px;
+}
+.vc-self{
+  flex-shrink:0;position:relative;overflow:hidden;
+  width:calc(var(--phone-w,380px)*0.20);height:calc(var(--phone-w,380px)*0.27);
+  border-radius:12px;background:#dff3e7;
+  border:1.5px solid rgba(255,255,255,.95);
+  box-shadow:0 8px 20px rgba(46,122,84,.22),0 0 0 1px rgba(160,222,186,.55);
+}
+.vc-self-img{width:100%;height:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:700;color:#fff;transition:filter .25s ease;}
+.vc-self-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.vc-self.off .vc-self-img{filter:blur(7px) brightness(.75) saturate(.6);}
+.vc-self-label{
+  position:absolute;left:0;right:0;bottom:4px;text-align:center;
+  font-size:9px;line-height:1;color:#2d6f52;text-shadow:0 1px 0 rgba(255,255,255,.85);
+}
+
+.vc-glass{
+  flex-shrink:0;margin:auto auto 0;width:calc(100% - var(--phone-w,380px)*0.18);
+  height:calc(var(--phone-w,380px)*0.36);min-height:96px;
+  display:flex;flex-direction:column;overflow:hidden;
+  border-radius:16px;border:1px solid rgba(255,255,255,.85);
+  background:rgba(255,255,255,.52);
+  backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);
+  box-shadow:0 10px 28px rgba(46,122,84,.18),inset 0 1px 0 rgba(255,255,255,.9);
+}
+.vc-log{
+  flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;
+  padding:9px 11px 5px;-webkit-overflow-scrolling:touch;
+}
+.vc-log::-webkit-scrollbar{width:0;}
+.vc-row{display:flex;justify-content:center;animation:vcIn .26s ease both;}
+@keyframes vcIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.vc-line{
+  font-size:12px;line-height:1.5;text-align:center;color:#14543a;
+  text-shadow:0 1px 0 rgba(255,255,255,.92);
+  word-break:break-word;white-space:pre-wrap;
+}
+.vc-line .vc-spk{color:#3f8163;font-weight:600;}
+.vc-typing{display:flex;align-items:center;gap:5px;height:12px;padding:2px 0;}
+.vc-typing span{width:5px;height:5px;border-radius:50%;background:rgba(63,169,106,.55);animation:vcTyping 1.2s ease-in-out infinite;}
+.vc-typing span:nth-child(2){animation-delay:.18s;}
+.vc-typing span:nth-child(3){animation-delay:.36s;}
+@keyframes vcTyping{0%,80%,100%{transform:translateY(0);opacity:.35}40%{transform:translateY(-3px);opacity:1}}
+
+.vc-input-row{
+  flex-shrink:0;display:flex;align-items:center;gap:6px;
+  padding:6px 8px 8px;border-top:1px solid rgba(255,255,255,.7);
+}
+.vc-input{
+  flex:1;min-width:0;border:none;outline:none;border-radius:14px;
+  padding:7px 12px;font-size:12px;font-family:inherit;
+  color:#1b4a34;background:rgba(255,255,255,.88);
+  box-shadow:inset 0 1px 2px rgba(46,122,84,.1);
+}
+.vc-input::placeholder{color:rgba(63,129,99,.55);}
+.vc-input:focus{background:#fff;box-shadow:0 0 0 1.5px rgba(63,169,106,.45);}
+.vc-send{
+  flex-shrink:0;width:28px;height:28px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#68c98f,#3fa96a);color:#fff;
+  box-shadow:0 4px 12px rgba(46,122,84,.28);
+  transition:transform .12s,opacity .15s;
+}
+.vc-send:active{transform:scale(.9);}
+.vc-send:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
+.vc-send svg{width:14px;height:14px;fill:currentColor;}
+
+.vc-actions{
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  gap:calc(var(--phone-w,380px)*0.09);
+  padding:calc(var(--phone-w,380px)*0.035) 0 calc(var(--phone-w,380px)*0.06);
+}
+.vc-btn{
+  width:calc(var(--phone-w,380px)*0.18);height:calc(var(--phone-w,380px)*0.085);
+  min-width:58px;min-height:30px;
+  border-radius:999px;border:1px solid rgba(255,255,255,.9);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:#2d7a58;background:rgba(255,255,255,.72);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 6px 16px rgba(46,122,84,.16),inset 0 1px 0 rgba(255,255,255,.95);
+  transition:transform .12s,background .15s,color .15s;
+}
+.vc-btn:active{transform:scale(.94);}
+.vc-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.vc-btn.on{background:linear-gradient(135deg,#68c98f,#3fa96a);color:#fff;border-color:transparent;}
+.vc-hangup{
+  background:linear-gradient(135deg,#ff8b83,#ef4a3f);color:#fff;border-color:rgba(255,255,255,.55);
+  box-shadow:0 10px 24px rgba(226,63,54,.36);
+}
+.vc-hangup svg{transform:rotate(135deg);}
+</style>
+</head>
+<body>
+<script>
+(function(){
+  var SVG = {
+    hangup:'<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>',
+    mic:'<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>',
+    cam:'<svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>',
+    send:'<svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>'
+  };
+
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function clock(sec){
+    var m = Math.floor(sec / 60), s = sec % 60;
+    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+
+  window.mountVideoCall = function(root, cfg){
+    cfg = cfg || {};
+    var plan = cfg.plan || { answer:true, delay:1800 };
+    var targets = (cfg.targets || []).slice();
+    var multi = targets.length > 1;
+    var title = cfg.name || (targets[0] && targets[0].name) || '对方';
+    var avatar = cfg.avatar || (targets[0] && targets[0].avatar) || '';
+    var color = cfg.color || '#3fa96a';
+    var userName = cfg.userName || '我';
+    var userAvatar = cfg.userAvatar || '';
+    var transcript = cfg.transcript || [];
+    var ringApi = cfg.ring || {};
+
+    var connected = false, ended = false, busy = false, saved = false;
+    var seconds = 0;
+    var timer = null, connectTimer = null, noAnswerTimer = null, lateTimer = null, replyTimer = null;
+
+    var avatarInner = avatar ? '<img src="' + esc(avatar) + '" alt="">' : esc((title || '友').charAt(0));
+    var avatarStyle = avatar ? '' : ' style="background:linear-gradient(135deg,#8bd8a8,#3fa96a)"';
+    var selfInner = '<div class="vc-self-img"'
+      + (userAvatar ? '' : ' style="background:linear-gradient(135deg,#8bd8a8,#3fa96a)"') + '>'
+      + (userAvatar ? '<img src="' + esc(userAvatar) + '" alt="">' : esc((userName || '我').charAt(0)))
+      + '</div>';
+    var bgVideo = cfg.video || '';
+    var bgInner = bgVideo
+      ? '<video class="vc-bg-video" muted loop playsinline preload="none"></video>'
+      : '';
+
+    var el = document.createElement('div');
+    el.className = 'vc-call';
+    el.innerHTML = ''
+      + '<div class="vc-bg">' + bgInner + '</div>'
+      + '<div class="vc-veil"></div>'
+      + '<div class="vc-ring">'
+      +   '<div class="vc-mode">' + SVG.cam + '<span>视频通话</span></div>'
+      +   '<div class="vc-ring-inner">'
+      +     '<div class="vc-ring-avatar-wrap">'
+      +       '<div class="vc-ring-pulse"></div><div class="vc-ring-pulse r2"></div>'
+      +       '<div class="vc-ring-avatar"' + avatarStyle + '>' + avatarInner + '</div>'
+      +     '</div>'
+      +     '<div class="vc-ring-name">' + esc(title) + '</div>'
+      +     '<div class="vc-ring-status" data-el="ringStatus">正在等待对方接听<span class="vc-dots"><i></i><i></i><i></i></span></div>'
+      +   '</div>'
+      +   '<div class="vc-actions">'
+      +     '<button class="vc-btn vc-hangup" data-act="hangup" aria-label="挂断">' + SVG.hangup + '</button>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="vc-live">'
+      +   '<div class="vc-live-top">'
+      +     '<div class="vc-live-meta">'
+      +       '<div class="vc-live-name">' + esc(title) + '</div>'
+      +       '<div class="vc-live-time" data-el="time">00:00</div>'
+      +     '</div>'
+      +     '<div class="vc-self" data-el="self">' + selfInner + '<span class="vc-self-label" data-el="selfLabel">我</span></div>'
+      +   '</div>'
+      +   '<div class="vc-glass">'
+      +     '<div class="vc-log" data-el="log"></div>'
+      +     '<div class="vc-input-row">'
+      +       '<input class="vc-input" data-el="input" type="text" placeholder="轻声说点什么…" maxlength="200">'
+      +       '<button class="vc-send" data-act="send" aria-label="发送">' + SVG.send + '</button>'
+      +     '</div>'
+      +   '</div>'
+      +   '<div class="vc-actions">'
+      +     '<button class="vc-btn" data-act="cam" aria-label="摄像头">' + SVG.cam + '</button>'
+      +     '<button class="vc-btn" data-act="mute" aria-label="静音">' + SVG.mic + '</button>'
+      +     '<button class="vc-btn vc-hangup" data-act="hangup" aria-label="挂断">' + SVG.hangup + '</button>'
+      +   '</div>'
+      + '</div>';
+
+    root.appendChild(el);
+    requestAnimationFrame(function(){ el.classList.add('show'); });
+
+    var bgVideoEl = el.querySelector('.vc-bg-video');
+    if(bgVideoEl){
+      bgVideoEl.addEventListener('error', function(){ bgVideoEl.style.display = 'none'; });
+    }
+
+    function startBgVideo(){
+      if(!bgVideoEl || !bgVideo) return;
+      el.classList.add('vc-video');
+      bgVideoEl.src = bgVideo;
+      bgVideoEl.muted = true;
+      var playTry = bgVideoEl.play();
+      if(playTry && playTry.catch) playTry.catch(function(){});
+    }
+
+    var ringEl = el.querySelector('.vc-ring');
+    var liveEl = el.querySelector('.vc-live');
+    var ringStatusEl = el.querySelector('[data-el="ringStatus"]');
+    var avatarWrapEl = el.querySelector('.vc-ring-avatar-wrap');
+    var timeEl = el.querySelector('[data-el="time"]');
+    var logEl = el.querySelector('[data-el="log"]');
+    var inputEl = el.querySelector('[data-el="input"]');
+    var sendBtn = el.querySelector('[data-act="send"]');
+    var selfEl = el.querySelector('[data-el="self"]');
+    var selfLabel = el.querySelector('[data-el="selfLabel"]');
+
+    function startRing(){ try{ if(ringApi.start) ringApi.start(); }catch(e){} }
+    function stopRing(){ try{ if(ringApi.stop) ringApi.stop(); }catch(e){} }
+
+    function scrollLog(){ if(logEl) logEl.scrollTop = logEl.scrollHeight; }
+
+    function trimLog(){
+      if(!logEl) return;
+      while(logEl.children.length > 14){
+        logEl.removeChild(logEl.firstChild);
+      }
+    }
+
+    function addBubble(who, text, name){
+      if(who === 'user') return;
+      var row = document.createElement('div');
+      row.className = 'vc-row';
+      var spk = (multi && name) ? '<span class="vc-spk">' + esc(name) + '：</span>' : '';
+      row.innerHTML = '<div class="vc-line">' + spk + esc(text) + '</div>';
+      logEl.appendChild(row);
+      trimLog();
+      scrollLog();
+    }
+
+    function showTyping(member){
+      removeTyping();
+      var row = document.createElement('div');
+      row.className = 'vc-row vc-typing-row';
+      row.innerHTML = '<div class="vc-typing"><span></span><span></span><span></span></div>';
+      logEl.appendChild(row);
+      trimLog();
+      scrollLog();
+    }
+
+    function removeTyping(){
+      var t = logEl.querySelector('.vc-typing-row');
+      if(t) t.remove();
+    }
+
+    function pickSpeaker(){
+      if(!multi) return targets[0] || null;
+      return targets[Math.floor(Math.random() * targets.length)] || null;
+    }
+
+    function addAiParts(parts){
+      if(ended) return;
+      var list = (parts || []).filter(function(p){ return p && p.text; });
+      if(!list.length) list = [{ name: title, text: '喂？看得见吗？' }];
+      var i = 0;
+      var step = function(){
+        if(ended) return;
+        var p = list[i++];
+        addBubble('ai', p.text, p.name);
+        transcript.push({ role:'assistant', content:p.text, speakerName:p.name || title, ts:Date.now() });
+        if(i < list.length) setTimeout(step, 420);
+      };
+      step();
+    }
+
+    function clearTimers(){
+      if(timer){ clearInterval(timer); timer = null; }
+      if(connectTimer){ clearTimeout(connectTimer); connectTimer = null; }
+      if(noAnswerTimer){ clearTimeout(noAnswerTimer); noAnswerTimer = null; }
+      if(lateTimer){ clearTimeout(lateTimer); lateTimer = null; }
+      if(replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
+    }
+
+    function close(info){
+      if(ended) return;
+      ended = true;
+      clearTimers();
+      stopRing();
+      if(bgVideoEl){
+        try{ bgVideoEl.pause(); }catch(e){}
+        bgVideoEl.removeAttribute('src');
+        try{ bgVideoEl.load(); }catch(e){}
+      }
+      el.classList.remove('show');
+      setTimeout(function(){ if(el.parentNode) el.remove(); }, 320);
+      if(!saved){
+        saved = true;
+        try{ if(cfg.onEnd) cfg.onEnd(info); }catch(e){}
+      }
+    }
+
+    function connect(){
+      if(connected || ended) return;
+      if(connectTimer){ clearTimeout(connectTimer); connectTimer = null; }
+      if(lateTimer){ clearTimeout(lateTimer); lateTimer = null; }
+      stopRing();
+      connected = true;
+      startBgVideo();
+      ringEl.classList.add('hide');
+      liveEl.classList.add('show');
+      timeEl.textContent = '00:00';
+      timer = setInterval(function(){
+        if(ended) return;
+        seconds++;
+        timeEl.textContent = clock(seconds);
+      }, 1000);
+      setTimeout(function(){
+        if(ended) return;
+        busy = true;
+        showTyping(pickSpeaker());
+        Promise.resolve()
+          .then(function(){ return cfg.ai && cfg.ai.opening ? cfg.ai.opening() : null; })
+          .then(function(parts){ if(ended) return; removeTyping(); addAiParts(parts); })
+          .catch(function(){ if(ended) return; removeTyping(); addAiParts(null); })
+          .then(function(){ busy = false; });
+      }, 700);
+    }
+
+    function noAnswer(kind){
+      if(connected || ended) return;
+      stopRing();
+      if(noAnswerTimer){ clearTimeout(noAnswerTimer); noAnswerTimer = null; }
+      if(ringStatusEl) ringStatusEl.textContent = kind === 'reject' ? '对方已拒绝' : '对方无应答';
+      if(avatarWrapEl) avatarWrapEl.style.opacity = '.45';
+      setTimeout(function(){
+        close({ status: kind === 'reject' ? 'declined' : 'missed', connected:false, seconds:0 });
+      }, 1900);
+    }
+
+    function send(){
+      if(!connected || ended || busy) return;
+      var v = inputEl.value.trim();
+      if(!v) return;
+      inputEl.value = '';
+      transcript.push({ role:'user', content:v, ts:Date.now() });
+      var typist = pickSpeaker();
+      showTyping(typist);
+      busy = true;
+      replyTimer = setTimeout(function(){
+        replyTimer = null;
+        if(ended){ busy = false; return; }
+        Promise.resolve()
+          .then(function(){ return cfg.ai && cfg.ai.reply ? cfg.ai.reply(v) : null; })
+          .then(function(parts){ if(ended) return; removeTyping(); addAiParts(parts); })
+          .catch(function(){
+            if(ended) return;
+            removeTyping();
+            addAiParts([{ name: typist && typist.name ? typist.name : title, text:'（停顿了一下）…怎么不说话了？' }]);
+          })
+          .then(function(){ busy = false; });
+      }, 2600);
+    }
+
+    el.querySelectorAll('[data-act="hangup"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(connected) close({ status:'connected', connected:true, seconds:seconds });
+        else close({ status:'cancelled', connected:false, seconds:0 });
+      });
+    });
+
+    var muteBtn = el.querySelector('[data-act="mute"]');
+    muteBtn.addEventListener('click', function(){
+      var on = muteBtn.classList.toggle('on');
+      muteBtn.setAttribute('aria-label', on ? '取消静音' : '静音');
+      if(!connected){
+        if(on) stopRing();
+        else if(!ended) startRing();
+      }
+    });
+
+    var camBtn = el.querySelector('[data-act="cam"]');
+    camBtn.addEventListener('click', function(){
+      var off = camBtn.classList.toggle('on');
+      selfEl.classList.toggle('off', off);
+      selfLabel.textContent = off ? '摄像头关闭' : '我';
+    });
+
+    sendBtn.addEventListener('click', send);
+    inputEl.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){ e.preventDefault(); send(); }
+    });
+    inputEl.addEventListener('input', function(){
+      sendBtn.disabled = !inputEl.value.trim();
+    });
+    sendBtn.disabled = true;
+
+    if(cfg.incoming){
+      if(ringStatusEl) ringStatusEl.textContent = '正在接通…';
+      connectTimer = setTimeout(connect, 650);
+      return;
+    }
+
+    startRing();
+    if(plan.answer){
+      connectTimer = setTimeout(connect, plan.delay || 1800);
+      if((plan.delay || 0) > 5200){
+        lateTimer = setTimeout(function(){
+          if(connected || ended) return;
+          if(ringStatusEl) ringStatusEl.innerHTML = '对方迟迟没有接听<span class="vc-dots"><i></i><i></i><i></i></span>';
+        }, 4800);
+      }
+    } else {
+      noAnswerTimer = setTimeout(function(){
+        noAnswer(plan.tier === 'cold' ? 'reject' : 'miss');
+      }, plan.ringMs || 8000);
+    }
+  };
+})();
+</script>
+</body>
+</html>
