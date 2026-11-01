@@ -1224,7 +1224,7 @@ Phone.registerWidget({
 });
 
 Phone.registerApp({ key:'wechat', name:'微信', icon:WECHAT_ICON, colStart:3, rowStart:2, onClick: () => openChatPage() });
-Phone.registerApp({ key:'weibo', name:'微博', icon:WEIBO_ICON, colStart:4, rowStart:2, onClick: () => openSocialAppPage('weibo','微博','weiboId') });
+Phone.registerApp({ key:'weibo', name:'微博', icon:WEIBO_ICON, colStart:4, rowStart:2, onClick: () => openWeiboPage() });
 Phone.registerApp({ key:'bubble', name:'泡泡', icon:BUBBLE_ICON, colStart:3, rowStart:3, onClick: () => openSocialAppPage('bubble','泡泡','bubbleId') });
 Phone.registerApp({ key:'taobao', name:'淘宝', icon:TAOBAO_ICON, colStart:4, rowStart:3, onClick: () => openSocialAppPage('taobao','淘宝','taobaoId') });
 Phone.registerApp({ key:'couple', name:'情侣空间', icon:COUPLE_ICON, colStart:1, rowStart:4 });
@@ -1441,6 +1441,42 @@ function openChatPage(){
         }
       }catch(err){
         body.innerHTML = '<div style="padding:20px;color:var(--green-ink-soft);font-size:13px">加载微信失败：' + err.message + '</div>';
+      }
+    }
+  });
+}
+
+function openWeiboPage(){
+  Phone.openPage({
+    title: '',
+    render: async (body) => {
+      const view = body.parentElement;
+      view.querySelector('.page-header').style.display = 'none';
+      body.style.padding = '0';
+      body.style.overflow = 'hidden';
+      body.style.display = 'flex';
+      body.style.flexDirection = 'column';
+      try{
+        const res = await fetch('weibo.html?v=' + Date.now());
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        doc.querySelectorAll('style').forEach(s => {
+          const style = document.createElement('style');
+          style.textContent = s.textContent;
+          document.head.appendChild(style);
+        });
+        body.innerHTML = doc.body.innerHTML;
+        const scripts = doc.querySelectorAll('script');
+        for(const s of scripts){
+          const script = document.createElement('script');
+          script.textContent = s.textContent;
+          document.body.appendChild(script);
+        }
+        if(window.mountWeiboApp){
+          window.mountWeiboApp(body, Phone, () => view.querySelector('.page-back').click());
+        }
+      }catch(err){
+        body.innerHTML = '<div style="padding:20px;color:var(--green-ink-soft);font-size:13px">加载微博失败：' + err.message + '</div>';
       }
     }
   });
