@@ -1,0 +1,1738 @@
+  <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<style>
+.wb-app{
+  --wb-orange:#ff8200;
+  --wb-orange-deep:#ef6a00;
+  --wb-orange-soft:#ffd9b3;
+  --wb-ink:#3d2a1c;
+  --wb-ink-soft:#a08a7a;
+  --wb-line:rgba(255,196,150,.55);
+  --wb-card:rgba(255,255,255,.62);
+  display:flex;flex-direction:column;flex:1;height:0;min-height:0;
+  background:linear-gradient(180deg,#fff9f3 0%,#fff1e4 45%,#ffe8d6 100%);
+  position:relative;overflow:hidden;
+  font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  color:var(--wb-ink);
+}
+.wb-app::before{content:"";position:absolute;top:-18%;right:-25%;width:75%;height:48%;background:radial-gradient(circle,rgba(255,168,92,.35) 0%,transparent 70%);pointer-events:none;}
+.wb-app::after{content:"";position:absolute;bottom:-12%;left:-20%;width:70%;height:45%;background:radial-gradient(circle,rgba(255,214,170,.5) 0%,transparent 70%);pointer-events:none;}
+
+.wb-status-bar{height:calc(var(--phone-w,420px)*0.095 + var(--safe-top,0px));
+  padding:calc(var(--safe-top,0px) + var(--phone-w,420px)*0.015) calc(var(--phone-w,420px)*0.064) 0;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:calc(var(--phone-w,420px)*0.04);font-weight:600;color:var(--wb-ink);
+  position:relative;z-index:5;flex-shrink:0;}
+.wb-status-icons{display:flex;gap:calc(var(--phone-w,420px)*0.016);align-items:center;}
+.wb-status-icons svg{display:block;flex-shrink:0;}
+.wb-status-bar .sig-icon,.wb-status-bar .wifi-icon{width:calc(var(--phone-w,420px)*0.045);height:calc(var(--phone-w,420px)*0.045);}
+.wb-status-bar .bat-icon{width:calc(var(--phone-w,420px)*0.062);height:calc(var(--phone-w,420px)*0.034);}
+
+.wb-topbar{flex-shrink:0;min-height:46px;padding:0 14px;display:flex;align-items:center;gap:8px;position:relative;z-index:5;}
+.wb-title{position:absolute;left:50%;transform:translateX(-50%);font-size:16px;font-weight:700;color:var(--wb-ink);pointer-events:none;}
+.wb-icon-btn{width:32px;height:32px;border-radius:50%;border:none;background:#fff;color:var(--wb-orange);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;
+  transition:transform .1s,background .15s;box-shadow:0 3px 10px -4px rgba(200,110,20,.42);}
+.wb-icon-btn:active{transform:scale(.9);background:#fff4e8;color:var(--wb-orange-deep);}
+.wb-icon-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+.wb-icon-btn-plus{width:34px;height:34px;}
+.wb-icon-btn-plus svg{width:19px;height:19px;stroke-width:2.4;}
+.wb-top-actions{margin-left:auto;display:flex;gap:8px;}
+
+.wb-body{flex:1;overflow-y:auto;position:relative;z-index:2;-webkit-overflow-scrolling:touch;}
+.wb-body::-webkit-scrollbar{width:0;}
+
+.wb-segment{display:flex;justify-content:center;gap:24px;padding:6px 0 10px;}
+.wb-seg{border:none;background:none;font-family:inherit;font-size:14px;color:var(--wb-ink-soft);cursor:pointer;padding:4px 2px;position:relative;}
+.wb-seg.active{color:var(--wb-ink);font-weight:700;}
+.wb-seg.active::after{content:"";position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);width:18px;height:3px;border-radius:2px;background:var(--wb-orange);}
+
+.wb-avatar{width:38px;height:38px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:15px;background:linear-gradient(135deg,#ffc285,#ff8200);}
+.wb-avatar img{width:100%;height:100%;object-fit:cover;}
+
+.wb-post{position:relative;background:var(--wb-card);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.7);border-radius:14px;padding:12px 13px;margin:0 12px 10px;
+  box-shadow:0 4px 16px -10px rgba(190,110,40,.35);}
+.wb-post-head{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+.wb-post.is-mine .wb-post-head{padding-right:54px;}
+.wb-post-meta{flex:1;min-width:0;}
+.wb-post-name{font-size:14px;font-weight:600;display:flex;align-items:center;gap:4px;}
+.wb-vip{width:14px;height:14px;border-radius:50%;background:var(--wb-orange);color:#fff;font-size:9px;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wb-vip.v-yellow{background:linear-gradient(135deg,#ffd34d,#eaa600);}
+.wb-vip.v-gold{background:linear-gradient(135deg,#ffe9a3,#d99b16);}
+.wb-post-time{font-size:11px;color:var(--wb-ink-soft);margin-top:2px;}
+.wb-post-text{font-size:13.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;margin-bottom:8px;}
+.wb-post-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:10px;overflow:hidden;margin-bottom:8px;}
+.wb-post-img{aspect-ratio:1;overflow:hidden;background:#ffe4cc;}
+.wb-post-img img{width:100%;height:100%;object-fit:cover;}
+.wb-post-actions{display:flex;gap:8px;}
+.wb-act{flex:1;border:none;background:rgba(255,255,255,.5);border-radius:9px;padding:6px 0;font-size:12px;
+  color:var(--wb-ink-soft);font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:4px;transition:background .15s,transform .1s;}
+.wb-act:active{transform:scale(.96);}
+.wb-act.liked{color:var(--wb-orange-deep);background:rgba(255,140,60,.14);}
+.wb-act svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-act.liked svg{fill:currentColor;}
+.wb-own{width:24px;height:24px;border:none;border-radius:7px;
+  background:none;color:var(--wb-ink-soft);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;padding:0;transition:background .15s,transform .1s,color .15s;}
+.wb-own:active{transform:scale(.92);background:rgba(255,140,60,.16);color:var(--wb-orange-deep);}
+.wb-own.del:active{background:rgba(214,84,58,.18);color:#c9553f;}
+.wb-own svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-post-own{position:absolute;top:8px;right:9px;display:flex;gap:4px;z-index:2;}
+.wb-post-quote-head svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;}
+
+.wb-me-cover{position:relative;height:152px;flex-shrink:0;overflow:hidden;cursor:pointer;
+  background:linear-gradient(160deg,#ff8f2e 0%,#ffa552 28%,#ffc183 58%,#ffdcbb 82%,#fff4e8 100%);
+  background-size:cover;background-position:center;transition:background .2s;}
+.wb-me-cover.has-img::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(60,25,5,.16),rgba(60,25,5,.34));}
+.wb-me-cover::after{content:"";position:absolute;left:0;right:0;bottom:0;height:44px;
+  background:linear-gradient(180deg,transparent,rgba(255,249,243,.9));pointer-events:none;}
+.wb-cover-back{position:absolute;left:12px;top:calc(var(--safe-top,0px) + var(--phone-w,420px)*0.125);z-index:3;width:32px;height:32px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.24);color:#fff;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:transform .12s,background .15s;}
+.wb-cover-back:active{transform:scale(.92);background:rgba(255,255,255,.42);}
+.wb-cover-back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-cover-acts{position:absolute;right:12px;top:calc(var(--safe-top,0px) + var(--phone-w,420px)*0.125);display:flex;gap:10px;z-index:3;}
+.wb-cover-btn{width:32px;height:32px;border-radius:50%;border:none;
+  background:#fff;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  color:var(--wb-orange);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
+  box-shadow:0 4px 14px -6px rgba(120,60,10,.55);transition:transform .12s,background .15s,color .15s;}
+.wb-cover-btn:active{transform:scale(.92);background:#fff4e8;color:var(--wb-orange-deep);}
+.wb-cover-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-cover-plus{width:34px;height:34px;}
+.wb-cover-plus svg{width:19px;height:19px;stroke-width:2.4;}
+
+.wb-me-main{position:relative;padding:0 15px;margin-top:-44px;z-index:2;}
+.wb-me-head{display:flex;align-items:flex-end;gap:12px;}
+.wb-me-avatar{width:78px;height:78px;font-size:28px;border:3px solid #fff;flex-shrink:0;
+  box-shadow:0 6px 18px -8px rgba(190,110,40,.55);}
+.wb-me-headinfo{flex:1;min-width:0;padding-bottom:6px;}
+.wb-me-name{font-size:19px;font-weight:700;display:flex;align-items:center;gap:6px;line-height:1.35;}
+.wb-me-stats{display:flex;align-items:baseline;gap:22px;margin-top:16px;}
+.wb-me-stat{display:flex;align-items:baseline;gap:5px;}
+.wb-me-stat b{font-size:17px;font-weight:700;color:var(--wb-ink);}
+.wb-me-stat span{font-size:12px;color:var(--wb-ink-soft);}
+.wb-me-bio-row{display:flex;align-items:flex-start;gap:10px;margin-top:12px;}
+.wb-me-bio{flex:1;min-width:0;font-size:12.5px;line-height:1.6;color:var(--wb-ink-soft);word-break:break-word;}
+.wb-me-edit{flex-shrink:0;align-self:flex-end;margin-bottom:8px;width:30px;height:30px;padding:0;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  border:none;background:none;color:var(--wb-orange-deep);
+  font-family:inherit;cursor:pointer;transition:transform .12s,background .15s;}
+.wb-me-edit:active{transform:scale(.92);background:rgba(255,140,60,.12);}
+.wb-me-tabs{display:flex;align-items:center;margin:14px -15px 0;padding:0 6px;
+  border-top:1px solid var(--wb-line);}
+.wb-me-tab{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:11px 0 10px;
+  background:none;border:none;font-family:inherit;font-size:13px;color:var(--wb-ink-soft);
+  cursor:pointer;position:relative;transition:color .15s;}
+.wb-me-tab svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.85;}
+.wb-me-tab.on{color:var(--wb-ink);font-weight:700;}
+.wb-me-tab.on::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:24px;height:3px;border-radius:2px;background:var(--wb-orange);}
+.wb-me-panel{padding:10px 0 0;}
+.wb-me-empty{display:flex;flex-direction:column;align-items:center;gap:10px;
+  padding:40px 20px 34px;color:var(--wb-ink-soft);font-size:12.5px;}
+.wb-me-empty svg{width:38px;height:38px;fill:none;stroke:rgba(255,168,110,.62);stroke-width:1.4;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-me-edit svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.wb-avatar-switchable{cursor:pointer;transition:transform .12s;}
+.wb-avatar-switchable:active{transform:scale(.96);}
+.wb-app.wb-me-mode .wb-topbar{display:none;}
+.wb-app.wb-me-mode .wb-status-bar{position:absolute;left:0;right:0;top:0;z-index:6;background:none;
+  padding-top:calc(var(--safe-top,0px) + var(--phone-w,420px)*0.055);
+  color:#fff;text-shadow:0 1px 4px rgba(70,30,10,.5);}
+.wb-app.wb-me-mode .wb-status-bar .bat-icon rect:nth-child(2){fill:rgba(255,255,255,.92);}
+
+.wb-card{background:var(--wb-card);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.7);border-radius:14px;margin:0 12px 10px;overflow:hidden;
+  box-shadow:0 4px 16px -12px rgba(190,110,40,.4);}
+
+.wb-search{display:flex;align-items:center;gap:8px;margin:4px 12px 12px;padding:9px 13px;
+  background:rgba(255,255,255,.78);border-radius:20px;border:1px solid rgba(255,255,255,.8);}
+.wb-search-ico{font-size:14px;opacity:.7;}
+.wb-search input{flex:1;border:none;background:none;outline:none;font-family:inherit;font-size:13.5px;color:var(--wb-ink);min-width:0;}
+.wb-search input::placeholder{color:var(--wb-ink-soft);}
+.wb-card-head{display:flex;align-items:center;justify-content:space-between;padding:13px 14px 8px;font-size:14px;font-weight:700;}
+.wb-hot-time{font-size:11px;color:var(--wb-orange-deep);font-weight:500;background:rgba(255,140,60,.12);padding:2px 8px;border-radius:9px;}
+.wb-hot-row{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;}
+.wb-hot-row:active{background:rgba(255,200,160,.18);}
+.wb-hot-rank{width:18px;font-size:12px;font-weight:700;color:var(--wb-ink-soft);flex-shrink:0;}
+.wb-hot-rank.top{color:var(--wb-orange-deep);}
+.wb-hot-tag{flex:1;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wb-hot-heat{font-size:11px;color:var(--wb-ink-soft);flex-shrink:0;}
+.wb-topics{display:flex;flex-wrap:wrap;gap:8px;padding:4px 14px 14px;}
+.wb-topic{font-size:12px;padding:6px 12px;border-radius:14px;background:rgba(255,255,255,.8);
+  border:1px solid var(--wb-line);color:var(--wb-orange-deep);cursor:pointer;}
+.wb-topic:active{transform:scale(.96);}
+
+.wb-chat-row{display:flex;align-items:center;gap:11px;padding:11px 14px;cursor:pointer;}
+.wb-chat-row:active{background:rgba(255,200,160,.18);}
+.wb-chat-row+.wb-chat-row{border-top:1px solid var(--wb-line);}
+.wb-chat-avatar{width:44px;height:44px;font-size:17px;}
+.wb-chat-info{flex:1;min-width:0;}
+.wb-chat-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;}
+.wb-chat-name{font-size:14.5px;font-weight:600;}
+.wb-chat-time{font-size:11px;color:var(--wb-ink-soft);flex-shrink:0;}
+.wb-chat-preview{font-size:12.5px;color:var(--wb-ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wb-badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--wb-orange);color:#fff;
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+.wb-end{text-align:center;font-size:11px;color:var(--wb-ink-soft);padding:10px 0 18px;}
+
+.wb-tabbar{flex-shrink:0;display:flex;background:rgba(255,255,255,.72);
+  backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);
+  border-top:1px solid rgba(255,255,255,.7);
+  padding:6px 0 calc(env(safe-area-inset-bottom,0px) + 6px);position:relative;z-index:5;}
+.wb-tab{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:4px 0;cursor:pointer;color:var(--wb-ink-soft);font-family:inherit;transition:color .15s;}
+.wb-tab-ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.62;
+  transition:transform .18s,opacity .18s;}
+.wb-tab-label{font-size:10.5px;font-weight:500;}
+.wb-tab.active{color:var(--wb-orange-deep);}
+.wb-tab.active .wb-tab-ico{opacity:1;transform:translateY(-1px);}
+.wb-tab.active .wb-tab-label{font-weight:700;}
+
+.wb-sheet-mask{position:absolute;inset:0;z-index:30;background:rgba(60,35,15,.28);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  display:flex;align-items:flex-end;animation:wbFade .18s ease;}
+.wb-sheet{width:100%;max-height:88%;overflow-y:auto;background:rgba(255,252,248,.97);border-radius:18px 18px 0 0;
+  padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;gap:10px;animation:wbUp .25s cubic-bezier(.32,.72,0,1);}
+.wb-sheet-head{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700;}
+.wb-sheet-cancel,.wb-sheet-send{border:none;font-family:inherit;font-size:13px;padding:6px 12px;border-radius:12px;cursor:pointer;}
+.wb-sheet-cancel{background:rgba(0,0,0,.05);color:var(--wb-ink-soft);}
+.wb-sheet-send{background:var(--wb-orange);color:#fff;font-weight:600;}
+.wb-sheet-text{width:100%;height:120px;border:1px solid var(--wb-line);border-radius:12px;padding:10px 12px;
+  font-family:inherit;font-size:14px;line-height:1.6;color:var(--wb-ink);background:#fff;outline:none;resize:none;}
+.wb-sheet-text:focus{border-color:var(--wb-orange);}
+
+.wb-compose-mask{position:absolute;inset:0;z-index:30;background:rgba(60,35,15,.3);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  display:flex;align-items:flex-end;opacity:0;transition:opacity .2s ease;}
+.wb-compose-mask.show{opacity:1;}
+.wb-compose{width:100%;background:rgba(255,252,248,.98);border-radius:18px 18px 0 0;
+  padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;gap:10px;
+  transform:translateY(24px);transition:transform .22s cubic-bezier(.32,.72,0,1);}
+.wb-compose-mask.show .wb-compose{transform:translateY(0);}
+.wb-compose-head{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700;}
+.wb-compose-cancel,.wb-compose-send{border:none;font-family:inherit;font-size:13px;padding:6px 12px;border-radius:12px;cursor:pointer;}
+.wb-compose-cancel{background:rgba(0,0,0,.05);color:var(--wb-ink-soft);}
+.wb-compose-send{background:var(--wb-orange);color:#fff;font-weight:600;}
+.wb-compose-body{display:flex;gap:10px;align-items:flex-start;}
+.wb-compose-body .wb-avatar{width:36px;height:36px;font-size:14px;}
+.wb-compose{position:relative;overflow:hidden;}
+.wb-compose>*{position:relative;z-index:2;}
+.wb-compose-bg{position:absolute;inset:0;z-index:0;background-position:center;background-size:cover;
+  background-repeat:no-repeat;opacity:0;transition:opacity .2s;pointer-events:none;}
+.wb-compose.has-bg .wb-compose-bg{opacity:1;}
+.wb-compose.has-bg::before{content:"";position:absolute;inset:0;z-index:1;background:rgba(255,252,248,.72);
+  pointer-events:none;}
+.wb-compose-field textarea{position:relative;z-index:2;width:100%;height:110px;border:none;background:none;
+  outline:none;resize:none;font-family:inherit;font-size:14px;line-height:1.6;padding:0;margin:0;
+  color:transparent;-webkit-text-fill-color:transparent;caret-color:var(--wb-ink);overflow-y:auto;}
+.wb-compose-field textarea::placeholder{color:var(--wb-ink-soft);-webkit-text-fill-color:var(--wb-ink-soft);}
+.wb-compose-tools{display:flex;align-items:center;gap:8px;padding-top:8px;border-top:1px solid var(--wb-line);}
+.wb-tool{width:30px;height:30px;border:none;border-radius:9px;background:rgba(255,255,255,.8);
+  font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.wb-tool:active{transform:scale(.94);}
+.wb-tool svg{width:18px;height:18px;fill:none;stroke:var(--wb-orange-deep);stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-tool.bg-on{background:rgba(255,140,60,.18);}
+.wb-tool.diamond{margin-right:2px;}
+.wb-tool.diamond svg{stroke:#4aa3ff;}
+.wb-compose-count{margin-left:auto;font-size:11px;color:var(--wb-ink-soft);}
+.wb-compose-field{min-width:0;position:relative;}
+.wb-compose-body .wb-compose-field{flex:1;}
+.wb-compose-mirror{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;
+  font-family:inherit;font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;
+  color:var(--wb-ink);}
+.wb-hl{color:#2f80ed;}
+.wb-compose-imgs{display:none;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px;}
+.wb-compose-imgs.show{display:grid;}
+.wb-compose-img{position:relative;aspect-ratio:1;border-radius:9px;overflow:hidden;background:#ffe4cc;}
+.wb-compose-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.wb-compose-img-del{position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;
+  background:rgba(0,0,0,.55);color:#fff;font-size:12px;line-height:1;display:flex;
+  align-items:center;justify-content:center;cursor:pointer;}
+.wb-compose-imgs .wb-compose-add{aspect-ratio:1;border-radius:9px;border:1px dashed rgba(255,168,110,.75);
+  background:rgba(255,255,255,.7);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;cursor:pointer;color:var(--wb-orange-deep);font-size:10.5px;}
+.wb-compose-imgs .wb-compose-add svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-sheet-item{padding:13px 4px;font-size:14px;text-align:center;border-radius:12px;
+  background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);cursor:pointer;
+  font-family:inherit;color:var(--wb-ink);}
+.wb-sheet-item:active{background:rgba(255,214,170,.6);}
+.wb-sheet-item.danger{color:var(--wb-ink-soft);}
+.wb-sheet-list{display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow-y:auto;}
+.wb-sheet-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
+  background:rgba(255,255,255,.72);cursor:pointer;}
+.wb-sheet-row:active{background:rgba(255,214,170,.55);}
+.wb-sheet-row .wb-topic-ico{width:26px;height:26px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;background:rgba(74,163,255,.14);}
+.wb-sheet-row .wb-topic-ico svg{width:14px;height:14px;fill:none;stroke:#4aa3ff;stroke-width:1.7;
+  stroke-linejoin:round;}
+.wb-sheet-row-name{flex:1;min-width:0;font-size:13.5px;font-weight:600;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;}
+.wb-sheet-row-meta{font-size:11px;color:var(--wb-ink-soft);flex-shrink:0;}
+.wb-sheet-quote{display:flex;gap:8px;padding:10px 11px;border-radius:12px;
+  background:rgba(255,255,255,.72);border:1px solid rgba(255,196,150,.45);}
+.wb-sheet-quote .wb-avatar{width:30px;height:30px;font-size:12px;}
+.wb-sheet-quote-main{flex:1;min-width:0;}
+.wb-sheet-quote-name{font-size:12px;font-weight:600;color:var(--wb-orange-deep);margin-bottom:3px;}
+.wb-sheet-quote-text{font-size:12.5px;line-height:1.6;color:var(--wb-ink-soft);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.wb-sheet-foot{display:flex;align-items:center;gap:10px;}
+
+.wb-cover-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.wb-cover-swatch{aspect-ratio:3/2;border-radius:10px;cursor:pointer;border:2px solid transparent;
+  box-shadow:0 3px 10px -6px rgba(190,110,40,.6);transition:transform .12s,border-color .15s;}
+.wb-cover-swatch.on{border-color:var(--wb-orange);}
+.wb-cover-swatch:active{transform:scale(.95);}
+.wb-acc-list{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow-y:auto;}
+.wb-acc-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:12px;
+  background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);cursor:pointer;}
+.wb-acc-row:active{background:rgba(255,214,170,.55);}
+.wb-acc-row.on{background:rgba(255,140,60,.13);border-color:rgba(255,168,110,.7);}
+.wb-acc-avatar{width:38px;height:38px;font-size:15px;}
+.wb-acc-name{flex:1;min-width:0;font-size:13.5px;font-weight:600;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;}
+.wb-acc-tag{flex-shrink:0;font-size:10px;padding:2px 8px;border-radius:8px;
+  background:var(--wb-orange);color:#fff;font-weight:600;}
+.wb-acc-del{flex-shrink:0;border:none;font-family:inherit;font-size:11px;padding:4px 9px;
+  border-radius:9px;background:rgba(214,84,58,.1);color:#c9553f;cursor:pointer;}
+.wb-acc-del:active{background:rgba(214,84,58,.22);}
+.wb-edit-persona{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;
+  background:rgba(255,255,255,.86);border:1px solid rgba(255,180,120,.55);cursor:pointer;}
+.wb-edit-persona:active{background:rgba(255,214,170,.6);}
+.wb-edit-persona-avatar{width:30px;height:30px;font-size:12px;}
+.wb-edit-persona-txt{flex:1;min-width:0;}
+.wb-edit-persona-name{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wb-edit-persona-sub{font-size:10.5px;color:var(--wb-ink-soft);margin-top:2px;}
+.wb-edit-persona>svg{width:14px;height:14px;fill:none;stroke:var(--wb-ink-soft);stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.wb-check{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--wb-ink-soft);cursor:pointer;}
+.wb-check-box{width:16px;height:16px;border-radius:5px;border:1.5px solid rgba(255,150,80,.7);
+  background:#fff;display:flex;align-items:center;justify-content:center;}
+.wb-check.on .wb-check-box{background:var(--wb-orange);border-color:var(--wb-orange);}
+.wb-check-box svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.4;
+  stroke-linecap:round;stroke-linejoin:round;opacity:0;}
+.wb-check.on .wb-check-box svg{opacity:1;}
+.wb-post-quote{margin:0 0 8px;padding:9px 11px;border-radius:10px;
+  background:rgba(255,255,255,.66);border:1px solid rgba(255,196,150,.45);}
+.wb-post-quote-head{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;
+  color:var(--wb-orange-deep);margin-bottom:3px;}
+.wb-post-quote-text{font-size:12.5px;line-height:1.6;color:var(--wb-ink-soft);
+  white-space:pre-wrap;word-break:break-word;}
+.wb-post-quote-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:5px;border-radius:7px;overflow:hidden;}
+.wb-post-quote-imgs .wb-post-img{aspect-ratio:1;}
+.wb-txt-preview{border-radius:12px;padding:16px 14px;min-height:78px;display:flex;align-items:center;
+  justify-content:center;text-align:center;font-size:15px;line-height:1.5;font-weight:700;
+  white-space:pre-wrap;word-break:break-word;transition:background .15s,color .15s;}
+.wb-txt-colors{display:flex;align-items:center;gap:9px;padding:2px 0;}
+.wb-txt-colors-label{font-size:11.5px;color:var(--wb-ink-soft);}
+.wb-txt-color{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid rgba(255,255,255,.9);
+  box-shadow:0 2px 6px -3px rgba(120,80,40,.5);transition:transform .12s;}
+.wb-txt-color.on{transform:scale(1.12);border-color:var(--wb-orange);}
+
+.wb-edit-mask{position:absolute;inset:0;z-index:30;background:rgba(60,35,15,.3);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  display:flex;align-items:flex-end;opacity:0;transition:opacity .2s ease;}
+.wb-edit-mask.show{opacity:1;}
+.wb-edit-panel{width:100%;max-height:88%;overflow-y:auto;
+  background:linear-gradient(180deg,#fff8f1,#ffeedd);
+  border-radius:20px 20px 0 0;border-top:1px solid rgba(255,255,255,.9);
+  padding:12px 16px calc(16px + env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;gap:12px;
+  box-shadow:0 -12px 30px -18px rgba(190,110,40,.55);
+  transform:translateY(24px);transition:transform .24s cubic-bezier(.32,.72,0,1);}
+.wb-edit-mask.show .wb-edit-panel{transform:translateY(0);}
+.wb-edit-head{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700;color:var(--wb-ink);}
+.wb-edit-cancel,.wb-edit-save{border:none;font-family:inherit;font-size:12.5px;padding:6px 13px;border-radius:13px;cursor:pointer;}
+.wb-edit-cancel{background:rgba(255,140,60,.1);color:var(--wb-orange-deep);}
+.wb-edit-save{background:linear-gradient(135deg,#ffa04d,#ff7a00);color:#fff;font-weight:600;
+  box-shadow:0 4px 12px -6px rgba(255,122,0,.7);}
+.wb-edit-avatar-row{display:flex;align-items:center;gap:12px;}
+.wb-edit-avatar{width:58px;height:58px;font-size:21px;position:relative;cursor:pointer;overflow:visible;
+  box-shadow:0 4px 12px -5px rgba(200,110,20,.4);}
+.wb-edit-avatar img{border-radius:50%;}
+.wb-edit-avatar::after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:rgba(60,30,10,.28);opacity:0;transition:opacity .15s;}
+.wb-edit-avatar:active::after{opacity:1;}
+.wb-edit-avatar .wb-edit-plus{position:absolute;right:-2px;bottom:-2px;width:19px;height:19px;border-radius:50%;
+  background:linear-gradient(135deg,#ffa04d,#ff7a00);color:#fff;font-size:12px;line-height:1;
+  display:flex;align-items:center;justify-content:center;border:2px solid #fff8f1;z-index:2;}
+.wb-edit-avatar-tip{font-size:11px;color:var(--wb-ink-soft);line-height:1.6;}
+.wb-edit-avatar-tip b{display:block;font-size:12px;color:var(--wb-ink);font-weight:600;margin-bottom:2px;}
+.wb-edit-field{display:flex;flex-direction:column;gap:6px;}
+.wb-edit-label{font-size:11.5px;color:var(--wb-orange-deep);font-weight:600;letter-spacing:.2px;}
+.wb-edit-input{width:100%;border:1px solid rgba(255,180,120,.55);border-radius:12px;
+  padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--wb-ink);
+  background:rgba(255,255,255,.86);outline:none;transition:border-color .15s,box-shadow .15s;}
+.wb-edit-input:focus{border-color:var(--wb-orange);box-shadow:0 0 0 3px rgba(255,130,0,.12);}
+.wb-edit-textarea{height:84px;resize:none;line-height:1.6;}
+.wb-edit-vs{display:flex;gap:7px;}
+.wb-edit-v{flex:1;border:1px solid rgba(255,180,120,.5);border-radius:11px;background:rgba(255,255,255,.8);
+  font-family:inherit;font-size:11.5px;color:var(--wb-ink-soft);padding:8px 0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:4px;transition:all .15s;}
+.wb-edit-v .wb-vdot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:1.4px solid currentColor;}
+.wb-edit-v.on{border-color:var(--wb-orange);background:rgba(255,140,60,.13);color:var(--wb-orange-deep);font-weight:700;}
+.wb-edit-v[data-v="yellow"] .wb-vdot{color:#eaa600;}
+.wb-edit-v[data-v="orange"] .wb-vdot{color:#ff8200;}
+.wb-edit-v[data-v="gold"] .wb-vdot{color:#c99a12;}
+.wb-edit-v[data-v="yellow"].on .wb-vdot{background:#eaa600;}
+.wb-edit-v[data-v="orange"].on .wb-vdot{background:#ff8200;}
+.wb-edit-v[data-v="gold"].on .wb-vdot{background:#c99a12;}
+.wb-edit-v[data-v="none"] .wb-vdot{color:#c9b6a6;}
+
+.wb-toast{position:fixed;left:50%;bottom:12%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;
+  font-size:13px;padding:9px 16px;border-radius:10px;z-index:1000;animation:wbFade .2s ease;}
+
+@keyframes wbFade{from{opacity:0}to{opacity:1}}
+@keyframes wbUp{from{transform:translateY(30px);opacity:.6}to{transform:translateY(0);opacity:1}}
+
+body[data-wb-standalone]{margin:0;height:100vh;background:linear-gradient(135deg,#ffe9d5,#fff7f0);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;}
+body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(92vw,420px)*2.026));
+  flex:none;border-radius:32px;box-shadow:0 30px 70px -20px rgba(180,100,40,.45);}
+</style>
+</head>
+<body data-wb-standalone>
+<div class="wb-app" id="wbApp">
+  <div class="wb-status-bar">
+    <span id="wbStatusTime">00:00</span>
+    <span class="wb-status-icons" id="wbStatusIcons"></span>
+  </div>
+  <div class="wb-topbar">
+    <button class="wb-icon-btn" id="wbBackBtn" aria-label="返回">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <span class="wb-title" id="wbTopTitle">我</span>
+    <div class="wb-top-actions">
+      <button class="wb-icon-btn wb-icon-btn-plus" id="wbComposeBtn" aria-label="发微博">
+        <svg viewBox="0 0 24 24"><path d="M12 5.4v13.2M5.4 12h13.2"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="wb-body" id="wbBody"></div>
+  <div class="wb-tabbar">
+    <button class="wb-tab" data-tab="home"><svg class="wb-tab-ico" viewBox="0 0 24 24"><path d="M3.5 10.6 12 4l8.5 6.6"/><path d="M5.5 9.6V20h13V9.6"/><path d="M10 20v-5.2h4V20"/></svg><span class="wb-tab-label">首页</span></button>
+    <button class="wb-tab" data-tab="discover"><svg class="wb-tab-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.2"/><path d="M15.6 15.6 20 20"/></svg><span class="wb-tab-label">发现</span></button>
+    <button class="wb-tab" data-tab="chat"><svg class="wb-tab-ico" viewBox="0 0 24 24"><rect x="3.2" y="5.4" width="17.6" height="13.2" rx="2.4"/><path d="M4 7l8 5.6L20 7"/></svg><span class="wb-tab-label">私信</span></button>
+    <button class="wb-tab" data-tab="me"><svg class="wb-tab-ico" viewBox="0 0 24 24"><circle cx="12" cy="8.4" r="3.6"/><path d="M4.8 20c.6-3.6 3.6-5.6 7.2-5.6s6.6 2 7.2 5.6"/></svg><span class="wb-tab-label">我</span></button>
+  </div>
+</div>
+<script>
+(function(){
+  const TAB_TITLES = { home:'微博', discover:'发现', chat:'私信', me:'我' };
+
+  const VERIFY = {
+    none:{ label:'', cls:'' },
+    yellow:{ label:'黄V', cls:'v-yellow' },
+    orange:{ label:'橙V', cls:'v-orange' },
+    gold:{ label:'金V', cls:'v-gold' }
+  };
+
+  const MEMBER_NAMES = {
+    '钱锟':'威神V_钱锟_KUN',
+    '李永钦 TEN':'威神V_TEN_李永钦',
+    '肖俊':'威神V_肖俊',
+    '黄冠亨':'威神V_黄冠亨_HENDERY',
+    '刘扬扬':'威神V_扬扬_YANGYANG'
+  };
+
+  const OFFICIAL_POSTS = [
+    { id:'official1', name:'WayV_official', avatar:'wayv.jpg', vip:true, official:true, time:'1小时前',
+      text:'【WayV 官方】新专辑概念预告第一弹公开 🎬 这一次，我们把舞台搬到了更远的地方。#WayV回归#',
+      imgs:['wayv.jpg'], likes:8642, comments:412, reposts:1936, liked:false },
+    { id:'official2', name:'WayV_official', avatar:'wayv.jpg', vip:true, official:true, time:'昨天 19:30',
+      text:'【公告】本周六晚八点，全体成员将进行线上直播，记得准时来见面 🧡 #WayV直播#',
+      imgs:[], likes:5127, comments:286, reposts:864, liked:false }
+  ];
+
+  const DEFAULT_FEED = [
+    OFFICIAL_POSTS[0],
+    OFFICIAL_POSTS[1],
+    { id:'p1', name:'威神V_钱锟_KUN', avatar:'kun.jpg', vip:true, time:'12分钟前', text:'练习室的空调终于修好了，今天不用一边流汗一边跳舞了🥲', imgs:['kun.jpg'], likes:1286, comments:64, reposts:21, liked:false },
+    { id:'p2', name:'威神V_TEN_李永钦', avatar:'ten.jpg', vip:true, time:'2小时前', text:'新歌最后一段编舞改了七次，这次是真的定稿了。舞台见 🕺', imgs:['ten.jpg','wayv.jpg'], likes:3021, comments:186, reposts:74, liked:false },
+    { id:'p3', name:'威神V_肖俊', avatar:'xiaojun.jpg', vip:true, time:'5小时前', text:'深夜放毒：刚出锅的葱油拌面，有人要吃吗？', imgs:['xiaojun.jpg'], likes:968, comments:132, reposts:9, liked:false },
+    { id:'p4', name:'威神V_黄冠亨_HENDERY', avatar:'Hendery.jpg', vip:true, time:'昨天 21:40', text:'上海的秋天来得太快了，早上出门差点被冻到。', imgs:['Hendery.jpg'], likes:754, comments:41, reposts:6, liked:false },
+    { id:'p5', name:'威神V_扬扬_YANGYANG', avatar:'yangyang.jpg', vip:true, time:'昨天 18:05', text:'在录音室待了六个小时，耳朵已经不属于我了。', imgs:['yangyang.jpg'], likes:1103, comments:88, reposts:15, liked:false }
+  ];
+
+  const RECOMMEND_POOL = [
+    { id:'r1', name:'娱乐爆料君', vip:true, time:'8分钟前', text:'某男团练习室同框照流出，这个默契程度真的不是排练了八百遍吗？评论区已经吵翻了。', imgs:[], likes:4821, comments:236, reposts:118, liked:false },
+    { id:'r2', name:'追星bot', vip:false, time:'26分钟前', text:'今日舞台直拍合集已更新，需要的姐妹自取，记得点赞收藏哦～', imgs:[], likes:1936, comments:74, reposts:36, liked:false },
+    { id:'r3', name:'吃瓜少女日常', vip:true, time:'1小时前', text:'热搜那个瓜我扒了一晚上，时间线整理好了，看图说话（图九是重点）。', imgs:[], likes:6240, comments:512, reposts:302, liked:false },
+    { id:'r4', name:'娱乐圈bot', vip:true, time:'2小时前', text:'盘点今年最出圈的五个舞台现场，第一名应该没人有异议吧？', imgs:[], likes:3105, comments:189, reposts:96, liked:false },
+    { id:'r5', name:'音乐现场bot', vip:false, time:'3小时前', text:'深夜歌单推荐：一首适合单曲循环到天亮的新歌。', imgs:[], likes:1187, comments:42, reposts:18, liked:false },
+    { id:'r6', name:'时尚穿搭bot', vip:true, time:'4小时前', text:'机场穿搭解析：这一身配色真的很难不爱，普通人也可以照着穿。', imgs:[], likes:2260, comments:133, reposts:61, liked:false },
+    { id:'r7', name:'热搜观察员', vip:true, time:'5小时前', text:'今天的热搜榜有点热闹，前三名全部和同一件事有关，你怎么看？', imgs:[], likes:5402, comments:388, reposts:210, liked:false },
+    { id:'r8', name:'打榜小助手', vip:false, time:'6小时前', text:'【每日任务】今天的投票链接更新了，点进来三分钟搞定，一起冲榜！', imgs:[], likes:864, comments:36, reposts:12, liked:false },
+    { id:'r9', name:'深夜emo bot', vip:false, time:'昨天 23:40', text:'凌晨三点还醒着的人，大概都有一点心事吧。', imgs:[], likes:7620, comments:604, reposts:248, liked:false },
+    { id:'r10', name:'韩流资讯站', vip:true, time:'昨天 20:15', text:'独家：下个月回归阵容名单曝光，这次的配置真的很豪华。', imgs:[], likes:4396, comments:271, reposts:158, liked:false },
+    { id:'r11', name:'微博娱乐', vip:true, time:'昨天 16:20', text:'本周明星势力榜更新，来看看你喜欢的那个有没有上升。', imgs:[], likes:2874, comments:96, reposts:44, liked:false },
+    { id:'r12', name:'养猫bot', vip:false, time:'昨天 12:05', text:'今日份治愈：一只试图挤进小盒子的猫，失败了但很可爱。', imgs:[], likes:9130, comments:420, reposts:305, liked:false }
+  ];
+
+  const FOLLOWED_NAMES = new Set([].concat(OFFICIAL_POSTS.map(p => p.name), Object.values(MEMBER_NAMES)));
+
+  const DEFAULT_CHATS = [
+    { id:'c1', name:'威神V_钱锟_KUN', avatar:'kun.jpg', preview:'明天练习室时间改到十点，别迟到哦', time:'10:24', unread:2 },
+    { id:'c2', name:'威神V_TEN_李永钦', avatar:'ten.jpg', preview:'[图片] 这段舞你要不要试试', time:'昨天', unread:0 },
+    { id:'c3', name:'威神V_肖俊', avatar:'xiaojun.jpg', preview:'夜宵给你带了一份，放在门口了', time:'昨天', unread:1 },
+    { id:'c4', name:'WayV_official', avatar:'wayv.jpg', preview:'你关注的 WayV 发布了新微博', time:'周一', unread:0 }
+  ];
+
+  const HOT_LIST = [
+    { tag:'WayV 新专辑回归', heat:'128.6万' },
+    { tag:'练习室直拍', heat:'96.2万' },
+    { tag:'上海降温', heat:'71.4万' },
+    { tag:'秋天的第一杯奶茶', heat:'53.8万' },
+    { tag:'深夜食堂', heat:'42.1万' },
+    { tag:'钱锟 新造型', heat:'31.5万' }
+  ];
+
+  const TOPICS = ['WayV回归','每日打卡','练习室日常','舞台直拍','今日份心动'];
+
+  const SUPER_TOPICS = [
+    { name:'WayV超话', meta:'12.6万 粉丝' },
+    { name:'钱锟超话', meta:'8.4万 粉丝' },
+    { name:'李永钦超话', meta:'9.2万 粉丝' },
+    { name:'肖俊超话', meta:'6.1万 粉丝' },
+    { name:'黄冠亨超话', meta:'5.8万 粉丝' },
+    { name:'刘扬扬超话', meta:'4.3万 粉丝' }
+  ];
+
+  const COVERS = [
+    { name:'暖橙', css:'linear-gradient(160deg,#ff8f2e 0%,#ffa552 28%,#ffc183 58%,#ffdcbb 82%,#fff4e8 100%)' },
+    { name:'蜜橘', css:'linear-gradient(160deg,#ff7a22 0%,#ffa15a 30%,#ffc99b 62%,#ffe3c8 86%,#fff7ee 100%)' },
+    { name:'落日', css:'linear-gradient(160deg,#ff6a3d 0%,#ff8f5a 32%,#ffbb8a 64%,#ffdcc2 88%,#fff5ec 100%)' },
+    { name:'奶杏', css:'linear-gradient(160deg,#f6b26b 0%,#ffcf9c 34%,#ffe4c6 68%,#fff3e2 100%)' },
+    { name:'云霞', css:'linear-gradient(160deg,#ff8fae 0%,#ffb08e 40%,#ffd9b6 72%,#fff3e8 100%)' },
+    { name:'晴空', css:'linear-gradient(160deg,#7cc4ff 0%,#a8d8ff 36%,#d7edff 70%,#f4faff 100%)' }
+  ];
+
+  const ACCOUNT_FIELDS = ['name','avatar','bio','verify','persona','cover'];
+
+  const ICON = {
+    repost:'<svg viewBox="0 0 24 24"><path d="M4 9V7.5A2.5 2.5 0 0 1 6.5 5H18"/><path d="M15.4 2.4 18 5l-2.6 2.6"/><path d="M20 15v1.5a2.5 2.5 0 0 1-2.5 2.5H6"/><path d="M8.6 21.6 6 19l2.6-2.6"/></svg>',
+    comment:'<svg viewBox="0 0 24 24"><path d="M20.6 11.6a8.3 8.3 0 0 1-8.9 8.2 9 9 0 0 1-3.5-.7L4 20.4l1.3-4.4a8.1 8.1 0 0 1-.9-4.2A8.3 8.3 0 0 1 12.5 3.6a8.3 8.3 0 0 1 8.1 8z"/></svg>',
+    heart:'<svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg>',
+    img:'<svg viewBox="0 0 24 24"><rect x="3.2" y="4.4" width="17.6" height="15.2" rx="2.6"/><circle cx="8.6" cy="9.8" r="1.7"/><path d="M20.8 15.6 16.4 11a1.9 1.9 0 0 0-2.7 0L6 19.6"/></svg>',
+    bg:'<svg viewBox="0 0 24 24"><rect x="3.2" y="4.4" width="17.6" height="15.2" rx="2.6"/><path d="M3.6 8.4h16.8"/><path d="M6.6 6.4h.01M9.2 6.4h.01"/></svg>',
+    topic:'<svg viewBox="0 0 24 24"><path d="M9.4 4 7.6 20"/><path d="M16.4 4 14.6 20"/><path d="M4.6 9.2h15"/><path d="M3.8 14.8h15"/></svg>',
+    at:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.4"/><path d="M15.4 8.6v4.6a3 3 0 0 0 6 .6V12a9 9 0 1 0-3.6 7.2"/></svg>',
+    diamond:'<svg viewBox="0 0 24 24"><path d="M7.2 3.4h9.6L21 9l-9 11.6L3 9z"/><path d="M3 9h18"/><path d="M9.4 9 12 20.6 14.6 9"/><path d="M7.2 3.4 9.4 9"/><path d="M16.8 3.4 14.6 9"/></svg>',
+    edit:'<svg viewBox="0 0 24 24"><path d="M12 20h8"/><path d="M16.4 3.9a2 2 0 0 1 2.8 2.8L7.6 18.3l-3.6.8.8-3.6z"/></svg>',
+    trash:'<svg viewBox="0 0 24 24"><path d="M4 6.4h16"/><path d="M9.4 6.4V4.6a1.4 1.4 0 0 1 1.4-1.4h2.4a1.4 1.4 0 0 1 1.4 1.4v1.8"/><path d="M6.4 6.4l.9 12.1a1.9 1.9 0 0 0 1.9 1.8h5.6a1.9 1.9 0 0 0 1.9-1.8l.9-12.1"/><path d="M10.4 10.4v6M13.6 10.4v6"/></svg>'
+  };
+
+  const esc = s => String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  const hlHtml = s => esc(s).replace(/([#@])([^\s@<]+)/g, m => `<span class="wb-hl">${m}</span>`);
+
+  function avatarHtml(name, src, cls){
+    const letter = esc(String(name || '我').charAt(0));
+    if(src) return `<div class="wb-avatar ${cls || ''}"><img src="${esc(src)}" alt=""></div>`;
+    return `<div class="wb-avatar ${cls || ''}">${letter}</div>`;
+  }
+
+  function createStore(Phone){
+    const KEY = 'weibo_data';
+    let data = null;
+    const blankAccount = id => ({ id, name:'', avatar:'', bio:'', verify:'none', persona:null, cover:'' });
+    const defaults = () => ({
+      v: 5,
+      profile:{ following:6, followers:0, posts:0, name:'', avatar:'', bio:'记录生活，也记录你。', verify:'none', persona:null, cover:'' },
+      accounts:[ blankAccount('a1') ],
+      activeId:'a1',
+      feed: DEFAULT_FEED.map(p => Object.assign({}, p, { imgs:(p.imgs || []).slice() })),
+      recommend: RECOMMEND_POOL.map(p => Object.assign({}, p, { imgs:(p.imgs || []).slice() })),
+      chats: DEFAULT_CHATS.map(c => Object.assign({}, c)),
+      superTopics: SUPER_TOPICS.map(t => Object.assign({}, t))
+    });
+    function get(){
+      if(data) return data;
+      let saved = null;
+      try{
+        saved = (Phone && Phone.getData) ? Phone.getData('weibo') : JSON.parse(localStorage.getItem(KEY) || 'null');
+      }catch(e){ saved = null; }
+      if(saved && !Array.isArray(saved.feed)) saved = null;
+      data = Object.assign(defaults(), saved || {});
+      if(!Array.isArray(data.feed) || !data.feed.length) data.feed = defaults().feed;
+      if(!Array.isArray(data.chats) || !data.chats.length) data.chats = defaults().chats;
+      if(!Array.isArray(data.superTopics) || !data.superTopics.length) data.superTopics = defaults().superTopics;
+      if(!data.v || data.v < 3){
+        const base = defaults().profile;
+        const old = data.profile || {};
+        data.profile = Object.assign(base, {
+          name: old.name || '',
+          avatar: old.avatar || '',
+          bio: old.bio || base.bio,
+          verify: old.verify || 'none'
+        });
+        data.v = 3;
+      }
+      data.profile = Object.assign(defaults().profile, data.profile || {});
+      if(!Array.isArray(data.accounts) || !data.accounts.length){
+        const a = blankAccount('a1');
+        ACCOUNT_FIELDS.forEach(k => { a[k] = data.profile[k]; });
+        data.accounts = [a];
+      }
+      if(!data.activeId || !data.accounts.some(a => a.id === data.activeId)) data.activeId = data.accounts[0].id;
+      data.feed.forEach(x => { if(x.mine && !x.owner) x.owner = data.accounts[0].id; });
+      if(!data.v || data.v < 5){
+        data.feed.forEach(x => { if(MEMBER_NAMES[x.name]) x.name = MEMBER_NAMES[x.name]; });
+        data.chats.forEach(c => { if(MEMBER_NAMES[c.name]) c.name = MEMBER_NAMES[c.name]; });
+        OFFICIAL_POSTS.forEach(op => {
+          if(!data.feed.some(x => x.id === op.id)) data.feed.unshift(Object.assign({}, op, { imgs:(op.imgs || []).slice() }));
+        });
+        if(!data.profile.following) data.profile.following = 6;
+      }
+      if(!Array.isArray(data.recommend) || !data.recommend.length){
+        data.recommend = RECOMMEND_POOL.map(p => Object.assign({}, p, { imgs:(p.imgs || []).slice() }));
+      }
+      data.v = 5;
+      return data;
+    }
+    function save(){
+      if(!data) return;
+      if(Phone && Phone.setData) Phone.setData('weibo', data);
+      else { try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){} }
+    }
+    return { get, save };
+  }
+
+  function postHtml(p, me){
+    const own = (p.mine && (!p.owner || !me || p.owner === me.id)) ? me : null;
+    const name = own ? own.name : p.name;
+    const avatar = own ? own.avatar : p.avatar;
+    const vKey = own ? (own.verify || 'none') : (p.vip ? 'orange' : 'none');
+    const vipCls = vKey === 'yellow' ? ' v-yellow' : (vKey === 'gold' ? ' v-gold' : '');
+    const imgs = (p.imgs && p.imgs.length)
+      ? `<div class="wb-post-imgs">${p.imgs.map(src => `<div class="wb-post-img"><img src="${esc(src)}" alt=""></div>`).join('')}</div>`
+      : '';
+    const q = p.quote;
+    const quoteHtml = q
+      ? `<div class="wb-post-quote">
+          <div class="wb-post-quote-head">${ICON.repost}<span>@${esc(q.name)}</span></div>
+          <div class="wb-post-quote-text">${hlHtml(q.text || '')}</div>
+          ${(q.imgs && q.imgs.length) ? `<div class="wb-post-quote-imgs">${q.imgs.map(src => `<div class="wb-post-img"><img src="${esc(src)}" alt=""></div>`).join('')}</div>` : ''}
+        </div>`
+      : '';
+    const ownBtns = own
+      ? `<div class="wb-post-own">
+          <button class="wb-own" data-own="edit" type="button" aria-label="编辑">${ICON.edit}</button>
+          <button class="wb-own del" data-own="del" type="button" aria-label="删除">${ICON.trash}</button>
+        </div>`
+      : '';
+    return `<div class="wb-post${own ? ' is-mine' : ''}" data-id="${esc(p.id)}">
+      ${ownBtns}
+      <div class="wb-post-head">
+        ${avatarHtml(name, avatar)}
+        <div class="wb-post-meta">
+          <div class="wb-post-name">${esc(name)}${vKey === 'none' ? '' : `<span class="wb-vip${vipCls}">V</span>`}</div>
+          <div class="wb-post-time">${esc(p.time)} · 来自 iPhone</div>
+        </div>
+      </div>
+      <div class="wb-post-text">${hlHtml(p.text)}</div>
+      ${imgs}
+      ${quoteHtml}
+      <div class="wb-post-actions">
+        <button class="wb-act" data-act="repost">${ICON.repost}<span>${p.reposts || ''}</span></button>
+        <button class="wb-act" data-act="comment">${ICON.comment}<span>${p.comments || ''}</span></button>
+        <button class="wb-act ${p.liked ? 'liked' : ''}" data-act="like">${ICON.heart}<span>${p.likes || 0}</span></button>
+      </div>
+    </div>`;
+  }
+
+  function initStatusBar(app){
+    const timeEl = app.querySelector('#wbStatusTime');
+    const iconsEl = app.querySelector('#wbStatusIcons');
+    const SIG = '<svg class="sig-icon" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="2.4" height="4" rx="0.6"/><rect x="3.4" y="6" width="2.4" height="6" rx="0.6"/><rect x="6.8" y="4" width="2.4" height="8" rx="0.6"/><rect x="10.2" y="2" width="2.4" height="10" rx="0.6"/><rect x="13.6" y="0" width="2.4" height="12" rx="0.6"/></svg>';
+    const WIFI = '<svg class="wifi-icon" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 4.5a10 10 0 0114 0"/><path d="M3.2 7a6 6 0 019.6 0"/><path d="M5.6 9.2a2.5 2.5 0 014.8 0"/><circle cx="8" cy="11" r="0.7" fill="currentColor" stroke="none"/></svg>';
+    const BAT = '<svg class="bat-icon" viewBox="0 0 24 12"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2" y="2" width="14" height="8" rx="1.5" fill="currentColor"/><rect x="21.2" y="4" width="1.8" height="4" rx="0.6" fill="currentColor"/></svg>';
+    const tick = () => {
+      const d = new Date();
+      if(timeEl) timeEl.textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    };
+    tick();
+    const timer = setInterval(() => {
+      if(!app.isConnected){ clearInterval(timer); return; }
+      tick();
+    }, 30000);
+    if(iconsEl) iconsEl.innerHTML = SIG + WIFI + BAT;
+  }
+
+  window.mountWeiboApp = function(container, Phone, onClose){
+    const app = (container && container.querySelector && container.querySelector('#wbApp')) || document.getElementById('wbApp');
+    if(!app) return;
+    const body = app.querySelector('#wbBody');
+    const titleEl = app.querySelector('#wbTopTitle');
+    const tabs = Array.from(app.querySelectorAll('.wb-tab'));
+    const store = createStore(Phone);
+    const rawSave = store.save;
+    store.save = function(){
+      const d = store.get();
+      const acc = (d.accounts || []).find(a => a.id === d.activeId);
+      if(acc) ACCOUNT_FIELDS.forEach(k => { acc[k] = d.profile[k]; });
+      rawSave();
+    };
+    let currentTab = 'me';
+    let homeFilter = 'recommend';
+    let meTab = 'posts';
+
+    initStatusBar(app);
+
+    function toast(msg){
+      if(Phone && Phone.toast) Phone.toast(msg);
+      else {
+        const t = document.createElement('div');
+        t.className = 'wb-toast';
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 1600);
+      }
+    }
+    function meChar(){
+      try{ return (Phone && Phone.getCurrentChar) ? Phone.getCurrentChar() : null; }catch(e){ return null; }
+    }
+
+    app.querySelector('#wbBackBtn').onclick = () => { if(typeof onClose === 'function') onClose(); };
+    if(typeof onClose !== 'function') app.querySelector('#wbBackBtn').style.visibility = 'hidden';
+    app.querySelector('#wbComposeBtn').onclick = () => openCompose();
+    tabs.forEach(t => { t.onclick = () => switchTab(t.dataset.tab); });
+
+    function switchTab(tab){
+      currentTab = tab;
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      titleEl.textContent = TAB_TITLES[tab] || '微博';
+      app.classList.toggle('wb-me-mode', tab === 'me');
+      render();
+    }
+
+    function render(){
+      body.scrollTop = 0;
+      if(currentTab === 'home') renderHome();
+      else if(currentTab === 'discover') renderDiscover();
+      else if(currentTab === 'chat') renderChats();
+      else renderMe();
+    }
+
+    function bindOwnActions(el, post, refresh){
+      const editBtn = el.querySelector('[data-own="edit"]');
+      if(editBtn) editBtn.onclick = () => openCompose(post);
+      const delBtn = el.querySelector('[data-own="del"]');
+      if(delBtn) delBtn.onclick = () => {
+        if(delBtn.dataset.confirm !== '1'){
+          delBtn.dataset.confirm = '1';
+          toast('再点一次删除');
+          setTimeout(() => { delBtn.dataset.confirm = ''; }, 2500);
+          return;
+        }
+        const dd = store.get();
+        const idx = dd.feed.findIndex(x => x.id === post.id);
+        if(idx >= 0) dd.feed.splice(idx, 1);
+        dd.profile.posts = Math.max(0, (parseInt(dd.profile.posts, 10) || 0) - 1);
+        store.save();
+        toast('微博已删除');
+        refresh();
+      };
+    }
+
+    function meInfo(d){
+      const char = meChar();
+      const p = d.profile || {};
+      return {
+        id: d.activeId,
+        name: (p.name || '').trim() || ((char && char.name) || '我'),
+        avatar: p.avatar || (char && char.avatar) || '',
+        verify: VERIFY[p.verify] ? p.verify : 'none'
+      };
+    }
+
+    function findPost(d, id){
+      return d.feed.find(x => x.id === id) || (d.recommend || []).find(x => x.id === id) || null;
+    }
+
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        const t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    function isFollowed(p){
+      return !!p.mine || !!p.official || !!p.following || FOLLOWED_NAMES.has(p.name);
+    }
+
+    function recommendList(d){
+      const pool = (d.recommend && d.recommend.length) ? d.recommend : RECOMMEND_POOL;
+      return shuffle(pool).slice(0, 7);
+    }
+
+    function renderHome(){
+      const d = store.get();
+      const me = meInfo(d);
+      const list = homeFilter === 'follow' ? d.feed.filter(isFollowed) : recommendList(d);
+      body.innerHTML = `
+        <div class="wb-segment">
+          <button class="wb-seg ${homeFilter === 'follow' ? 'active' : ''}" data-filter="follow">关注</button>
+          <button class="wb-seg ${homeFilter === 'recommend' ? 'active' : ''}" data-filter="recommend">推荐</button>
+        </div>
+        ${list.length
+          ? list.map(x => postHtml(x, me)).join('') + '<div class="wb-end">已经到底啦 ~</div>'
+          : `<div class="wb-end">${homeFilter === 'follow' ? '还没有关注的微博' : '暂时没有推荐内容'}</div>`}`;
+      body.querySelectorAll('.wb-seg').forEach(b => {
+        b.onclick = () => { homeFilter = b.dataset.filter; renderHome(); };
+      });
+      body.querySelectorAll('.wb-post').forEach(el => {
+        const post = findPost(d, el.dataset.id);
+        if(!post) return;
+        el.querySelectorAll('.wb-act').forEach(btn => {
+          btn.onclick = () => {
+            const act = btn.dataset.act;
+            if(act === 'like'){
+              post.liked = !post.liked;
+              post.likes += post.liked ? 1 : -1;
+              store.save();
+              btn.classList.toggle('liked', post.liked);
+              btn.innerHTML = `${ICON.heart}<span>${post.likes}</span>`;
+            } else if(act === 'comment'){
+              toast('评论功能开发中');
+            } else {
+              openRepostSheet(post);
+            }
+          };
+        });
+        bindOwnActions(el, post, renderHome);
+      });
+    }
+
+    function renderDiscover(){
+      body.innerHTML = `
+        <div class="wb-search">
+          <span class="wb-search-ico">🔍</span>
+          <input id="wbSearchInput" placeholder="搜索微博、用户、话题">
+        </div>
+        <div class="wb-card">
+          <div class="wb-card-head"><span>微博热搜</span><span class="wb-hot-time">实时</span></div>
+          ${HOT_LIST.map((h,i) => `<div class="wb-hot-row"><span class="wb-hot-rank ${i < 3 ? 'top' : ''}">${i + 1}</span><span class="wb-hot-tag">${esc(h.tag)}</span><span class="wb-hot-heat">${esc(h.heat)}</span></div>`).join('')}
+        </div>
+        <div class="wb-card">
+          <div class="wb-card-head"><span>推荐话题</span></div>
+          <div class="wb-topics">${TOPICS.map(t => `<span class="wb-topic">#${esc(t)}#</span>`).join('')}</div>
+        </div>
+        <div class="wb-end">下拉刷新看看新鲜事</div>`;
+      const input = body.querySelector('#wbSearchInput');
+      input.addEventListener('keydown', e => {
+        if(e.key === 'Enter' && input.value.trim()) toast(`正在搜索「${input.value.trim()}」`);
+      });
+      body.querySelectorAll('.wb-hot-row').forEach(row => {
+        row.onclick = () => toast('话题页开发中');
+      });
+      body.querySelectorAll('.wb-topic').forEach(tp => {
+        tp.onclick = () => toast('话题页开发中');
+      });
+    }
+
+    function renderChats(){
+      const d = store.get();
+      body.innerHTML = `
+        <div class="wb-card" style="margin-top:6px">
+          ${d.chats.map(c => `
+            <div class="wb-chat-row" data-id="${esc(c.id)}">
+              ${avatarHtml(c.name, c.avatar, 'wb-chat-avatar')}
+              <div class="wb-chat-info">
+                <div class="wb-chat-top"><span class="wb-chat-name">${esc(c.name)}</span><span class="wb-chat-time">${esc(c.time)}</span></div>
+                <div class="wb-chat-preview">${esc(c.preview)}</div>
+              </div>
+              ${c.unread ? `<span class="wb-badge">${esc(c.unread)}</span>` : ''}
+            </div>`).join('')}
+        </div>
+        <div class="wb-end">私信 · 和喜欢的人聊聊天</div>`;
+      body.querySelectorAll('.wb-chat-row').forEach(row => {
+        row.onclick = () => toast('私信对话开发中');
+      });
+    }
+
+    function renderMe(){
+      const keepTop = body.scrollTop;
+      const char = meChar();
+      const d = store.get();
+      const p = d.profile;
+      const charName = (char && char.name) || '我';
+      const charAvatar = (char && char.avatar) || '';
+      const name = (p.name || '').trim() || charName;
+      const avatar = p.avatar || charAvatar;
+      const bio = (p.bio || '').trim();
+      const vKey = VERIFY[p.verify] ? p.verify : 'none';
+      const vipCls = vKey === 'yellow' ? ' v-yellow' : (vKey === 'gold' ? ' v-gold' : '');
+      const coverVal = p.cover || '';
+      const coverIsImg = coverVal.indexOf('data:') === 0;
+      const coverCss = (!coverIsImg && coverVal) ? (COVERS[parseInt(coverVal.slice(2), 10)] || COVERS[0]).css : '';
+      const coverAttr = coverIsImg ? ` style="background-image:url('${esc(coverVal)}')"` : (coverCss ? ` style="background:${coverCss}"` : '');
+      const mine = d.feed.filter(x => x.mine && x.owner === d.activeId);
+      const zzp = mine.reduce((a, x) => a + (x.likes || 0) + (x.comments || 0) + (x.reposts || 0), 0);
+      const backBtn = typeof onClose === 'function'
+        ? `<button class="wb-cover-back" id="wbMeBack" type="button" aria-label="返回"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>`
+        : '';
+      body.innerHTML = `
+        <div class="wb-me-cover${coverIsImg ? ' has-img' : ''}" id="wbMeCover"${coverAttr}>
+          ${backBtn}
+          <div class="wb-cover-acts">
+            <button class="wb-cover-btn wb-cover-plus" id="wbMePlus" type="button" aria-label="发微博">
+              <svg viewBox="0 0 24 24"><path d="M12 5.4v13.2M5.4 12h13.2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="wb-me-main">
+          <div class="wb-me-head">
+            ${avatarHtml(name, avatar, 'wb-me-avatar')}
+            <div class="wb-me-headinfo">
+              <div class="wb-me-name">${esc(name)}${vKey === 'none' ? '' : `<span class="wb-vip${vipCls}">V</span>`}</div>
+            </div>
+            <button class="wb-me-edit" id="wbEditBtn" type="button" aria-label="编辑资料">
+              <svg viewBox="0 0 24 24"><path d="M12 20h8"/><path d="M16.4 3.9a2 2 0 0 1 2.8 2.8L7.6 18.3l-3.6.8.8-3.6z"/></svg>
+            </button>
+          </div>
+          <div class="wb-me-stats">
+            <div class="wb-me-stat"><b>${esc(p.followers)}</b><span>粉丝</span></div>
+            <div class="wb-me-stat"><b>${esc(p.following)}</b><span>关注</span></div>
+            <div class="wb-me-stat"><b>${zzp}</b><span>转赞评</span></div>
+          </div>
+          <div class="wb-me-bio-row">
+            <div class="wb-me-bio">${bio ? esc(bio) : '还没有简介'}</div>
+          </div>
+          <div class="wb-me-tabs">
+            <button class="wb-me-tab ${meTab === 'posts' ? 'on' : ''}" data-tab="posts" type="button">
+              <svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2.2"/><path d="M8 8.6h8M8 12.6h8M8 16.6h4.6"/></svg><span>微博</span>
+            </button>
+            <button class="wb-me-tab ${meTab === 'album' ? 'on' : ''}" data-tab="album" type="button">
+              <svg viewBox="0 0 24 24"><rect x="3.2" y="3.6" width="17.6" height="16.8" rx="2.4"/><circle cx="8.8" cy="9.2" r="1.8"/><path d="M20.8 15.2l-4.2-4.2a1.9 1.9 0 0 0-2.7 0L6.4 19.6"/></svg><span>相册</span>
+            </button>
+            <button class="wb-me-tab ${meTab === 'likes' ? 'on' : ''}" data-tab="likes" type="button">
+              <svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg><span>赞过</span>
+            </button>
+            <button class="wb-me-tab ${meTab === 'draft' ? 'on' : ''}" data-tab="draft" type="button">
+              <svg viewBox="0 0 24 24"><path d="M3.6 6.2h5.2l1.9 2.6h9.7v10.4H3.6z"/><path d="M3.6 9.6h16.8"/></svg><span>草稿箱</span>
+            </button>
+          </div>
+        </div>
+        <div class="wb-me-panel" id="wbMePanel"></div>
+        <div class="wb-end">微博 · 记录每一个瞬间</div>`;
+
+      body.querySelector('#wbEditBtn').onclick = openEditSheet;
+      const meAvatarEl = body.querySelector('.wb-me-avatar');
+      if(meAvatarEl){
+        meAvatarEl.classList.add('wb-avatar-switchable');
+        meAvatarEl.onclick = openAccountSheet;
+      }
+      const coverEl = body.querySelector('#wbMeCover');
+      if(coverEl) coverEl.onclick = e => {
+        if(e.target.closest('.wb-cover-back,.wb-cover-acts')) return;
+        openCoverSheet();
+      };
+      body.querySelector('#wbMePlus').onclick = () => openCompose();
+      const backEl = body.querySelector('#wbMeBack');
+      if(backEl) backEl.onclick = () => { if(typeof onClose === 'function') onClose(); };
+      body.querySelectorAll('.wb-me-tab').forEach(t => {
+        t.onclick = () => { meTab = t.dataset.tab; renderMe(); };
+      });
+      renderMePanel(mine);
+      body.scrollTop = keepTop;
+    }
+
+    function meEmpty(svg, text){
+      return `<div class="wb-me-empty">${svg}<span>${text}</span></div>`;
+    }
+
+    function renderMePanel(mine){
+      const panel = body.querySelector('#wbMePanel');
+      if(!panel) return;
+      if(meTab === 'album'){
+        const imgs = [];
+        mine.forEach(x => (x.imgs || []).forEach(src => imgs.push(src)));
+        if(!imgs.length){
+          panel.innerHTML = meEmpty('<svg viewBox="0 0 24 24"><rect x="3.2" y="3.6" width="17.6" height="16.8" rx="2.4"/><circle cx="8.8" cy="9.2" r="1.8"/><path d="M20.8 15.2l-4.2-4.2a1.9 1.9 0 0 0-2.7 0L6.4 19.6"/></svg>', '还没有照片，发微博时带上图片吧');
+          return;
+        }
+        panel.innerHTML = `<div class="wb-post-imgs" style="margin:0 12px 10px;">${imgs.map(src => `<div class="wb-post-img"><img src="${esc(src)}" alt=""></div>`).join('')}</div>`;
+        return;
+      }
+      if(meTab === 'draft'){
+        panel.innerHTML = meEmpty('<svg viewBox="0 0 24 24"><path d="M3.6 6.2h5.2l1.9 2.6h9.7v10.4H3.6z"/><path d="M3.6 9.6h16.8"/></svg>', '草稿箱是空的');
+        return;
+      }
+      const list = meTab === 'likes' ? store.get().feed.filter(x => x.liked) : mine;
+      if(!list.length){
+        panel.innerHTML = meTab === 'likes'
+          ? meEmpty('<svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg>', '还没有赞过任何微博')
+          : meEmpty('<svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2.2"/><path d="M8 8.6h8M8 12.6h8M8 16.6h4.6"/></svg>', '还没有发过微博，点右上角 + 试试');
+        return;
+      }
+      const d = store.get();
+      panel.innerHTML = list.map(x => postHtml(x, meInfo(d))).join('');
+      panel.querySelectorAll('.wb-post').forEach(el => {
+        const post = d.feed.find(x => x.id === el.dataset.id);
+        if(!post) return;
+        el.querySelectorAll('.wb-act').forEach(btn => {
+          btn.onclick = () => {
+            const act = btn.dataset.act;
+            if(act === 'like'){
+              post.liked = !post.liked;
+              post.likes = Math.max(0, (post.likes || 0) + (post.liked ? 1 : -1));
+              store.save();
+              renderMe();
+            } else if(act === 'comment'){
+              toast('评论功能开发中');
+            } else {
+              openRepostSheet(post);
+            }
+          };
+        });
+        bindOwnActions(el, post, renderMe);
+      });
+    }
+
+    function toDataUrl(file){
+      if(Phone && Phone.fileToBase64) return Phone.fileToBase64(file);
+      return new Promise((res, rej) => {
+        const rd = new FileReader();
+        rd.onload = () => res(rd.result);
+        rd.onerror = rej;
+        rd.readAsDataURL(file);
+      });
+    }
+
+    function openEditSheet(){
+      const char = meChar();
+      const p = store.get().profile;
+      const charName = (char && char.name) || '我';
+      const curName = (p.name || '').trim() || charName;
+      const bio = (p.bio || '').trim();
+      const curVerify = VERIFY[p.verify] ? p.verify : 'none';
+      let pickedAvatar = p.avatar || '';
+      let pickedPersona = (p.persona && p.persona.name)
+        ? { id: p.persona.id || '', name: p.persona.name, avatar: p.persona.avatar || '' }
+        : null;
+      const personaRow = ps => ps
+        ? `${avatarHtml(ps.name, ps.avatar, 'wb-edit-persona-avatar')}<div class="wb-edit-persona-txt"><div class="wb-edit-persona-name">${esc(ps.name)}</div><div class="wb-edit-persona-sub">已绑定 · 点击可更换</div></div><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>`
+        : `<div class="wb-avatar wb-edit-persona-avatar">?</div><div class="wb-edit-persona-txt"><div class="wb-edit-persona-name">未绑定人设</div><div class="wb-edit-persona-sub">选择一个角色，让微博更有代入感</div></div><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>`;
+
+      const mask = document.createElement('div');
+      mask.className = 'wb-edit-mask';
+      const vsBtn = k => `<button class="wb-edit-v ${curVerify === k ? 'on' : ''}" data-v="${k}" type="button"><span class="wb-vdot"></span>${k === 'none' ? '无认证' : VERIFY[k].label}</button>`;
+      mask.innerHTML = `
+        <div class="wb-edit-panel">
+          <div class="wb-edit-head">
+            <button class="wb-edit-cancel" type="button">取消</button>
+            <span>编辑资料</span>
+            <button class="wb-edit-save" type="button">保存</button>
+          </div>
+          <div class="wb-edit-avatar-row">
+            <div class="wb-avatar wb-edit-avatar" id="wbEditAvatar">${pickedAvatar ? `<img src="${esc(pickedAvatar)}" alt="">` : esc(String(curName).charAt(0))}<span class="wb-edit-plus">+</span></div>
+            <div class="wb-edit-avatar-tip"><b>点击更换头像</b>支持上传本地图片，点击即可选择</div>
+          </div>
+          <div class="wb-edit-field">
+            <div class="wb-edit-label">昵称</div>
+            <input class="wb-edit-input" id="wbEditName" maxlength="20" value="${esc(curName)}" placeholder="给自己取个名字">
+          </div>
+          <div class="wb-edit-field">
+            <div class="wb-edit-label">微博认证</div>
+            <div class="wb-edit-vs" id="wbEditVs">
+              ${vsBtn('none')}${vsBtn('yellow')}${vsBtn('orange')}${vsBtn('gold')}
+            </div>
+          </div>
+          <div class="wb-edit-field">
+            <div class="wb-edit-label">绑定人设</div>
+            <div class="wb-edit-persona" id="wbEditPersona">${personaRow(pickedPersona)}</div>
+          </div>
+          <div class="wb-edit-field">
+            <div class="wb-edit-label">简介</div>
+            <textarea class="wb-edit-input wb-edit-textarea" id="wbEditBio" maxlength="80" placeholder="介绍一下自己吧">${esc(bio)}</textarea>
+          </div>
+          <input type="file" accept="image/*" id="wbEditFile" style="display:none">
+        </div>`;
+      app.appendChild(mask);
+      requestAnimationFrame(() => mask.classList.add('show'));
+
+      const close = () => {
+        mask.classList.remove('show');
+        setTimeout(() => mask.remove(), 220);
+      };
+
+      const avatarEl = mask.querySelector('#wbEditAvatar');
+      const fileEl = mask.querySelector('#wbEditFile');
+      avatarEl.onclick = () => fileEl.click();
+      fileEl.onchange = async () => {
+        const f = fileEl.files && fileEl.files[0];
+        if(!f) return;
+        try{
+          pickedAvatar = await toDataUrl(f);
+          avatarEl.innerHTML = `<img src="${esc(pickedAvatar)}" alt=""><span class="wb-edit-plus">+</span>`;
+        }catch(e){ toast('头像读取失败'); }
+        fileEl.value = '';
+      };
+
+      mask.querySelector('#wbEditPersona').onclick = () => {
+        openPersonaSheet(pickedPersona ? pickedPersona.id : '', ps => {
+          pickedPersona = ps;
+          mask.querySelector('#wbEditPersona').innerHTML = personaRow(ps);
+        });
+      };
+
+      mask.querySelectorAll('.wb-edit-v').forEach(btn => {
+        btn.onclick = () => {
+          mask.querySelectorAll('.wb-edit-v').forEach(b => b.classList.remove('on'));
+          btn.classList.add('on');
+        };
+      });
+
+      mask.querySelector('.wb-edit-cancel').onclick = close;
+      mask.onclick = e => { if(e.target === mask) close(); };
+
+      mask.querySelector('.wb-edit-save').onclick = () => {
+        const nameVal = (mask.querySelector('#wbEditName').value || '').trim();
+        const bioVal = (mask.querySelector('#wbEditBio').value || '').trim();
+        const onV = mask.querySelector('.wb-edit-v.on');
+        const d = store.get();
+        d.profile.name = nameVal;
+        d.profile.bio = bioVal;
+        d.profile.avatar = pickedAvatar || '';
+        d.profile.verify = onV ? onV.dataset.v : 'none';
+        d.profile.persona = pickedPersona;
+        store.save();
+        close();
+        renderMe();
+        toast('资料已更新');
+      };
+    }
+
+    function loadAccount(id){
+      const d = store.get();
+      const acc = (d.accounts || []).find(a => a.id === id);
+      if(!acc) return false;
+      store.save();
+      d.activeId = id;
+      ACCOUNT_FIELDS.forEach(k => { d.profile[k] = acc[k]; });
+      store.save();
+      return true;
+    }
+
+    function deleteAccount(id){
+      const d = store.get();
+      if((d.accounts || []).length <= 1){ toast('至少保留一个账号'); return; }
+      const idx = d.accounts.findIndex(a => a.id === id);
+      if(idx < 0) return;
+      const wasActive = d.activeId === id;
+      d.accounts.splice(idx, 1);
+      if(wasActive){
+        d.activeId = d.accounts[0].id;
+        ACCOUNT_FIELDS.forEach(k => { d.profile[k] = d.accounts[0][k]; });
+      }
+      store.save();
+      meTab = 'posts';
+      renderMe();
+      toast('账号已注销');
+    }
+
+    function openAddAccountSheet(){
+      const s = openSheet(`
+        <div class="wb-sheet-head"><span>新增账号</span></div>
+        <input class="wb-edit-input" id="wbAccName" maxlength="20" placeholder="给新账号取个昵称">
+        <div class="wb-edit-avatar-tip"><b>小号</b>创建后会立即切换到该账号，资料与微博独立</div>
+        <div class="wb-sheet-foot">
+          <button class="wb-sheet-item" data-act="cancel" type="button" style="flex:1;">取消</button>
+          <button class="wb-sheet-item" data-act="create" type="button" style="flex:1;color:var(--wb-orange-deep);font-weight:700;">创建</button>
+        </div>`);
+      const input = s.mask.querySelector('#wbAccName');
+      const create = () => {
+        const nameVal = (input.value || '').trim();
+        if(!nameVal){ toast('请输入昵称'); return; }
+        const d = store.get();
+        store.save();
+        const acc = { id:'a' + Date.now(), name:nameVal, avatar:'', bio:'', verify:'none', persona:null, cover:'' };
+        d.accounts.push(acc);
+        d.activeId = acc.id;
+        ACCOUNT_FIELDS.forEach(k => { d.profile[k] = acc[k]; });
+        store.save();
+        s.close();
+        meTab = 'posts';
+        renderMe();
+        toast('已创建并切换到新账号');
+      };
+      s.mask.querySelector('[data-act="cancel"]').onclick = s.close;
+      s.mask.querySelector('[data-act="create"]').onclick = create;
+      input.addEventListener('keydown', e => { if(e.key === 'Enter') create(); });
+      setTimeout(() => input.focus(), 150);
+    }
+
+    function openAccountSheet(){
+      const d = store.get();
+      const list = d.accounts || [];
+      const s = openSheet(`
+        <div class="wb-sheet-head"><span>切换账号</span></div>
+        <div class="wb-acc-list">
+          ${list.map((a, i) => `
+            <div class="wb-acc-row ${a.id === d.activeId ? 'on' : ''}" data-idx="${i}">
+              ${avatarHtml(a.name || '未命名', a.avatar, 'wb-acc-avatar')}
+              <div class="wb-acc-name">${esc(a.name || '未命名')}</div>
+              ${a.id === d.activeId ? '<span class="wb-acc-tag">当前</span>' : ''}
+              ${list.length > 1 ? `<button class="wb-acc-del" data-del="${i}" type="button">注销</button>` : ''}
+            </div>`).join('')}
+        </div>
+        <div class="wb-sheet-item" data-act="add">＋ 新增账号</div>
+        <div class="wb-sheet-item danger" data-act="cancel">取消</div>`);
+      s.mask.querySelectorAll('.wb-acc-row').forEach(row => {
+        row.onclick = e => {
+          const acc = list[parseInt(row.dataset.idx, 10)];
+          if(!acc) return;
+          const del = e.target.closest('.wb-acc-del');
+          if(del){
+            if(del.dataset.confirm !== '1'){
+              del.dataset.confirm = '1';
+              del.textContent = '确认注销';
+              return;
+            }
+            s.close();
+            deleteAccount(acc.id);
+            return;
+          }
+          if(acc.id === d.activeId){ s.close(); return; }
+          loadAccount(acc.id);
+          s.close();
+          meTab = 'posts';
+          renderMe();
+          toast(`已切换到 ${acc.name || '未命名'}`);
+        };
+      });
+      s.mask.querySelector('[data-act="add"]').onclick = () => { s.close(); openAddAccountSheet(); };
+      s.mask.querySelector('[data-act="cancel"]').onclick = s.close;
+    }
+
+    function openCoverSheet(){
+      const d = store.get();
+      const cur = d.profile.cover || '';
+      const s = openSheet(`
+        <div class="wb-sheet-head"><span>更换背景图</span></div>
+        <div class="wb-cover-grid">
+          ${COVERS.map((c, i) => `<div class="wb-cover-swatch ${cur === 'p:' + i ? 'on' : ''}" data-idx="${i}" style="background:${c.css}"></div>`).join('')}
+        </div>
+        <div class="wb-sheet-item" data-act="upload">上传本地图片</div>
+        <div class="wb-sheet-item danger" data-act="reset">恢复默认</div>
+        <div class="wb-sheet-item danger" data-act="cancel">取消</div>
+        <input type="file" accept="image/*" id="wbCoverFile" style="display:none">`);
+      const fileEl = s.mask.querySelector('#wbCoverFile');
+      s.mask.querySelectorAll('.wb-cover-swatch').forEach(sw => {
+        sw.onclick = () => {
+          d.profile.cover = 'p:' + sw.dataset.idx;
+          store.save();
+          s.close();
+          renderMe();
+        };
+      });
+      s.mask.querySelector('[data-act="upload"]').onclick = () => fileEl.click();
+      fileEl.onchange = async () => {
+        const f = fileEl.files && fileEl.files[0];
+        if(!f) return;
+        try{
+          d.profile.cover = await toDataUrl(f);
+          store.save();
+          s.close();
+          renderMe();
+          toast('背景已更换');
+        }catch(e){ toast('背景读取失败'); }
+      };
+      s.mask.querySelector('[data-act="reset"]').onclick = () => {
+        d.profile.cover = '';
+        store.save();
+        s.close();
+        renderMe();
+        toast('已恢复默认背景');
+      };
+      s.mask.querySelector('[data-act="cancel"]').onclick = s.close;
+    }
+
+    function openPersonaSheet(curId, onPick){
+      let chars = [];
+      try{ chars = (Phone && Phone._getState && Phone._getState().characters) || []; }catch(e){ chars = []; }
+      if(!chars.length){ toast('暂无可绑定的人设，请先在设置中创建角色'); return; }
+      const s = openSheet(`
+        <div class="wb-sheet-head"><span>绑定人设</span></div>
+        <div class="wb-sheet-list">
+          ${chars.map((c, i) => `
+            <div class="wb-sheet-row" data-idx="${i}">
+              ${avatarHtml(c.name, c.avatar, 'wb-acc-avatar')}
+              <div class="wb-sheet-row-name">${esc(c.name || '未命名')}</div>
+              ${c.id === curId ? '<span class="wb-acc-tag">已绑定</span>' : ''}
+            </div>`).join('')}
+        </div>
+        <div class="wb-sheet-item" data-act="clear">不绑定人设</div>
+        <div class="wb-sheet-item danger" data-act="cancel">取消</div>`);
+      s.mask.querySelectorAll('.wb-sheet-row').forEach(row => {
+        row.onclick = () => {
+          const c = chars[parseInt(row.dataset.idx, 10)];
+          s.close();
+          if(c) onPick({ id: c.id, name: c.name || '未命名', avatar: c.avatar || '' });
+        };
+      });
+      s.mask.querySelector('[data-act="clear"]').onclick = () => { s.close(); onPick(null); };
+      s.mask.querySelector('[data-act="cancel"]').onclick = s.close;
+    }
+
+    function openSheet(inner){
+      const mask = document.createElement('div');
+      mask.className = 'wb-sheet-mask';
+      mask.innerHTML = `<div class="wb-sheet">${inner}</div>`;
+      app.appendChild(mask);
+      const close = () => mask.remove();
+      mask.addEventListener('click', e => { if(e.target === mask) close(); });
+      return { mask, close };
+    }
+
+    function openImageSourceSheet(onPick){
+      const s = openSheet(`
+        <div class="wb-sheet-head"><span>选择图片来源</span></div>
+        <div class="wb-sheet-item" data-src="local">本地图片</div>
+        <div class="wb-sheet-item" data-src="text">文字图片</div>
+        <div class="wb-sheet-item danger" data-src="cancel">取消</div>`);
+      s.mask.querySelectorAll('.wb-sheet-item').forEach(it => {
+        it.onclick = () => {
+          const src = it.dataset.src;
+          s.close();
+          if(src !== 'cancel') onPick(src);
+        };
+      });
+    }
+
+    function wrapCanvasText(ctx, text, cx, cy, lineHeight, maxLines, maxWidth){
+      const lines = [];
+      let line = '';
+      for(const ch of text.split('')){
+        const test = line + ch;
+        if(ctx.measureText(test).width > maxWidth && line){
+          lines.push(line);
+          line = ch;
+          if(lines.length >= maxLines) break;
+        } else line = test;
+      }
+      if(lines.length < maxLines && line) lines.push(line);
+      const startY = cy - ((lines.length - 1) * lineHeight) / 2;
+      lines.forEach((l, i) => ctx.fillText(l, cx, startY + i * lineHeight));
+    }
+
+    function openTextImageEditor(onDone){
+      const colors = [
+        { name:'浅灰', bg:'#f5f5f5', fg:'#333333' },
+        { name:'米白', bg:'#fef9e7', fg:'#5a4a1a' },
+        { name:'淡蓝', bg:'#e8f4fd', fg:'#1a4a7a' },
+        { name:'淡粉', bg:'#fde8f0', fg:'#7a1a4a' },
+        { name:'淡绿', bg:'#e8f8f0', fg:'#1a5a3a' },
+        { name:'纯黑', bg:'#222222', fg:'#ffffff' }
+      ];
+      let curBg = colors[0].bg, curFg = colors[0].fg;
+      const s = openSheet(`
+        <div class="wb-sheet-head">
+          <span>文字图片</span>
+          <button class="wb-sheet-send" type="button" id="wbTxtOk">生成</button>
+        </div>
+        <textarea class="wb-sheet-text" id="wbTxtInput" maxlength="120" placeholder="输入你想写的话……"></textarea>
+        <div class="wb-txt-preview" id="wbTxtPreview" style="background:${curBg};color:${curFg}">预览文字</div>
+        <div class="wb-txt-colors" id="wbTxtColors">
+          <span class="wb-txt-colors-label">背景色</span>
+          ${colors.map((c, i) => `<div class="wb-txt-color ${i === 0 ? 'on' : ''}" data-idx="${i}" style="background:${c.bg}"></div>`).join('')}
+        </div>`);
+      const ta = s.mask.querySelector('#wbTxtInput');
+      const preview = s.mask.querySelector('#wbTxtPreview');
+      const update = () => {
+        preview.textContent = ta.value.trim() || '预览文字';
+        preview.style.background = curBg;
+        preview.style.color = curFg;
+      };
+      ta.addEventListener('input', update);
+      s.mask.querySelectorAll('.wb-txt-color').forEach(dot => {
+        dot.onclick = () => {
+          const i = parseInt(dot.dataset.idx, 10);
+          curBg = colors[i].bg;
+          curFg = colors[i].fg;
+          s.mask.querySelectorAll('.wb-txt-color').forEach(x => x.classList.remove('on'));
+          dot.classList.add('on');
+          update();
+        };
+      });
+      setTimeout(() => ta.focus(), 120);
+      s.mask.querySelector('#wbTxtOk').onclick = () => {
+        const text = ta.value.trim();
+        if(!text){ toast('请输入文字'); return; }
+        const cv = document.createElement('canvas');
+        cv.width = 400; cv.height = 400;
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = curBg;
+        ctx.fillRect(0, 0, 400, 400);
+        ctx.fillStyle = curFg;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = 'bold 26px -apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
+        wrapCanvasText(ctx, text, 200, 200, 34, 9, 340);
+        s.close();
+        onDone({ type:'text', src: cv.toDataURL('image/jpeg', 0.85), text, bg: curBg });
+      };
+    }
+
+    function openSuperTopicSheet(onPick){
+      const list = store.get().superTopics || [];
+      const s = openSheet(`
+        <div class="wb-sheet-head"><span>我关注的超话</span></div>
+        <div class="wb-sheet-list">
+          ${list.map((t, i) => `
+            <div class="wb-sheet-row" data-idx="${i}">
+              <div class="wb-topic-ico">${ICON.diamond}</div>
+              <div class="wb-sheet-row-name">${esc(t.name)}</div>
+              <div class="wb-sheet-row-meta">${esc(t.meta || '')}</div>
+            </div>`).join('')}
+        </div>
+        <div class="wb-sheet-item danger" data-cancel="1">取消</div>`);
+      s.mask.querySelectorAll('.wb-sheet-row').forEach(row => {
+        row.onclick = () => {
+          const t = list[parseInt(row.dataset.idx, 10)];
+          s.close();
+          if(t) onPick(t.name);
+        };
+      });
+      s.mask.querySelector('[data-cancel]').onclick = s.close;
+    }
+
+    function openRepostSheet(post){
+      const char = meChar();
+      const p = store.get().profile;
+      const name = (p.name || '').trim() || ((char && char.name) || '我');
+      const avatar = p.avatar || (char && char.avatar) || '';
+      const hasVip = VERIFY[p.verify] ? p.verify !== 'none' : false;
+      const isOwn = post.mine && (!post.owner || post.owner === store.get().activeId);
+      const targetName = isOwn ? name : post.name;
+      let repostImgs = [];
+      let withComment = false;
+      const s = openSheet(`
+        <div class="wb-sheet-head">
+          <button class="wb-sheet-cancel" type="button">取消</button>
+          <span>转发微博</span>
+          <button class="wb-sheet-send" type="button" id="wbRepostSend">转发</button>
+        </div>
+        <div class="wb-sheet-quote">
+          ${avatarHtml(targetName, isOwn ? avatar : post.avatar)}
+          <div class="wb-sheet-quote-main">
+            <div class="wb-sheet-quote-name">@${esc(targetName)}</div>
+            <div class="wb-sheet-quote-text">${hlHtml(post.text)}</div>
+          </div>
+        </div>
+        <div class="wb-compose-field">
+          <div class="wb-compose-mirror" id="wbRepostMirror"></div>
+          <textarea id="wbRepostText" maxlength="140" placeholder="说点什么……"></textarea>
+        </div>
+        <div class="wb-compose-imgs" id="wbRepostImgs"></div>
+        <div class="wb-sheet-foot">
+          <button class="wb-tool" data-tool="img" type="button" aria-label="图片">${ICON.img}</button>
+          <label class="wb-check" id="wbRepostCheck">
+            <span class="wb-check-box"><svg viewBox="0 0 24 24"><polyline points="3 12.5 9 18 21 4"/></svg></span>
+            <span>同时评论</span>
+          </label>
+        </div>
+        <input type="file" accept="image/*" id="wbRepostFile" style="display:none">`);
+      const ta = s.mask.querySelector('#wbRepostText');
+      const mirror = s.mask.querySelector('#wbRepostMirror');
+      const imgsBox = s.mask.querySelector('#wbRepostImgs');
+      const fileEl = s.mask.querySelector('#wbRepostFile');
+      const syncMirror = () => {
+        mirror.innerHTML = hlHtml(ta.value) + '\n';
+        mirror.scrollTop = ta.scrollTop;
+      };
+      const renderImgs = () => {
+        imgsBox.classList.toggle('show', repostImgs.length > 0);
+        imgsBox.innerHTML = repostImgs.map((img, i) => `
+          <div class="wb-compose-img">
+            <img src="${esc(img.src)}" alt="">
+            <span class="wb-compose-img-del" data-del="${i}">×</span>
+          </div>`).join('');
+        imgsBox.querySelectorAll('.wb-compose-img-del').forEach(del => {
+          del.onclick = () => {
+            repostImgs.splice(parseInt(del.dataset.del, 10), 1);
+            renderImgs();
+          };
+        });
+      };
+      ta.addEventListener('input', syncMirror);
+      ta.addEventListener('scroll', () => { mirror.scrollTop = ta.scrollTop; });
+      s.mask.querySelector('[data-tool="img"]').onclick = () => {
+        openImageSourceSheet(src => {
+          if(src === 'local') fileEl.click();
+          else openTextImageEditor(img => {
+            if(repostImgs.length >= 9){ toast('最多9张'); return; }
+            repostImgs.push(img);
+            renderImgs();
+          });
+        });
+      };
+      fileEl.onchange = async () => {
+        const files = Array.from(fileEl.files || []);
+        for(const f of files){
+          if(repostImgs.length >= 9){ toast('最多9张'); break; }
+          try{ repostImgs.push({ type:'image', src: await toDataUrl(f) }); }
+          catch(e){ toast('图片读取失败'); }
+        }
+        fileEl.value = '';
+        renderImgs();
+      };
+      s.mask.querySelector('#wbRepostCheck').onclick = () => {
+        withComment = !withComment;
+        s.mask.querySelector('#wbRepostCheck').classList.toggle('on', withComment);
+      };
+      s.mask.querySelector('.wb-sheet-cancel').onclick = s.close;
+      setTimeout(() => ta.focus(), 120);
+      s.mask.querySelector('#wbRepostSend').onclick = () => {
+        const text = ta.value.trim();
+        const d = store.get();
+        const now = new Date();
+        post.reposts = (post.reposts || 0) + 1;
+        if(withComment) post.comments = (post.comments || 0) + 1;
+        d.feed.unshift({
+          id: 'rp' + Date.now(),
+          name,
+          avatar,
+          vip: hasVip,
+          mine: true,
+          time: `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
+          text: text || '转发微博',
+          imgs: repostImgs.map(i => i.src),
+          owner: d.activeId,
+          quote: { name: targetName, text: post.text, imgs: (post.imgs || []).slice() },
+          likes: 0, comments: 0, reposts: 0, liked: false
+        });
+        store.save();
+        s.close();
+        toast(withComment ? '已转发并评论' : '已转发');
+        if(currentTab === 'me'){ meTab = 'posts'; renderMe(); }
+        else switchTab('home');
+      };
+    }
+
+    function openCompose(editPost){
+      const char = meChar();
+      const p = store.get().profile;
+      const name = (p.name || '').trim() || ((char && char.name) || '我');
+      const avatar = p.avatar || (char && char.avatar) || '';
+      let composeImages = editPost ? (editPost.imgs || []).map(src => ({ type:'image', src })) : [];
+      let composeBg = '';
+      const mask = document.createElement('div');
+      mask.className = 'wb-compose-mask';
+      mask.innerHTML = `
+        <div class="wb-compose">
+          <div class="wb-compose-bg" id="wbComposeBg"></div>
+          <div class="wb-compose-head">
+            <button class="wb-compose-cancel" type="button">取消</button>
+            <span class="wb-compose-title">${editPost ? '编辑微博' : '发微博'}</span>
+            <button class="wb-compose-send" type="button">${editPost ? '保存' : '发送'}</button>
+          </div>
+          <div class="wb-compose-body">
+            ${avatarHtml(name, avatar)}
+            <div class="wb-compose-field">
+              <div class="wb-compose-mirror" id="wbComposeMirror"></div>
+              <textarea id="wbComposeText" placeholder="分享新鲜事……" maxlength="280"></textarea>
+            </div>
+          </div>
+          <div class="wb-compose-imgs" id="wbComposeImgs"></div>
+          <div class="wb-compose-tools">
+            <button class="wb-tool" data-tool="img" type="button" aria-label="图片">${ICON.img}</button>
+            <button class="wb-tool" data-tool="topic" type="button" aria-label="话题">${ICON.topic}</button>
+            <button class="wb-tool" data-tool="at" type="button" aria-label="提到">${ICON.at}</button>
+            <button class="wb-tool diamond" data-tool="super" type="button" aria-label="超话">${ICON.diamond}</button>
+            <span class="wb-compose-count" id="wbComposeCount">0/280</span>
+          </div>
+          <input type="file" accept="image/*" id="wbComposeFile" style="display:none">
+          <input type="file" accept="image/*" id="wbComposeBgFile" style="display:none">
+        </div>`;
+      app.appendChild(mask);
+      requestAnimationFrame(() => mask.classList.add('show'));
+
+      const panel = mask.querySelector('.wb-compose');
+      const bgEl = mask.querySelector('#wbComposeBg');
+      const ta = mask.querySelector('#wbComposeText');
+      const mirror = mask.querySelector('#wbComposeMirror');
+      const countEl = mask.querySelector('#wbComposeCount');
+      const imgsBox = mask.querySelector('#wbComposeImgs');
+      const fileEl = mask.querySelector('#wbComposeFile');
+      const bgFileEl = mask.querySelector('#wbComposeBgFile');
+
+      const close = () => {
+        mask.classList.remove('show');
+        setTimeout(() => mask.remove(), 220);
+      };
+
+      const syncMirror = () => {
+        mirror.innerHTML = hlHtml(ta.value) + '\n';
+        mirror.scrollTop = ta.scrollTop;
+        countEl.textContent = `${ta.value.length}/280`;
+      };
+
+      const insertText = str => {
+        const s = ta.selectionStart == null ? ta.value.length : ta.selectionStart;
+        const e = ta.selectionEnd == null ? s : ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + str + ta.value.slice(e);
+        ta.selectionStart = ta.selectionEnd = s + str.length;
+        ta.focus();
+        syncMirror();
+      };
+
+      const renderImgs = () => {
+        imgsBox.classList.toggle('show', composeImages.length > 0);
+        imgsBox.innerHTML = composeImages.map((img, i) => `
+          <div class="wb-compose-img">
+            <img src="${esc(img.src)}" alt="">
+            <span class="wb-compose-img-del" data-del="${i}">×</span>
+          </div>`).join('');
+        imgsBox.querySelectorAll('.wb-compose-img-del').forEach(del => {
+          del.onclick = () => {
+            composeImages.splice(parseInt(del.dataset.del, 10), 1);
+            renderImgs();
+          };
+        });
+      };
+
+      const applyBg = () => {
+        if(composeBg){
+          bgEl.style.backgroundImage = `url("${composeBg}")`;
+          panel.classList.add('has-bg');
+        } else {
+          bgEl.style.backgroundImage = '';
+          panel.classList.remove('has-bg');
+        }
+      };
+
+      mask.querySelector('.wb-compose-cancel').onclick = close;
+      mask.onclick = e => { if(e.target === mask) close(); };
+      ta.addEventListener('input', syncMirror);
+      ta.addEventListener('scroll', () => { mirror.scrollTop = ta.scrollTop; });
+      if(editPost){
+        ta.value = editPost.text || '';
+        renderImgs();
+      }
+      syncMirror();
+      setTimeout(() => ta.focus(), 120);
+
+      fileEl.onchange = async () => {
+        const files = Array.from(fileEl.files || []);
+        for(const f of files){
+          if(composeImages.length >= 9){ toast('最多9张'); break; }
+          try{ composeImages.push({ type:'image', src: await toDataUrl(f) }); }
+          catch(e){ toast('图片读取失败'); }
+        }
+        fileEl.value = '';
+        renderImgs();
+      };
+
+      bgFileEl.onchange = async () => {
+        const f = bgFileEl.files && bgFileEl.files[0];
+        bgFileEl.value = '';
+        if(!f) return;
+        try{
+          composeBg = await toDataUrl(f);
+          applyBg();
+          toast('背景已更换');
+        }catch(e){ toast('背景读取失败'); }
+      };
+
+      mask.querySelectorAll('.wb-tool').forEach(b => {
+        b.onclick = () => {
+          const tool = b.dataset.tool;
+          if(tool === 'img'){
+            openImageSourceSheet(src => {
+              if(src === 'local') fileEl.click();
+              else openTextImageEditor(img => {
+                if(composeImages.length >= 9){ toast('最多9张'); return; }
+                composeImages.push(img);
+                renderImgs();
+              });
+            });
+          } else if(tool === 'topic'){
+            insertText('#');
+          } else if(tool === 'at'){
+            insertText('@');
+          } else if(tool === 'super'){
+            openSuperTopicSheet(topicName => insertText(`#${topicName}# `));
+          }
+        };
+      });
+
+      mask.querySelector('.wb-compose-send').onclick = () => {
+        const text = ta.value.trim();
+        if(!text && !composeImages.length){ toast('说点什么吧'); return; }
+        const d = store.get();
+        if(editPost){
+          const target = d.feed.find(x => x.id === editPost.id);
+          if(target){
+            target.text = text;
+            target.imgs = composeImages.map(i => i.src);
+          }
+          store.save();
+          close();
+          toast('微博已更新');
+          if(currentTab === 'me'){ meTab = 'posts'; renderMe(); }
+          else renderHome();
+          return;
+        }
+        const now = new Date();
+        d.feed.unshift({
+          id: 'my' + Date.now(),
+          name,
+          avatar,
+          vip: VERIFY[p.verify] ? p.verify !== 'none' : false,
+          mine: true,
+          time: `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
+          text,
+          imgs: composeImages.map(i => i.src),
+          owner: d.activeId,
+          likes: 0, comments: 0, reposts: 0, liked: false
+        });
+        d.profile.posts = (parseInt(d.profile.posts, 10) || 0) + 1;
+        store.save();
+        close();
+        toast('发送成功');
+        if(currentTab === 'me'){ meTab = 'posts'; renderMe(); }
+        else switchTab('home');
+      };
+    }
+
+    switchTab('me');
+  };
+
+  function bootWeibo(){
+    if(!document.body || !document.body.hasAttribute('data-wb-standalone')) return;
+    if(window.mountWeiboApp) window.mountWeiboApp(document, window.Phone || null, null);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootWeibo);
+  else bootWeibo();
+})();
+</script>
+</body>
+</html>
