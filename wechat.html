@@ -2552,7 +2552,13 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
       const menu = document.createElement('div');
       menu.className = 'wc-plus-menu';
       let items = '';
-      if(currentTab === 'chat' || currentTab === 'contacts'){
+      if(currentTab === 'contacts'){
+        items = `
+        <div class="wc-plus-item" data-act="add-contact">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.6"/><path d="M3.2 19.5a5.8 5.8 0 0 1 11.6 0"/><path d="M18.5 8.5v6M21.5 11.5h-6"/></svg>
+          <span>添加联系人</span>
+        </div>`;
+      } else if(currentTab === 'chat'){
         items = `
         <div class="wc-plus-item" data-act="start-chat">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -2588,7 +2594,9 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
         it.addEventListener('click', () => {
           const act = it.dataset.act;
           menu.remove();
-          if(act === 'start-chat'){
+          if(act === 'add-contact'){
+            openAddContact();
+          } else if(act === 'start-chat'){
             openStartChat();
           } else if(act === 'start-group'){
             openCreateGroup();
@@ -2627,6 +2635,102 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
           renderTab(currentTab);
           return v;
         }
+      });
+    }
+
+    function openAddContact(){
+      const { page, body } = makeSubPage('添加联系人');
+      let avatar = '';
+
+      const avatarBar = document.createElement('div');
+      avatarBar.className = 'wc-cg-avatarbar';
+      avatarBar.innerHTML = `
+        <div class="wc-cg-avatar-card" id="wcAcAvatarCard">
+          <div class="wc-cg-avatar-preview" id="wcAcAvatarPreview">
+            <div class="wc-cg-avatar-placeholder">＋</div>
+          </div>
+          <div class="wc-cg-avatar-hint">
+            <div class="wc-cg-avatar-hint-title">头像</div>
+            <div class="wc-cg-avatar-hint-sub">点击设置（不设置则用姓名首字生成）</div>
+          </div>
+          <span class="wc-cg-persona-arrow">›</span>
+        </div>`;
+      body.appendChild(avatarBar);
+
+      function updateAvatarPreview(){
+        const p = avatarBar.querySelector('#wcAcAvatarPreview');
+        p.innerHTML = avatar
+          ? `<img src="${escAttr(avatar)}" alt="">`
+          : '<div class="wc-cg-avatar-placeholder">＋</div>';
+      }
+      avatarBar.querySelector('#wcAcAvatarCard').addEventListener('click', () => {
+        Phone.modal({
+          title:'设置联系人头像',
+          fields:[
+            {key:'url',label:'图片 URL',value:''},
+            {key:'file',label:'或上传本地图片',type:'file'}
+          ],
+          onOk: async v => {
+            if(v.file) avatar = await Phone.fileToBase64(v.file);
+            else if(v.url.trim()) avatar = v.url.trim();
+            else avatar = '';
+            updateAvatarPreview();
+            return v;
+          }
+        });
+      });
+
+      const infoCard = document.createElement('div');
+      infoCard.className = 'wc-ce-card';
+      infoCard.style.margin = '0 14px 14px';
+      infoCard.innerHTML = `
+        <div class="wc-ce-field">
+          <span class="wc-ce-label">姓名</span>
+          <div class="wc-ce-value">
+            <input class="wc-ce-input" id="wcAcName" placeholder="请输入姓名" maxlength="20">
+          </div>
+        </div>
+        <div class="wc-ce-field">
+          <span class="wc-ce-label">微信号</span>
+          <div class="wc-ce-value">
+            <input class="wc-ce-input" id="wcAcWx" placeholder="选填" maxlength="30">
+          </div>
+        </div>`;
+      body.appendChild(infoCard);
+
+      const roleCard = document.createElement('div');
+      roleCard.className = 'wc-ce-card';
+      roleCard.style.margin = '0 14px 14px';
+      roleCard.innerHTML = `
+        <div class="wc-ce-field" style="flex-direction:column;align-items:stretch;gap:6px">
+          <span class="wc-ce-label">角色设定</span>
+          <textarea class="wc-ce-textarea" id="wcAcRole" placeholder="选填：TA 的身份、性格、说话方式等，用于 AI 扮演" style="min-height:96px"></textarea>
+        </div>`;
+      body.appendChild(roleCard);
+
+      const footBar = document.createElement('div');
+      footBar.style.padding = '4px 14px 28px';
+      footBar.innerHTML = `<button class="wc-cg-create-btn" id="wcAcSave" style="width:100%;padding:11px 0;font-size:15px;border-radius:12px">添加联系人</button>`;
+      body.appendChild(footBar);
+
+      footBar.querySelector('#wcAcSave').addEventListener('click', () => {
+        const name = (body.querySelector('#wcAcName').value || '').trim();
+        if(!name){ alert('请填写姓名'); return; }
+        const wx = (body.querySelector('#wcAcWx').value || '').trim();
+        const role = (body.querySelector('#wcAcRole').value || '').trim();
+        const contact = {
+          id: 'c_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+          name,
+          avatar,
+          wechatName: wx,
+          roleSetting: role,
+          npcs: []
+        };
+        MOCK_CONTACTS.push(contact);
+        saveContacts(MOCK_CONTACTS);
+        renderContacts();
+        page.classList.remove('show');
+        setTimeout(() => page.remove(), 300);
       });
     }
 

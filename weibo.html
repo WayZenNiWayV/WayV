@@ -1,25 +1,25 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <style>
 .wb-app{
-  --wb-orange:#ff8200;
-  --wb-orange-deep:#ef6a00;
-  --wb-orange-soft:#ffd9b3;
-  --wb-ink:#3d2a1c;
-  --wb-ink-soft:#a08a7a;
-  --wb-line:rgba(255,196,150,.55);
-  --wb-card:rgba(255,255,255,.62);
+  --wb-orange:#ffa15e;
+  --wb-orange-deep:#e08040;
+  --wb-orange-soft:#ffe2ca;
+  --wb-ink:#4a382b;
+  --wb-ink-soft:#ab9a8c;
+  --wb-line:rgba(255,205,170,.5);
+  --wb-card:rgba(255,255,255,.66);
   display:flex;flex-direction:column;flex:1;height:0;min-height:0;
-  background:linear-gradient(180deg,#fff9f3 0%,#fff1e4 45%,#ffe8d6 100%);
+  background:linear-gradient(180deg,#fffdfa 0%,#fff8f1 45%,#fff2e7 100%);
   position:relative;overflow:hidden;
   font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
   color:var(--wb-ink);
 }
-.wb-app::before{content:"";position:absolute;top:-18%;right:-25%;width:75%;height:48%;background:radial-gradient(circle,rgba(255,168,92,.35) 0%,transparent 70%);pointer-events:none;}
-.wb-app::after{content:"";position:absolute;bottom:-12%;left:-20%;width:70%;height:45%;background:radial-gradient(circle,rgba(255,214,170,.5) 0%,transparent 70%);pointer-events:none;}
+.wb-app::before{content:"";position:absolute;top:-18%;right:-25%;width:75%;height:48%;background:radial-gradient(circle,rgba(255,186,136,.26) 0%,transparent 70%);pointer-events:none;}
+.wb-app::after{content:"";position:absolute;bottom:-12%;left:-20%;width:70%;height:45%;background:radial-gradient(circle,rgba(255,226,196,.42) 0%,transparent 70%);pointer-events:none;}
 
 .wb-status-bar{height:calc(var(--phone-w,420px)*0.095 + var(--safe-top,0px));
   padding:calc(var(--safe-top,0px) + var(--phone-w,420px)*0.015) calc(var(--phone-w,420px)*0.064) 0;
@@ -32,7 +32,13 @@
 .wb-status-bar .bat-icon{width:calc(var(--phone-w,420px)*0.062);height:calc(var(--phone-w,420px)*0.034);}
 
 .wb-topbar{flex-shrink:0;min-height:46px;padding:0 14px;display:flex;align-items:center;gap:8px;position:relative;z-index:5;}
-.wb-title{position:absolute;left:50%;transform:translateX(-50%);font-size:16px;font-weight:700;color:var(--wb-ink);pointer-events:none;}
+.wb-title{font-size:16px;font-weight:700;color:var(--wb-ink);pointer-events:none;}
+.wb-title-wrap{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:4px;}
+.wb-title-broom{width:26px;height:26px;border:none;background:none;padding:0;cursor:pointer;color:#8a8a8a;
+  display:none;align-items:center;justify-content:center;border-radius:50%;}
+.wb-title-broom.on{display:flex;}
+.wb-title-broom:active{background:rgba(0,0,0,.06);}
+.wb-title-broom svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .wb-icon-btn{width:32px;height:32px;border-radius:50%;border:none;background:#fff;color:var(--wb-orange);
   display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;
   transition:transform .1s,background .15s;box-shadow:0 3px 10px -4px rgba(200,110,20,.42);}
@@ -50,49 +56,132 @@
 .wb-seg.active{color:var(--wb-ink);font-weight:700;}
 .wb-seg.active::after{content:"";position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);width:18px;height:3px;border-radius:2px;background:var(--wb-orange);}
 
+.wb-live-strip{display:flex;gap:18px;padding:6px 14px 12px;overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x;
+  overscroll-behavior-x:contain;cursor:grab;}
+.wb-live-strip.dragging{cursor:grabbing;scroll-behavior:auto;}
+.wb-live-strip::-webkit-scrollbar{height:0;}
+.wb-live-item{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;
+  -webkit-user-select:none;user-select:none;}
+.wb-live-avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:18px;background:linear-gradient(135deg,#ffd6b4,#ffa66b);
+  border:2px solid rgba(255,255,255,.95);cursor:default;
+  box-shadow:0 3px 10px -5px rgba(180,100,40,.5);}
+.wb-live-avatar img{width:100%;height:100%;object-fit:cover;}
+.wb-live-avatar.live{border-color:var(--wb-orange);cursor:pointer;animation:wbLivePulse 1.3s ease-in-out infinite;}
+@keyframes wbLivePulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,161,94,.55),0 3px 10px -5px rgba(180,100,40,.5);}
+  55%{box-shadow:0 0 0 7px rgba(255,161,94,0),0 3px 10px -5px rgba(180,100,40,.5);}
+}
+.wb-live-name{width:72px;font-size:10px;color:var(--wb-ink-soft);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;text-align:center;}
+
+.wb-draft{background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.85);border-radius:12px;
+  padding:10px 12px;margin:0 12px 8px;cursor:pointer;transition:background .15s;}
+.wb-draft:active{background:rgba(255,244,232,.92);}
+.wb-draft-top{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:11px;color:var(--wb-ink-soft);}
+.wb-draft-text{font-size:13px;line-height:1.55;margin-top:6px;color:var(--wb-ink);white-space:pre-wrap;
+  word-break:break-word;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.wb-draft-imgs{display:flex;gap:4px;margin-top:7px;}
+.wb-draft-imgs img{width:44px;height:44px;object-fit:cover;border-radius:7px;}
+.wb-draft-del{border:none;background:rgba(0,0,0,.05);color:var(--wb-ink-soft);font-family:inherit;
+  font-size:11px;padding:4px 9px;border-radius:9px;cursor:pointer;}
+.wb-draft-del:active{background:rgba(214,84,58,.16);color:#c9553f;}
+
+@keyframes wbSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.wb-icon-btn.spin svg{animation:wbSpin .55s ease;}
+
+.wb-loading{display:flex;align-items:center;justify-content:center;gap:9px;margin:2px 12px 10px;
+  padding:16px;border-radius:14px;background:rgba(255,255,255,.75);
+  border:1px solid rgba(255,255,255,.85);font-size:12.5px;color:var(--wb-ink-soft);
+  box-shadow:0 4px 16px -10px rgba(190,110,40,.35);}
+.wb-loading-spin{width:14px;height:14px;border-radius:50%;flex-shrink:0;
+  border:2px solid rgba(255,140,60,.28);border-top-color:var(--wb-orange);
+  animation:wbSpin .8s linear infinite;}
+
 .wb-avatar{width:38px;height:38px;border-radius:50%;overflow:hidden;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
-  color:#fff;font-weight:700;font-size:15px;background:linear-gradient(135deg,#ffc285,#ff8200);}
+  color:#fff;font-weight:700;font-size:15px;background:linear-gradient(135deg,#ffd6b4,#ffa66b);}
 .wb-avatar img{width:100%;height:100%;object-fit:cover;}
 
 .wb-post{position:relative;background:var(--wb-card);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
-  border:1px solid rgba(255,255,255,.7);border-radius:14px;padding:12px 13px;margin:0 12px 10px;
-  box-shadow:0 4px 16px -10px rgba(190,110,40,.35);}
-.wb-post-head{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
-.wb-post.is-mine .wb-post-head{padding-right:54px;}
-.wb-post-meta{flex:1;min-width:0;}
-.wb-post-name{font-size:14px;font-weight:600;display:flex;align-items:center;gap:4px;}
+  border:1px solid rgba(255,255,255,.7);border-radius:14px;padding:13px 13px 6px;margin:0 12px 10px;
+  box-shadow:0 4px 16px -10px rgba(190,110,40,.35);cursor:pointer;}
+.wb-post-head{display:flex;align-items:flex-start;gap:9px;margin-bottom:8px;padding-right:30px;}
+.wb-post-head .wb-avatar{width:38px;height:38px;font-size:14px;flex:none;}
+.wb-post-meta{flex:1;min-width:0;padding-top:1px;}
+.wb-post-name{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:4px;overflow:hidden;}
 .wb-vip{width:14px;height:14px;border-radius:50%;background:var(--wb-orange);color:#fff;font-size:9px;font-weight:700;
   display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
 .wb-vip.v-yellow{background:linear-gradient(135deg,#ffd34d,#eaa600);}
 .wb-vip.v-gold{background:linear-gradient(135deg,#ffe9a3,#d99b16);}
-.wb-post-time{font-size:11px;color:var(--wb-ink-soft);margin-top:2px;}
+.wb-post-time{font-size:11.5px;color:var(--wb-ink-soft);margin-top:3px;}
 .wb-post-text{font-size:13.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;margin-bottom:8px;}
 .wb-post-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:10px;overflow:hidden;margin-bottom:8px;}
-.wb-post-img{aspect-ratio:1;overflow:hidden;background:#ffe4cc;}
-.wb-post-img img{width:100%;height:100%;object-fit:cover;}
-.wb-post-actions{display:flex;gap:8px;}
-.wb-act{flex:1;border:none;background:rgba(255,255,255,.5);border-radius:9px;padding:6px 0;font-size:12px;
+.wb-post-img{aspect-ratio:1;overflow:hidden;background:#ffead9;}
+.wb-post-img.empty{background:transparent;}
+.wb-post-img img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;}
+.wb-viewer{position:absolute;inset:0;z-index:70;background:rgba(0,0,0,.94);display:flex;
+  align-items:center;justify-content:center;opacity:0;transition:opacity .18s ease;}
+.wb-viewer.show{opacity:1;}
+.wb-viewer img{max-width:100%;max-height:100%;object-fit:contain;transform:scale(.88);
+  transition:transform .22s cubic-bezier(.2,.8,.3,1);user-select:none;-webkit-user-drag:none;}
+.wb-viewer.show img{transform:scale(1);}
+.wb-viewer-count{position:absolute;top:14px;left:0;right:0;text-align:center;color:#fff;
+  font-size:12px;opacity:.85;pointer-events:none;}
+.wb-viewer-nav{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;
+  border:none;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:18px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.wb-viewer-nav.prev{left:10px;}
+.wb-viewer-nav.next{right:10px;}
+.wb-post-video{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;
+  margin-bottom:8px;background:#1d1d1d;}
+.wb-post-video img{width:100%;height:100%;object-fit:cover;display:block;}
+.wb-post-video::after{content:"";position:absolute;left:0;right:0;bottom:0;height:44%;
+  background:linear-gradient(to top,rgba(0,0,0,.55),rgba(0,0,0,0));pointer-events:none;}
+.wb-post-video-meta{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;
+  justify-content:space-between;padding:0 9px 8px;font-size:11.5px;color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.45);z-index:2;pointer-events:none;}
+.wb-post-video-dur{font-variant-numeric:tabular-nums;letter-spacing:.4px;}
+.wb-post-actions{display:flex;align-items:center;gap:4px;padding:6px 0 5px;}
+.wb-robert-ava{flex:none;width:24px;height:24px;border-radius:8px;
+  background:linear-gradient(135deg,#ffbb8f,#ff93a5);color:#fff;font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;letter-spacing:.5px;}
+.wb-robert-tag{font-size:9px;font-weight:700;color:#fff;background:rgba(255,145,90,.85);
+  border-radius:4px;padding:1px 4px;letter-spacing:.4px;}
+.wb-act{flex:1;border:none;background:none;border-radius:9px;padding:6px 0;font-size:12px;
   color:var(--wb-ink-soft);font-family:inherit;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:4px;transition:background .15s,transform .1s;}
+  display:flex;align-items:center;justify-content:center;gap:5px;transition:background .15s,transform .1s;}
 .wb-act:active{transform:scale(.96);}
-.wb-act.liked{color:var(--wb-orange-deep);background:rgba(255,140,60,.14);}
-.wb-act svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;
+.wb-act[data-act="like"]{color:var(--wb-ink-soft);}
+.wb-act.liked{color:#ff8200;font-weight:600;}
+.wb-act svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;
   stroke-linecap:round;stroke-linejoin:round;}
-.wb-act.liked svg{fill:currentColor;}
-.wb-own{width:24px;height:24px;border:none;border-radius:7px;
-  background:none;color:var(--wb-ink-soft);display:flex;align-items:center;
-  justify-content:center;cursor:pointer;padding:0;transition:background .15s,transform .1s,color .15s;}
-.wb-own:active{transform:scale(.92);background:rgba(255,140,60,.16);color:var(--wb-orange-deep);}
-.wb-own.del:active{background:rgba(214,84,58,.18);color:#c9553f;}
-.wb-own svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;
+.wb-act.liked svg{fill:currentColor;stroke:currentColor;}
+.wb-post-more{position:absolute;top:9px;right:9px;z-index:3;}
+.wb-more-btn{width:26px;height:26px;border:none;border-radius:8px;background:none;
+  color:var(--wb-ink-soft);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;transition:background .15s,transform .1s,color .15s;}
+.wb-more-btn:active{transform:scale(.9);background:rgba(255,140,60,.16);color:var(--wb-orange-deep);}
+.wb-more-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;
   stroke-linecap:round;stroke-linejoin:round;}
-.wb-post-own{position:absolute;top:8px;right:9px;display:flex;gap:4px;z-index:2;}
+.wb-more-menu{position:absolute;right:0;top:29px;min-width:108px;background:rgba(255,252,248,.99);
+  border:1px solid rgba(255,255,255,.85);border-radius:11px;padding:4px;
+  box-shadow:0 10px 26px -12px rgba(150,80,20,.55);display:flex;flex-direction:column;gap:2px;
+  animation:wbFade .14s ease;z-index:6;}
+.wb-more-item{border:none;background:none;font-family:inherit;font-size:12.5px;color:var(--wb-ink);
+  text-align:left;padding:7px 10px;border-radius:8px;cursor:pointer;white-space:nowrap;
+  transition:background .15s,color .15s;}
+.wb-more-item:active{background:rgba(255,140,60,.16);color:var(--wb-orange-deep);}
+.wb-more-item.danger{color:#c9553f;}
+.wb-more-item.danger:active{background:rgba(214,84,58,.14);color:#c9553f;}
 .wb-post-quote-head svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;
   stroke-linecap:round;stroke-linejoin:round;}
 
 .wb-me-cover{position:relative;height:152px;flex-shrink:0;overflow:hidden;cursor:pointer;
-  background:linear-gradient(160deg,#ff8f2e 0%,#ffa552 28%,#ffc183 58%,#ffdcbb 82%,#fff4e8 100%);
+  background:linear-gradient(160deg,#ffb673 0%,#ffc794 28%,#ffdcba 58%,#ffedda 82%,#fffaf4 100%);
   background-size:cover;background-position:center;transition:background .2s;}
 .wb-me-cover.has-img::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,rgba(60,25,5,.16),rgba(60,25,5,.34));}
@@ -151,11 +240,11 @@
 .wb-me-edit svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
 .wb-avatar-switchable{cursor:pointer;transition:transform .12s;}
 .wb-avatar-switchable:active{transform:scale(.96);}
-.wb-app.wb-me-mode .wb-topbar{display:none;}
-.wb-app.wb-me-mode .wb-status-bar{position:absolute;left:0;right:0;top:0;z-index:6;background:none;
+.wb-app.wb-me-mode > .wb-topbar{display:none;}
+.wb-app.wb-me-mode > .wb-status-bar{position:absolute;left:0;right:0;top:0;z-index:6;background:none;
   padding-top:calc(var(--safe-top,0px) + var(--phone-w,420px)*0.055);
   color:#fff;text-shadow:0 1px 4px rgba(70,30,10,.5);}
-.wb-app.wb-me-mode .wb-status-bar .bat-icon rect:nth-child(2){fill:rgba(255,255,255,.92);}
+.wb-app.wb-me-mode > .wb-status-bar .bat-icon rect:nth-child(2){fill:rgba(255,255,255,.92);}
 
 .wb-card{background:var(--wb-card);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
   border:1px solid rgba(255,255,255,.7);border-radius:14px;margin:0 12px 10px;overflow:hidden;
@@ -190,6 +279,19 @@
 .wb-chat-preview{font-size:12.5px;color:var(--wb-ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .wb-badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--wb-orange);color:#fff;
   font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wb-msg-ico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:#fff;flex-shrink:0;font-size:22px;font-weight:700;}
+.wb-msg-ico svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;}
+.wb-msg-ico.ico-at{background:linear-gradient(135deg,#5fb8e8,#3f9bd4);}
+.wb-msg-ico.ico-cmt{background:linear-gradient(135deg,#5ecf93,#3cb877);}
+.wb-msg-ico.ico-like{background:linear-gradient(135deg,#ffc04d,#f29a15);}
+.wb-msg-ico.ico-dm{background:linear-gradient(135deg,#b9a8ff,#8d7be8);}
+.wb-msg-arrow{color:var(--wb-ink-soft);font-size:17px;flex-shrink:0;}
+.wb-msg-head{display:flex;align-items:center;gap:6px;padding:10px 10px 6px;font-size:15px;font-weight:600;}
+.wb-msg-head button{background:none;border:0;padding:4px;cursor:pointer;color:var(--wb-ink);display:flex;}
+.wb-msg-head button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;}
+.wb-msg-sec{font-size:12px;color:var(--wb-ink-soft);padding:12px 16px 6px;}
+.wb-sheet-ava{width:30px;height:30px;font-size:12px;}
 
 .wb-end{text-align:center;font-size:11px;color:var(--wb-ink-soft);padding:10px 0 18px;}
 
@@ -207,7 +309,7 @@
 .wb-tab.active .wb-tab-ico{opacity:1;transform:translateY(-1px);}
 .wb-tab.active .wb-tab-label{font-weight:700;}
 
-.wb-sheet-mask{position:absolute;inset:0;z-index:30;background:rgba(60,35,15,.28);
+.wb-sheet-mask{position:absolute;inset:0;z-index:45;background:rgba(60,35,15,.28);
   backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
   display:flex;align-items:flex-end;animation:wbFade .18s ease;}
 .wb-sheet{width:100%;max-height:88%;overflow-y:auto;background:rgba(255,252,248,.97);border-radius:18px 18px 0 0;
@@ -221,7 +323,7 @@
   font-family:inherit;font-size:14px;line-height:1.6;color:var(--wb-ink);background:#fff;outline:none;resize:none;}
 .wb-sheet-text:focus{border-color:var(--wb-orange);}
 
-.wb-compose-mask{position:absolute;inset:0;z-index:30;background:rgba(60,35,15,.3);
+.wb-compose-mask{position:absolute;inset:0;z-index:45;background:rgba(60,35,15,.3);
   backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
   display:flex;align-items:flex-end;opacity:0;transition:opacity .2s ease;}
 .wb-compose-mask.show{opacity:1;}
@@ -267,6 +369,9 @@
 .wb-compose-imgs.show{display:grid;}
 .wb-compose-img{position:relative;aspect-ratio:1;border-radius:9px;overflow:hidden;background:#ffe4cc;}
 .wb-compose-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.wb-compose-img.is-video{aspect-ratio:16/9;grid-column:1/-1;}
+.wb-compose-video-badge{position:absolute;right:6px;bottom:6px;font-size:10.5px;color:#fff;
+  background:rgba(0,0,0,.42);border-radius:9px;padding:1px 6px;letter-spacing:.3px;}
 .wb-compose-img-del{position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;
   background:rgba(0,0,0,.55);color:#fff;font-size:12px;line-height:1;display:flex;
   align-items:center;justify-content:center;cursor:pointer;}
@@ -311,6 +416,181 @@
 .wb-acc-row:active{background:rgba(255,214,170,.55);}
 .wb-acc-row.on{background:rgba(255,140,60,.13);border-color:rgba(255,168,110,.7);}
 .wb-acc-avatar{width:38px;height:38px;font-size:15px;}
+.wb-cm-head{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:13px;font-weight:700;margin-bottom:8px;}
+.wb-cm-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:11.5px;color:var(--wb-ink-soft);margin:0 0 9px;}
+.wb-cm-refresh{border:none;font-family:inherit;font-size:11px;padding:4px 10px;border-radius:9px;
+  background:rgba(255,140,60,.16);color:var(--wb-orange-deep);font-weight:600;cursor:pointer;
+  white-space:nowrap;}
+.wb-cm-refresh:active{background:rgba(255,140,60,.3);}
+.wb-cm-refresh:disabled{opacity:.6;}
+.wb-cm-list{display:flex;flex-direction:column;gap:13px;max-height:44vh;overflow-y:auto;padding-right:2px;}
+.wb-cm-item{display:flex;gap:8px;}
+.wb-cm-item.is-reply{margin-top:9px;}
+.wb-cm-avatar{width:28px;height:28px;font-size:12px;flex:none;}
+.wb-cm-avatar.is-ai{background:linear-gradient(140deg,#ffbe86,#ff9a63);color:#fff;font-weight:700;}
+.wb-cm-main{flex:1;min-width:0;}
+.wb-cm-name{font-size:12px;font-weight:600;color:#8a6a4f;margin-bottom:3px;
+  display:flex;align-items:center;gap:5px;}
+.wb-cm-text{font-size:12.5px;line-height:1.6;color:var(--wb-ink);word-break:break-word;}
+.wb-cm-text.pending{color:var(--wb-ink-soft);}
+.wb-cm-sub{display:flex;align-items:center;gap:12px;font-size:10.5px;color:var(--wb-ink-soft);margin-top:4px;}
+.wb-cm-btn{border:none;background:none;padding:0;font-family:inherit;font-size:10.5px;
+  color:var(--wb-ink-soft);cursor:pointer;}
+.wb-cm-btn.on{color:var(--wb-orange-deep);font-weight:700;}
+.wb-cm-replies{margin-top:7px;padding-left:8px;border-left:2px solid rgba(255,190,150,.4);}
+.wb-cm-replybox{display:flex;flex-direction:column;gap:6px;margin-top:7px;}
+.wb-cm-replybox[hidden]{display:none;}
+.wb-cm-reply-row{display:flex;gap:6px;align-items:center;}
+.wb-cm-input{flex:1;min-width:0;border:1px solid var(--wb-line);border-radius:10px;padding:6px 9px;
+  font-family:inherit;font-size:12px;background:rgba(255,255,255,.92);color:var(--wb-ink);}
+.wb-cm-input:focus{outline:none;border-color:var(--wb-orange);}
+.wb-cm-send{border:none;border-radius:10px;padding:6px 12px;font-family:inherit;font-size:12px;
+  font-weight:600;background:var(--wb-orange);color:#fff;cursor:pointer;}
+.wb-cm-imgbtn{flex:none;width:32px;height:32px;padding:0;border:1px solid var(--wb-line);border-radius:10px;
+  background:rgba(255,255,255,.92);color:var(--wb-orange-deep);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;}
+.wb-cm-imgbtn:active{background:rgba(255,214,170,.6);}
+.wb-cm-imgbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-cm-imgs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.wb-cm-imgs img{width:62px;height:62px;object-fit:cover;border-radius:8px;display:block;}
+.wb-cm-picked{display:flex;flex-wrap:wrap;gap:5px;}
+.wb-cm-picked:empty{display:none;}
+.wb-cm-picked-item{position:relative;width:44px;height:44px;border-radius:8px;overflow:hidden;}
+.wb-cm-picked-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.wb-cm-picked-del{position:absolute;right:2px;top:2px;width:15px;height:15px;border-radius:50%;
+  background:rgba(0,0,0,.55);color:#fff;font-size:10px;line-height:1;display:flex;
+  align-items:center;justify-content:center;cursor:pointer;}
+.wb-cm-compose{display:flex;flex-direction:column;gap:8px;margin-top:12px;padding-top:10px;
+  border-top:1px solid var(--wb-line);}
+.wb-cm-compose-row{display:flex;gap:8px;align-items:center;}
+.wb-cm-empty{font-size:12px;color:var(--wb-ink-soft);text-align:center;padding:16px 0;}
+
+.wb-dt-mask{position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;background:#f5f5f5;
+  animation:wbFade .16s ease;}
+.wb-dt-status{flex-shrink:0;background:#fff;}
+.wb-dt-topbar{flex-shrink:0;height:52px;display:flex;align-items:center;padding:10px 10px 0;background:#fff;
+  position:relative;border-bottom:1px solid rgba(0,0,0,.05);}
+.wb-dt-back{width:30px;height:30px;border:none;background:none;padding:0;color:#333;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;}
+.wb-dt-back svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-dt-title{position:absolute;left:50%;top:calc(50% + 5px);transform:translate(-50%,-50%);
+  font-size:16px;font-weight:600;color:#222;letter-spacing:.5px;}
+.wb-dt-top-actions{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.wb-dt-ico{width:26px;height:26px;border:none;background:none;padding:0;color:#333;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;}
+.wb-dt-ico svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-dt-ico.wb-spin svg{animation:wbSpin .55s ease;}
+@keyframes wbSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.wb-dt-menu{position:absolute;right:8px;top:58px;min-width:104px;background:#fff;border-radius:10px;
+  box-shadow:0 10px 26px -10px rgba(0,0,0,.32);padding:4px;display:flex;flex-direction:column;
+  gap:2px;z-index:8;animation:wbFade .13s ease;}
+.wb-dt-menu button{border:none;background:none;font-family:inherit;font-size:13px;color:#333;
+  text-align:left;padding:9px 12px;border-radius:7px;cursor:pointer;white-space:nowrap;}
+.wb-dt-menu button:active{background:#f4f4f4;}
+.wb-dt-menu button.danger{color:#e0453c;}
+.wb-dt-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#f5f5f5;}
+.wb-dt-body::-webkit-scrollbar{width:0;}
+.wb-dt-post{position:relative;background:#fff;padding:14px 14px 10px;}
+.wb-dt-post-head{display:flex;gap:10px;}
+.wb-dt-ava{position:relative;flex:none;width:44px;height:44px;}
+.wb-dt-ava .wb-avatar{width:44px;height:44px;font-size:16px;}
+.wb-dt-vb{position:absolute;right:0;bottom:4px;width:14px;height:14px;border-radius:50%;
+  background:#ff8200;color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;
+  justify-content:center;}
+.wb-dt-post-meta{flex:1;min-width:0;padding-top:1px;}
+.wb-dt-post-name{display:flex;align-items:center;gap:5px;font-size:15px;font-weight:600;color:#333;
+  overflow:hidden;}
+.wb-dt-post-time{font-size:11.5px;color:#9a9a9a;margin-top:3px;line-height:1.55;}
+.wb-dt-post-text{font-size:15px;line-height:1.72;color:#333;margin-top:10px;
+  white-space:pre-wrap;word-break:break-word;}
+.wb-dt-imgs{display:grid;gap:4px;margin-top:10px;}
+.wb-dt-imgs.one{grid-template-columns:minmax(0,72%);}
+.wb-dt-imgs .wb-post-img{border-radius:8px;overflow:hidden;background:#f3f3f3;}
+.wb-dt-post-quote{margin-top:10px;padding:9px 11px;border-radius:8px;background:#f7f7f7;}
+.wb-dt-post-quote-head{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;
+  color:#c2762a;margin-bottom:3px;}
+.wb-dt-post-quote-text{font-size:12.5px;line-height:1.6;color:#8a8a8a;
+  white-space:pre-wrap;word-break:break-word;}
+.wb-dt-post-quote-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:5px;
+  border-radius:7px;overflow:hidden;}
+.wb-dt-tabs{display:flex;background:#fff;border-top:1px solid #f2f2f2;margin-top:8px;}
+.wb-dt-tab{flex:1;border:none;background:none;padding:13px 0 11px;font-family:inherit;font-size:15px;
+  color:#8a8a8a;cursor:pointer;position:relative;}
+.wb-dt-tab.active{color:#222;font-weight:700;}
+.wb-dt-tab.active::after{content:"";position:absolute;left:50%;bottom:4px;transform:translateX(-50%);
+  width:24px;height:3px;border-radius:2px;background:#ff8200;}
+.wb-dt-sort{display:flex;justify-content:flex-end;align-items:center;gap:5px;background:#fff;
+  padding:8px 14px 7px;font-size:12px;color:#8a8a8a;border-bottom:1px solid #f2f2f2;}
+.wb-dt-sort svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-dt-sort>span{display:inline-flex;align-items:center;gap:4px;}
+.wb-dt-sort [data-refresh="1"]{margin-right:auto;background:none;padding:0;font-size:12px;
+  font-weight:400;color:#8a8a8a;}
+.wb-dt-list{background:#fff;padding:0 14px 16px;min-height:120px;}
+.wb-dt-cm{display:flex;gap:9px;padding:13px 0;border-bottom:1px solid #f4f4f4;}
+.wb-dt-cm:last-child{border-bottom:none;}
+.wb-dt-cm.is-reply{padding:9px 0 0;border-bottom:none;}
+.wb-dt-cm-ava{position:relative;flex:none;align-self:flex-start;}
+.wb-dt-cm-ava .wb-avatar{width:36px;height:36px;font-size:14px;}
+.wb-dt-cm.is-reply .wb-dt-cm-ava .wb-avatar{width:28px;height:28px;font-size:12px;}
+.wb-dt-cm-ava .wb-avatar.is-ai{background:linear-gradient(140deg,#ffbe86,#ff9a63);color:#fff;
+  font-weight:700;}
+.wb-dt-cm-v{position:absolute;right:-2px;bottom:-2px;width:13px;height:13px;border-radius:50%;
+  background:#ff8200;color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;
+  justify-content:center;border:1.2px solid #fff;}
+.wb-dt-cm-main{flex:1;min-width:0;}
+.wb-dt-cm-name{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:500;color:#7a7a7a;
+  overflow:hidden;}
+.wb-dt-cm-name>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wb-dt-fan{flex-shrink:0;font-size:9.5px;font-weight:600;color:#fff;padding:1px 5px;border-radius:4px;
+  background:linear-gradient(135deg,#b48bff,#7f6bff);line-height:1.45;}
+.wb-dt-cm-bubble{display:block;max-width:100%;margin-top:6px;font-size:14.5px;line-height:1.6;
+  color:#333;word-break:break-word;}
+.wb-dt-cm-bubble.pending{color:#a8a8a8;}
+.wb-dt-cm-quote{margin-top:6px;padding:6px 9px;border-radius:8px;background:#f6f6f8;
+  font-size:13px;line-height:1.55;color:#666;word-break:break-word;}
+.wb-dt-cm-quote-at{color:#3d7fe0;}
+.wb-dt-cm-imgs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.wb-dt-cm-imgs img{width:66px;height:66px;object-fit:cover;border-radius:8px;display:block;}
+.wb-dt-cm-foot{display:flex;align-items:center;gap:10px;margin-top:7px;}
+.wb-dt-cm-time{font-size:11.5px;color:#a3a3a3;flex:1;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;}
+.wb-dt-cm-acts{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.wb-dt-cm-act{border:none;background:none;padding:0;color:#9a9a9a;font-family:inherit;font-size:11.5px;
+  display:flex;align-items:center;gap:3px;cursor:pointer;}
+.wb-dt-cm-act svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-dt-cm-act.on{color:#ff8200;font-weight:600;}
+.wb-dt-cm-act.on svg{fill:currentColor;}
+.wb-dt-cm-replies{margin-top:8px;padding-left:10px;border-left:2px solid #f3e7ec;}
+.wb-dt-replybox{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+.wb-dt-replybox[hidden]{display:none;}
+.wb-dt-reply-row{display:flex;gap:6px;align-items:center;}
+.wb-dt-replybox .wb-cm-input{border-color:#eee;background:#fafafa;}
+.wb-dt-replybox .wb-cm-send{background:#ff8200;}
+.wb-dt-like-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #f4f4f4;}
+.wb-dt-like-row:last-child{border-bottom:none;}
+.wb-dt-like-row .wb-avatar{width:34px;height:34px;font-size:13px;}
+.wb-dt-like-name{flex:1;min-width:0;font-size:13px;color:#333;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;}
+.wb-dt-like-meta{font-size:11px;color:#a3a3a3;flex-shrink:0;}
+.wb-dt-empty{font-size:12.5px;color:#aaa;text-align:center;padding:28px 0;}
+.wb-dt-bottombar{flex-shrink:0;display:flex;align-items:center;gap:10px;
+  padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:#fff;
+  border-top:1px solid #f0f0f0;}
+.wb-dt-bbar{flex:1;display:flex;align-items:center;background:#fff;border:1px solid #eee;border-radius:24px;
+  padding:5px 4px;box-shadow:0 4px 14px -10px rgba(0,0,0,.4);}
+.wb-dt-bbar button{flex:1;border:none;background:none;padding:5px 0;display:flex;align-items:center;
+  justify-content:center;gap:5px;font-family:inherit;font-size:13px;color:#444;cursor:pointer;}
+.wb-dt-bbar button.on{color:#ff8200;font-weight:700;}
+.wb-dt-bbar svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;}
+.wb-dt-bbar button.on svg{fill:currentColor;}
 .wb-acc-name{flex:1;min-width:0;font-size:13.5px;font-weight:600;overflow:hidden;
   text-overflow:ellipsis;white-space:nowrap;}
 .wb-acc-tag{flex-shrink:0;font-size:10px;padding:2px 8px;border-radius:8px;
@@ -342,16 +622,43 @@
   white-space:pre-wrap;word-break:break-word;}
 .wb-post-quote-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:5px;border-radius:7px;overflow:hidden;}
 .wb-post-quote-imgs .wb-post-img{aspect-ratio:1;}
-.wb-txt-preview{border-radius:12px;padding:16px 14px;min-height:78px;display:flex;align-items:center;
-  justify-content:center;text-align:center;font-size:15px;line-height:1.5;font-weight:700;
-  white-space:pre-wrap;word-break:break-word;transition:background .15s,color .15s;}
-.wb-txt-colors{display:flex;align-items:center;gap:9px;padding:2px 0;}
-.wb-txt-colors-label{font-size:11.5px;color:var(--wb-ink-soft);}
-.wb-txt-color{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid rgba(255,255,255,.9);
-  box-shadow:0 2px 6px -3px rgba(120,80,40,.5);transition:transform .12s;}
-.wb-txt-color.on{transform:scale(1.12);border-color:var(--wb-orange);}
+.wb-ti-mask{position:absolute;inset:0;z-index:50;background:rgba(0,0,0,.35);
+  display:flex;align-items:center;justify-content:center;padding:16px;animation:wbFade .16s ease;}
+.wb-ti-card{width:100%;max-width:332px;max-height:90%;overflow-y:auto;background:#fff;
+  border-radius:14px;box-shadow:0 18px 50px -18px rgba(0,0,0,.45);
+  display:flex;flex-direction:column;animation:wbTiIn .2s cubic-bezier(.32,.72,0,1);}
+.wb-ti-card::-webkit-scrollbar{width:0;}
+.wb-ti-head{font-size:15px;font-weight:600;color:#222;padding:16px 16px 10px;}
+.wb-ti-body{padding:0 16px;display:flex;flex-direction:column;gap:12px;}
+.wb-ti-ta{width:100%;height:88px;border:1px solid #e6e6e6;border-radius:8px;padding:10px 12px;
+  font-family:inherit;font-size:14px;line-height:1.6;color:#222;background:#fff;outline:none;
+  resize:none;box-sizing:border-box;}
+.wb-ti-ta:focus{border-color:#07c160;}
+.wb-ti-ta::placeholder{color:#bdbdbd;}
+.wb-ti-preview{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:18px;font-size:15px;line-height:1.55;color:#333;background:#f5f5f5;
+  white-space:pre-wrap;word-break:break-word;overflow:hidden;transition:background .15s,color .15s;}
+.wb-ti-colors{display:flex;align-items:center;gap:8px;padding:2px 0 4px;}
+.wb-ti-color-label{font-size:12px;color:#888;flex-shrink:0;margin-right:4px;}
+.wb-ti-swatch{width:24px;height:24px;border-radius:6px;border:2px solid #e8e8e8;padding:0;cursor:pointer;
+  transition:border-color .15s,transform .12s;flex-shrink:0;}
+.wb-ti-swatch.on{border-color:#333;transform:scale(1.06);}
+.wb-ti-vpreview{aspect-ratio:16/9;}
+.wb-ti-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 16px 16px;}
+.wb-ti-btn{border:none;font-family:inherit;font-size:14px;padding:8px 22px;border-radius:5px;cursor:pointer;}
+.wb-ti-cancel{background:#f2f2f2;color:#555;}
+.wb-ti-cancel:active{background:#e8e8e8;}
+.wb-ti-ok{background:#07c160;color:#fff;font-weight:600;}
+.wb-ti-ok:active{background:#06ad56;}
+.wb-ti-fields{display:flex;gap:10px;}
+.wb-ti-field{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;}
+.wb-ti-field-label{font-size:11.5px;color:#888;}
+.wb-ti-input{width:100%;border:1px solid #e6e6e6;border-radius:8px;padding:8px 10px;
+  font-family:inherit;font-size:13.5px;color:#222;background:#fff;}
+.wb-ti-input:focus{outline:none;border-color:#07c160;}
+@keyframes wbTiIn{from{opacity:0;transform:scale(.94);}to{opacity:1;transform:scale(1);}}
 
-.wb-edit-mask{position:absolute;inset:0;z-index:30;background:rgba(60,35,15,.3);
+.wb-edit-mask{position:absolute;inset:0;z-index:45;background:rgba(60,35,15,.3);
   backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
   display:flex;align-items:flex-end;opacity:0;transition:opacity .2s ease;}
 .wb-edit-mask.show{opacity:1;}
@@ -366,8 +673,8 @@
 .wb-edit-head{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700;color:var(--wb-ink);}
 .wb-edit-cancel,.wb-edit-save{border:none;font-family:inherit;font-size:12.5px;padding:6px 13px;border-radius:13px;cursor:pointer;}
 .wb-edit-cancel{background:rgba(255,140,60,.1);color:var(--wb-orange-deep);}
-.wb-edit-save{background:linear-gradient(135deg,#ffa04d,#ff7a00);color:#fff;font-weight:600;
-  box-shadow:0 4px 12px -6px rgba(255,122,0,.7);}
+.wb-edit-save{background:linear-gradient(135deg,#ffb070,#ff9650);color:#fff;font-weight:600;
+  box-shadow:0 4px 12px -6px rgba(255,150,80,.7);}
 .wb-edit-avatar-row{display:flex;align-items:center;gap:12px;}
 .wb-edit-avatar{width:58px;height:58px;font-size:21px;position:relative;cursor:pointer;overflow:visible;
   box-shadow:0 4px 12px -5px rgba(200,110,20,.4);}
@@ -376,7 +683,7 @@
   background:rgba(60,30,10,.28);opacity:0;transition:opacity .15s;}
 .wb-edit-avatar:active::after{opacity:1;}
 .wb-edit-avatar .wb-edit-plus{position:absolute;right:-2px;bottom:-2px;width:19px;height:19px;border-radius:50%;
-  background:linear-gradient(135deg,#ffa04d,#ff7a00);color:#fff;font-size:12px;line-height:1;
+  background:linear-gradient(135deg,#ffb070,#ff9650);color:#fff;font-size:12px;line-height:1;
   display:flex;align-items:center;justify-content:center;border:2px solid #fff8f1;z-index:2;}
 .wb-edit-avatar-tip{font-size:11px;color:var(--wb-ink-soft);line-height:1.6;}
 .wb-edit-avatar-tip b{display:block;font-size:12px;color:var(--wb-ink);font-weight:600;margin-bottom:2px;}
@@ -385,7 +692,7 @@
 .wb-edit-input{width:100%;border:1px solid rgba(255,180,120,.55);border-radius:12px;
   padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--wb-ink);
   background:rgba(255,255,255,.86);outline:none;transition:border-color .15s,box-shadow .15s;}
-.wb-edit-input:focus{border-color:var(--wb-orange);box-shadow:0 0 0 3px rgba(255,130,0,.12);}
+.wb-edit-input:focus{border-color:var(--wb-orange);box-shadow:0 0 0 3px rgba(255,161,94,.16);}
 .wb-edit-textarea{height:84px;resize:none;line-height:1.6;}
 .wb-edit-vs{display:flex;gap:7px;}
 .wb-edit-v{flex:1;border:1px solid rgba(255,180,120,.5);border-radius:11px;background:rgba(255,255,255,.8);
@@ -394,10 +701,10 @@
 .wb-edit-v .wb-vdot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:1.4px solid currentColor;}
 .wb-edit-v.on{border-color:var(--wb-orange);background:rgba(255,140,60,.13);color:var(--wb-orange-deep);font-weight:700;}
 .wb-edit-v[data-v="yellow"] .wb-vdot{color:#eaa600;}
-.wb-edit-v[data-v="orange"] .wb-vdot{color:#ff8200;}
+.wb-edit-v[data-v="orange"] .wb-vdot{color:#ffa15e;}
 .wb-edit-v[data-v="gold"] .wb-vdot{color:#c99a12;}
 .wb-edit-v[data-v="yellow"].on .wb-vdot{background:#eaa600;}
-.wb-edit-v[data-v="orange"].on .wb-vdot{background:#ff8200;}
+.wb-edit-v[data-v="orange"].on .wb-vdot{background:#ffa15e;}
 .wb-edit-v[data-v="gold"].on .wb-vdot{background:#c99a12;}
 .wb-edit-v[data-v="none"] .wb-vdot{color:#c9b6a6;}
 
@@ -407,11 +714,11 @@
 @keyframes wbFade{from{opacity:0}to{opacity:1}}
 @keyframes wbUp{from{transform:translateY(30px);opacity:.6}to{transform:translateY(0);opacity:1}}
 
-body[data-wb-standalone]{margin:0;height:100vh;background:linear-gradient(135deg,#ffe9d5,#fff7f0);
+body[data-wb-standalone]{margin:0;height:100vh;background:linear-gradient(135deg,#fff1e4,#fffbf6);
   display:flex;align-items:center;justify-content:center;overflow:hidden;
   font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;}
 body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(92vw,420px)*2.026));
-  flex:none;border-radius:32px;box-shadow:0 30px 70px -20px rgba(180,100,40,.45);}
+  flex:none;border-radius:32px;box-shadow:0 30px 70px -20px rgba(190,120,60,.35);}
 </style>
 </head>
 <body data-wb-standalone>
@@ -424,8 +731,16 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
     <button class="wb-icon-btn" id="wbBackBtn" aria-label="返回">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <span class="wb-title" id="wbTopTitle">我</span>
+    <div class="wb-title-wrap">
+      <span class="wb-title" id="wbTopTitle">我</span>
+      <button class="wb-title-broom" id="wbMsgClearBtn" type="button" aria-label="一键清除消息提醒">
+        <svg viewBox="0 0 24 24"><path d="M14.8 3.4 20.6 9.2"/><path d="M12.8 5.4 18.6 11.2"/><path d="M11.6 7.2 8.2 10.6a2.2 2.2 0 0 0 0 3.1l1.9 1.9a2.2 2.2 0 0 0 3.1 0l3.4-3.4"/><path d="M8.6 14.6 4 20.4"/><path d="M11 16.6 7.6 21.2"/></svg>
+      </button>
+    </div>
     <div class="wb-top-actions">
+      <button class="wb-icon-btn" id="wbRefreshBtn" aria-label="刷新">
+        <svg viewBox="0 0 24 24"><path d="M20.4 12a8.4 8.4 0 1 1-2.6-6.1"/><path d="M20.6 4.4v5h-5"/></svg>
+      </button>
       <button class="wb-icon-btn wb-icon-btn-plus" id="wbComposeBtn" aria-label="发微博">
         <svg viewBox="0 0 24 24"><path d="M12 5.4v13.2M5.4 12h13.2"/></svg>
       </button>
@@ -458,10 +773,206 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
     '刘扬扬':'威神V_扬扬_YANGYANG'
   };
 
+  const MEMBER_DEVICES = {
+    '威神V_钱锟_KUN':'iPhone Duo',
+    '威神V_肖俊':'iPhone Duo',
+    '威神V_扬扬_YANGYANG':'iPhone Duo',
+    '威神V_TEN_李永钦':'OPPO Find X9 Pro',
+    '威神V_黄冠亨_HENDERY':'iPhone 16',
+    'WayV_official':''
+  };
+
+  function postDevice(p){
+    if(!p) return 'iPhone';
+    const key = p.name || '';
+    return Object.prototype.hasOwnProperty.call(MEMBER_DEVICES, key) ? MEMBER_DEVICES[key] : 'iPhone';
+  }
+
+  function postDeviceLabel(p){
+    const dev = postDevice(p);
+    const isWayv = dev === '' || Object.prototype.hasOwnProperty.call(MEMBER_DEVICES, (p && p.name) || '');
+    if(!isWayv) return '来自 ' + (p && p.video ? '微博视频号' : 'iPhone');
+    if(!dev) return '发布于 韩国';
+    return '来自 ' + (p.video ? '微博视频号' : dev) + ' · 发布于 韩国';
+  }
+
+  const MEMBER_ALIASES = {
+    '威神V_钱锟_KUN': ['钱锟', 'KUN', 'kun'],
+    '威神V_TEN_李永钦': ['李永钦', '李永钦 TEN', 'TEN', 'Ten', 'ten'],
+    '威神V_肖俊': ['肖俊', '德俊', '肖德俊', 'XIAOJUN', 'xiaojun'],
+    '威神V_黄冠亨_HENDERY': ['黄冠亨', 'HENDERY', 'Hendery', 'hendery'],
+    '威神V_扬扬_YANGYANG': ['刘扬扬', '扬扬', 'YANGYANG', 'yangyang']
+  };
+
+  const WEIBO_NICKS = { '造型师姐姐': '造型师姐姐Mia' };
+
+  const CANTON_WORDS = [
+    ['唔該','谢谢'],['唔使','不用'],['唔好意思','不好意思'],['點解','为什么'],['邊度','哪里'],['屋企','家里'],
+    ['搞掂','搞定'],['而家','现在'],['咁樣','这样'],['咁嘅','这样的'],['係咪','是不是'],['得閒','有空'],
+    ['唔','不'],['嘅','的'],['咁','这么'],['係','是'],['嚟','来'],['冇','没有'],['咗','了'],['睇','看'],
+    ['靚','漂亮'],['靓','漂亮'],['嗰','那'],['佢','他'],['哋','们'],['咩','什么'],['乜','什么'],['噉','这样'],
+    ['喺','在'],['啲','的'],['嘢','东西'],['俾','给'],['攰','累'],['搵','找']
+  ];
+
+  function toMandarin(s){
+    let t = String(s == null ? '' : s);
+    CANTON_WORDS.forEach(w => { t = t.split(w[0]).join(w[1]); });
+    return t;
+  }
+
+  function normName(n){ return String(n == null ? '' : n).replace(/\s+/g, '').toUpperCase(); }
+
+  function isWayvAccount(n){
+    const s = String(n == null ? '' : n).trim();
+    if(!s) return false;
+    if(/WayV|威神V/i.test(s)) return true;
+    const k = normName(s);
+    return Object.keys(MEMBER_ALIASES).some(canon =>
+      MEMBER_ALIASES[canon].some(a => {
+        const t = normName(a);
+        return k === t || (/[^\x00-\x7F]/.test(t) && k.indexOf(t) >= 0);
+      })
+    );
+  }
+
+  function memberWeiboName(n){
+    const s = String(n == null ? '' : n).trim();
+    if(!s) return s;
+    if(Object.prototype.hasOwnProperty.call(MEMBER_NAMES, s)) return MEMBER_NAMES[s];
+    const k = normName(s);
+    for(const canon in MEMBER_ALIASES){
+      if(MEMBER_ALIASES[canon].some(a => normName(a) === k)) return canon;
+    }
+    return s;
+  }
+
+  function weiboNick(n){
+    const s = String(n == null ? '' : n).trim();
+    if(!s) return s;
+    if(Object.prototype.hasOwnProperty.call(WEIBO_NICKS, s)) return WEIBO_NICKS[s];
+    if(/造型师/.test(s)) return '造型师姐姐Mia';
+    return memberWeiboName(s);
+  }
+
+  function pad2(n){ return String(n).padStart(2, '0'); }
+
+  function timeToTs(label, base){
+    const now = base || Date.now();
+    const s = String(label == null ? '' : label).trim();
+    if(!s) return now;
+    if(/刚刚|此刻/.test(s)) return now;
+    let m;
+    if((m = s.match(/(\d+)\s*秒前/))) return now - parseInt(m[1], 10) * 1000;
+    if((m = s.match(/(\d+)\s*分钟前/))) return now - parseInt(m[1], 10) * 60000;
+    if((m = s.match(/(\d+)\s*小时前/))) return now - parseInt(m[1], 10) * 3600000;
+    if((m = s.match(/(\d+)\s*天前/))) return now - parseInt(m[1], 10) * 86400000;
+    if((m = s.match(/昨天\s*(\d{1,2}):(\d{2})/))){
+      const d = new Date(now); d.setDate(d.getDate() - 1); d.setHours(parseInt(m[1], 10), parseInt(m[2], 10), 0, 0);
+      return d.getTime();
+    }
+    if((m = s.match(/^(\d{1,2}):(\d{2})$/))){
+      const d = new Date(now); d.setHours(parseInt(m[1], 10), parseInt(m[2], 10), 0, 0);
+      if(d.getTime() > now + 60000) d.setDate(d.getDate() - 1);
+      return d.getTime();
+    }
+    if((m = s.match(/(\d{1,2})月(\d{1,2})日/))){
+      const d = new Date(now); d.setMonth(parseInt(m[1], 10) - 1, parseInt(m[2], 10)); d.setHours(0, 0, 0, 0);
+      if(d.getTime() > now) d.setFullYear(d.getFullYear() - 1);
+      return d.getTime();
+    }
+    const wk = { '周一':1, '周二':2, '周三':3, '周四':4, '周五':5, '周六':6, '周日':0, '周天':0 };
+    for(const k in wk){
+      if(s.indexOf(k) === 0){
+        const d = new Date(now);
+        let back = d.getDay() - wk[k];
+        if(back <= 0) back += 7;
+        d.setDate(d.getDate() - back); d.setHours(0, 0, 0, 0);
+        return d.getTime();
+      }
+    }
+    return now;
+  }
+
+  function timeTextByTs(ts){
+    const t = Number(ts) || 0;
+    if(!t) return '刚刚';
+    const diff = Date.now() - t;
+    if(diff < 60000) return '刚刚';
+    if(diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+    const d = new Date(t), n = new Date();
+    const hm = pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    if(d.toDateString() === n.toDateString()) return hm;
+    const y = new Date(n); y.setDate(n.getDate() - 1);
+    if(d.toDateString() === y.toDateString()) return '昨天 ' + hm;
+    if(d.getFullYear() === n.getFullYear()) return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + hm;
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
+
+  function postTimeText(p){
+    if(!p) return '';
+    const ts = Number(p.ts) || 0;
+    return ts ? timeTextByTs(ts) : String(p.time || '');
+  }
+
+  function refreshTimeLabels(root){
+    const scope = root || document;
+    scope.querySelectorAll('.wb-post-time[data-ts], .wb-dt-post-time[data-ts]').forEach(el => {
+      const ts = Number(el.dataset.ts) || 0;
+      if(!ts) return;
+      const dev = el.dataset.dev || '';
+      el.textContent = timeTextByTs(ts) + (dev ? ' · ' + dev : '');
+    });
+  }
+
+  function bigRnd(a, b){ return Math.floor(Math.random() * (b - a + 1)) + a; }
+
+  function bumpBigCounts(x){
+    if(!x) return x;
+    if(!(x.reposts >= 5000)) x.reposts = bigRnd(5000, 9600);
+    if(!(x.comments >= 5000)) x.comments = bigRnd(5000, 9600);
+    if(!(x.likes >= 10000)) x.likes = bigRnd(10000, 68000);
+    return x;
+  }
+
+  const MEMBER_SELFIE = {
+    '威神V_钱锟_KUN':'kun.jpg',
+    '威神V_TEN_李永钦':'ten.jpg',
+    '威神V_肖俊':'xiaojun.jpg',
+    '威神V_黄冠亨_HENDERY':'Hendery.jpg',
+    '威神V_扬扬_YANGYANG':'yangyang.jpg'
+  };
+
+  const OFFICIAL_PHOTOS = [
+    'wayv.jpg',
+    '061137c38c1da7314270c33a5ba28ebe_720.jpg',
+    '15b4285a3b1fb9125336ec5d3d9e844f_720.jpg',
+    '329118e521ebbce28607e24408c2a5d5_0.jpg',
+    'bc43ac15a6df65585b445096a2b88d7a_0.jpg',
+    'd800a17fdf6d87151c37b26576c401d2_0.jpg',
+    '2f30a7bbe1a2fad64ca3d58092b398cb_0.jpg',
+    'd23242a5205578c2f9af90af56cb07fd_0.jpg',
+    '792a36aed78fc1b228ed4250cf1ba581_0.jpg',
+    '390fe9ada310016340c5fdd8b08c7d65_0.jpg',
+    'e5e90e420d2fc6f29b8ee93553eeec88_0.jpg',
+    'b700dff5904c691d32c7bedde5edf7bf_0.jpg',
+    'e5ffb46a730cbd1867ee038673b81e36_0.jpg',
+    '6fc670312fa49e4efd2d75d13d7cb40d_0.jpg',
+    '0ac8eb527bde15d1f0290b61f8cc50e2_0.jpg',
+    '035075e81bade4b958df9f381252fb16_0.jpg',
+    '5568dede638d879504e708178118a3c4_0.jpg'
+  ];
+
+  const SCENE_KEYS = ['selfie','photo','night','studio','doll','food','street','stage','sky','none'];
+  const SCENE_TIP = 'selfie=自己的自拍；photo=别人拍的他拍照；night=城市夜景；studio=录音室或练习室；doll=拿着官方周边玩偶的照片；food=美食；street=街景或路上随手拍；stage=舞台；sky=天空云朵；none=不配图';
+
+  const ROBERT_NAME = '微博罗伯特';
+
+  const ROBERT_SYSTEM = '你是微博评论区里固定出现的AI网友「微博罗伯特」。你的评论犀利、狠毒、阴阳怪气，一针见血地戳穿博主的小心思，像老网民一样毒舌但不说脏话、不人身攻击、不涉及政治。每条评论20-45字，口语化，可用一两个网络词或emoji，只输出JSON。';
+
   const OFFICIAL_POSTS = [
     { id:'official1', name:'WayV_official', avatar:'wayv.jpg', vip:true, official:true, time:'1小时前',
       text:'【WayV 官方】新专辑概念预告第一弹公开 🎬 这一次，我们把舞台搬到了更远的地方。#WayV回归#',
-      imgs:['wayv.jpg'], likes:8642, comments:412, reposts:1936, liked:false },
+      imgs:[], likes:8642, comments:412, reposts:1936, liked:false },
     { id:'official2', name:'WayV_official', avatar:'wayv.jpg', vip:true, official:true, time:'昨天 19:30',
       text:'【公告】本周六晚八点，全体成员将进行线上直播，记得准时来见面 🧡 #WayV直播#',
       imgs:[], likes:5127, comments:286, reposts:864, liked:false }
@@ -470,36 +981,204 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
   const DEFAULT_FEED = [
     OFFICIAL_POSTS[0],
     OFFICIAL_POSTS[1],
-    { id:'p1', name:'威神V_钱锟_KUN', avatar:'kun.jpg', vip:true, time:'12分钟前', text:'练习室的空调终于修好了，今天不用一边流汗一边跳舞了🥲', imgs:['kun.jpg'], likes:1286, comments:64, reposts:21, liked:false },
-    { id:'p2', name:'威神V_TEN_李永钦', avatar:'ten.jpg', vip:true, time:'2小时前', text:'新歌最后一段编舞改了七次，这次是真的定稿了。舞台见 🕺', imgs:['ten.jpg','wayv.jpg'], likes:3021, comments:186, reposts:74, liked:false },
-    { id:'p3', name:'威神V_肖俊', avatar:'xiaojun.jpg', vip:true, time:'5小时前', text:'深夜放毒：刚出锅的葱油拌面，有人要吃吗？', imgs:['xiaojun.jpg'], likes:968, comments:132, reposts:9, liked:false },
-    { id:'p4', name:'威神V_黄冠亨_HENDERY', avatar:'Hendery.jpg', vip:true, time:'昨天 21:40', text:'上海的秋天来得太快了，早上出门差点被冻到。', imgs:['Hendery.jpg'], likes:754, comments:41, reposts:6, liked:false },
-    { id:'p5', name:'威神V_扬扬_YANGYANG', avatar:'yangyang.jpg', vip:true, time:'昨天 18:05', text:'在录音室待了六个小时，耳朵已经不属于我了。', imgs:['yangyang.jpg'], likes:1103, comments:88, reposts:15, liked:false }
-  ];
-
-  const RECOMMEND_POOL = [
-    { id:'r1', name:'娱乐爆料君', vip:true, time:'8分钟前', text:'某男团练习室同框照流出，这个默契程度真的不是排练了八百遍吗？评论区已经吵翻了。', imgs:[], likes:4821, comments:236, reposts:118, liked:false },
-    { id:'r2', name:'追星bot', vip:false, time:'26分钟前', text:'今日舞台直拍合集已更新，需要的姐妹自取，记得点赞收藏哦～', imgs:[], likes:1936, comments:74, reposts:36, liked:false },
-    { id:'r3', name:'吃瓜少女日常', vip:true, time:'1小时前', text:'热搜那个瓜我扒了一晚上，时间线整理好了，看图说话（图九是重点）。', imgs:[], likes:6240, comments:512, reposts:302, liked:false },
-    { id:'r4', name:'娱乐圈bot', vip:true, time:'2小时前', text:'盘点今年最出圈的五个舞台现场，第一名应该没人有异议吧？', imgs:[], likes:3105, comments:189, reposts:96, liked:false },
-    { id:'r5', name:'音乐现场bot', vip:false, time:'3小时前', text:'深夜歌单推荐：一首适合单曲循环到天亮的新歌。', imgs:[], likes:1187, comments:42, reposts:18, liked:false },
-    { id:'r6', name:'时尚穿搭bot', vip:true, time:'4小时前', text:'机场穿搭解析：这一身配色真的很难不爱，普通人也可以照着穿。', imgs:[], likes:2260, comments:133, reposts:61, liked:false },
-    { id:'r7', name:'热搜观察员', vip:true, time:'5小时前', text:'今天的热搜榜有点热闹，前三名全部和同一件事有关，你怎么看？', imgs:[], likes:5402, comments:388, reposts:210, liked:false },
-    { id:'r8', name:'打榜小助手', vip:false, time:'6小时前', text:'【每日任务】今天的投票链接更新了，点进来三分钟搞定，一起冲榜！', imgs:[], likes:864, comments:36, reposts:12, liked:false },
-    { id:'r9', name:'深夜emo bot', vip:false, time:'昨天 23:40', text:'凌晨三点还醒着的人，大概都有一点心事吧。', imgs:[], likes:7620, comments:604, reposts:248, liked:false },
-    { id:'r10', name:'韩流资讯站', vip:true, time:'昨天 20:15', text:'独家：下个月回归阵容名单曝光，这次的配置真的很豪华。', imgs:[], likes:4396, comments:271, reposts:158, liked:false },
-    { id:'r11', name:'微博娱乐', vip:true, time:'昨天 16:20', text:'本周明星势力榜更新，来看看你喜欢的那个有没有上升。', imgs:[], likes:2874, comments:96, reposts:44, liked:false },
-    { id:'r12', name:'养猫bot', vip:false, time:'昨天 12:05', text:'今日份治愈：一只试图挤进小盒子的猫，失败了但很可爱。', imgs:[], likes:9130, comments:420, reposts:305, liked:false }
+    { id:'p1', name:'威神V_钱锟_KUN', avatar:'kun.jpg', vip:true, time:'12分钟前', text:'练习室的空调终于修好了，今天不用一边流汗一边跳舞了🥲', imgs:[], likes:1286, comments:64, reposts:21, liked:false },
+    { id:'p2', name:'威神V_TEN_李永钦', avatar:'ten.jpg', vip:true, time:'2小时前', text:'新歌最后一段编舞改了七次，这次是真的定稿了。舞台见 🕺', imgs:[], likes:3021, comments:186, reposts:74, liked:false },
+    { id:'p3', name:'威神V_肖俊', avatar:'xiaojun.jpg', vip:true, time:'5小时前', text:'深夜放毒：刚出锅的葱油拌面，有人要吃吗？', imgs:[], likes:968, comments:132, reposts:9, liked:false },
+    { id:'p4', name:'威神V_黄冠亨_HENDERY', avatar:'Hendery.jpg', vip:true, time:'昨天 21:40', text:'上海的秋天来得太快了，早上出门差点被冻到。', imgs:[], likes:754, comments:41, reposts:6, liked:false },
+    { id:'p5', name:'威神V_扬扬_YANGYANG', avatar:'yangyang.jpg', vip:true, time:'昨天 18:05', text:'在录音室待了六个小时，耳朵已经不属于我了。', imgs:[], likes:1103, comments:88, reposts:15, liked:false }
   ];
 
   const FOLLOWED_NAMES = new Set([].concat(OFFICIAL_POSTS.map(p => p.name), Object.values(MEMBER_NAMES)));
 
-  const DEFAULT_CHATS = [
-    { id:'c1', name:'威神V_钱锟_KUN', avatar:'kun.jpg', preview:'明天练习室时间改到十点，别迟到哦', time:'10:24', unread:2 },
-    { id:'c2', name:'威神V_TEN_李永钦', avatar:'ten.jpg', preview:'[图片] 这段舞你要不要试试', time:'昨天', unread:0 },
-    { id:'c3', name:'威神V_肖俊', avatar:'xiaojun.jpg', preview:'夜宵给你带了一份，放在门口了', time:'昨天', unread:1 },
-    { id:'c4', name:'WayV_official', avatar:'wayv.jpg', preview:'你关注的 WayV 发布了新微博', time:'周一', unread:0 }
+  const DEFAULT_CHATS = [];
+
+  const REC_ACCOUNTS = [
+    { name:'娱乐爆料君', vip:true },
+    { name:'追星bot', vip:false },
+    { name:'吃瓜少女日常', vip:true },
+    { name:'娱乐圈bot', vip:true },
+    { name:'音乐现场bot', vip:false },
+    { name:'时尚穿搭bot', vip:true },
+    { name:'热搜观察员', vip:true },
+    { name:'打榜小助手', vip:false },
+    { name:'深夜emo bot', vip:false },
+    { name:'韩流资讯站', vip:true },
+    { name:'微博娱乐', vip:true },
+    { name:'养猫bot', vip:false },
+    { name:'吃瓜不吐皮', vip:true },
+    { name:'今天的瓜保熟吗', vip:true },
+    { name:'追星小透明', vip:false },
+    { name:'舞台直拍收藏家', vip:false },
+    { name:'每日穿搭灵感', vip:true },
+    { name:'咖啡续命研究所', vip:false },
+    { name:'打工人的日常', vip:false },
+    { name:'早八人实录', vip:false },
+    { name:'一只柴犬的日常', vip:false },
+    { name:'猫猫观察日记', vip:false },
+    { name:'深夜食堂探店', vip:true },
+    { name:'城市漫游指南', vip:true },
+    { name:'周末去哪儿', vip:false },
+    { name:'电影碎碎念', vip:true },
+    { name:'剧集安利机', vip:false },
+    { name:'音乐剧现场', vip:false },
+    { name:'读书笔记bot', vip:false },
+    { name:'手账与胶带', vip:false },
+    { name:'摄影日记本', vip:true },
+    { name:'胶片时光机', vip:false },
+    { name:'健身打卡bot', vip:false },
+    { name:'跑步的普通人', vip:false },
+    { name:'减脂餐记录', vip:false },
+    { name:'甜品测评员', vip:true },
+    { name:'拉面巡礼', vip:false },
+    { name:'火锅爱好者', vip:false },
+    { name:'手机摄影技巧', vip:false },
+    { name:'数码小报', vip:true },
+    { name:'游戏日常bot', vip:false },
+    { name:'通勤路观察员', vip:false },
+    { name:'地铁上的故事', vip:false },
+    { name:'天气与穿衣', vip:false },
+    { name:'今日份快乐', vip:false },
+    { name:'沙雕图收集站', vip:false },
+    { name:'表情包补给站', vip:false },
+    { name:'冷笑话研究所', vip:false },
+    { name:'深夜碎碎念', vip:false },
+    { name:'失眠者联盟', vip:false },
+    { name:'治愈系bot', vip:false },
+    { name:'生活小妙招', vip:false },
+    { name:'家居改造日记', vip:false },
+    { name:'绿植养护笔记', vip:false },
+    { name:'阳台上的花', vip:false },
+    { name:'手冲咖啡日记', vip:false },
+    { name:'面食研究者', vip:false },
+    { name:'北方人的冬天', vip:false },
+    { name:'南方人的梅雨', vip:false },
+    { name:'旅行随手拍', vip:true },
+    { name:'路边的风景', vip:false },
+    { name:'今天也吃撑了', vip:false },
+    { name:'搬砖小分队', vip:false },
+    { name:'晚间散步者', vip:false },
+    { name:'花店日常', vip:false },
+    { name:'面包与咖啡', vip:false },
+    { name:'健身后的晚餐', vip:false },
+    { name:'追剧到天亮', vip:false },
+    { name:'老城区散步', vip:false },
+    { name:'雨天的窗', vip:false },
+    { name:'唱片收藏柜', vip:false },
+    { name:'写字楼观察员', vip:false },
+    { name:'城市夜跑者', vip:false },
+    { name:'家里有只猫', vip:false },
+    { name:'小城生活记录', vip:false }
   ];
+
+  const REC_TEXTS = [
+    '某男团练习室同框照流出，这个默契程度真的不是排练了八百遍吗？评论区已经吵翻了。',
+    '热搜那个瓜我扒了一晚上，时间线整理好了，看图说话（图九是重点）。',
+    '今天的热搜榜有点热闹，前三名全部和同一件事有关，你怎么看？',
+    '刚收到的消息，某组合下个月的行程表变了，具体还是等官宣吧。',
+    '有个小道消息，我这边还不能确定，先不点名了，评论区猜猜看。',
+    '又有人被拍到深夜同框了，这次是真的还是又一场乌龙？',
+    '这个瓜反转了三次，我现在已经不知道该相信谁了。',
+    '某品牌代言人换了，评论区已经在吵了。',
+    '今天的娱乐新闻密度有点高，我整理了一下，按时间顺序放下面。',
+    '今日舞台直拍合集已更新，需要的姐妹自取，记得点赞收藏哦～',
+    '【每日任务】今天的投票链接更新了，点进来三分钟搞定，一起冲榜！',
+    '本周明星势力榜更新，来看看你喜欢的那个有没有上升。',
+    '超话签到别忘了，连续七天有惊喜。',
+    '应援色这个事我想说两句，大家冷静一点，别吵。',
+    '新专预售开了，我这边整理了一份购买指南，需要的看评论区。',
+    '演唱会门票明天开抢，先把自己的账号信息都准备好。',
+    '今天的数据很好看，谢谢每一个熬夜投票的人。',
+    '深夜歌单推荐：一首适合单曲循环到天亮的新歌。',
+    '盘点今年最出圈的五个舞台现场，第一名应该没人有异议吧？',
+    '这张专辑的编曲真的值得单独拿出来讲，第二首的鼓点太抓耳了。',
+    '在livehouse听到一首没听过的歌，回来查了半天才找到名字。',
+    '耳机换了之后，同一首歌听起来完全不一样，建议都试试。',
+    '推荐一首适合通勤听的歌，四分钟刚好到公司。',
+    '机场穿搭解析：这一身配色真的很难不爱，普通人也可以照着穿。',
+    '秋天的第一件外套，我选了米色，比想象中好搭。',
+    '同一件白衬衫，三种穿法，第三种我最喜欢。',
+    '今年流行的这个颜色，说实话有点挑人，先试再买。',
+    '换季整理衣柜，扔了三袋，居然还是觉得没衣服穿。',
+    '上海的秋天来得太快了，早上出门差点被冻到。',
+    '今天终于把拖了三个月的事情做完了，奖励自己一杯咖啡。',
+    '下班路上看到一只很胖的猫，蹲在便利店门口，一动不动。',
+    '周末大扫除，扔掉了三年前的快递盒，心情突然变好了。',
+    '早起十分钟，一天的状态真的会不一样。',
+    '楼下新开了一家面包店，六点半出炉，排队排到门口。',
+    '最近在练习早睡，坚持了四天，第五天失败了。',
+    '天气一转凉，就想吃点热的东西。',
+    '今天加班到很晚，回家路上整条街都空了。',
+    '一个人吃饭也可以很认真，今天做了两菜一汤。',
+    '今日份治愈：一只试图挤进小盒子的猫，失败了但很可爱。',
+    '我家狗今天第一次自己坐电梯下楼，回来的时候一脸得意。',
+    '猫在窗台上看了一下午的鸟，什么也没抓到，但很满足。',
+    '捡到一只流浪猫，先带去看了医生，后续会更新。',
+    '刚出锅的葱油拌面，有人要吃吗？',
+    '这家店的汤底熬了八个小时，喝一口就知道值不值。',
+    '今天试了新的配方，糖少放了一勺，反而更好吃。',
+    '深夜放毒时间到，这碗面我吃了二十分钟。',
+    '第一次自己做月饼，样子不太好看，味道居然还行。',
+    '凌晨四点的海边，风很大，但是值得。',
+    '这个城市最好的地方，是不用刻意找，转角就有惊喜。',
+    '今天的云很好看，随手拍了一张，没修图。',
+    '在老城区走了一下午，拍到了很多有意思的门。',
+    '旅行最治愈的时刻，是坐在路边什么都不做。',
+    '今天出门忘带钥匙，在楼下坐了四十分钟，顺便看完了一集剧。',
+    '朋友说我笑起来像表情包，我打开相机看了一下，确实。',
+    '刚才对着镜子练习微笑，被家人看到了，现在气氛很尴尬。',
+    '今天最大的成就是成功避开所有想买的东西。',
+    '换了新手机，第一件事是把旧手机里的照片导出来，导了两个小时。',
+    '这个价位的耳机，降噪能到这个水平，确实有点意外。',
+    '整理了电脑桌面，删掉了两百多个文件，感觉电脑都变轻了。',
+    '今天跑了五公里，配速比上周快了一点，进步很小但很开心。',
+    '健身第三周，肌肉没见长，饭量倒是见长了。',
+    '拉伸真的很重要，昨天偷懒，今天腰有点酸。',
+    '这本书看到一半，突然理解了前面埋的那个伏笔。',
+    '今天背单词的效率很高，可能是因为把手机放远了。',
+    '推荐一个记笔记的方法，用了两个月，确实有用。',
+    '凌晨三点还醒着的人，大概都有一点心事吧。',
+    '有时候不需要建议，只是想说一句今天有点累。',
+    '今天情绪很低，但看到评论区有人和我一样，就好了一点。',
+    '地铁上听到两个人在聊同一部剧，我差点上去接话。',
+    '通勤路上拍到的天空，这个颜色调了很久才接近肉眼看到的。',
+    '第一次自己做手冲，味道一般，但过程很解压。',
+    '阳台上的这盆花终于开了，等了一个多月。',
+    '雨下了一整天，窗户上的水痕很好看。',
+    '今天的面包烤糊了一点，但家人说这样更香。'
+  ];
+
+  const REC_TAGS = ['#今日份快乐#', '#随手拍#', '#深夜食堂#', '#穿搭分享#', '#追星日常#', '#生活碎片#', '#周末去哪儿#', '#一人食#'];
+
+  const MARKET_NAMES = new Set(REC_ACCOUNTS.map(a => String(a.name || '').trim()));
+
+  function isMarketAccount(name){
+    return MARKET_NAMES.has(String(name == null ? '' : name).trim());
+  }
+
+  function marketHash(str){
+    let h = 0;
+    const s = String(str == null ? '' : str);
+    for(let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 99991;
+    return h;
+  }
+
+  function marketStats(seed){
+    const h = marketHash(seed);
+    return {
+      likes: 9000 + (h % 21000) * 9,
+      comments: 60 + (h % 340),
+      reposts: 110 + (h % 620)
+    };
+  }
+
+  function applyMarketStats(post){
+    if(!post || post.mine || !isMarketAccount(post.name)) return post;
+    const s = marketStats(post.id || post.name);
+    post.likes = s.likes;
+    post.comments = s.comments;
+    post.reposts = s.reposts;
+    return post;
+  }
 
   const HOT_LIST = [
     { tag:'WayV 新专辑回归', heat:'128.6万' },
@@ -522,9 +1201,9 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
   ];
 
   const COVERS = [
-    { name:'暖橙', css:'linear-gradient(160deg,#ff8f2e 0%,#ffa552 28%,#ffc183 58%,#ffdcbb 82%,#fff4e8 100%)' },
-    { name:'蜜橘', css:'linear-gradient(160deg,#ff7a22 0%,#ffa15a 30%,#ffc99b 62%,#ffe3c8 86%,#fff7ee 100%)' },
-    { name:'落日', css:'linear-gradient(160deg,#ff6a3d 0%,#ff8f5a 32%,#ffbb8a 64%,#ffdcc2 88%,#fff5ec 100%)' },
+    { name:'暖橙', css:'linear-gradient(160deg,#ffb673 0%,#ffc794 28%,#ffdcba 58%,#ffedda 82%,#fffaf4 100%)' },
+    { name:'蜜橘', css:'linear-gradient(160deg,#ffa863 0%,#ffc08a 30%,#ffd9b6 62%,#ffecd8 86%,#fffaf4 100%)' },
+    { name:'落日', css:'linear-gradient(160deg,#ff9668 0%,#ffb088 32%,#ffcfa8 64%,#ffe6d2 88%,#fff9f3 100%)' },
     { name:'奶杏', css:'linear-gradient(160deg,#f6b26b 0%,#ffcf9c 34%,#ffe4c6 68%,#fff3e2 100%)' },
     { name:'云霞', css:'linear-gradient(160deg,#ff8fae 0%,#ffb08e 40%,#ffd9b6 72%,#fff3e8 100%)' },
     { name:'晴空', css:'linear-gradient(160deg,#7cc4ff 0%,#a8d8ff 36%,#d7edff 70%,#f4faff 100%)' }
@@ -541,8 +1220,21 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
     topic:'<svg viewBox="0 0 24 24"><path d="M9.4 4 7.6 20"/><path d="M16.4 4 14.6 20"/><path d="M4.6 9.2h15"/><path d="M3.8 14.8h15"/></svg>',
     at:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.4"/><path d="M15.4 8.6v4.6a3 3 0 0 0 6 .6V12a9 9 0 1 0-3.6 7.2"/></svg>',
     diamond:'<svg viewBox="0 0 24 24"><path d="M7.2 3.4h9.6L21 9l-9 11.6L3 9z"/><path d="M3 9h18"/><path d="M9.4 9 12 20.6 14.6 9"/><path d="M7.2 3.4 9.4 9"/><path d="M16.8 3.4 14.6 9"/></svg>',
+    video:'<svg viewBox="0 0 24 24"><rect x="2.6" y="5.2" width="13.4" height="13.6" rx="2.4"/><path d="M16 10.4l5.2-3v9.2l-5.2-3z"/></svg>',
     edit:'<svg viewBox="0 0 24 24"><path d="M12 20h8"/><path d="M16.4 3.9a2 2 0 0 1 2.8 2.8L7.6 18.3l-3.6.8.8-3.6z"/></svg>',
     trash:'<svg viewBox="0 0 24 24"><path d="M4 6.4h16"/><path d="M9.4 6.4V4.6a1.4 1.4 0 0 1 1.4-1.4h2.4a1.4 1.4 0 0 1 1.4 1.4v1.8"/><path d="M6.4 6.4l.9 12.1a1.9 1.9 0 0 0 1.9 1.8h5.6a1.9 1.9 0 0 0 1.9-1.8l.9-12.1"/><path d="M10.4 10.4v6M13.6 10.4v6"/></svg>'
+  };
+
+  const DT_ICON = {
+    back:'<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>',
+    head:'<svg viewBox="0 0 24 24"><path d="M4 13.4v-1.8a8 8 0 0 1 16 0v1.8"/><rect x="2.6" y="12.6" width="4.2" height="6.2" rx="1.8"/><rect x="17.2" y="12.6" width="4.2" height="6.2" rx="1.8"/></svg>',
+    dots:'<svg viewBox="0 0 24 24"><circle cx="5.8" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18.2" cy="12" r="1.5"/></svg>',
+    refresh:'<svg viewBox="0 0 24 24"><path d="M20.6 12a8.6 8.6 0 1 1-2.6-6.1"/><path d="M20.9 4.4v5.4h-5.4"/></svg>',
+    sort:'<svg viewBox="0 0 24 24"><path d="M4 7.4h16"/><path d="M6.6 12h10.8"/><path d="M9.4 16.6h5.2"/></svg>',
+    sad:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><circle cx="9" cy="10.2" r="0.9"/><circle cx="15" cy="10.2" r="0.9"/><path d="M15.4 16.6a4.4 4.4 0 0 0-6.8 0"/></svg>',
+    share:'<svg viewBox="0 0 24 24"><path d="M13.6 5.4 19 10.2l-5.4 4.8"/><path d="M18.6 10.2H11a6 6 0 0 0-6 6v2.4"/></svg>',
+    save:'<svg viewBox="0 0 24 24"><rect x="3.4" y="4.4" width="17.2" height="15.2" rx="2.4"/><circle cx="8.6" cy="9.8" r="1.6"/><path d="M20.6 15.6 16.2 11a1.8 1.8 0 0 0-2.6 0L6.4 19.6"/><path d="M15.4 2.8v5M12.9 5.3l2.5 2.5 2.5-2.5"/></svg>',
+    wx:'<svg viewBox="0 0 24 24"><path d="M9.8 4.6c-3.2 0-5.8 2.1-5.8 4.7 0 1.5.8 2.8 2.1 3.7l-.5 1.7 1.9-1a7.4 7.4 0 0 0 2.3.4c3.2 0 5.8-2.1 5.8-4.8s-2.6-4.6-5.8-4.6z"/><path d="M20.4 12.6c0-2.2-2.1-4-4.7-4-2.7 0-4.8 1.8-4.8 4s2.1 4 4.8 4c.6 0 1.2-.1 1.7-.3l1.6.8-.4-1.4c1.1-.7 1.8-1.9 1.8-3.1z"/></svg>'
   };
 
   const esc = s => String(s == null ? '' : s)
@@ -556,18 +1248,336 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
     return `<div class="wb-avatar ${cls || ''}">${letter}</div>`;
   }
 
+  const SCENE_CACHE = {};
+
+  function sceneSvg(scene){
+    if(SCENE_CACHE[scene]) return SCENE_CACHE[scene];
+    const rnd = (seed => () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648)(scene.length * 977 + 31);
+    const box = body => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">${body}</svg>`;
+    let body = '';
+    if(scene === 'night'){
+      const blocks = [];
+      let x = -10;
+      while(x < 400){
+        const w = 24 + Math.floor(rnd() * 34);
+        const h = 96 + Math.floor(rnd() * 150);
+        blocks.push({ x, w, h });
+        x += w + 5;
+      }
+      const windows = blocks.map(b => {
+        let s = '';
+        for(let wy = 400 - b.h + 12; wy < 392; wy += 15){
+          for(let wx = b.x + 6; wx < b.x + b.w - 6; wx += 12){
+            if(rnd() < 0.45) continue;
+            s += `<rect x="${wx}" y="${wy}" width="4" height="7" fill="#ffd99a" opacity="${0.35 + rnd() * 0.5}"/>`;
+          }
+        }
+        return s;
+      }).join('');
+      body = `<defs>
+        <linearGradient id="nsky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#060d22"/><stop offset=".45" stop-color="#13274f"/>
+          <stop offset=".75" stop-color="#31446f"/><stop offset="1" stop-color="#5b4a68"/>
+        </linearGradient>
+        <radialGradient id="nmoon" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#ffe9c4" stop-opacity=".85"/><stop offset="1" stop-color="#ffe9c4" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="nlit" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#ffb066" stop-opacity=".55"/><stop offset="1" stop-color="#ffb066" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="400" height="400" fill="url(#nsky)"/>
+      <circle cx="308" cy="88" r="86" fill="url(#nmoon)"/>
+      <circle cx="308" cy="88" r="22" fill="#fff6de"/>
+      ${blocks.map(b => `<rect x="${b.x}" y="${400 - b.h}" width="${b.w}" height="${b.h}" fill="#0a1230" opacity=".92"/>`).join('')}
+      ${windows}
+      <rect x="0" y="330" width="400" height="70" fill="url(#nlit)"/>
+      <rect x="0" y="352" width="400" height="48" fill="#080f24" opacity=".55"/>
+      ${blocks.slice(0, 6).map(b => `<rect x="${b.x + 2}" y="${352 + 6}" width="${b.w - 4}" height="42" fill="#0b1638" opacity=".5"/>`).join('')}`;
+    } else if(scene === 'studio'){
+      const bars = [];
+      for(let i = 0; i < 26; i++){
+        const h = 12 + Math.floor(rnd() * 58);
+        bars.push(`<rect x="${18 + i * 14}" y="${300 - h}" width="7" height="${h}" rx="3.5" fill="#ffb066" opacity="${0.35 + rnd() * 0.5}"/>`);
+      }
+      body = `<defs>
+        <radialGradient id="sl" cx=".5" cy=".25" r=".8">
+          <stop offset="0" stop-color="#4a3320"/><stop offset=".55" stop-color="#241a14"/><stop offset="1" stop-color="#120d0b"/>
+        </radialGradient>
+        <radialGradient id="sglow" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#ffcf8a" stop-opacity=".55"/><stop offset="1" stop-color="#ffcf8a" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="400" height="400" fill="url(#sl)"/>
+      <ellipse cx="200" cy="120" rx="150" ry="110" fill="url(#sglow)"/>
+      <g stroke="#ffd7a8" stroke-width="3" fill="none" opacity=".85">
+        <rect x="184" y="86" width="32" height="46" rx="16" fill="#1b1512"/>
+        <path d="M186 128a14 14 0 0 0 28 0"/>
+        <path d="M200 142v52"/>
+      </g>
+      <ellipse cx="200" cy="212" rx="34" ry="9" fill="#ffd7a8" opacity=".28"/>
+      ${bars.join('')}
+      <rect x="0" y="300" width="400" height="100" fill="#0d0907" opacity=".6"/>`;
+    } else if(scene === 'doll'){
+      body = `<defs>
+        <linearGradient id="dp" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffd9e4"/><stop offset=".5" stop-color="#ffe9d2"/><stop offset="1" stop-color="#d9ecff"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="400" fill="url(#dp)"/>
+      <circle cx="200" cy="330" r="120" fill="#ffffff" opacity=".35"/>
+      <g>
+        <circle cx="160" cy="150" r="34" fill="#fff8f2"/>
+        <circle cx="240" cy="150" r="34" fill="#fff8f2"/>
+        <circle cx="160" cy="150" r="16" fill="#ffc9d9"/>
+        <circle cx="240" cy="150" r="16" fill="#ffc9d9"/>
+        <rect x="130" y="160" width="140" height="140" rx="52" fill="#fff8f2"/>
+        <ellipse cx="200" cy="238" rx="46" ry="42" fill="#ffe7cf"/>
+        <circle cx="184" cy="232" r="5" fill="#4a3b33"/>
+        <circle cx="216" cy="232" r="5" fill="#4a3b33"/>
+        <path d="M192 248q8 7 16 0" stroke="#4a3b33" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="170" cy="250" r="8" fill="#ffb3c6" opacity=".7"/>
+        <circle cx="230" cy="250" r="8" fill="#ffb3c6" opacity=".7"/>
+        <path d="M150 300q50 34 100 0" stroke="#ffd0dc" stroke-width="14" fill="none" stroke-linecap="round" opacity=".85"/>
+      </g>
+      <circle cx="86" cy="96" r="9" fill="#ffffff" opacity=".8"/>
+      <circle cx="330" cy="120" r="6" fill="#ffffff" opacity=".7"/>
+      <circle cx="70" cy="300" r="5" fill="#ffffff" opacity=".6"/>`;
+    } else if(scene === 'food'){
+      body = `<defs>
+        <linearGradient id="ft" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#4a3126"/><stop offset=".55" stop-color="#6b4732"/><stop offset="1" stop-color="#3a251c"/>
+        </linearGradient>
+        <radialGradient id="fl" cx=".5" cy=".45" r=".6">
+          <stop offset="0" stop-color="#fff2d8" stop-opacity=".55"/><stop offset="1" stop-color="#fff2d8" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="400" height="400" fill="url(#ft)"/>
+      <ellipse cx="200" cy="210" rx="190" ry="150" fill="url(#fl)"/>
+      <ellipse cx="200" cy="248" rx="132" ry="104" fill="#f7f2ea"/>
+      <ellipse cx="200" cy="248" rx="108" ry="84" fill="#fffdf8"/>
+      <ellipse cx="200" cy="252" rx="86" ry="66" fill="#ffd9a8"/>
+      <circle cx="172" cy="232" r="20" fill="#e98b46"/>
+      <circle cx="226" cy="240" r="16" fill="#d9702f"/>
+      <circle cx="198" cy="274" r="13" fill="#8fb96a"/>
+      <circle cx="238" cy="276" r="10" fill="#8fb96a"/>
+      <path d="M168 200q10 -30 0 -52" stroke="#fff" stroke-width="6" fill="none" opacity=".4" stroke-linecap="round"/>
+      <path d="M214 196q12 -34 2 -58" stroke="#fff" stroke-width="6" fill="none" opacity=".32" stroke-linecap="round"/>
+      <path d="M246 202q10 -28 2 -48" stroke="#fff" stroke-width="5" fill="none" opacity=".25" stroke-linecap="round"/>
+      <g stroke="#f2e2c9" stroke-width="8" opacity=".8" stroke-linecap="round">
+        <path d="M320 300v-40"/><path d="M338 302v-32"/>
+      </g>`;
+    } else if(scene === 'street'){
+      const blocks = [];
+      let x = -8;
+      while(x < 400){
+        const w = 30 + Math.floor(rnd() * 40);
+        const h = 70 + Math.floor(rnd() * 90);
+        blocks.push({ x, w, h });
+        x += w + 4;
+      }
+      body = `<defs>
+        <linearGradient id="ss" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8ec9f0"/><stop offset=".45" stop-color="#cfe8f7"/><stop offset="1" stop-color="#fde9d2"/>
+        </linearGradient>
+        <radialGradient id="sun" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#fff3c4" stop-opacity=".95"/><stop offset="1" stop-color="#fff3c4" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="400" height="400" fill="url(#ss)"/>
+      <circle cx="300" cy="96" r="80" fill="url(#sun)"/>
+      <circle cx="300" cy="96" r="24" fill="#fff8dc"/>
+      ${blocks.map(b => `<rect x="${b.x}" y="${268 - b.h}" width="${b.w}" height="${b.h}" fill="#7c8ea6" opacity="${0.22 + rnd() * 0.25}"/>`).join('')}
+      <rect x="0" y="268" width="400" height="132" fill="#6f7d8c"/>
+      <path d="M0 400 130 268h140L400 400z" fill="#4d5866"/>
+      <g stroke="#f6f2e6" stroke-width="9" stroke-dasharray="26 24" opacity=".85">
+        <path d="M200 400 200 272"/>
+      </g>
+      <rect x="0" y="392" width="400" height="8" fill="#3b4450" opacity=".7"/>`;
+    } else if(scene === 'stage'){
+      body = `<defs>
+        <radialGradient id="st" cx=".5" cy=".15" r=".9">
+          <stop offset="0" stop-color="#2a2338"/><stop offset=".5" stop-color="#131022"/><stop offset="1" stop-color="#07060d"/>
+        </radialGradient>
+        <linearGradient id="cone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffd08a" stop-opacity=".5"/><stop offset="1" stop-color="#ffd08a" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="cone2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#9fd0ff" stop-opacity=".42"/><stop offset="1" stop-color="#9fd0ff" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="400" fill="url(#st)"/>
+      <path d="M120 0 40 400h150z" fill="url(#cone)"/>
+      <path d="M290 0 380 400H230z" fill="url(#cone2)"/>
+      <circle cx="150" cy="300" r="12" fill="#1a1520"/>
+      <path d="M150 312q-14 30-12 60h44q2-30-10-60z" fill="#1a1520"/>
+      <g fill="#ffd9a6" opacity=".5">
+        <circle cx="90" cy="140" r="3"/><circle cx="320" cy="120" r="3"/><circle cx="210" cy="90" r="2.5"/>
+        <circle cx="60" cy="250" r="2.5"/><circle cx="350" cy="240" r="2.5"/>
+      </g>
+      <rect x="0" y="372" width="400" height="28" fill="#0b0912"/>`;
+    } else if(scene === 'sky'){
+      body = `<defs>
+        <linearGradient id="ky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2f7fd4"/><stop offset=".42" stop-color="#7cb8e8"/>
+          <stop offset=".72" stop-color="#bfe0f4"/><stop offset="1" stop-color="#ffe6c6"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="400" fill="url(#ky)"/>
+      <g fill="#ffffff" opacity=".85">
+        <ellipse cx="120" cy="150" rx="66" ry="34"/><ellipse cx="170" cy="138" rx="48" ry="30"/>
+        <ellipse cx="80" cy="140" rx="34" ry="24"/>
+        <ellipse cx="290" cy="220" rx="72" ry="32"/><ellipse cx="246" cy="212" rx="44" ry="26"/>
+        <ellipse cx="336" cy="208" rx="36" ry="22"/>
+      </g>
+      <g fill="#ffffff" opacity=".45">
+        <ellipse cx="200" cy="86" rx="52" ry="20"/><ellipse cx="60" cy="290" rx="58" ry="22"/>
+      </g>
+      <circle cx="322" cy="86" r="34" fill="#fff4cf" opacity=".8"/>`;
+    } else {
+      body = `<defs>
+        <linearGradient id="gm" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffb27a"/><stop offset=".5" stop-color="#ffd0a0"/><stop offset="1" stop-color="#ffe8cf"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="400" fill="url(#gm)"/>`;
+    }
+    const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(box(body));
+    SCENE_CACHE[scene] = url;
+    return url;
+  }
+
+  const TEXT_IMG_CACHE = {};
+
+  const TEXT_IMG_STYLES = [
+    { c1:'#fff4e6', c2:'#ffe2c4', fg:'#7a4a1e' },
+    { c1:'#eef7ff', c2:'#d5e9ff', fg:'#22527f' },
+    { c1:'#fdeef4', c2:'#ffdcea', fg:'#7a2748' },
+    { c1:'#eefaf1', c2:'#d6f0e0', fg:'#1f5b3e' },
+    { c1:'#f6f2ff', c2:'#e4dcff', fg:'#43267a' },
+    { c1:'#f7f7f7', c2:'#eaeaea', fg:'#3a3a3a' },
+    { c1:'#333333', c2:'#1a1a1a', fg:'#f6f2ec' },
+    { c1:'#fff9e8', c2:'#ffeec2', fg:'#6b5218' }
+  ];
+
+  function textImage(text, seed){
+    const t = String(text == null ? '' : text).trim();
+    if(!t) return '';
+    const key = (seed || 0) + '|' + t;
+    if(TEXT_IMG_CACHE[key]) return TEXT_IMG_CACHE[key];
+    const st = TEXT_IMG_STYLES[Math.abs(seed || 0) % TEXT_IMG_STYLES.length];
+    const CV = 640, pad = 88;
+    const cv = document.createElement('canvas');
+    cv.width = CV; cv.height = CV;
+    const ctx = cv.getContext('2d');
+    const grad = ctx.createLinearGradient(0, 0, CV, CV);
+    grad.addColorStop(0, st.c1);
+    grad.addColorStop(1, st.c2);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, CV, CV);
+    const font = s => `${s}px "PingFang SC","Microsoft YaHei",sans-serif`;
+    const wrap = () => {
+      const out = [];
+      let cur = '';
+      for(const ch of Array.from(t)){
+        if(ch === '\n'){ out.push(cur); cur = ''; continue; }
+        const test = cur + ch;
+        if(ctx.measureText(test).width > CV - pad * 2 && cur){ out.push(cur); cur = ch; }
+        else cur = test;
+      }
+      if(cur) out.push(cur);
+      return out;
+    };
+    let fs = 64, lineH = 0, lines = [];
+    while(fs >= 22){
+      ctx.font = font(fs);
+      lineH = Math.round(fs * 1.7);
+      lines = wrap();
+      if(lines.length * lineH <= CV - pad * 2) break;
+      fs -= 3;
+    }
+    ctx.fillStyle = st.fg;
+    ctx.font = font(fs);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const total = lines.length * lineH;
+    const startY = CV / 2 - total / 2 + lineH / 2;
+    lines.forEach((ln, i) => ctx.fillText(ln, CV / 2, startY + i * lineH));
+    ctx.globalAlpha = .2;
+    ctx.strokeStyle = st.fg;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(26, 26, CV - 52, CV - 52, 26);
+    else ctx.rect(26, 26, CV - 52, CV - 52);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    const url = cv.toDataURL('image/png');
+    TEXT_IMG_CACHE[key] = url;
+    return url;
+  }
+
+  function imgSrc(src){
+    const s = String(src == null ? '' : src);
+    if(s.indexOf('txt:') !== 0) return s;
+    const body = s.slice(4);
+    let seed = 0;
+    for(let i = 0; i < body.length; i++) seed = (seed * 31 + body.charCodeAt(i)) % 9973;
+    return textImage(body, seed);
+  }
+
+  function pickScene(){
+    const usable = SCENE_KEYS.filter(k => k !== 'none');
+    return usable[Math.floor(Math.random() * usable.length)];
+  }
+
+  function sceneList(it){
+    let list = it && it.scenes;
+    if(typeof list === 'string') list = list.split(/[,，、\s]+/);
+    if(!Array.isArray(list) || !list.length) list = [it && it.scene ? it.scene : ''];
+    list = list.map(s => String(s || '').trim()).filter(s => SCENE_KEYS.indexOf(s) >= 0);
+    if(!list.length) list = [pickScene()];
+    return list.slice(0, 9);
+  }
+
+  function imageTexts(it){
+    let list = it && it.images;
+    if(typeof list === 'string') list = list.split(/[,，、\n]+/);
+    if(!Array.isArray(list)) list = [];
+    list = list.map(s => String(s == null ? '' : s).trim()).filter(Boolean).slice(0, 9);
+    if(list.length) return list;
+    const text = String((it && it.text) || '').trim();
+    if(!text) return [];
+    const parts = text.split(/[，。！？；、,.!?;~～\s]+/).map(s => s.trim()).filter(Boolean);
+    if(parts.length >= 3) return parts.slice(0, 3);
+    const one = parts.join(' ').slice(0, 16) || text.slice(0, 16);
+    return [one];
+  }
+
+  function postImages(texts){
+    const list = (Array.isArray(texts) ? texts : []).slice(0, 9)
+      .map(t => String(t == null ? '' : t).trim()).filter(Boolean);
+    return list.map(t => 'txt:' + t);
+  }
+
+  const NO_IMG_POST_IDS = ['official1', 'official2', 'p1', 'p2', 'p3', 'p4', 'p5'];
+
   function createStore(Phone){
     const KEY = 'weibo_data';
     let data = null;
     const blankAccount = id => ({ id, name:'', avatar:'', bio:'', verify:'none', persona:null, cover:'' });
     const defaults = () => ({
-      v: 5,
+      v: 11,
       profile:{ following:6, followers:0, posts:0, name:'', avatar:'', bio:'记录生活，也记录你。', verify:'none', persona:null, cover:'' },
       accounts:[ blankAccount('a1') ],
       activeId:'a1',
       feed: DEFAULT_FEED.map(p => Object.assign({}, p, { imgs:(p.imgs || []).slice() })),
-      recommend: RECOMMEND_POOL.map(p => Object.assign({}, p, { imgs:(p.imgs || []).slice() })),
+      recommend: [],
+      recView:{ round:1, items:[] },
+      drafts: [],
+      batches: [],
       chats: DEFAULT_CHATS.map(c => Object.assign({}, c)),
+      dms: {},
+      seenNotices: [],
       superTopics: SUPER_TOPICS.map(t => Object.assign({}, t))
     });
     function get(){
@@ -578,7 +1588,10 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       }catch(e){ saved = null; }
       if(saved && !Array.isArray(saved.feed)) saved = null;
       data = Object.assign(defaults(), saved || {});
-      if(!Array.isArray(data.feed) || !data.feed.length) data.feed = defaults().feed;
+      if(!Array.isArray(data.feed) || !data.feed.length){
+        data.feed = defaults().feed;
+        data.feed.forEach(x => bumpBigCounts(x));
+      }
       if(!Array.isArray(data.chats) || !data.chats.length) data.chats = defaults().chats;
       if(!Array.isArray(data.superTopics) || !data.superTopics.length) data.superTopics = defaults().superTopics;
       if(!data.v || data.v < 3){
@@ -608,10 +1621,101 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
         });
         if(!data.profile.following) data.profile.following = 6;
       }
-      if(!Array.isArray(data.recommend) || !data.recommend.length){
-        data.recommend = RECOMMEND_POOL.map(p => Object.assign({}, p, { imgs:(p.imgs || []).slice() }));
+      if(!Array.isArray(data.recommend)) data.recommend = [];
+      if(!data.v || data.v < 6){
+        data.feed.concat(data.recommend || []).forEach(x => {
+          if(x.following && !x.unfollowed && !FOLLOWED_NAMES.has(x.name)) x.following = false;
+        });
+        data.profile.following = FOLLOWED_NAMES.size;
       }
-      data.v = 5;
+      if(!data.v || data.v < 8){
+        data.feed.forEach(x => {
+          if(NO_IMG_POST_IDS.indexOf(x.id) >= 0) x.imgs = [];
+        });
+      }
+      if(!Array.isArray(data.drafts)) data.drafts = [];
+      if(!Array.isArray(data.batches)) data.batches = [];
+      if(!data.recView || !Array.isArray(data.recView.items)) data.recView = { round:1, items:[] };
+      data.feed.concat(data.recommend || []).forEach(x => {
+        if(Array.isArray(x.rps)) x.rps = x.rps.filter(e => e.kind !== 'robert');
+      });
+      if(!data.v || data.v < 9){
+        data.feed.concat(data.recommend || []).forEach(x => {
+          if(!x.mine) bumpBigCounts(x);
+        });
+      }
+      if(!data.v || data.v < 11){
+        data.feed.concat(data.recommend || []).forEach(x => {
+          if(!Array.isArray(x.imgs)) x.imgs = [];
+          if(!x.imgs.length) return;
+          if(x.imgs.every(s => String(s).indexOf('txt:') === 0)) return;
+          x.imgs = postImages(imageTexts(x));
+        });
+      }
+      if(!data.v || data.v < 12){
+        const byName = {};
+        (data.chats || []).forEach(c => { byName[c.name] = c; });
+        const merged = DEFAULT_CHATS.map(c => byName[c.name] || Object.assign({}, c));
+        (data.chats || []).forEach(c => {
+          if(!DEFAULT_CHATS.some(x => x.name === c.name)) merged.push(c);
+        });
+        data.chats = merged;
+        if(!data.dms || typeof data.dms !== 'object') data.dms = {};
+      }
+      if(!data.v || data.v < 13){
+        const fix = x => {
+          if(!x) return;
+          if(!x.mine){
+            const mapped = weiboNick(x.name);
+            if(mapped && mapped !== x.name){
+              x.name = mapped;
+              if(isWayvAccount(mapped)){
+                x.following = true;
+                if(!x.avatar) x.avatar = MEMBER_SELFIE[mapped] || '';
+              }
+            }
+            if(x.text) x.text = toMandarin(x.text);
+          }
+          if(!x.ts) x.ts = timeToTs(x.time);
+        };
+        data.feed.concat(data.recommend || []).forEach(fix);
+        (data.batches || []).forEach(b => {
+          if(!b.ts && b.time) b.ts = timeToTs(b.time);
+        });
+      }
+      if(!data.v || data.v < 14){
+        const meNames = new Set();
+        const addMe = n => {
+          const t = String(n == null ? '' : n).trim();
+          if(t) meNames.add(t);
+        };
+        addMe(data.profile && data.profile.name);
+        (data.accounts || []).forEach(a => addMe(a && a.name));
+        data.feed = data.feed.filter(x => !(x && /^atseed/.test(String(x.id || ''))));
+        data.feed.forEach(x => {
+          if(!x || x.mine || !x.text) return;
+          meNames.forEach(n => { x.text = String(x.text).split('@' + n).join('').trim(); });
+        });
+        delete data.atSeeded;
+      }
+      if(!data.v || data.v < 15){
+        data.chats = [];
+        data.dms = {};
+        data.seenNotices = [];
+        data.feed.forEach(x => {
+          if(!x || x.mine || !Array.isArray(x.cmts)) return;
+          x.cmts = x.cmts.filter(e => e && e.name !== x.name);
+        });
+      }
+      if(!data.v || data.v < 16){
+        data.recommend = [];
+        data.recView = { round: 1, items: [] };
+      }
+      if(!data.v || data.v < 17){
+        (data.recommend || []).forEach(x => applyMarketStats(x));
+        (data.feed || []).forEach(x => applyMarketStats(x));
+      }
+      data.v = 17;
       return data;
     }
     function save(){
@@ -622,44 +1726,63 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
     return { get, save };
   }
 
+  function imgsGrid(list, cls){
+    const imgs = (list || []).filter(Boolean).slice(0, 9);
+    if(!imgs.length) return '';
+    const cells = imgs.map(src => `<div class="wb-post-img"><img src="${esc(imgSrc(src))}" alt=""></div>`);
+    while(cells.length % 3) cells.push('<div class="wb-post-img empty"></div>');
+    return `<div class="${cls || 'wb-post-imgs'}">${cells.join('')}</div>`;
+  }
+
+  function videoHtml(p){
+    const v = p && p.video;
+    if(!v || !v.src) return '';
+    return `<div class="wb-post-video">
+      <img src="${esc(v.src)}" alt="">
+      <div class="wb-post-video-meta">
+        <span>${esc(v.views || '1.2万次观看')}</span>
+        <span class="wb-post-video-dur">${esc(v.duration || '00:15')}</span>
+      </div>
+    </div>`;
+  }
+
   function postHtml(p, me){
     const own = (p.mine && (!p.owner || !me || p.owner === me.id)) ? me : null;
     const name = own ? own.name : p.name;
     const avatar = own ? own.avatar : p.avatar;
     const vKey = own ? (own.verify || 'none') : (p.vip ? 'orange' : 'none');
     const vipCls = vKey === 'yellow' ? ' v-yellow' : (vKey === 'gold' ? ' v-gold' : '');
-    const imgs = (p.imgs && p.imgs.length)
-      ? `<div class="wb-post-imgs">${p.imgs.map(src => `<div class="wb-post-img"><img src="${esc(src)}" alt=""></div>`).join('')}</div>`
-      : '';
+    const imgs = imgsGrid(p.imgs);
+    const vid = videoHtml(p);
     const q = p.quote;
     const quoteHtml = q
       ? `<div class="wb-post-quote">
           <div class="wb-post-quote-head">${ICON.repost}<span>@${esc(q.name)}</span></div>
           <div class="wb-post-quote-text">${hlHtml(q.text || '')}</div>
-          ${(q.imgs && q.imgs.length) ? `<div class="wb-post-quote-imgs">${q.imgs.map(src => `<div class="wb-post-img"><img src="${esc(src)}" alt=""></div>`).join('')}</div>` : ''}
+          ${imgsGrid(q.imgs, 'wb-post-quote-imgs')}
         </div>`
       : '';
-    const ownBtns = own
-      ? `<div class="wb-post-own">
-          <button class="wb-own" data-own="edit" type="button" aria-label="编辑">${ICON.edit}</button>
-          <button class="wb-own del" data-own="del" type="button" aria-label="删除">${ICON.trash}</button>
-        </div>`
-      : '';
+    const moreBtn = `<div class="wb-post-more">
+        <button class="wb-more-btn" data-more="1" type="button" aria-label="更多">
+          <svg viewBox="0 0 24 24"><polyline points="6 9.5 12 15.5 18 9.5"/></svg>
+        </button>
+      </div>`;
     return `<div class="wb-post${own ? ' is-mine' : ''}" data-id="${esc(p.id)}">
-      ${ownBtns}
+      ${moreBtn}
       <div class="wb-post-head">
         ${avatarHtml(name, avatar)}
         <div class="wb-post-meta">
           <div class="wb-post-name">${esc(name)}${vKey === 'none' ? '' : `<span class="wb-vip${vipCls}">V</span>`}</div>
-          <div class="wb-post-time">${esc(p.time)} · 来自 iPhone</div>
+          <div class="wb-post-time" data-ts="${Number(p.ts) || 0}" data-dev="${esc(postDeviceLabel(p))}">${esc(postTimeText(p))} · ${postDeviceLabel(p)}</div>
         </div>
       </div>
       <div class="wb-post-text">${hlHtml(p.text)}</div>
+      ${vid}
       ${imgs}
       ${quoteHtml}
       <div class="wb-post-actions">
-        <button class="wb-act" data-act="repost">${ICON.repost}<span>${p.reposts || ''}</span></button>
-        <button class="wb-act" data-act="comment">${ICON.comment}<span>${p.comments || ''}</span></button>
+        <button class="wb-act" data-act="repost">${ICON.repost}<span class="wb-act-num">${p.reposts || 0}</span></button>
+        <button class="wb-act" data-act="comment">${ICON.comment}<span>${p.comments || 0}</span></button>
         <button class="wb-act ${p.liked ? 'liked' : ''}" data-act="like">${ICON.heart}<span>${p.likes || 0}</span></button>
       </div>
     </div>`;
@@ -700,8 +1823,17 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
     let currentTab = 'me';
     let homeFilter = 'recommend';
     let meTab = 'posts';
+    let msgPanel = 'list';
+    let openMenuEl = null;
+    let followOrder = null;
+    let liveName = '';
+    let refreshing = false;
 
     initStatusBar(app);
+    const timeTimer = setInterval(() => {
+      if(!app.isConnected){ clearInterval(timeTimer); return; }
+      refreshTimeLabels(app);
+    }, 60000);
 
     function toast(msg){
       if(Phone && Phone.toast) Phone.toast(msg);
@@ -717,20 +1849,73 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       try{ return (Phone && Phone.getCurrentChar) ? Phone.getCurrentChar() : null; }catch(e){ return null; }
     }
 
+    function meNames(){
+      const set = new Set();
+      const add = n => {
+        const t = String(n == null ? '' : n).trim();
+        if(!t) return;
+        set.add(t);
+        if(MEMBER_NAMES[t]) set.add(MEMBER_NAMES[t]);
+        const canon = memberWeiboName(t);
+        if(canon) set.add(canon);
+      };
+      const p = (store.get().profile) || {};
+      add(p.name);
+      const cur = meChar();
+      if(cur) add(cur.name);
+      try{
+        const g = (Phone && Phone.getGlobalData) ? Phone.getGlobalData('homeInfo') : null;
+        if(g) add(g.name);
+      }catch(e){}
+      return set;
+    }
+
+    function isMeName(n){
+      return !!n && meNames().has(String(n));
+    }
+
+    function stripMeMentions(text){
+      let s = String(text == null ? '' : text);
+      meNames().forEach(n => { s = s.split('@' + n).join(''); });
+      return s.replace(/\s{2,}/g, ' ').trim();
+    }
+
     app.querySelector('#wbBackBtn').onclick = () => { if(typeof onClose === 'function') onClose(); };
     if(typeof onClose !== 'function') app.querySelector('#wbBackBtn').style.visibility = 'hidden';
     app.querySelector('#wbComposeBtn').onclick = () => openCompose();
+    app.querySelector('#wbRefreshBtn').onclick = refreshFeed;
+    const clearBtn = app.querySelector('#wbMsgClearBtn');
+    if(clearBtn) clearBtn.onclick = clearAllNotices;
+    document.addEventListener('click', e => {
+      if(openMenuEl && !(e.target.closest && e.target.closest('.wb-post-more'))) closeMenu();
+    }, true);
+    document.addEventListener('click', e => {
+      if(!(e.target && e.target.closest)) return;
+      if(e.target.closest('.wb-viewer')) return;
+      const img = e.target.closest('.wb-post-img img, .wb-dt-cm-imgs img');
+      if(!img) return;
+      const box = img.closest('.wb-post-imgs, .wb-dt-imgs, .wb-dt-post-quote-imgs, .wb-dt-cm-imgs') || img.parentElement;
+      const all = Array.from(box.querySelectorAll('img'));
+      e.stopPropagation();
+      e.preventDefault();
+      openImageViewer(all.map(x => x.getAttribute('src')), all.indexOf(img));
+    }, true);
     tabs.forEach(t => { t.onclick = () => switchTab(t.dataset.tab); });
 
     function switchTab(tab){
+      closeMenu();
       currentTab = tab;
+      if(tab !== 'chat') msgPanel = 'list';
       tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
       titleEl.textContent = TAB_TITLES[tab] || '微博';
+      const broom = app.querySelector('#wbMsgClearBtn');
+      if(broom) broom.classList.toggle('on', tab === 'chat');
       app.classList.toggle('wb-me-mode', tab === 'me');
       render();
     }
 
     function render(){
+      closeMenu();
       body.scrollTop = 0;
       if(currentTab === 'home') renderHome();
       else if(currentTab === 'discover') renderDiscover();
@@ -738,25 +1923,124 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       else renderMe();
     }
 
-    function bindOwnActions(el, post, refresh){
-      const editBtn = el.querySelector('[data-own="edit"]');
-      if(editBtn) editBtn.onclick = () => openCompose(post);
-      const delBtn = el.querySelector('[data-own="del"]');
-      if(delBtn) delBtn.onclick = () => {
-        if(delBtn.dataset.confirm !== '1'){
-          delBtn.dataset.confirm = '1';
-          toast('再点一次删除');
-          setTimeout(() => { delBtn.dataset.confirm = ''; }, 2500);
-          return;
-        }
-        const dd = store.get();
-        const idx = dd.feed.findIndex(x => x.id === post.id);
-        if(idx >= 0) dd.feed.splice(idx, 1);
-        dd.profile.posts = Math.max(0, (parseInt(dd.profile.posts, 10) || 0) - 1);
-        store.save();
-        toast('微博已删除');
-        refresh();
+    function closeMenu(){
+      if(openMenuEl){ openMenuEl.remove(); openMenuEl = null; }
+    }
+
+    function bindPostMenu(el, post, refresh){
+      const box = el.querySelector('.wb-post-more');
+      const btn = el.querySelector('.wb-more-btn');
+      if(!box || !btn) return;
+      const d = store.get();
+      const mine = !!post.mine && (!post.owner || post.owner === d.activeId);
+      btn.onclick = e => {
+        e.stopPropagation();
+        const opened = box.querySelector('.wb-more-menu');
+        closeMenu();
+        if(opened) return;
+        const followed = isFollowed(post);
+        const items = [
+          { k:'edit', label:'编辑' },
+          { k:'del', label:'删除', danger:true }
+        ].concat(mine ? [] : [
+          { k:'follow', label: followed ? '取消关注' : '关注' },
+          { k:'report', label:'举报', danger:true }
+        ]);
+        const menu = document.createElement('div');
+        menu.className = 'wb-more-menu';
+        menu.innerHTML = items.map(it => `<button class="wb-more-item${it.danger ? ' danger' : ''}" data-k="${it.k}" type="button">${it.label}</button>`).join('');
+        box.appendChild(menu);
+        openMenuEl = menu;
+        menu.querySelectorAll('.wb-more-item').forEach(item => {
+          item.onclick = ev => {
+            ev.stopPropagation();
+            const k = item.dataset.k;
+            if(k === 'edit'){
+              closeMenu();
+              openCompose(post);
+            } else if(k === 'report'){
+              closeMenu();
+              toast('已举报，我们会尽快处理');
+            } else if(k === 'del'){
+              if(item.dataset.confirm !== '1'){
+                item.dataset.confirm = '1';
+                item.textContent = '再点一次删除';
+                setTimeout(() => {
+                  if(!item.isConnected) return;
+                  item.dataset.confirm = '';
+                  item.textContent = '删除';
+                }, 2500);
+                return;
+              }
+              closeMenu();
+              const dd = store.get();
+              const idx = dd.feed.findIndex(x => x.id === post.id);
+              if(idx >= 0) dd.feed.splice(idx, 1);
+              else if(Array.isArray(dd.recommend)){
+                const ri = dd.recommend.findIndex(x => x.id === post.id);
+                if(ri >= 0) dd.recommend.splice(ri, 1);
+              }
+              dd.batches = (dd.batches || []).map(b => Object.assign({}, b, {
+                postIds:(b.postIds || []).filter(id => id !== post.id)
+              }));
+              if(mine) dd.profile.posts = Math.max(0, (parseInt(dd.profile.posts, 10) || 0) - 1);
+              store.save();
+              toast('微博已删除');
+              refresh();
+            } else if(k === 'follow'){
+              closeMenu();
+              const dd = store.get();
+              const following = parseInt(dd.profile.following, 10) || 0;
+              const targets = dd.feed.filter(x => x.name === post.name)
+                .concat((dd.recommend || []).filter(x => x.name === post.name));
+              (targets.length ? targets : [post]).forEach(t => {
+                t.unfollowed = followed;
+                t.following = !followed;
+              });
+              if(followed){
+                dd.profile.following = Math.max(0, following - 1);
+                toast('已取消关注');
+              } else {
+                dd.profile.following = following + 1;
+                toast('关注成功');
+              }
+              store.save();
+              refresh();
+            }
+          };
+        });
       };
+    }
+
+    function removePost(post){
+      const dd = store.get();
+      const idx = dd.feed.findIndex(x => x.id === post.id);
+      if(idx >= 0) dd.feed.splice(idx, 1);
+      else if(Array.isArray(dd.recommend)){
+        const ri = dd.recommend.findIndex(x => x.id === post.id);
+        if(ri >= 0) dd.recommend.splice(ri, 1);
+      }
+      dd.batches = (dd.batches || []).map(b => Object.assign({}, b, {
+        postIds:(b.postIds || []).filter(id => id !== post.id)
+      }));
+      const mine = !!post.mine && (!post.owner || post.owner === dd.activeId);
+      if(mine) dd.profile.posts = Math.max(0, (parseInt(dd.profile.posts, 10) || 0) - 1);
+      store.save();
+      toast('微博已删除');
+    }
+
+    function blockAuthor(name){
+      const dd = store.get();
+      const ids = new Set();
+      dd.feed.filter(x => x.name === name).forEach(x => ids.add(x.id));
+      (dd.recommend || []).filter(x => x.name === name).forEach(x => ids.add(x.id));
+      dd.feed = dd.feed.filter(x => x.name !== name);
+      if(Array.isArray(dd.recommend)) dd.recommend = dd.recommend.filter(x => x.name !== name);
+      dd.batches = (dd.batches || []).map(b => Object.assign({}, b, {
+        postIds:(b.postIds || []).filter(id => !ids.has(id))
+      }));
+      store.save();
+      toast('已拉黑 ' + shortName(name));
     }
 
     function meInfo(d){
@@ -784,34 +2068,486 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
     }
 
     function isFollowed(p){
-      return !!p.mine || !!p.official || !!p.following || FOLLOWED_NAMES.has(p.name);
+       if(!p) return false;
+      if(p.mine) return true;
+      if(isWayvAccount(p.name)) return true;
+      if(p.unfollowed) return false;
+      return !!(p.official || p.following || FOLLOWED_NAMES.has(p.name));
+    }
+
+    function followSources(d){
+      const rec = (d.recommend || []).filter(x => !x.mine && !isMeName(x.name) && !x.unfollowed && (x.following || x.official));
+      const all = d.feed.filter(x => !x.mine && !isMeName(x.name) && isFollowed(x)).concat(rec);
+      if(!followOrder) return all;
+      const map = {};
+      all.forEach(x => { map[x.id] = x; });
+      const ordered = followOrder.map(id => map[id]).filter(Boolean);
+      all.forEach(x => { if(ordered.indexOf(x) < 0) ordered.push(x); });
+      return ordered;
+    }
+
+    const REC_TARGET = 10;
+
+    function recAccounts(){
+      const seen = new Set();
+      const out = [];
+      REC_ACCOUNTS.forEach(a => {
+        const n = String(a.name || '').trim();
+        if(!n || seen.has(n)) return;
+        if(isWayvAccount(n) || isMeName(n) || FOLLOWED_NAMES.has(n)) return;
+        seen.add(n);
+        out.push(a);
+      });
+      return out;
+    }
+
+    function recommendPool(d){
+      const bots = (d.recommend || [])
+        .filter(x => x && !isFollowed(x) && !isMeName(x.name) && !isWayvAccount(x.name));
+      const others = [];
+      const seenName = {};
+      d.feed.forEach(x => {
+        if(!x || x.mine || isMeName(x.name) || isFollowed(x) || isWayvAccount(x.name)) return;
+        if(seenName[x.name]) return;
+        seenName[x.name] = true;
+        others.push(x);
+      });
+      const map = {};
+      others.concat(bots).forEach(x => { map[x.id] = x; });
+      return { others, bots, map, total: others.length + bots.length };
+    }
+
+    function makeRecPost(d, view, author, text, round){
+      const withImg = Math.random() < 0.45;
+      const post = {
+        id: 'rc' + (round || 1) + '_' + Date.now().toString(36) + '_' + bigRnd(1000, 9999),
+        name: author.name,
+        avatar: '',
+        vip: !!author.vip,
+        time: '刚刚',
+        ts: Date.now() - bigRnd(0, 50) * 60000,
+        text,
+        imgs: withImg ? postImages(imageTexts({ text })) : [],
+        likes: 0,
+        comments: 0,
+        reposts: 0,
+        liked: false,
+        cmts: []
+      };
+      applyMarketStats(post);
+      d.recommend.push(post);
+      return post.id;
+    }
+
+    function makeFreshRecommend(d, view, count){
+      const accounts = recAccounts();
+      if(!accounts.length) return [];
+      const shownNames = {};
+      (view.items || []).forEach(it => {
+        const p = findPost(d, it.id);
+        if(p && p.name) shownNames[p.name] = true;
+      });
+      const recent = new Set(Array.isArray(view.recentAuthors) ? view.recentAuthors : []);
+      const usedTexts = new Set(Array.isArray(view.recentTexts) ? view.recentTexts : []);
+      const fresh = [];
+      for(let i = 0; i < count; i++){
+        let pool = accounts.filter(a => !shownNames[a.name] && !recent.has(a.name));
+        if(!pool.length) pool = accounts.filter(a => !shownNames[a.name]);
+        if(!pool.length){
+          recent.clear();
+          pool = accounts;
+        }
+        const author = pool[bigRnd(0, pool.length - 1)];
+        let textPool = REC_TEXTS.filter(t => !usedTexts.has(t));
+        if(!textPool.length){
+          usedTexts.clear();
+          textPool = REC_TEXTS.slice();
+        }
+        let text = textPool[bigRnd(0, textPool.length - 1)];
+        if(Math.random() < 0.35) text += ' ' + REC_TAGS[bigRnd(0, REC_TAGS.length - 1)];
+        usedTexts.add(text);
+        shownNames[author.name] = true;
+        recent.add(author.name);
+        fresh.push(makeRecPost(d, view, author, text, view.round || 1));
+      }
+      view.recentAuthors = Array.from(recent).slice(-60);
+      view.recentTexts = Array.from(usedTexts).slice(-50);
+      return fresh;
+    }
+
+    function recViewInit(d){
+      if(!d.recView || !Array.isArray(d.recView.items)) d.recView = { round: 1, items: [] };
+      if(!d.recView.round) d.recView.round = 1;
+      const { map } = recommendPool(d);
+      const alive = d.recView.items.filter(it => map[it.id]);
+      if(alive.length !== d.recView.items.length) d.recView.items = alive;
+      if(d.recView.items.length < REC_TARGET){
+        const fresh = makeFreshRecommend(d, d.recView, REC_TARGET - d.recView.items.length);
+        fresh.forEach(id => d.recView.items.push({ id, r: d.recView.round }));
+      }
+      store.save();
+      return d.recView;
     }
 
     function recommendList(d){
-      const pool = (d.recommend && d.recommend.length) ? d.recommend : RECOMMEND_POOL;
-      return shuffle(pool).slice(0, 7);
+      const view = recViewInit(d);
+      const { map } = recommendPool(d);
+      const alive = view.items.filter(it => map[it.id]);
+      if(alive.length !== view.items.length){
+        view.items = alive;
+        store.save();
+      }
+      return alive.map(it => map[it.id]);
+    }
+
+    function pruneRecommend(d, view){
+      const cutoff = (view.round || 1) - 4;
+      if(cutoff < 1) return;
+      const drop = view.items.filter(it => (it.r || 1) <= cutoff).map(it => it.id);
+      if(!drop.length) return;
+      view.items = view.items.filter(it => (it.r || 1) > cutoff);
+      d.recommend = (d.recommend || []).filter(x => {
+        if(drop.indexOf(x.id) < 0) return true;
+        if(x.liked) return true;
+        return false;
+      });
+    }
+
+    function rotateRecommend(d){
+      const view = recViewInit(d);
+      view.round = (view.round || 1) + 1;
+      pruneRecommend(d, view);
+      const fresh = makeFreshRecommend(d, view, 4);
+      fresh.forEach(id => view.items.unshift({ id, r: view.round }));
+      store.save();
+    }
+
+    function shortName(n){
+      const s = String(n || '').replace('威神V_', '');
+      return s.split('_')[0] || n;
+    }
+
+    function livePeople(d){
+      const seen = new Set();
+      const out = [];
+      d.feed.filter(x => !x.mine && !isMeName(x.name) && isFollowed(x)).forEach(p => {
+        if(!p.name || seen.has(p.name)) return;
+        seen.add(p.name);
+        out.push({ name: p.name, avatar: p.avatar || '' });
+      });
+      return out.slice(0, 8);
+    }
+
+    function rollLive(d){
+      const ppl = livePeople(d || store.get());
+      liveName = (ppl.length && Math.random() < 0.1)
+        ? ppl[Math.floor(Math.random() * ppl.length)].name
+        : '';
+    }
+
+    function bindLiveStrip(el){
+      if(!el) return;
+      let dragging = false, startX = 0, startLeft = 0, moved = false;
+      el.addEventListener('pointerdown', e => {
+        if(e.pointerType !== 'mouse' || e.button !== 0) return;
+        dragging = true; moved = false;
+        startX = e.clientX; startLeft = el.scrollLeft;
+        el.classList.add('dragging');
+      });
+      el.addEventListener('pointermove', e => {
+        if(!dragging) return;
+        const dx = e.clientX - startX;
+        if(Math.abs(dx) > 4){
+          moved = true;
+          try{ el.setPointerCapture(e.pointerId); }catch(err){}
+        }
+        if(moved){
+          el.scrollLeft = startLeft - dx;
+          e.preventDefault();
+        }
+      });
+      const end = () => {
+        if(!dragging) return;
+        dragging = false;
+        el.classList.remove('dragging');
+      };
+      el.addEventListener('pointerup', end);
+      el.addEventListener('pointercancel', end);
+      el.addEventListener('pointerleave', end);
+      el.addEventListener('click', e => {
+        if(moved){ e.stopPropagation(); e.preventDefault(); moved = false; }
+      }, true);
+    }
+
+    function liveStripHtml(d){
+      const ppl = livePeople(d);
+      if(!ppl.length) return '';
+      return `<div class="wb-live-strip">
+        ${ppl.map(x => {
+          const live = x.name === liveName;
+          return `<div class="wb-live-item">
+            <div class="wb-live-avatar${live ? ' live' : ''}" data-live="${live ? '1' : '0'}" data-name="${esc(x.name)}">
+              ${x.avatar ? `<img src="${esc(x.avatar)}" alt="">` : esc(shortName(x.name).charAt(0))}
+            </div>
+            <span class="wb-live-name">${esc(x.name)}</span>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }
+
+    function charsList(){
+      let chars = [];
+      try{ chars = (Phone && Phone._getState) ? (Phone._getState().characters || []) : []; }catch(e){ chars = []; }
+      const cur = meChar();
+      return chars.filter(c => c && c.name && !isMeName(c.name) && c.id !== (cur && cur.id)).slice(0, 8);
+    }
+
+    function contactsList(){
+      let list = [];
+      try{
+        const cd = (Phone && Phone.getData) ? Phone.getData('contacts') : null;
+        list = (cd && cd.list) || [];
+      }catch(e){ list = []; }
+      return list.filter(c => c && c.name && !isMeName(c.name)).slice(0, 8);
+    }
+
+    function authorList(){
+      const cs = contactsList();
+      if(cs.length){
+        return cs.map(c => ({
+          name: c.name,
+          avatar: c.avatar || '',
+          identity: c.identity || c.remark || '',
+          persona: String(c.roleSetting || '').slice(0, 260)
+        }));
+      }
+      return charsList().map(c => ({
+        name: c.name,
+        avatar: c.avatar || '',
+        identity: c.identity || '',
+        persona: [c.age ? c.age + '岁' : '', c.persona || '', c.relationships || ''].filter(Boolean).join('；')
+      }));
+    }
+
+    function memberFallbackList(){
+      return Object.keys(MEMBER_NAMES)
+        .filter(n => !isMeName(n))
+        .map(n => ({ name: n, avatar: '', identity: 'WayV成员', persona: '' }))
+        .concat([{ name:'WayV_official', avatar:'wayv.jpg', identity:'WayV官方账号', persona:'官方口吻，发布公告、行程和官方物料' }]);
+    }
+
+    function charAvatar(ch, d){
+      if(ch.avatar) return ch.avatar;
+      const mapped = weiboNick(ch.name);
+      const hit = d.feed.find(x => x.name === mapped && x.avatar);
+      if(hit) return hit.avatar;
+      return MEMBER_SELFIE[mapped] || '';
+    }
+
+    function parsePostJson(raw){
+      let s = String(raw || '').trim();
+      const fence = s.match(/```(?:json)?[\s\S]*?```/i);
+      if(fence) s = fence[0].replace(/```(?:json)?/gi, '');
+      const arr = s.match(/\[[\s\S]*\]/);
+      if(arr) s = arr[0];
+      try{
+        const list = JSON.parse(s);
+        if(Array.isArray(list)){
+          const out = list.map(x => {
+            let scenes = x.scenes;
+            if(typeof scenes === 'string') scenes = scenes.split(/[,，、\s]+/);
+            if(!Array.isArray(scenes)) scenes = [];
+            let images = x.images || x.imgs || x['配图文字'];
+            if(typeof images === 'string') images = images.split(/[,，、\n]+/);
+            if(!Array.isArray(images)) images = [];
+            return {
+              name: String(x.name || x['角色'] || '').trim(),
+              text: toMandarin(String(x.text || x.content || x['内容'] || '').trim()),
+              scene: String(x.scene || x['配图'] || '').trim(),
+              scenes: scenes.map(s => String(s || '').trim()).filter(Boolean),
+              images: images.map(s => String(s || '').trim()).filter(Boolean).slice(0, 9)
+            };
+          }).filter(x => x.text);
+          if(out.length) return out;
+        }
+      }catch(e){}
+      const out = [];
+      const re = /"name"\s*:\s*"([^"]*)"[\s\S]*?"text"\s*:\s*"((?:[^"\\]|\\.)*)"/g;
+      let m;
+      while((m = re.exec(s))) out.push({ name: m[1], text: toMandarin(m[2].replace(/\\n/g, '\n').replace(/\\"/g, '"')), scene:'', scenes:[], images:[] });
+      return out.filter(x => x.text);
+    }
+
+    async function generateBatch(){
+      const d = store.get();
+      let authors = authorList();
+      if(!authors.length) authors = memberFallbackList();
+      if(!authors.some(a => a.name === 'WayV_official')){
+        authors = authors.concat([{ name:'WayV_official', avatar:'wayv.jpg', identity:'WayV官方账号', persona:'官方口吻，发布公告、行程和官方物料' }]);
+      }
+      authors = authors.filter(a => a && !isMeName(a.name));
+      if(!authors.length) throw new Error('还没有可以发微博的联系人');
+      if(!Phone || !Phone.chatWithAI) throw new Error('未连接 AI');
+      if(Math.random() < 0.2) return 0;
+      const wayvAuthors = authors.filter(a => isWayvAccount(a.name));
+      const otherAuthors = authors.filter(a => !isWayvAccount(a.name));
+      const want = 1 + Math.floor(Math.random() * 3);
+      const bag = [];
+      wayvAuthors.forEach(a => { for(let i = 0; i < 6; i++) bag.push(a); });
+      otherAuthors.forEach(a => bag.push(a));
+      const recentNames = new Set((d.feed || []).slice(0, 12).filter(x => x && !x.mine).map(x => weiboNick(x.name)));
+      const picked = [];
+      const seen = new Set();
+      let otherPicked = 0;
+      shuffle(bag).forEach(a => {
+        if(picked.length >= want) return;
+        const key = weiboNick(a.name);
+        if(seen.has(key)) return;
+        const isWayv = isWayvAccount(a.name);
+        if(!isWayv && otherPicked >= 1) return;
+        seen.add(key);
+        if(!isWayv) otherPicked++;
+        picked.push(a);
+      });
+      if(wayvAuthors.length && !picked.some(a => isWayvAccount(a.name))){
+        const w = shuffle(wayvAuthors).find(a => !recentNames.has(weiboNick(a.name))) || wayvAuthors[Math.floor(Math.random() * wayvAuthors.length)];
+        if(w && !seen.has(weiboNick(w.name))){
+          seen.add(weiboNick(w.name));
+          picked.unshift(w);
+          if(picked.length > want) picked.pop();
+        }
+      }
+      if(!picked.length) picked.push(authors[Math.floor(Math.random() * authors.length)]);
+      const lines = picked.map((c, i) => {
+        const bits = [];
+        if(c.identity) bits.push('身份：' + c.identity);
+        if(c.persona) bits.push('人设：' + c.persona);
+        return `${i + 1}. ${c.name}${bits.length ? '（' + bits.join('；') + '）' : ''}`;
+      }).join('\n');
+      const messages = [
+        { role:'system', content:'你是微博内容生成器，根据每个人的设定写出真实、自然、有生活感的微博正文。所有内容必须使用普通话简体中文，严禁出现粤语用字（唔、嘅、咁、係、嚟、冇、咗、睇、靓等）和粤语表达；即使人物来自广东、香港、澳门，或设定里提到会说粤语，发微博也必须写普通话。只输出 JSON 数组，不要输出解释或代码块标记。' },
+        { role:'user', content:`请为下面每个人各写一条微博，共 ${picked.length} 条：\n${lines}\n\n要求：\n1. 完全贴合该人物的人设与语气，不要串味；\n2. 每条 20-60 字，像真人随手发的日常，不要用"大家好"这类开场白；\n3. 最多带 1 个 #话题#，可加少量 emoji；\n4. 不要提及这是 AI 生成；\n5. 每条配 1-9 张图，用 images 数组表示每张图上要写的文字（一句话、几个字都行，就像随手拍的图上的字），文字要像在描述这些图，比如"今晚的首尔"配上夜景和自拍；张数 1-9 张不等，不要超过 9 张；\n6. 全部用普通话简体中文，绝对不能出现粤语、粤语用字或方言词（唔/嘅/咁/係/嚟/冇/咗/睇/靓 一律不允许）；\n7. 正文里不要 @ 任何人，也不要 @ 粉丝或用户。\n\n输出格式（严格 JSON 数组）：\n[{"name":"角色名","text":"微博正文","images":["图上文字1","图上文字2"]}]` }
+      ];
+      const raw = await Phone.chatWithAI(messages);
+      const items = parsePostJson(raw);
+      if(!items.length) throw new Error('没有解析到微博内容');
+      const batchId = 'b' + Date.now();
+      const now = new Date();
+      const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      (d.batches || []).forEach(b => {
+        (b.postIds || []).forEach(id => {
+          const old = d.feed.find(x => x.id === id);
+          if(old && old.time === '刚刚') old.time = b.time;
+        });
+      });
+      const postIds = [];
+      items.slice(0, picked.length).forEach((it, i) => {
+        const key = weiboNick(it.name);
+        const ch = picked.find(c => weiboNick(c.name) === key || c.name === it.name) || picked[i] || picked[0];
+        if(!ch || isMeName(ch.name)) return;
+        const mappedName = weiboNick(ch.name);
+        const texts = imageTexts(it).map(t => stripMeMentions(toMandarin(t)));
+        const post = {
+          id: batchId + '_' + i,
+          name: mappedName,
+          avatar: charAvatar(ch, d),
+          vip: true,
+          following: true,
+          time: '刚刚',
+          ts: Date.now(),
+          text: stripMeMentions(toMandarin(it.text)),
+          imgs: postImages(texts),
+          likes: bigRnd(10000, 68000),
+          comments: bigRnd(5000, 9600),
+          reposts: bigRnd(5000, 9600),
+          liked: false,
+          batch: batchId
+        };
+        d.feed.unshift(post);
+        postIds.push(post.id);
+      });
+      if(!postIds.length) throw new Error('没有生成到内容');
+      d.batches.unshift({ id: batchId, time, ts: now.getTime(), postIds });
+      store.save();
+      return postIds.length;
+    }
+
+    async function regenerateFollow(){
+      refreshing = true;
+      if(currentTab === 'home') renderHome();
+      try{
+        const n = await generateBatch();
+        refreshing = false;
+        followOrder = null;
+        rollLive(store.get());
+        if(currentTab === 'home') renderHome();
+        toast(n ? `已生成 ${n} 条新微博` : '这次没有人发新微博');
+      }catch(err){
+        refreshing = false;
+        rollLive(store.get());
+        if(currentTab === 'home') renderHome();
+        toast('生成失败：' + ((err && err.message) ? err.message : '请检查 API 设置'));
+      }
+    }
+
+    function refreshFeed(){
+      const btn = app.querySelector('#wbRefreshBtn');
+      if(btn){
+        btn.classList.remove('spin');
+        void btn.offsetWidth;
+        btn.classList.add('spin');
+        setTimeout(() => btn.classList.remove('spin'), 600);
+      }
+      const d = store.get();
+      closeMenu();
+      if(refreshing) return;
+      if(currentTab === 'home' && homeFilter === 'follow'){
+        regenerateFollow();
+      } else if(currentTab === 'home'){
+        rotateRecommend(d);
+        rollLive(d);
+        renderHome();
+        toast('为你推荐了新内容');
+      } else {
+        rollLive(d);
+        render();
+        toast('已刷新');
+      }
     }
 
     function renderHome(){
       const d = store.get();
       const me = meInfo(d);
-      const list = homeFilter === 'follow' ? d.feed.filter(isFollowed) : recommendList(d);
+      const isFollow = homeFilter === 'follow';
+      const list = isFollow ? followSources(d) : recommendList(d);
+      const strip = isFollow ? liveStripHtml(d) : '';
+      const loading = isFollow && refreshing
+        ? `<div class="wb-loading"><span class="wb-loading-spin"></span>正在刷新微博…</div>`
+        : '';
       body.innerHTML = `
         <div class="wb-segment">
-          <button class="wb-seg ${homeFilter === 'follow' ? 'active' : ''}" data-filter="follow">关注</button>
-          <button class="wb-seg ${homeFilter === 'recommend' ? 'active' : ''}" data-filter="recommend">推荐</button>
+          <button class="wb-seg ${isFollow ? 'active' : ''}" data-filter="follow">关注</button>
+          <button class="wb-seg ${isFollow ? '' : 'active'}" data-filter="recommend">推荐</button>
         </div>
+        ${strip}
+        ${loading}
         ${list.length
           ? list.map(x => postHtml(x, me)).join('') + '<div class="wb-end">已经到底啦 ~</div>'
-          : `<div class="wb-end">${homeFilter === 'follow' ? '还没有关注的微博' : '暂时没有推荐内容'}</div>`}`;
+          : (loading ? '' : `<div class="wb-end">${isFollow ? '点右上角刷新，让关注的人发微博' : '暂时没有推荐内容'}</div>`)}`;
       body.querySelectorAll('.wb-seg').forEach(b => {
         b.onclick = () => { homeFilter = b.dataset.filter; renderHome(); };
       });
+      body.querySelectorAll('.wb-live-avatar').forEach(a => {
+        if(a.dataset.live !== '1') return;
+        a.onclick = () => toast(`${shortName(a.dataset.name)} 正在直播`);
+      });
+      bindLiveStrip(body.querySelector('.wb-live-strip'));
       body.querySelectorAll('.wb-post').forEach(el => {
         const post = findPost(d, el.dataset.id);
         if(!post) return;
         el.querySelectorAll('.wb-act').forEach(btn => {
-          btn.onclick = () => {
+          btn.onclick = ev => {
+            ev.stopPropagation();
             const act = btn.dataset.act;
             if(act === 'like'){
               post.liked = !post.liked;
@@ -820,13 +2556,19 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
               btn.classList.toggle('liked', post.liked);
               btn.innerHTML = `${ICON.heart}<span>${post.likes}</span>`;
             } else if(act === 'comment'){
-              toast('评论功能开发中');
+              openPostDetail(post, 'comment');
+            } else if(ev.target.closest('.wb-act-num')){
+              openPostDetail(post, 'repost');
             } else {
               openRepostSheet(post);
             }
           };
         });
-        bindOwnActions(el, post, renderHome);
+        el.onclick = ev => {
+          if(ev.target.closest('.wb-act') || ev.target.closest('.wb-more-btn')) return;
+          openPostDetail(post, 'comment');
+        };
+        bindPostMenu(el, post, renderHome);
       });
     }
 
@@ -857,24 +2599,352 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       });
     }
 
+    const DM_REPLIES = {
+      '威神V_钱锟_KUN': '一起加油吧！( ´▽` )',
+      '威神V_TEN_李永钦': 'I’m TEN LEE',
+      '威神V_肖俊': '好的好的，嗯嗯！',
+      '威神V_黄冠亨_HENDERY': '你好',
+      '威神V_扬扬_YANGYANG': '羊羊is here!! 我来啦 哈哈哈哈'
+    };
+
+    const NOTICE_FILTERS = {
+      at: ['所有@我的', '微博里@我的', '评论里@我的'],
+      cmt: ['所有评论', '博主发表的评论', '评论了我的微博'],
+      like: ['收到的赞']
+    };
+    const noticeFilter = { at: 0, cmt: 0, like: 0 };
+    let noticeMask = null;
+    let dmMask = null;
+
+    function nowHM(){
+      const t = new Date();
+      return String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
+    }
+
+    function isVipName(n){
+      return FOLLOWED_NAMES.has(n) || /WayV|威神V/i.test(String(n || ''));
+    }
+
+    function msgNotices(){
+      const d = store.get();
+      const my = myCmtName();
+      const chars = authorList().filter(a => a && a.name && a.name !== my);
+      const likeFans = chars.filter(a => !isWayvAccount(a.name));
+      const likeNetizens = NETIZEN_NAMES.filter(n => !isWayvAccount(n));
+      const at = [];
+      const cmt = [];
+      const like = [];
+      const mine = d.feed.filter(x => x.mine && (!x.owner || x.owner === d.activeId));
+      const addAt = (p, name, avatar, text, time, kind) => {
+        at.push({
+          kind, name, avatar: avatar || '', text: String(text || ''), time: time || '',
+          postId: p.id, quote: String(p.text || '').slice(0, 30),
+          thumb: (p.imgs || [])[0] || '', vip: isVipName(name)
+        });
+      };
+      d.feed.forEach(p => {
+        if(!p) return;
+        if(!isMeName(p.name) && String(p.text || '').indexOf('@' + my) >= 0){
+          addAt(p, p.name, p.avatar, p.text, p.time, 'post');
+        }
+        (p.cmts || []).forEach(e => {
+          if(!e || e.name === my) return;
+          if(String(e.text || '').indexOf('@' + my) >= 0){
+            addAt(p, e.name, e.avatar, e.text, e.time, 'cmt');
+          }
+        });
+      });
+      mine.forEach(p => {
+        (p.cmts || []).forEach(e => {
+          if(!e || e.name === my) return;
+          cmt.push({
+            kind: 'mine', name: e.name, avatar: e.avatar || '',
+            text: String(e.text || ''), time: e.time || '',
+            quote: String(p.text || '').slice(0, 30), postId: p.id,
+            thumb: (p.imgs || [])[0] || '', vip: isVipName(e.name)
+          });
+        });
+      });
+      mine.forEach(p => {
+        const c = Math.min(parseInt(p.likes || 0, 10) || 0, 6);
+        if(c <= 0) return;
+        const pool = likeFans.concat(likeNetizens.map(n => ({ name: n, avatar: '' })));
+        if(!pool.length) return;
+        const used = {};
+        const start = marketHash(p.id) % pool.length;
+        for(let i = 0; i < c; i++){
+          let who = null;
+          for(let k = 0; k < pool.length; k++){
+            const cand = pool[(start + i + k) % pool.length];
+            if(cand && !used[cand.name]){ who = cand; break; }
+          }
+          if(!who) who = pool[(start + i) % pool.length];
+          used[who.name] = true;
+          like.push({
+            kind: 'like', name: who.name,
+            avatar: who.avatar || '',
+            time: p.time || '', postId: p.id,
+            quote: String(p.text || '').slice(0, 30),
+            thumb: (p.imgs || [])[0] || '', vip: isVipName(who.name)
+          });
+        }
+      });
+      return { at, cmt, like };
+    }
+
+    function msgRow(ico, title, preview, badge, cat, extra){
+      return `<div class="wb-chat-row wb-msg-cat" data-cat="${cat}">
+        <div class="wb-msg-ico ${ico}">${extra || ''}</div>
+        <div class="wb-chat-info">
+          <div class="wb-chat-top"><span class="wb-chat-name">${esc(title)}</span></div>
+          <div class="wb-chat-preview">${esc(preview)}</div>
+        </div>
+        ${badge ? `<span class="wb-badge">${esc(badge)}</span>` : ''}
+        <span class="wb-msg-arrow">›</span>
+      </div>`;
+    }
+
+    function noticeSig(x){
+      return [x.kind, x.name, String(x.text || '').slice(0, 60), x.postId].join('|');
+    }
+
+    function unseenList(list, d){
+      const seen = new Set(Array.isArray(d.seenNotices) ? d.seenNotices : []);
+      return list.filter(x => !seen.has(noticeSig(x)));
+    }
+
+    function clearAllNotices(){
+      const d = store.get();
+      const n = msgNotices();
+      const seen = new Set(Array.isArray(d.seenNotices) ? d.seenNotices : []);
+      [].concat(n.at, n.cmt, n.like).forEach(x => seen.add(noticeSig(x)));
+      d.seenNotices = Array.from(seen).slice(-400);
+      (d.chats || []).forEach(c => { c.unread = 0; });
+      store.save();
+      if(currentTab === 'chat') renderChats();
+      toast('已清除全部消息提醒');
+    }
+
     function renderChats(){
       const d = store.get();
+      const n = msgNotices();
+      const at = unseenList(n.at, d);
+      const cmt = unseenList(n.cmt, d);
+      const like = unseenList(n.like, d);
+      const chats = d.chats || [];
       body.innerHTML = `
         <div class="wb-card" style="margin-top:6px">
-          ${d.chats.map(c => `
+          ${msgRow('ico-at', '@我的', at.length ? `${at[0].name}：${at[0].text}` : '还没有人@你', at.length ? String(at.length) : '', 'at', ICON.at)}
+          ${msgRow('ico-cmt', '评论', cmt.length ? `${cmt[0].name}：${cmt[0].text}` : '还没有新的评论', cmt.length ? String(cmt.length) : '', 'cmt', ICON.comment)}
+          ${msgRow('ico-like', '赞', like.length ? `${like[0].name}赞了你的微博` : '还没有收到赞', like.length ? String(like.length) : '', 'like', ICON.heart)}
+        </div>
+        <div class="wb-msg-sec"><span>私信</span></div>
+        <div class="wb-card">
+          ${chats.length ? chats.map(c => `
             <div class="wb-chat-row" data-id="${esc(c.id)}">
               ${avatarHtml(c.name, c.avatar, 'wb-chat-avatar')}
               <div class="wb-chat-info">
                 <div class="wb-chat-top"><span class="wb-chat-name">${esc(c.name)}</span><span class="wb-chat-time">${esc(c.time)}</span></div>
-                <div class="wb-chat-preview">${esc(c.preview)}</div>
+                <div class="wb-chat-preview">${esc(c.preview || '')}</div>
               </div>
               ${c.unread ? `<span class="wb-badge">${esc(c.unread)}</span>` : ''}
-            </div>`).join('')}
+            </div>`).join('') : '<div class="wb-msg-empty">暂无私信</div>'}
         </div>
         <div class="wb-end">私信 · 和喜欢的人聊聊天</div>`;
-      body.querySelectorAll('.wb-chat-row').forEach(row => {
-        row.onclick = () => toast('私信对话开发中');
+      body.querySelectorAll('.wb-msg-cat').forEach(row => {
+        row.onclick = () => { msgPanel = row.dataset.cat; openNoticePanel(row.dataset.cat); };
       });
+      body.querySelectorAll('.wb-chat-row[data-id]').forEach(row => {
+        row.onclick = () => {
+          const c = (store.get().chats || []).find(x => x.id === row.dataset.id);
+          if(c) openDmChat(c);
+        };
+      });
+    }
+
+    function renderMsgPanel(){
+      openNoticePanel(msgPanel === 'cmt' ? 'cmt' : msgPanel === 'like' ? 'like' : 'at');
+    }
+
+    function noticeSub(x){
+      if(x.kind === 'post') return '在微博里@了你';
+      if(x.kind === 'cmt') return '在评论里@了你';
+      if(x.kind === 'poster') return '博主发表了评论';
+      return '评论了你的微博';
+    }
+
+    function openNoticePanel(cat){
+      if(noticeMask){ noticeMask.remove(); noticeMask = null; }
+      const mask = document.createElement('div');
+      mask.className = 'wb-nb-mask';
+      app.appendChild(mask);
+      noticeMask = mask;
+      const iconsHtml = (app.querySelector('#wbStatusIcons') || {}).innerHTML || '';
+      const close = () => { mask.remove(); if(noticeMask === mask) noticeMask = null; };
+
+      const paint = () => {
+        const n = msgNotices();
+        const all = cat === 'at' ? n.at : cat === 'cmt' ? n.cmt : n.like;
+        const filters = NOTICE_FILTERS[cat];
+        const fi = noticeFilter[cat] || 0;
+        const list = all.filter(x => fi === 0 || (cat === 'at'
+          ? (fi === 1 ? x.kind === 'post' : x.kind === 'cmt')
+          : (fi === 1 ? x.kind === 'poster' : x.kind === 'mine')));
+        const empty = cat === 'at' ? '还没有人@你' : cat === 'cmt' ? '还没有新的评论' : '还没有收到赞';
+        mask.innerHTML = `
+          <div class="wb-status-bar wb-nb-status"><span>${nowHM()}</span><span class="wb-status-icons">${iconsHtml}</span></div>
+          <div class="wb-nb-bar">
+            <button class="wb-nb-back" type="button" aria-label="返回">${DT_ICON.back}</button>
+            <button class="wb-nb-title" type="button">${esc(filters[fi])}${filters.length > 1 ? '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>' : ''}</button>
+            <button class="wb-nb-set" type="button">设置</button>
+          </div>
+          <div class="wb-nb-list">
+            ${list.length ? list.map((x, i) => `
+              <div class="wb-nb-row" data-idx="${i}">
+                <div class="wb-nb-ava">${avatarHtml(x.name, x.avatar, '')}${x.vip ? '<span class="wb-nb-vb">V</span>' : ''}</div>
+                <div class="wb-nb-main">
+                  <div class="wb-nb-name">${esc(x.name)}</div>
+                  <div class="wb-nb-sub">${esc(cat === 'like' ? '赞了你的微博' : noticeSub(x))} ${esc(x.time || '')}</div>
+                  <div class="wb-nb-text">${esc(cat === 'like' ? (x.quote ? '赞了你的微博：' + x.quote : '赞了你的微博') : x.text)}</div>
+                  ${x.quote && cat !== 'like' ? `<div class="wb-nb-quote">原微博：${esc(x.quote)}</div>` : ''}
+                  <div class="wb-nb-acts">
+                    <button class="wb-nb-btn" data-act="reply">${ICON.comment}回复</button>
+                    <button class="wb-nb-btn" data-act="like">${ICON.heart}赞</button>
+                    <button class="wb-nb-dots" data-act="more">···</button>
+                  </div>
+                </div>
+                ${x.thumb ? `<div class="wb-nb-thumb"><img src="${esc(imgSrc(x.thumb))}" alt=""></div>` : ''}
+              </div>`).join('') : `<div class="wb-nb-empty">${esc(empty)}</div>`}
+          </div>`;
+
+        mask.querySelector('.wb-nb-back').onclick = close;
+        mask.querySelector('.wb-nb-set').onclick = () => toast('设置页开发中');
+        const titleBtn = mask.querySelector('.wb-nb-title');
+        if(titleBtn) titleBtn.onclick = () => {
+          if(filters.length < 2) return;
+          const bar = mask.querySelector('.wb-nb-bar');
+          const old = bar.querySelector('.wb-nb-drop');
+          if(old){ old.remove(); return; }
+          const drop = document.createElement('div');
+          drop.className = 'wb-nb-drop';
+          drop.innerHTML = filters.map((f, i) => `<i data-fi="${i}" class="${i === fi ? 'on' : ''}">${esc(f)}</i>`).join('');
+          bar.appendChild(drop);
+          drop.querySelectorAll('i[data-fi]').forEach(it => {
+            it.onclick = () => { noticeFilter[cat] = parseInt(it.dataset.fi, 10); paint(); };
+          });
+        };
+        mask.querySelectorAll('.wb-nb-row[data-idx]').forEach(row => {
+          const x = list[parseInt(row.dataset.idx, 10)];
+          row.onclick = () => {
+            const post = x && x.postId ? findPost(store.get(), x.postId) : null;
+            if(post) openPostDetail(post); else toast('原微博已不可见');
+          };
+          row.querySelectorAll('[data-act]').forEach(b => {
+            b.onclick = ev => {
+              ev.stopPropagation();
+              const act = b.dataset.act;
+              if(act === 'reply'){
+                const post = x && x.postId ? findPost(store.get(), x.postId) : null;
+                if(post) openPostDetail(post, 'comment'); else toast('原微博已不可见');
+              } else if(act === 'like'){
+                b.classList.toggle('on');
+              } else toast('更多操作开发中');
+            };
+          });
+        });
+      };
+      paint();
+    }
+
+    function openDmChat(chat){
+      if(dmMask){ dmMask.remove(); dmMask = null; }
+      const d = store.get();
+      if(!d.dms || typeof d.dms !== 'object') d.dms = {};
+      if(!Array.isArray(d.dms[chat.id])) d.dms[chat.id] = [];
+      chat.unread = 0;
+      store.save();
+
+      const me = meInfo(d);
+      const iconsHtml = (app.querySelector('#wbStatusIcons') || {}).innerHTML || '';
+      const replyText = DM_REPLIES[chat.name] || '';
+      const mask = document.createElement('div');
+      mask.className = 'wb-dm-mask';
+      mask.innerHTML = `
+        <div class="wb-status-bar wb-dm-status"><span>${nowHM()}</span><span class="wb-status-icons">${iconsHtml}</span></div>
+        <div class="wb-dm-bar">
+          <button class="wb-dm-back" type="button" aria-label="返回">${DT_ICON.back}</button>
+          <span class="wb-dm-title">${esc(chat.name)}</span>
+          <button class="wb-dm-set" type="button">设置</button>
+        </div>
+        <div class="wb-dm-body"></div>
+        <div class="wb-dm-quick">
+          ${['晚上好', '一起加油', '想你了', '注意休息'].map(t => `<button class="wb-dm-chip" type="button">${esc(t)}</button>`).join('')}
+        </div>
+        <div class="wb-dm-inputbar">
+          <input class="wb-dm-input" id="wbDmInput">
+          <button class="wb-dm-send" id="wbDmSend" type="button">发送</button>
+        </div>`;
+      app.appendChild(mask);
+      dmMask = mask;
+
+      const dmBody = mask.querySelector('.wb-dm-body');
+      const input = mask.querySelector('#wbDmInput');
+      let typing = false;
+
+      const paint = () => {
+        const msgs = d.dms[chat.id] || [];
+        const bubble = (isMe, name, avatar, text) => `
+          <div class="wb-dm-row${isMe ? ' me' : ''}">
+            <div class="wb-dm-ava">${avatarHtml(name, avatar, '')}${isMe ? '' : '<span class="wb-dm-vb">V</span>'}</div>
+            <div class="wb-dm-bubble${isMe ? ' me' : ''}">${esc(text)}</div>
+          </div>`;
+        dmBody.innerHTML = `
+          ${msgs.map(m => m.mine
+            ? bubble(true, me.name, me.avatar, m.text)
+            : bubble(false, chat.name, chat.avatar, m.text)).join('')}
+          ${typing ? `
+            <div class="wb-dm-row">
+              <div class="wb-dm-ava">${avatarHtml(chat.name, chat.avatar, '')}<span class="wb-dm-vb">V</span></div>
+              <div class="wb-dm-bubble wb-dm-typing"><i></i><i></i><i></i></div>
+            </div>` : ''}
+          <div class="wb-dm-tip">由于对方没有主动回复，你只能发送一条文字留言消息，需要对方关注或主动回复后才能继续发送。开通会员能发送更多留言消息</div>`;
+        dmBody.scrollTop = dmBody.scrollHeight;
+      };
+
+      const send = text => {
+        const t = String(text || '').trim();
+        if(!t) return;
+        const msgs = d.dms[chat.id] || (d.dms[chat.id] = []);
+        msgs.push({ mine: true, text: t, time: nowHM() });
+        chat.preview = t;
+        chat.time = '刚刚';
+        store.save();
+        typing = !!replyText;
+        paint();
+        if(!replyText) return;
+        setTimeout(() => {
+          typing = false;
+          msgs.push({ mine: false, text: replyText, time: nowHM() });
+          chat.preview = replyText;
+          store.save();
+          paint();
+        }, 1000);
+      };
+
+      mask.querySelector('.wb-dm-back').onclick = () => {
+        mask.remove();
+        if(dmMask === mask) dmMask = null;
+        renderChats();
+      };
+      mask.querySelector('.wb-dm-set').onclick = () => toast('设置页开发中');
+      mask.querySelector('#wbDmSend').onclick = () => { const v = input.value; input.value = ''; send(v); };
+      input.addEventListener('keydown', e => {
+        if(e.key === 'Enter'){ e.preventDefault(); const v = input.value; input.value = ''; send(v); }
+      });
+      mask.querySelectorAll('.wb-dm-chip').forEach(chip => {
+        chip.onclick = () => send(chip.textContent);
+      });
+      paint();
     }
 
     function renderMe(){
@@ -894,6 +2964,7 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       const coverCss = (!coverIsImg && coverVal) ? (COVERS[parseInt(coverVal.slice(2), 10)] || COVERS[0]).css : '';
       const coverAttr = coverIsImg ? ` style="background-image:url('${esc(coverVal)}')"` : (coverCss ? ` style="background:${coverCss}"` : '');
       const mine = d.feed.filter(x => x.mine && x.owner === d.activeId);
+      const drafts = d.drafts || [];
       const zzp = mine.reduce((a, x) => a + (x.likes || 0) + (x.comments || 0) + (x.reposts || 0), 0);
       const backBtn = typeof onClose === 'function'
         ? `<button class="wb-cover-back" id="wbMeBack" type="button" aria-label="返回"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>`
@@ -936,7 +3007,7 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
               <svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg><span>赞过</span>
             </button>
             <button class="wb-me-tab ${meTab === 'draft' ? 'on' : ''}" data-tab="draft" type="button">
-              <svg viewBox="0 0 24 24"><path d="M3.6 6.2h5.2l1.9 2.6h9.7v10.4H3.6z"/><path d="M3.6 9.6h16.8"/></svg><span>草稿箱</span>
+              <svg viewBox="0 0 24 24"><path d="M3.6 6.2h5.2l1.9 2.6h9.7v10.4H3.6z"/><path d="M3.6 9.6h16.8"/></svg><span>草稿箱${drafts.length ? ' ' + drafts.length : ''}</span>
             </button>
           </div>
         </div>
@@ -978,14 +3049,47 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
           panel.innerHTML = meEmpty('<svg viewBox="0 0 24 24"><rect x="3.2" y="3.6" width="17.6" height="16.8" rx="2.4"/><circle cx="8.8" cy="9.2" r="1.8"/><path d="M20.8 15.2l-4.2-4.2a1.9 1.9 0 0 0-2.7 0L6.4 19.6"/></svg>', '还没有照片，发微博时带上图片吧');
           return;
         }
-        panel.innerHTML = `<div class="wb-post-imgs" style="margin:0 12px 10px;">${imgs.map(src => `<div class="wb-post-img"><img src="${esc(src)}" alt=""></div>`).join('')}</div>`;
+        panel.innerHTML = `<div class="wb-post-imgs" style="margin:0 12px 10px;">${imgs.map(src => `<div class="wb-post-img"><img src="${esc(imgSrc(src))}" alt=""></div>`).join('')}</div>`;
         return;
       }
       if(meTab === 'draft'){
-        panel.innerHTML = meEmpty('<svg viewBox="0 0 24 24"><path d="M3.6 6.2h5.2l1.9 2.6h9.7v10.4H3.6z"/><path d="M3.6 9.6h16.8"/></svg>', '草稿箱是空的');
+        const drafts = store.get().drafts || [];
+        if(!drafts.length){
+          panel.innerHTML = meEmpty('<svg viewBox="0 0 24 24"><path d="M3.6 6.2h5.2l1.9 2.6h9.7v10.4H3.6z"/><path d="M3.6 9.6h16.8"/></svg>', '草稿箱是空的');
+          return;
+        }
+        panel.innerHTML = drafts.map(x => `
+          <div class="wb-draft" data-id="${esc(x.id)}">
+            <div class="wb-draft-top">
+              <span>${esc(x.time || '草稿')}</span>
+              <button class="wb-draft-del" data-del="${esc(x.id)}" type="button">删除</button>
+            </div>
+            <div class="wb-draft-text">${x.text ? hlHtml(x.text) : `<span style="color:var(--wb-ink-soft)">${x.video ? '[视频]' : '[图片]'}</span>`}</div>
+            ${(x.video && x.video.src) ? `<div class="wb-draft-imgs"><img src="${esc(x.video.src)}" alt=""></div>` : ''}
+            ${(x.imgs && x.imgs.length) ? `<div class="wb-draft-imgs">${x.imgs.slice(0, 4).map(src => `<img src="${esc(imgSrc(src))}" alt="">`).join('')}</div>` : ''}
+          </div>`).join('') + '<div class="wb-end">点击草稿继续编辑</div>';
+        panel.querySelectorAll('.wb-draft').forEach(el => {
+          el.onclick = e => {
+            if(e.target.closest('.wb-draft-del')) return;
+            const draft = (store.get().drafts || []).find(x => x.id === el.dataset.id);
+            if(draft) openCompose(null, draft);
+          };
+        });
+        panel.querySelectorAll('.wb-draft-del').forEach(b => {
+          b.onclick = e => {
+            e.stopPropagation();
+            const dd = store.get();
+            dd.drafts = (dd.drafts || []).filter(x => x.id !== b.dataset.del);
+            store.save();
+            toast('草稿已删除');
+            renderMe();
+          };
+        });
         return;
       }
-      const list = meTab === 'likes' ? store.get().feed.filter(x => x.liked) : mine;
+      const list = meTab === 'likes'
+        ? store.get().feed.concat(store.get().recommend || []).filter(x => x.liked)
+        : mine;
       if(!list.length){
         panel.innerHTML = meTab === 'likes'
           ? meEmpty('<svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg>', '还没有赞过任何微博')
@@ -995,10 +3099,11 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       const d = store.get();
       panel.innerHTML = list.map(x => postHtml(x, meInfo(d))).join('');
       panel.querySelectorAll('.wb-post').forEach(el => {
-        const post = d.feed.find(x => x.id === el.dataset.id);
+        const post = findPost(d, el.dataset.id);
         if(!post) return;
         el.querySelectorAll('.wb-act').forEach(btn => {
-          btn.onclick = () => {
+          btn.onclick = ev => {
+            ev.stopPropagation();
             const act = btn.dataset.act;
             if(act === 'like'){
               post.liked = !post.liked;
@@ -1006,13 +3111,19 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
               store.save();
               renderMe();
             } else if(act === 'comment'){
-              toast('评论功能开发中');
+              openPostDetail(post, 'comment');
+            } else if(ev.target.closest('.wb-act-num')){
+              openPostDetail(post, 'repost');
             } else {
               openRepostSheet(post);
             }
           };
         });
-        bindOwnActions(el, post, renderMe);
+        el.onclick = ev => {
+          if(ev.target.closest('.wb-act') || ev.target.closest('.wb-more-btn')) return;
+          openPostDetail(post, 'comment');
+        };
+        bindPostMenu(el, post, renderMe);
       });
     }
 
@@ -1302,6 +3413,45 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       s.mask.querySelector('[data-act="cancel"]').onclick = s.close;
     }
 
+    function openImageViewer(srcs, start){
+      const list = (srcs || []).filter(Boolean);
+      if(!list.length) return;
+      let cur = Math.max(0, Math.min(start || 0, list.length - 1));
+      const mask = document.createElement('div');
+      mask.className = 'wb-viewer';
+      mask.innerHTML = `
+        <span class="wb-viewer-count"></span>
+        <img alt="">
+        ${list.length > 1 ? `<button class="wb-viewer-nav prev" type="button" aria-label="上一张">‹</button><button class="wb-viewer-nav next" type="button" aria-label="下一张">›</button>` : ''}`;
+      app.appendChild(mask);
+      const img = mask.querySelector('img');
+      const count = mask.querySelector('.wb-viewer-count');
+      const paint = () => {
+        img.src = imgSrc(list[cur]);
+        count.textContent = list.length > 1 ? `${cur + 1} / ${list.length}` : '';
+      };
+      paint();
+      requestAnimationFrame(() => mask.classList.add('show'));
+      let closed = false;
+      const close = () => {
+        if(closed) return;
+        closed = true;
+        mask.classList.remove('show');
+        setTimeout(() => mask.remove(), 200);
+      };
+      mask.onclick = e => {
+        const nav = e.target.closest('.wb-viewer-nav');
+        if(nav){
+          cur = nav.classList.contains('prev')
+            ? (cur + list.length - 1) % list.length
+            : (cur + 1) % list.length;
+          paint();
+          return;
+        }
+        close();
+      };
+    }
+
     function openSheet(inner){
       const mask = document.createElement('div');
       mask.className = 'wb-sheet-mask';
@@ -1310,6 +3460,635 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       const close = () => mask.remove();
       mask.addEventListener('click', e => { if(e.target === mask) close(); });
       return { mask, close };
+    }
+
+    const ROBERT_FALLBACK = [
+      '发了九张图，重点全在第三张的脸，心思比这组滤镜还明显。',
+      '文案写得云淡风轻，发之前怕是改了七八遍吧。',
+      '这组图修得挺用心，就是没人问你在哪。',
+      '凌晨发这种内容，不是失眠就是想被谁看见。',
+      '拍得挺好，下次别配这么用力的文案了。',
+      '一张图能看出三件事：你在营业、你很闲、你想被夸。',
+      '这个角度的自拍，手机举了至少二十次。',
+      '日常两个字真万能，什么都能往里塞。'
+    ];
+
+    const NETIZEN_NAMES = ['熬夜第一名','路人甲不甲','一颗柠檬精','我磕的CP呢','划水专业户','养生失败者',
+      '冷面笑匠','文件夹管理员','白天睡觉的人','冲浪选手阿伟','不吃香菜','键盘侠退休','今天也不想上班',
+      '奶茶续命选手','人间清醒观察员','摸鱼冠军','打工人小张','追星不花钱','凌晨三点醒着','努力但没用',
+      '番茄炒蛋党','不睡觉的猫','天气预报员','沙发土豆','柠檬树下','早八人','吃饱了撑的','路由器管理员',
+      '在逃上班族','地铁末班车','咖啡因依赖者','深夜刷微博','小透明本明','吃瓜不吐皮','周五见'];
+
+    const NETIZEN_TEXTS = ['好好好，知道你去过那儿了。','这条我看了三遍，还是没看懂你想表达什么。',
+      '路过点个赞，主要是图好看。','我就知道评论区比正文精彩。','说得好像我能去一样。',
+      '建议下次多发点，反正我也睡不着。','一句话总结：还行，但不够。','你怎么知道我刚好在刷微博。',
+      '这文案是不是有点太敷衍了。','看完只想说：真的吗，我不信。','别的不说，这状态是真的好。',
+      '我先占个位置，等会儿再来细看。','这条我必须转给我朋友看看。','又是羡慕别人的一天。',
+      '收藏了，虽然大概率不会再打开。','早上刷到这条，一天的心情都变了。','能不能出个教程，我真的很需要。',
+      '评论区有没有人跟我一样想多了。','我承认我被这条戳到了。','这波我先磕为敬。'];
+
+    const NETIZEN_SYSTEM = '你是微博评论区的网友生成器，为一条微博生成多条来自不同真实用户的评论。昵称各不相同，像真实微博ID（2-8个字，可用数字或英文缩写）；评论内容必须贴合这条微博的具体内容，口语化、观点多样、每条20-40字；不要重复，不要套话，不用「沙发」「前排」等占楼词；全部使用普通话简体中文，不要出现粤语用字或方言。只输出JSON数组。';
+
+    function parseNetizenJson(raw){
+      let s = String(raw || '').trim();
+      const fence = s.match(/```(?:json)?[\s\S]*?```/i);
+      if(fence) s = fence[0].replace(/```(?:json)?/gi, '');
+      const arr = s.match(/\[[\s\S]*\]/);
+      if(arr) s = arr[0];
+      try{
+        const list = JSON.parse(s);
+        if(Array.isArray(list)){
+          return list.map(x => ({
+            name: String(x.name || x.user || x.id || '').trim(),
+            text: stripMeMentions(toMandarin(String(x.comment || x.text || x.content || '').trim()))
+          })).filter(x => x.text);
+        }
+      }catch(e){}
+      return [];
+    }
+
+    async function requestNetizenComments(post, count){
+      if(!Phone || !Phone.chatWithAI) return [];
+      const raw = await Phone.chatWithAI([
+        { role:'system', content: NETIZEN_SYSTEM },
+        { role:'user', content:`博主 @${post.name} 发了这条微博：「${String(post.text || '').replace(/\s+/g, ' ').slice(0, 120)}」\n请生成 ${count} 条不同的网友评论。\n输出格式（严格 JSON 数组）：\n[{"name":"网友昵称","comment":"评论内容"}]` }
+      ]);
+      return parseNetizenJson(raw);
+    }
+
+    async function aiFillNetizens(post, list, repaint){
+      const targets = list.filter(e => e.kind === 'netizen' && !e.aiFilled);
+      if(!targets.length) return;
+      targets.forEach(e => { e.aiFilled = true; });
+      let items = [];
+      try{ items = await requestNetizenComments(post, targets.length); }catch(e){ return; }
+      if(!items.length) return;
+      const used = new Set();
+      targets.forEach((e, i) => {
+        const it = items[i % items.length];
+        if(it.name){
+          const name = used.has(it.name) ? it.name + (i + 1) : it.name;
+          used.add(name);
+          e.name = name;
+        }
+        if(it.text) e.text = it.text;
+      });
+      store.save();
+      if(typeof repaint === 'function') repaint();
+    }
+
+    function parseRobertJson(raw){
+      let s = String(raw || '').trim();
+      const fence = s.match(/```(?:json)?[\s\S]*?```/i);
+      if(fence) s = fence[0].replace(/```(?:json)?/gi, '');
+      const arr = s.match(/\[[\s\S]*\]/);
+      if(arr) s = arr[0];
+      try{
+        const list = JSON.parse(s);
+        if(Array.isArray(list)){
+          const out = list.map((x, i) => {
+            if(typeof x === 'string') return { idx:i + 1, text:stripMeMentions(toMandarin(x.trim())) };
+            return {
+              idx: Number(x.idx || x.index || i + 1),
+              text: stripMeMentions(toMandarin(String(x.comment || x.text || x.content || '').trim()))
+            };
+          }).filter(x => x.text);
+          if(out.length) return out;
+        }
+      }catch(e){}
+      const out = [];
+      const re = /"comment"\s*:\s*"((?:[^"\\]|\\.)*)"/g;
+      let m;
+      while((m = re.exec(s))) out.push({ idx: out.length + 1, text: stripMeMentions(toMandarin(m[1].replace(/\\"/g, '"'))) });
+      return out;
+    }
+
+    async function requestRoberts(posts){
+      if(!Phone || !Phone.chatWithAI) throw new Error('未连接 AI');
+      const lines = posts.map((p, i) =>
+        `${i + 1}. @${p.name}：${String(p.text || '').replace(/\s+/g, ' ').slice(0, 90)}`
+      ).join('\n');
+      const messages = [
+        { role:'system', content: ROBERT_SYSTEM },
+        { role:'user', content:`请为下面每条微博各写一条「微博罗伯特」的评论：\n${lines}\n\n要求：犀利狠毒、阴阳怪气、一针见血，短句口语化，可带一两个 emoji；不骂脏话，不攻击外貌，不涉及政治。\n输出格式（严格 JSON 数组）：\n[{"idx":1,"comment":"评论内容"}]` }
+      ];
+      const raw = await Phone.chatWithAI(messages);
+      const items = parseRobertJson(raw);
+      const out = [];
+      items.forEach((it, i) => {
+        const pos = (it.idx >= 1 && it.idx <= posts.length) ? it.idx - 1 : i;
+        if(posts[pos] && !out[pos]) out[pos] = it.text;
+      });
+      return out;
+    }
+
+    function fallbackRobert(){
+      return ROBERT_FALLBACK[Math.floor(Math.random() * ROBERT_FALLBACK.length)];
+    }
+
+    function setRobert(post, text){
+      post.robert = { text: String(text || '').trim() || fallbackRobert(), at: Date.now() };
+      store.save();
+      return post.robert.text;
+    }
+
+    async function requestRobertText(post){
+      try{
+        const texts = await requestRoberts([post]);
+        return (texts[0] || '').trim();
+      }catch(e){
+        return '';
+      }
+    }
+
+    function rndInt(a, b){ return Math.floor(Math.random() * (b - a + 1)) + a; }
+    function entryId(){ return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+    function makeEntry(kind, name, text, extra){
+      return Object.assign({
+        id: entryId(), kind, name, text, time: '刚刚',
+        likes: kind === 'robert' ? rndInt(30, 320) : rndInt(2, 90),
+        liked: false, replies: []
+      }, extra || {});
+    }
+
+    function makeNetizens(n){
+      const names = shuffle(NETIZEN_NAMES.slice()).slice(0, n);
+      const texts = shuffle(NETIZEN_TEXTS.slice()).slice(0, n);
+      return names.map((name, i) =>
+        makeEntry('netizen', name, texts[i % texts.length] || '', { time: (i * 3 + 2) + '分钟前' })
+      );
+    }
+
+    function myCmtName(){
+      const char = meChar();
+      const p = store.get().profile;
+      return (p.name || '').trim() || (char && char.name) || '我';
+    }
+
+    function findEntry(list, id){
+      for(const e of list){
+        if(e.id === id) return e;
+        const hit = findEntry(e.replies || [], id);
+        if(hit) return hit;
+      }
+      return null;
+    }
+
+    function dtFanLabel(name){
+      const arr = ['铁粉2', '钻粉3', '钻粉4', '金粉1', '铁粉1', '粉丝'];
+      let h = 0;
+      for(const ch of String(name || '')) h = (h * 31 + ch.charCodeAt(0)) % 9973;
+      return arr[h % arr.length];
+    }
+
+    function ensureLikers(post){
+      if(Array.isArray(post.likers) && post.likers.length) return;
+      let h = 0;
+      for(const ch of String(post.id || '')) h = (h * 31 + ch.charCodeAt(0)) % 9973;
+      const base = NETIZEN_NAMES;
+      const n = 5 + (h % 4);
+      const out = [];
+      for(let i = 0; i < n; i++) out.push(base[(h + i * 7) % base.length]);
+      post.likers = out;
+    }
+
+    function dtPostHtml(p, me){
+      const own = (p.mine && (!p.owner || !me || p.owner === me.id)) ? me : null;
+      const name = own ? own.name : p.name;
+      const avatar = own ? own.avatar : p.avatar;
+      const vKey = own ? (own.verify || 'none') : (p.vip ? 'orange' : 'none');
+      const imgs = (p.imgs || []).filter(Boolean).slice(0, 9);
+      const cols = imgs.length === 2 || imgs.length === 4 ? 2 : 3;
+      const imgHtml = imgs.length
+        ? `<div class="wb-dt-imgs${imgs.length === 1 ? ' one' : ''}"${imgs.length === 1 ? '' : ` style="grid-template-columns:repeat(${cols},1fr)"`}>${imgs.map(src => `<div class="wb-post-img"><img src="${esc(imgSrc(src))}" alt=""></div>`).join('')}</div>`
+        : '';
+      const vidHtml = videoHtml(p);
+      const q = p.quote;
+      const quoteHtml = q
+        ? `<div class="wb-dt-post-quote">
+            <div class="wb-dt-post-quote-head">${ICON.repost}<span>@${esc(q.name)}</span></div>
+            <div class="wb-dt-post-quote-text">${hlHtml(q.text || '')}</div>
+            ${(q.imgs && q.imgs.length) ? `<div class="wb-dt-post-quote-imgs">${q.imgs.slice(0, 9).map(src => `<div class="wb-post-img"><img src="${esc(imgSrc(src))}" alt=""></div>`).join('')}</div>` : ''}
+          </div>`
+        : '';
+      return `<div class="wb-dt-post">
+        <div class="wb-dt-post-head">
+          <div class="wb-dt-ava">
+            ${avatarHtml(name, avatar)}
+            ${vKey === 'none' ? '' : '<span class="wb-dt-vb">V</span>'}
+          </div>
+          <div class="wb-dt-post-meta">
+            <div class="wb-dt-post-name"><span>${esc(name)}</span></div>
+            <div class="wb-dt-post-time" data-ts="${Number(p.ts) || 0}" data-dev="${esc(postDeviceLabel(p))}">${esc(postTimeText(p))} · ${postDeviceLabel(p)}</div>
+          </div>
+        </div>
+        <div class="wb-dt-post-text">${hlHtml(p.text)}</div>
+        ${vidHtml}
+        ${imgHtml}
+        ${quoteHtml}
+      </div>`;
+    }
+
+    function dtEntryHtml(e, depth){
+      const d = depth || 0;
+      const ai = e.kind === 'robert';
+      const replies = e.replies || [];
+      return `<div class="wb-dt-cm${d ? ' is-reply' : ''}" data-cid="${esc(e.id)}">
+        <div class="wb-dt-cm-ava">
+          ${avatarHtml(e.name, e.avatar || '', ai ? 'is-ai' : '')}
+          ${ai ? '' : '<span class="wb-dt-cm-v">V</span>'}
+        </div>
+        <div class="wb-dt-cm-main">
+          <div class="wb-dt-cm-name"><span>${esc(e.name)}</span>${ai ? '<span class="wb-robert-tag">AI</span>' : `<span class="wb-dt-fan">${esc(dtFanLabel(e.name))}</span>`}</div>
+          ${e.quote ? `<div class="wb-dt-cm-quote"><span class="wb-dt-cm-quote-at">@${esc(e.quote.name)}：</span>${hlHtml(e.quote.text || '')}</div>` : ''}
+          ${e.text ? `<div class="wb-dt-cm-bubble${e.pending ? ' pending' : ''}">${hlHtml(e.text)}</div>` : ''}
+          ${(e.imgs && e.imgs.length) ? `<div class="wb-dt-cm-imgs">${e.imgs.map(src => `<img src="${esc(imgSrc(src))}" alt="">`).join('')}</div>` : ''}
+          <div class="wb-dt-cm-foot">
+            <span class="wb-dt-cm-time">${esc(e.time)} 来自 山东</span>
+            <div class="wb-dt-cm-acts">
+              <button class="wb-dt-cm-act" type="button" data-sad="1">${DT_ICON.sad}</button>
+              <button class="wb-dt-cm-act" type="button" data-repost="1">${ICON.repost}</button>
+              <button class="wb-dt-cm-act" type="button" data-reply="1">${ICON.comment}</button>
+              <button class="wb-dt-cm-act${e.liked ? ' on' : ''}" type="button" data-like="1">${ICON.heart}<span>${e.likes || 0}</span></button>
+            </div>
+          </div>
+          ${replies.length ? `<div class="wb-dt-cm-replies">${replies.map(r => dtEntryHtml(r, d + 1)).join('')}</div>` : ''}
+          ${d >= 3 ? '' : `<div class="wb-dt-replybox" data-box="1" hidden>
+            <div class="wb-dt-reply-row">
+              <input class="wb-cm-input" type="text" maxlength="80" placeholder="回复 @${esc(e.name)}">
+              <button class="wb-cm-imgbtn" type="button" data-img="1" aria-label="图片">${ICON.img}</button>
+              <button class="wb-cm-send" type="button" data-send="1">发送</button>
+            </div>
+            <div class="wb-cm-picked" data-picked="1"></div>
+          </div>`}
+        </div>
+      </div>`;
+    }
+
+    function pickLocalImages(cb, max){
+      const inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = 'image/*'; inp.multiple = true;
+      inp.onchange = async () => {
+        const out = [];
+        for(const f of Array.from(inp.files || []).slice(0, max || 9)){
+          try{ out.push({ src: await toDataUrl(f) }); }
+          catch(e){ toast('图片读取失败'); }
+        }
+        if(out.length) cb(out);
+      };
+      inp.click();
+    }
+
+    function attachImages(cb, max){
+      openImageSourceSheet(src => {
+        if(src === 'local') pickLocalImages(cb, max);
+        else openTextImageEditor(img => cb([img]));
+      });
+    }
+
+    function paintPicked(box, list){
+      box.innerHTML = list.map((img, i) => `
+        <div class="wb-cm-picked-item">
+          <img src="${esc(img.src)}" alt="">
+          <span class="wb-cm-picked-del" data-picked-del="${i}">×</span>
+        </div>`).join('');
+      box.querySelectorAll('[data-picked-del]').forEach(el => {
+        el.onclick = () => {
+          list.splice(parseInt(el.dataset.pickedDel, 10), 1);
+          paintPicked(box, list);
+        };
+      });
+    }
+
+    function openEntryRepostSheet(entry, onSend){
+      const char = meChar();
+      const p = store.get().profile;
+      const name = (p.name || '').trim() || ((char && char.name) || '我');
+      const avatar = p.avatar || (char && char.avatar) || '';
+      const s = openSheet(`
+        <div class="wb-sheet-head">
+          <button class="wb-sheet-cancel" type="button">取消</button>
+          <span>转发</span>
+          <button class="wb-sheet-send" type="button" id="wbEntryRepostSend">转发</button>
+        </div>
+        <div class="wb-sheet-quote">
+          ${avatarHtml(entry.name, entry.avatar || '')}
+          <div class="wb-sheet-quote-main">
+            <div class="wb-sheet-quote-name">@${esc(entry.name)}</div>
+            <div class="wb-sheet-quote-text">${hlHtml(entry.text || '')}</div>
+          </div>
+        </div>
+        <div class="wb-compose-field">
+          <textarea id="wbEntryRepostText" maxlength="140" placeholder="说点什么……"></textarea>
+        </div>`);
+      const ta = s.mask.querySelector('#wbEntryRepostText');
+      s.mask.querySelector('.wb-sheet-cancel').onclick = s.close;
+      setTimeout(() => ta.focus(), 120);
+      s.mask.querySelector('#wbEntryRepostSend').onclick = () => {
+        const text = ta.value.trim() || '转发微博';
+        s.close();
+        onSend(text, { name, avatar });
+      };
+    }
+
+    function bindDtActions(box, getList, repaint, countCb){
+      box.onclick = ev => {
+        const btn = ev.target.closest('button');
+        if(!btn || !box.contains(btn)) return;
+        const itemEl = btn.closest('.wb-dt-cm');
+        if(!itemEl) return;
+        const entry = findEntry(getList(), itemEl.dataset.cid);
+        if(!entry) return;
+        if(btn.dataset.like){
+          entry.liked = !entry.liked;
+          entry.likes = Math.max(0, (entry.likes || 0) + (entry.liked ? 1 : -1));
+          btn.classList.toggle('on', entry.liked);
+          btn.innerHTML = ICON.heart + '<span>' + entry.likes + '</span>';
+          store.save();
+          return;
+        }
+        if(btn.dataset.sad){ toast('已踩过这条'); return; }
+        if(btn.dataset.repost){
+          openEntryRepostSheet(entry, (text, me) => {
+            getList().unshift(makeEntry('me', me.name, text, {
+              likes: 0,
+              avatar: me.avatar,
+              quote: { name: entry.name, text: entry.text || '' }
+            }));
+            store.save();
+            if(countCb) countCb('repost');
+            repaint();
+          });
+          return;
+        }
+        if(btn.dataset.reply){
+          const rb = itemEl.querySelector(':scope > .wb-dt-cm-main > .wb-dt-replybox');
+          if(!rb) return;
+          rb.hidden = !rb.hidden;
+          if(!rb.hidden) setTimeout(() => rb.querySelector('.wb-cm-input').focus(), 60);
+          return;
+        }
+        if(btn.dataset.img){
+          const rb = btn.closest('.wb-dt-replybox');
+          if(!rb) return;
+          rb._picked = rb._picked || [];
+          const max = 9 - rb._picked.length;
+          if(max <= 0){ toast('最多9张'); return; }
+          attachImages(imgs => {
+            rb._picked.push(...imgs.slice(0, max));
+            paintPicked(rb.querySelector('[data-picked="1"]'), rb._picked);
+          }, max);
+          return;
+        }
+        if(btn.dataset.send){
+          const rb = btn.closest('.wb-dt-replybox');
+          const inp = rb.querySelector('.wb-cm-input');
+          const val = (inp.value || '').trim();
+          const imgs = (rb._picked || []).map(x => x.src);
+          if(!val && !imgs.length){ toast('说点什么吧'); return; }
+          entry.replies = entry.replies || [];
+          entry.replies.push(makeEntry('me', myCmtName(), val, { likes: 0, imgs }));
+          store.save();
+          if(countCb) countCb('comment');
+          repaint();
+        }
+      };
+    }
+
+    function attachRobert(list, post, repaint, force, cacheKey){
+      const key = cacheKey || 'robert';
+      const cached = (!force && post[key] && post[key].text) ? post[key].text : '';
+      const entry = makeEntry('robert', ROBERT_NAME, cached || '正在锐评…', { pending: !cached });
+      const at = list.length > 1 ? rndInt(1, list.length) : list.length;
+      list.splice(at, 0, entry);
+      repaint();
+      if(cached) return;
+      requestRobertText(post).then(text => {
+        entry.pending = false;
+        entry.text = text || fallbackRobert();
+        post[key] = { text: entry.text, at: Date.now() };
+        store.save();
+        repaint();
+      });
+    }
+
+    function ensureCmts(post){
+      if(!Array.isArray(post.cmts)) post.cmts = [];
+      if(!post.cmts.length){
+        post.cmts.push(...makeNetizens(3));
+        post.comments = Math.max(post.comments || 0, post.cmts.length);
+      }
+    }
+
+    function openPostDetail(post, startTab){
+      ensureCmts(post);
+      ensureRps(post);
+      const me = meInfo(store.get());
+      let tab = startTab || 'comment';
+      const iconsHtml = (app.querySelector('#wbStatusIcons') || {}).innerHTML || '';
+      const nowText = () => {
+        const t = new Date();
+        return String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
+      };
+      const mask = document.createElement('div');
+      mask.className = 'wb-dt-mask';
+      mask.innerHTML = `
+        <div class="wb-status-bar wb-dt-status"><span id="wbDtTime">${nowText()}</span><span class="wb-status-icons">${iconsHtml}</span></div>
+        <div class="wb-dt-topbar">
+          <button class="wb-dt-back" type="button" aria-label="返回">${DT_ICON.back}</button>
+          <span class="wb-dt-title">微博正文</span>
+          <div class="wb-dt-top-actions">
+            <button class="wb-dt-ico" type="button" data-ico="refresh" aria-label="刷新数据">${DT_ICON.refresh}</button>
+            <button class="wb-dt-ico" type="button" data-ico="more" aria-label="更多">${DT_ICON.dots}</button>
+          </div>
+        </div>
+        <div class="wb-dt-body">
+          ${dtPostHtml(post, me)}
+          <div class="wb-dt-tabs">
+            <button class="wb-dt-tab" type="button" data-tab="repost">转发 ${post.reposts || 0}</button>
+            <button class="wb-dt-tab" type="button" data-tab="comment">评论 ${post.comments || 0}</button>
+            <button class="wb-dt-tab" type="button" data-tab="like">赞 ${post.likes || 0}</button>
+          </div>
+          <div class="wb-dt-sort">
+            <button class="wb-cm-refresh" type="button" data-refresh="1">刷新</button>
+            <span>${DT_ICON.sort}按热度</span>
+          </div>
+          <div class="wb-dt-list" id="wbDtList"></div>
+        </div>
+        <div class="wb-dt-bottombar">
+          <div class="wb-dt-bbar">
+            <button type="button" data-btab="repost">${ICON.repost}<span>${post.reposts || 0}</span></button>
+            <button type="button" data-btab="comment">${ICON.comment}<span>${post.comments || 0}</span></button>
+            <button type="button" data-btab="like"${post.liked ? ' class="on"' : ''}>${ICON.heart}<span>${post.likes || 0}</span></button>
+          </div>
+        </div>`;
+      app.appendChild(mask);
+      const listEl = mask.querySelector('#wbDtList');
+      const tabBtns = Array.from(mask.querySelectorAll('.wb-dt-tab'));
+      const barBtns = Array.from(mask.querySelectorAll('[data-btab]'));
+      const refreshBtn = mask.querySelector('[data-refresh="1"]');
+      const timer = setInterval(() => {
+        if(!mask.isConnected){ clearInterval(timer); return; }
+        const t = mask.querySelector('#wbDtTime');
+        if(t) t.textContent = nowText();
+      }, 30000);
+      const close = () => {
+        clearInterval(timer);
+        mask.remove();
+        if(currentTab === 'home') renderHome();
+        else if(currentTab === 'me') renderMe();
+      };
+      const syncTabs = () => tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+      const syncCounts = () => {
+        tabBtns[0].textContent = '转发 ' + (post.reposts || 0);
+        tabBtns[1].textContent = '评论 ' + (post.comments || 0);
+        tabBtns[2].textContent = '赞 ' + (post.likes || 0);
+        barBtns[0].querySelector('span').textContent = post.reposts || 0;
+        barBtns[1].querySelector('span').textContent = post.comments || 0;
+        barBtns[2].querySelector('span').textContent = post.likes || 0;
+        barBtns[2].classList.toggle('on', !!post.liked);
+      };
+      const paintList = () => {
+        if(!listEl.isConnected) return;
+        refreshBtn.style.visibility = tab === 'like' ? 'hidden' : 'visible';
+        if(tab === 'comment'){
+          listEl.innerHTML = post.cmts.length
+            ? post.cmts.map(e => dtEntryHtml(e, 0)).join('')
+            : '<div class="wb-dt-empty">还没有评论，来抢沙发</div>';
+          if(!post.cmts.some(e => e.kind === 'robert')) attachRobert(post.cmts, post, paintList, false);
+          aiFillNetizens(post, post.cmts, paintList);
+        } else if(tab === 'repost'){
+          post.rps = post.rps.filter(e => e.kind !== 'robert');
+          listEl.innerHTML = post.rps.length
+            ? post.rps.map(e => dtEntryHtml(e, 0)).join('')
+            : '<div class="wb-dt-empty">还没有人转发</div>';
+          aiFillNetizens(post, post.rps, paintList);
+        } else {
+          ensureLikers(post);
+          const names = post.likers.slice();
+          if(post.liked) names.unshift(myCmtName());
+          listEl.innerHTML = names.map(n => `<div class="wb-dt-like-row">${avatarHtml(n, '', '')}<span class="wb-dt-like-name">${esc(n)}</span><span class="wb-dt-like-meta">赞了这条微博</span></div>`).join('');
+        }
+      };
+      bindDtActions(listEl, () => (tab === 'comment' ? post.cmts : post.rps), paintList, type => {
+        if(type === 'repost') post.reposts = (post.reposts || 0) + 1;
+        else post.comments = (post.comments || 0) + 1;
+        syncCounts();
+      });
+      tabBtns.forEach(b => {
+        b.onclick = () => {
+          tab = b.dataset.tab;
+          syncTabs();
+          paintList();
+          syncCounts();
+        };
+      });
+      barBtns.forEach(b => {
+        b.onclick = () => {
+          const t = b.dataset.btab;
+          if(t === 'like'){
+            post.liked = !post.liked;
+            post.likes = Math.max(0, (post.likes || 0) + (post.liked ? 1 : -1));
+            store.save();
+            syncCounts();
+            if(tab === 'like') paintList();
+            return;
+          }
+          tab = t;
+          syncTabs();
+          paintList();
+          syncCounts();
+        };
+      });
+      const DT_DAMP = [1, .62, .38, .22, .12, .07, .04, .02];
+      const refreshStats = btn => {
+        post.refreshN = (Number(post.refreshN) || 0) + 1;
+        const f = DT_DAMP[Math.min(post.refreshN, DT_DAMP.length) - 1];
+        const bump = (cur, ratio) => (cur || 0) + Math.max(1, Math.round((cur || 0) * ratio * f));
+        post.reposts = bump(post.reposts, .03);
+        post.comments = bump(post.comments, .04);
+        post.likes = bump(post.likes, .05);
+        store.save();
+        syncCounts();
+        if(btn){
+          btn.classList.remove('wb-spin');
+          void btn.offsetWidth;
+          btn.classList.add('wb-spin');
+        }
+      };
+      refreshBtn.onclick = () => {
+        refreshStats(null);
+        if(tab === 'comment'){
+          post.cmts.unshift(...makeNetizens(rndInt(2, 3)));
+          if(!post.cmts.some(e => e.kind === 'robert')) attachRobert(post.cmts, post, paintList, false);
+        } else if(tab === 'repost'){
+          post.rps.unshift(...makeNetizens(2));
+        }
+        store.save();
+        paintList();
+      };
+      const dtRefreshBtn = mask.querySelector('[data-ico="refresh"]');
+      if(dtRefreshBtn){
+        dtRefreshBtn.onclick = ev => {
+          ev.stopPropagation();
+          refreshStats(dtRefreshBtn);
+        };
+      }
+      const topbar = mask.querySelector('.wb-dt-topbar');
+      mask.querySelector('[data-ico="more"]').onclick = ev => {
+        ev.stopPropagation();
+        const old = topbar.querySelector('.wb-dt-menu');
+        if(old){ old.remove(); return; }
+        const dd = store.get();
+        const mine = !!post.mine && (!post.owner || post.owner === dd.activeId);
+        const menu = document.createElement('div');
+        menu.className = 'wb-dt-menu';
+        menu.innerHTML = [
+          ['edit', '编辑', false],
+          ['del', '删除', true],
+          ['block', '拉黑', true],
+          ['report', '举报', true]
+        ].map(it => `<button type="button" data-k="${it[0]}"${it[2] ? ' class="danger"' : ''}>${it[1]}</button>`).join('');
+        topbar.appendChild(menu);
+        menu.querySelectorAll('button').forEach(b => {
+          b.onclick = e2 => {
+            e2.stopPropagation();
+            const k = b.dataset.k;
+            menu.remove();
+            if(k === 'edit'){
+              if(!mine){ toast('只能编辑自己发布的微博'); return; }
+              close();
+              openCompose(post);
+            } else if(k === 'del'){
+              if(!mine && !confirm('确定删除这条微博吗？')) return;
+              removePost(post);
+              close();
+            } else if(k === 'block'){
+              blockAuthor(post.name);
+              close();
+            } else {
+              toast('已收到举报，我们会尽快处理');
+            }
+          };
+        });
+      };
+      mask.addEventListener('click', () => {
+        const m = topbar.querySelector('.wb-dt-menu');
+        if(m) m.remove();
+      });
+      mask.querySelector('.wb-dt-back').onclick = close;
+      syncTabs();
+      syncCounts();
+      paintList();
+    }
+
+    function ensureRps(post){
+      if(!Array.isArray(post.rps)) post.rps = [];
+      if(!post.rps.length){
+        post.rps.push(...makeNetizens(2));
+        post.reposts = Math.max(post.reposts || 0, post.rps.length);
+      }
     }
 
     function openImageSourceSheet(onPick){
@@ -1327,77 +4106,178 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       });
     }
 
-    function wrapCanvasText(ctx, text, cx, cy, lineHeight, maxLines, maxWidth){
-      const lines = [];
-      let line = '';
-      for(const ch of text.split('')){
-        const test = line + ch;
-        if(ctx.measureText(test).width > maxWidth && line){
-          lines.push(line);
-          line = ch;
-          if(lines.length >= maxLines) break;
-        } else line = test;
-      }
-      if(lines.length < maxLines && line) lines.push(line);
-      const startY = cy - ((lines.length - 1) * lineHeight) / 2;
-      lines.forEach((l, i) => ctx.fillText(l, cx, startY + i * lineHeight));
-    }
-
     function openTextImageEditor(onDone){
       const colors = [
-        { name:'浅灰', bg:'#f5f5f5', fg:'#333333' },
-        { name:'米白', bg:'#fef9e7', fg:'#5a4a1a' },
-        { name:'淡蓝', bg:'#e8f4fd', fg:'#1a4a7a' },
-        { name:'淡粉', bg:'#fde8f0', fg:'#7a1a4a' },
-        { name:'淡绿', bg:'#e8f8f0', fg:'#1a5a3a' },
-        { name:'纯黑', bg:'#222222', fg:'#ffffff' }
+        { bg:'#f5f5f5', fg:'#333333' },
+        { bg:'#fef9e7', fg:'#5a4a1a' },
+        { bg:'#e8f4fd', fg:'#1a4a7a' },
+        { bg:'#fde8f0', fg:'#7a1a4a' },
+        { bg:'#e8f8f0', fg:'#1a5a3a' },
+        { bg:'#1f1f1f', fg:'#ffffff' }
       ];
-      let curBg = colors[0].bg, curFg = colors[0].fg;
-      const s = openSheet(`
-        <div class="wb-sheet-head">
-          <span>文字图片</span>
-          <button class="wb-sheet-send" type="button" id="wbTxtOk">生成</button>
-        </div>
-        <textarea class="wb-sheet-text" id="wbTxtInput" maxlength="120" placeholder="输入你想写的话……"></textarea>
-        <div class="wb-txt-preview" id="wbTxtPreview" style="background:${curBg};color:${curFg}">预览文字</div>
-        <div class="wb-txt-colors" id="wbTxtColors">
-          <span class="wb-txt-colors-label">背景色</span>
-          ${colors.map((c, i) => `<div class="wb-txt-color ${i === 0 ? 'on' : ''}" data-idx="${i}" style="background:${c.bg}"></div>`).join('')}
-        </div>`);
-      const ta = s.mask.querySelector('#wbTxtInput');
-      const preview = s.mask.querySelector('#wbTxtPreview');
+      let cur = 0;
+      const mask = document.createElement('div');
+      mask.className = 'wb-ti-mask';
+      mask.innerHTML = `
+        <div class="wb-ti-card">
+          <div class="wb-ti-head">文字图片</div>
+          <div class="wb-ti-body">
+            <textarea class="wb-ti-ta" maxlength="120" placeholder="输入你想写的话……"></textarea>
+            <div class="wb-ti-preview"></div>
+            <div class="wb-ti-colors">
+              <span class="wb-ti-color-label">背景色</span>
+              ${colors.map((c, i) => `<button class="wb-ti-swatch${i === 0 ? ' on' : ''}" type="button" data-idx="${i}" style="background:${c.bg}"></button>`).join('')}
+            </div>
+          </div>
+          <div class="wb-ti-foot">
+            <button class="wb-ti-btn wb-ti-cancel" type="button">取消</button>
+            <button class="wb-ti-btn wb-ti-ok" type="button">生成</button>
+          </div>
+        </div>`;
+      app.appendChild(mask);
+      const ta = mask.querySelector('.wb-ti-ta');
+      const preview = mask.querySelector('.wb-ti-preview');
+      const close = () => mask.remove();
       const update = () => {
         preview.textContent = ta.value.trim() || '预览文字';
-        preview.style.background = curBg;
-        preview.style.color = curFg;
+        preview.style.background = colors[cur].bg;
+        preview.style.color = colors[cur].fg;
       };
+      update();
       ta.addEventListener('input', update);
-      s.mask.querySelectorAll('.wb-txt-color').forEach(dot => {
-        dot.onclick = () => {
-          const i = parseInt(dot.dataset.idx, 10);
-          curBg = colors[i].bg;
-          curFg = colors[i].fg;
-          s.mask.querySelectorAll('.wb-txt-color').forEach(x => x.classList.remove('on'));
-          dot.classList.add('on');
+      mask.querySelectorAll('.wb-ti-swatch').forEach(sw => {
+        sw.onclick = () => {
+          cur = parseInt(sw.dataset.idx, 10);
+          mask.querySelectorAll('.wb-ti-swatch').forEach(x => x.classList.remove('on'));
+          sw.classList.add('on');
           update();
         };
       });
-      setTimeout(() => ta.focus(), 120);
-      s.mask.querySelector('#wbTxtOk').onclick = () => {
+      mask.onclick = ev => { if(ev.target === mask) close(); };
+      mask.querySelector('.wb-ti-cancel').onclick = close;
+      setTimeout(() => ta.focus(), 140);
+      mask.querySelector('.wb-ti-ok').onclick = () => {
         const text = ta.value.trim();
         if(!text){ toast('请输入文字'); return; }
+        const CV = 720, pad = 70, font = 'px "PingFang SC","Microsoft YaHei",sans-serif';
         const cv = document.createElement('canvas');
-        cv.width = 400; cv.height = 400;
+        cv.width = CV; cv.height = CV;
         const ctx = cv.getContext('2d');
-        ctx.fillStyle = curBg;
-        ctx.fillRect(0, 0, 400, 400);
-        ctx.fillStyle = curFg;
+        let fs = 52, lineH = 78, lines = [];
+        while(fs >= 20){
+          lineH = Math.round(fs * 1.55);
+          ctx.font = fs + font;
+          lines = [];
+          let curLine = '';
+          for(const ch of Array.from(text)){
+            if(ch === '\n'){ lines.push(curLine); curLine = ''; continue; }
+            const test = curLine + ch;
+            if(ctx.measureText(test).width > CV - pad * 2 && curLine){ lines.push(curLine); curLine = ch; }
+            else curLine = test;
+          }
+          if(curLine) lines.push(curLine);
+          if(lines.length * lineH <= CV - pad * 2) break;
+          fs -= 2;
+        }
+        ctx.fillStyle = colors[cur].bg;
+        ctx.fillRect(0, 0, CV, CV);
+        ctx.fillStyle = colors[cur].fg;
+        ctx.font = fs + font;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.font = 'bold 26px -apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
-        wrapCanvasText(ctx, text, 200, 200, 34, 9, 340);
-        s.close();
-        onDone({ type:'text', src: cv.toDataURL('image/jpeg', 0.85), text, bg: curBg });
+        const total = lines.length * lineH;
+        const startY = CV / 2 - total / 2 + lineH / 2;
+        lines.forEach((ln, i) => ctx.fillText(ln, CV / 2, startY + i * lineH));
+        close();
+        onDone({ type:'text', src: cv.toDataURL('image/png'), text, bg: colors[cur].bg });
+      };
+    }
+
+    function wrapCanvasText(ctx, text, maxW){
+      const lines = [];
+      let cur = '';
+      for(const ch of Array.from(text)){
+        if(ch === '\n'){ lines.push(cur); cur = ''; continue; }
+        const test = cur + ch;
+        if(ctx.measureText(test).width > maxW && cur){ lines.push(cur); cur = ch; }
+        else cur = test;
+      }
+      if(cur) lines.push(cur);
+      return lines;
+    }
+
+    function openVideoEditor(onDone){
+      const mask = document.createElement('div');
+      mask.className = 'wb-ti-mask';
+      mask.innerHTML = `
+        <div class="wb-ti-card">
+          <div class="wb-ti-head">视频</div>
+          <div class="wb-ti-body">
+            <textarea class="wb-ti-ta" maxlength="90" placeholder="简单描述一下视频内容……"></textarea>
+            <div class="wb-ti-preview wb-ti-vpreview"></div>
+            <div class="wb-ti-fields">
+              <div class="wb-ti-field">
+                <span class="wb-ti-field-label">时长</span>
+                <input class="wb-ti-input" id="wbVidDur" type="text" maxlength="8" value="00:15">
+              </div>
+              <div class="wb-ti-field">
+                <span class="wb-ti-field-label">观看数量</span>
+                <input class="wb-ti-input" id="wbVidViews" type="text" maxlength="12" value="1.2万次观看">
+              </div>
+            </div>
+          </div>
+          <div class="wb-ti-foot">
+            <button class="wb-ti-btn wb-ti-cancel" type="button">取消</button>
+            <button class="wb-ti-btn wb-ti-ok" type="button">生成</button>
+          </div>
+        </div>`;
+      app.appendChild(mask);
+      const ta = mask.querySelector('.wb-ti-ta');
+      const preview = mask.querySelector('.wb-ti-preview');
+      const durEl = mask.querySelector('#wbVidDur');
+      const viewsEl = mask.querySelector('#wbVidViews');
+      const close = () => mask.remove();
+      const update = () => {
+        preview.textContent = ta.value.trim() || '视频画面';
+        preview.style.background = 'linear-gradient(160deg,#3b4b5c,#7d8e9d)';
+        preview.style.color = '#fff';
+      };
+      update();
+      ta.addEventListener('input', update);
+      mask.onclick = ev => { if(ev.target === mask) close(); };
+      mask.querySelector('.wb-ti-cancel').onclick = close;
+      setTimeout(() => ta.focus(), 140);
+      mask.querySelector('.wb-ti-ok').onclick = () => {
+        const text = ta.value.trim();
+        if(!text){ toast('请输入视频内容'); return; }
+        const duration = (durEl.value || '').trim() || '00:15';
+        const views = (viewsEl.value || '').trim() || '1.2万次观看';
+        const W = 960, H = 540, pad = 64, font = 'px "PingFang SC","Microsoft YaHei",sans-serif';
+        const cv = document.createElement('canvas');
+        cv.width = W; cv.height = H;
+        const ctx = cv.getContext('2d');
+        const grad = ctx.createLinearGradient(0, 0, W, H);
+        grad.addColorStop(0, '#3b4b5c');
+        grad.addColorStop(1, '#7d8e9d');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+        let fs = 46, lineH = 70, lines = [];
+        while(fs >= 18){
+          lineH = Math.round(fs * 1.5);
+          ctx.font = fs + font;
+          lines = wrapCanvasText(ctx, text, W - pad * 2);
+          if(lines.length * lineH <= H - pad * 2) break;
+          fs -= 2;
+        }
+        ctx.fillStyle = '#ffffff';
+        ctx.font = fs + font;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const total = lines.length * lineH;
+        const startY = H / 2 - total / 2 + lineH / 2;
+        lines.forEach((ln, i) => ctx.fillText(ln, W / 2, startY + i * lineH));
+        close();
+        onDone({ type:'video', src: cv.toDataURL('image/png'), text, duration, views });
       };
     }
 
@@ -1422,6 +4302,45 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
         };
       });
       s.mask.querySelector('[data-cancel]').onclick = s.close;
+    }
+
+    function atCandidateList(){
+      const d = store.get();
+      const my = myCmtName();
+      const seen = {};
+      const out = [];
+      const push = (name, avatar) => {
+        const n = String(name || '').trim();
+        if(!n || n === my || seen[n]) return;
+        seen[n] = 1;
+        out.push({ name: n, avatar: avatar || '' });
+      };
+      authorList().forEach(a => push(a.name, a.avatar));
+      d.feed.forEach(p => push(p.name, p.avatar));
+      return out;
+    }
+
+    function openAtSheet(onPick){
+      const list = atCandidateList();
+      const s = openSheet(`
+        <div class="wb-sheet-head"><span>选择要@的账号</span></div>
+        <div class="wb-sheet-list">
+          ${list.length ? list.map((x, i) => `
+            <div class="wb-sheet-row" data-idx="${i}">
+              ${avatarHtml(x.name, x.avatar, 'wb-sheet-ava')}
+              <div class="wb-sheet-row-name">${esc(x.name)}</div>
+            </div>`).join('') : '<div class="wb-sheet-row"><div class="wb-sheet-row-name">还没有可以@的账号</div></div>'}
+        </div>
+        <div class="wb-sheet-item danger" data-cancel="1">取消</div>`);
+      s.mask.querySelectorAll('.wb-sheet-row[data-idx]').forEach(row => {
+        row.onclick = () => {
+          const x = list[parseInt(row.dataset.idx, 10)];
+          s.close();
+          if(x) onPick(x.name);
+        };
+      });
+      const cancel = s.mask.querySelector('[data-cancel]');
+      if(cancel) cancel.onclick = s.close;
     }
 
     function openRepostSheet(post){
@@ -1515,7 +4434,13 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
         const d = store.get();
         const now = new Date();
         post.reposts = (post.reposts || 0) + 1;
-        if(withComment) post.comments = (post.comments || 0) + 1;
+        post.rps = post.rps || [];
+        post.rps.unshift(makeEntry('me', name, text || '转发微博', { likes: 0, avatar, imgs: repostImgs.map(i => i.src) }));
+        if(withComment){
+          post.comments = (post.comments || 0) + 1;
+          post.cmts = post.cmts || [];
+          post.cmts.push(makeEntry('me', name, text || '转发微博', { likes: 0, avatar, imgs: repostImgs.map(i => i.src), quote: { name: targetName, text: post.text || '' } }));
+        }
         d.feed.unshift({
           id: 'rp' + Date.now(),
           name,
@@ -1523,6 +4448,7 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
           vip: hasVip,
           mine: true,
           time: `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
+          ts: now.getTime(),
           text: text || '转发微博',
           imgs: repostImgs.map(i => i.src),
           owner: d.activeId,
@@ -1537,13 +4463,19 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       };
     }
 
-    function openCompose(editPost){
+    function openCompose(editPost, draftPost){
       const char = meChar();
       const p = store.get().profile;
-      const name = (p.name || '').trim() || ((char && char.name) || '我');
-      const avatar = p.avatar || (char && char.avatar) || '';
-      let composeImages = editPost ? (editPost.imgs || []).map(src => ({ type:'image', src })) : [];
-      let composeBg = '';
+      const myName = (p.name || '').trim() || ((char && char.name) || '我');
+      const myAvatar = p.avatar || (char && char.avatar) || '';
+      const name = editPost ? (editPost.name || myName) : myName;
+      const avatar = editPost ? (editPost.avatar || myAvatar) : myAvatar;
+      const srcList = editPost ? (editPost.imgs || []) : (draftPost ? (draftPost.imgs || []) : []);
+      let composeImages = srcList.map(src => ({ type:'image', src }));
+      const initVideo = editPost ? editPost.video : (draftPost ? draftPost.video : null);
+      if(initVideo && initVideo.src) composeImages.unshift(Object.assign({ type:'video' }, initVideo));
+      let composeBg = draftPost ? (draftPost.bg || '') : '';
+      const draftKey = editPost ? ('dft_' + editPost.id) : (draftPost ? draftPost.id : null);
       const mask = document.createElement('div');
       mask.className = 'wb-compose-mask';
       mask.innerHTML = `
@@ -1564,6 +4496,7 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
           <div class="wb-compose-imgs" id="wbComposeImgs"></div>
           <div class="wb-compose-tools">
             <button class="wb-tool" data-tool="img" type="button" aria-label="图片">${ICON.img}</button>
+            <button class="wb-tool" data-tool="video" type="button" aria-label="视频">${ICON.video}</button>
             <button class="wb-tool" data-tool="topic" type="button" aria-label="话题">${ICON.topic}</button>
             <button class="wb-tool" data-tool="at" type="button" aria-label="提到">${ICON.at}</button>
             <button class="wb-tool diamond" data-tool="super" type="button" aria-label="超话">${ICON.diamond}</button>
@@ -1584,7 +4517,47 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       const fileEl = mask.querySelector('#wbComposeFile');
       const bgFileEl = mask.querySelector('#wbComposeBgFile');
 
-      const close = () => {
+      let initSnapshot = '';
+
+      const snap = () => JSON.stringify({ t: ta.value.trim(), i: composeImages.map(x => x.src), b: composeBg });
+
+      const pickVideo = () => composeImages.find(x => x.type === 'video') || null;
+      const pickImgs = () => composeImages.filter(x => x.type !== 'video').map(x => x.src);
+
+      const saveDraft = () => {
+        const text = ta.value.trim();
+        const imgs = pickImgs();
+        const vid = pickVideo();
+        if(!text && !imgs.length && !vid){
+          if(draftKey){
+            const dd = store.get();
+            dd.drafts = (dd.drafts || []).filter(x => x.id !== draftKey);
+            store.save();
+          }
+          return;
+        }
+        if(snap() === initSnapshot) return;
+        const dd = store.get();
+        const now = new Date();
+        const stamp = `${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        const id = draftKey || ('dft' + Date.now());
+        const exist = (dd.drafts || []).find(x => x.id === id);
+        if(exist){
+          exist.text = text;
+          exist.imgs = imgs;
+          exist.video = vid;
+          exist.bg = composeBg;
+          exist.time = stamp;
+        } else {
+          dd.drafts.unshift({ id, text, imgs, video: vid, bg: composeBg, time: stamp });
+        }
+        store.save();
+        toast('已保存到草稿箱');
+        if(currentTab === 'me') renderMe();
+      };
+
+      const close = skipDraft => {
+        if(!skipDraft) saveDraft();
         mask.classList.remove('show');
         setTimeout(() => mask.remove(), 220);
       };
@@ -1607,8 +4580,9 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
       const renderImgs = () => {
         imgsBox.classList.toggle('show', composeImages.length > 0);
         imgsBox.innerHTML = composeImages.map((img, i) => `
-          <div class="wb-compose-img">
-            <img src="${esc(img.src)}" alt="">
+          <div class="wb-compose-img${img.type === 'video' ? ' is-video' : ''}">
+            <img src="${esc(imgSrc(img.src))}" alt="">
+            ${img.type === 'video' ? `<span class="wb-compose-video-badge">${esc(img.duration || '00:15')}</span>` : ''}
             <span class="wb-compose-img-del" data-del="${i}">×</span>
           </div>`).join('');
         imgsBox.querySelectorAll('.wb-compose-img-del').forEach(del => {
@@ -1629,15 +4603,16 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
         }
       };
 
-      mask.querySelector('.wb-compose-cancel').onclick = close;
+      mask.querySelector('.wb-compose-cancel').onclick = () => close();
       mask.onclick = e => { if(e.target === mask) close(); };
       ta.addEventListener('input', syncMirror);
       ta.addEventListener('scroll', () => { mirror.scrollTop = ta.scrollTop; });
-      if(editPost){
-        ta.value = editPost.text || '';
-        renderImgs();
-      }
+      if(editPost) ta.value = editPost.text || '';
+      else if(draftPost) ta.value = draftPost.text || '';
+      renderImgs();
+      applyBg();
       syncMirror();
+      initSnapshot = snap();
       setTimeout(() => ta.focus(), 120);
 
       fileEl.onchange = async () => {
@@ -1674,10 +4649,16 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
                 renderImgs();
               });
             });
+          } else if(tool === 'video'){
+            openVideoEditor(vid => {
+              composeImages = composeImages.filter(x => x.type !== 'video');
+              composeImages.unshift(vid);
+              renderImgs();
+            });
           } else if(tool === 'topic'){
             insertText('#');
           } else if(tool === 'at'){
-            insertText('@');
+            openAtSheet(nm => insertText('@' + nm + ' '));
           } else if(tool === 'super'){
             openSuperTopicSheet(topicName => insertText(`#${topicName}# `));
           }
@@ -1686,16 +4667,21 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
 
       mask.querySelector('.wb-compose-send').onclick = () => {
         const text = ta.value.trim();
+        const vid = pickVideo();
+        const imgSrcs = pickImgs();
         if(!text && !composeImages.length){ toast('说点什么吧'); return; }
         const d = store.get();
+        if(draftKey) d.drafts = (d.drafts || []).filter(x => x.id !== draftKey);
         if(editPost){
-          const target = d.feed.find(x => x.id === editPost.id);
+          const target = d.feed.find(x => x.id === editPost.id)
+            || (d.recommend || []).find(x => x.id === editPost.id);
           if(target){
             target.text = text;
-            target.imgs = composeImages.map(i => i.src);
+            target.imgs = imgSrcs;
+            target.video = vid ? { src:vid.src, duration:vid.duration, views:vid.views, text:vid.text } : null;
           }
           store.save();
-          close();
+          close(true);
           toast('微博已更新');
           if(currentTab === 'me'){ meTab = 'posts'; renderMe(); }
           else renderHome();
@@ -1709,20 +4695,23 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
           vip: VERIFY[p.verify] ? p.verify !== 'none' : false,
           mine: true,
           time: `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
+          ts: now.getTime(),
           text,
-          imgs: composeImages.map(i => i.src),
+          imgs: imgSrcs,
+          video: vid ? { src:vid.src, duration:vid.duration, views:vid.views, text:vid.text } : null,
           owner: d.activeId,
           likes: 0, comments: 0, reposts: 0, liked: false
         });
         d.profile.posts = (parseInt(d.profile.posts, 10) || 0) + 1;
         store.save();
-        close();
+        close(true);
         toast('发送成功');
         if(currentTab === 'me'){ meTab = 'posts'; renderMe(); }
         else switchTab('home');
       };
     }
 
+    rollLive();
     switchTab('me');
   };
 
@@ -1734,5 +4723,73 @@ body[data-wb-standalone] .wb-app{width:min(92vw,420px);height:min(94vh,calc(min(
   else bootWeibo();
 })();
 </script>
+<style>
+.wb-msg-sec{display:flex;align-items:center;justify-content:space-between;}
+.wb-msg-empty{padding:26px 16px;text-align:center;font-size:13px;color:#a6a6a6;}
+
+.wb-nb-mask{position:absolute;inset:0;z-index:38;display:flex;flex-direction:column;background:#fff;}
+.wb-nb-status{flex:none;background:#fff;}
+.wb-nb-bar{flex:none;height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;background:#fff;border-bottom:1px solid rgba(0,0,0,.06);position:relative;}
+.wb-nb-back{width:30px;height:30px;border:none;background:none;padding:0;color:#333;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.wb-nb-back svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+.wb-nb-title{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:3px;font-size:15.5px;font-weight:600;color:#222;background:none;border:none;padding:4px 2px;font-family:inherit;cursor:pointer;white-space:nowrap;}
+.wb-nb-title svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+.wb-nb-set{font-size:13.5px;color:#666;background:none;border:none;padding:4px 6px;font-family:inherit;cursor:pointer;}
+.wb-nb-drop{position:absolute;top:45px;left:50%;transform:translateX(-50%);z-index:5;min-width:150px;background:#fff;border-radius:10px;box-shadow:0 10px 30px -8px rgba(0,0,0,.25);padding:4px 0;}
+.wb-nb-drop i{display:block;padding:10px 16px;font-size:13px;color:#444;font-style:normal;cursor:pointer;}
+.wb-nb-drop i.on{color:#f0873f;font-weight:600;}
+.wb-nb-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.wb-nb-row{display:flex;gap:10px;padding:13px 13px 11px;border-bottom:1px solid rgba(0,0,0,.05);cursor:pointer;}
+.wb-nb-row:active{background:#fafafa;}
+.wb-nb-ava{position:relative;flex:none;}
+.wb-nb-ava .wb-avatar{width:44px;height:44px;font-size:17px;}
+.wb-nb-vb{position:absolute;right:-2px;bottom:-2px;width:15px;height:15px;border-radius:50%;background:linear-gradient(140deg,#ffc766,#ff9500);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;}
+.wb-nb-main{flex:1;min-width:0;}
+.wb-nb-name{font-size:14px;font-weight:600;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wb-nb-sub{font-size:11.5px;color:#9a9a9a;margin:3px 0 6px;}
+.wb-nb-text{font-size:13.5px;line-height:1.6;color:#222;word-break:break-word;white-space:pre-wrap;}
+.wb-nb-quote{font-size:11.5px;color:#a3a3a3;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wb-nb-acts{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.wb-nb-btn{display:flex;align-items:center;gap:4px;height:27px;padding:0 12px;border-radius:14px;border:none;background:#f2f2f2;color:#666;font-size:12px;cursor:pointer;font-family:inherit;}
+.wb-nb-btn:active{background:#e8e8e8;}
+.wb-nb-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.wb-nb-btn.on{color:#f0873f;background:rgba(255,190,130,.3);}
+.wb-nb-dots{margin-left:auto;color:#b5b5b5;font-size:15px;letter-spacing:1px;cursor:pointer;background:none;border:none;padding:0 4px;font-family:inherit;}
+.wb-nb-thumb{flex:none;width:62px;height:62px;border-radius:8px;overflow:hidden;background:#f0f0f0;}
+.wb-nb-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.wb-nb-empty{padding:80px 20px;text-align:center;font-size:13px;color:#9a9a9a;}
+
+.wb-dm-mask{position:absolute;inset:0;z-index:39;display:flex;flex-direction:column;background:#ededed;}
+.wb-dm-status{flex:none;background:#ededed;}
+.wb-dm-bar{flex:none;height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#ededed;position:relative;}
+.wb-dm-back{width:30px;height:30px;border:none;background:none;padding:0;color:#333;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.wb-dm-back svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+.wb-dm-title{position:absolute;left:50%;transform:translateX(-50%);font-size:16px;font-weight:600;color:#222;max-width:56%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wb-dm-set{font-size:13.5px;color:#666;background:none;border:none;padding:4px 6px;font-family:inherit;cursor:pointer;}
+.wb-dm-body{flex:1;overflow-y:auto;padding:6px 12px 10px;-webkit-overflow-scrolling:touch;}
+.wb-dm-quota{display:flex;justify-content:flex-end;margin:2px 0 12px;}
+.wb-dm-quota span{padding:5px 12px;border-radius:14px;background:#fff;color:#3f9ae0;font-size:11.5px;}
+.wb-dm-row{display:flex;gap:8px;margin-bottom:12px;align-items:flex-start;}
+.wb-dm-row.me{flex-direction:row-reverse;}
+.wb-dm-ava{position:relative;flex:none;}
+.wb-dm-ava .wb-avatar{width:36px;height:36px;font-size:14px;}
+.wb-dm-vb{position:absolute;right:-2px;bottom:-2px;width:13px;height:13px;border-radius:50%;background:linear-gradient(140deg,#ffc766,#ff9500);color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;}
+.wb-dm-bubble{max-width:72%;padding:9px 12px;border-radius:9px;font-size:14px;line-height:1.55;word-break:break-word;background:#fff;color:#222;}
+.wb-dm-bubble.me{background:#fdf1dd;border:1px solid #f0d9b4;color:#5b4526;}
+.wb-dm-tip{text-align:center;color:#a8a8a8;font-size:11.5px;line-height:1.7;margin:8px 26px 14px;}
+.wb-dm-typing i{display:inline-block;width:5px;height:5px;border-radius:50%;background:#c2c2c2;margin:0 2px;animation:wbDmDot .9s infinite;}
+.wb-dm-typing i:nth-child(2){animation-delay:.15s;}
+.wb-dm-typing i:nth-child(3){animation-delay:.3s;}
+@keyframes wbDmDot{0%,60%,100%{opacity:.35;transform:translateY(0);}30%{opacity:1;transform:translateY(-3px);}}
+.wb-dm-quick{flex:none;display:flex;gap:8px;overflow-x:auto;padding:8px 12px 6px;scrollbar-width:none;}
+.wb-dm-quick::-webkit-scrollbar{display:none;}
+.wb-dm-chip{flex:none;padding:7px 13px;border-radius:16px;background:#fff;font-size:12.5px;color:#555;cursor:pointer;border:none;font-family:inherit;}
+.wb-dm-chip:active{background:#f3f3f3;}
+.wb-dm-inputbar{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px calc(env(safe-area-inset-bottom,0px) + 8px);background:#f6f6f6;border-top:1px solid rgba(0,0,0,.05);}
+.wb-dm-input{flex:1;min-width:0;height:34px;border:none;border-radius:17px;padding:0 14px;background:#fff;font-size:13.5px;font-family:inherit;outline:none;color:#222;}
+.wb-dm-ico{flex:none;width:28px;height:28px;border:none;background:none;padding:0;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#555;}
+.wb-dm-ico svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.wb-dm-send{flex:none;height:30px;padding:0 13px;border-radius:15px;border:none;cursor:pointer;background:linear-gradient(135deg,#ffb168,#ff8f3d);color:#fff;font-size:12.5px;font-family:inherit;}
+</style>
 </body>
 </html>

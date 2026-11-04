@@ -894,22 +894,13 @@ async function editCharacter(char){
     <div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">人设</div><textarea id="charPersona" rows="2" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none;resize:vertical" placeholder="例如:性格开朗，喜欢音乐和摄影...">${editing.persona||''}</textarea></div>
     <div style="margin-bottom:10px">
       <div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:6px">社交圈（同步各平台账号名，不可编辑）</div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="font-size:13px;color:var(--green-ink);min-width:60px">微信ID</span>
-        <span style="flex:1;font-size:12px;color:${editing.social.wechatId?'var(--green-ink)':'var(--green-ink-soft)'};border:none;border-bottom:1px solid var(--line);padding:4px 2px">${editing.social.wechatId||'未绑定'}</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="font-size:13px;color:var(--green-ink);min-width:60px">微博ID</span>
-        <span style="flex:1;font-size:12px;color:${editing.social.weiboId?'var(--green-ink)':'var(--green-ink-soft)'};border:none;border-bottom:1px solid var(--line);padding:4px 2px">${editing.social.weiboId||'未绑定'}</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="font-size:13px;color:var(--green-ink);min-width:60px">泡泡ID</span>
-        <span style="flex:1;font-size:12px;color:${editing.social.bubbleId?'var(--green-ink)':'var(--green-ink-soft)'};border:none;border-bottom:1px solid var(--line);padding:4px 2px">${editing.social.bubbleId||'未绑定'}</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:13px;color:var(--green-ink);min-width:60px">淘宝ID</span>
-        <span style="flex:1;font-size:12px;color:${editing.social.taobaoId?'var(--green-ink)':'var(--green-ink-soft)'};border:none;border-bottom:1px solid var(--line);padding:4px 2px">${editing.social.taobaoId||'未绑定'}</span>
-      </div>
+      ${[['wechatId','微信ID'],['weiboId','微博ID'],['bubbleId','泡泡ID'],['taobaoId','淘宝ID']].map(([k,label],i) => {
+        const v = editing.social[k] || editing.name || '';
+        return `<div style="display:flex;align-items:center;gap:8px;${i < 3 ? 'margin-bottom:4px' : ''}">
+        <span style="font-size:13px;color:var(--green-ink);min-width:60px">${label}</span>
+        <span data-social="${k}" style="flex:1;font-size:12px;color:${v?'var(--green-ink)':'var(--green-ink-soft)'};border:none;border-bottom:1px solid var(--line);padding:4px 2px">${v||'未绑定'}</span>
+      </div>`;
+      }).join('')}
     </div>
     <div style="margin-bottom:10px">
       <div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:6px">世界书（勾选对该角色生效的守则）</div>
@@ -938,6 +929,14 @@ async function editCharacter(char){
       preview.innerHTML = `<img src="${editing.avatar}">`;
     }
   };
+  mask.querySelector('#charName').addEventListener('input', e => {
+    const nm = e.target.value.trim();
+    mask.querySelectorAll('[data-social]').forEach(el => {
+      const v = (editing.social?.[el.dataset.social] || nm || '').trim();
+      el.textContent = v || '未绑定';
+      el.style.color = v ? 'var(--green-ink)' : 'var(--green-ink-soft)';
+    });
+  });
   return new Promise(resolve => {
     function dismiss(result){ mask.style.animation='fadeIn .2s ease reverse'; box.style.animation='popIn .2s ease reverse'; setTimeout(()=>mask.remove(),180); resolve(result); }
     mask.addEventListener('click', async e => {
