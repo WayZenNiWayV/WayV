@@ -154,9 +154,11 @@
   box-shadow:0 10px 28px rgba(46,122,84,.18),inset 0 1px 0 rgba(255,255,255,.9);
 }
 .vc-log{
-  flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;
+  flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:4px;
   padding:9px 11px 5px;-webkit-overflow-scrolling:touch;
+  touch-action:pan-y;overscroll-behavior:contain;
 }
+.vc-log::before{content:"";flex:0 0 auto;margin-top:auto;}
 .vc-log::-webkit-scrollbar{width:0;}
 .vc-row{display:flex;justify-content:center;animation:vcIn .26s ease both;}
 @keyframes vcIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -165,6 +167,25 @@
   text-shadow:0 1px 0 rgba(255,255,255,.92);
   word-break:break-word;white-space:pre-wrap;
 }
+.vc-line.vc-voice{
+  display:inline-flex;align-items:flex-start;gap:5px;text-align:left;
+  padding:1px 2px;max-width:90%;
+  background:transparent;border:none;box-shadow:none;
+  cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
+  transition:transform .18s ease;
+}
+.vc-line.vc-voice:active{transform:scale(.985);}
+.vc-voice-ico{
+  flex-shrink:0;width:12px;height:12px;margin-top:3px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(63,169,106,.10);color:rgba(63,169,106,.62);
+  transition:background .2s ease,color .2s ease,transform .2s ease;
+}
+.vc-voice-ico svg{width:6px;height:6px;display:block;opacity:.9;}
+.vc-line.vc-voice.playing .vc-voice-ico{background:#3fa96a;color:#fff;animation:vcVoicePulse .95s ease-in-out infinite;}
+@keyframes vcVoicePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.16)}}
+.vc-voice-main{min-width:0;display:block;}
+.vc-voice-text{min-width:0;white-space:pre-wrap;}
 .vc-line .vc-spk{color:#3f8163;font-weight:600;}
 .vc-typing{display:flex;align-items:center;gap:5px;height:12px;padding:2px 0;}
 .vc-typing span{width:5px;height:5px;border-radius:50%;background:rgba(63,169,106,.55);animation:vcTyping 1.2s ease-in-out infinite;}
@@ -253,8 +274,9 @@
     var transcript = cfg.transcript || [];
     var ringApi = cfg.ring || {};
 
-    var connected = false, ended = false, busy = false, saved = false;
+    var connected = false, ended = false, busy = false, saved = false, replyPending = false;
     var seconds = 0;
+    var voiceAudio = null;
     var timer = null, connectTimer = null, noAnswerTimer = null, lateTimer = null, replyTimer = null;
 
     var avatarInner = avatar ? '<img src="' + esc(avatar) + '" alt="">' : esc((title || '友').charAt(0));
@@ -349,15 +371,72 @@
       }
     }
 
-    function addBubble(who, text, name){
-      if(who === 'user') return;
+    function vcStopSpeak(){
+      if(voiceAudio){ try{ voiceAudio.pause(); }catch(e){} voiceAudio = null; }
+      var nodes = document.querySelectorAll('.vc-voice.playing');
+      for(var i = 0; i < nodes.length; i++){
+        nodes[i].removeAttribute('data-speaking');
+        nodes[i].classList.remove('playing');
+      }
+    }
+
+    function addBubble(who, text, name, entry){
+      if(who === 'user') return null;
       var row = document.createElement('div');
       row.className = 'vc-row';
+      var raw = String(text == null ? '' : text);
+      var speaker = (multi && name) ? name : title;
       var spk = (multi && name) ? '<span class="vc-spk">' + esc(name) + '：</span>' : '';
-      row.innerHTML = '<div class="vc-line">' + spk + esc(text) + '</div>';
+      row.innerHTML = '<div class="vc-line vc-voice">'
+        + '<span class="vc-voice-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>'
+        + '<span class="vc-voice-main">' + spk
+        + '<span class="vc-voice-text">' + esc(raw) + '</span></span></div>';
+      var bubble = row.querySelector('.vc-voice');
+      if(bubble){
+        bubble.setAttribute('data-audio', (entry && entry.audioUrl) || '');
+        bubble.addEventListener('click', function(){
+          var url = String((entry && entry.audioUrl) || bubble.getAttribute('data-audio') || '').trim();
+          if(bubble.classList.contains('playing')){
+            if(voiceAudio){ try{ voiceAudio.pause(); }catch(e){} voiceAudio = null; }
+            bubble.classList.remove('playing');
+            bubble.removeAttribute('data-speaking');
+            return;
+          }
+          if(voiceAudio){ try{ voiceAudio.pause(); }catch(e){} voiceAudio = null; }
+          logEl.querySelectorAll('.vc-voice.playing').forEach(function(x){ x.classList.remove('playing'); });
+          var play = function(u){
+            try{
+              voiceAudio = new Audio(u);
+              bubble.classList.add('playing');
+              voiceAudio.onended = function(){ bubble.classList.remove('playing'); voiceAudio = null; };
+              voiceAudio.onerror = function(){ bubble.classList.remove('playing'); voiceAudio = null; };
+              var p = voiceAudio.play();
+              if(p && p.catch) p.catch(function(){ bubble.classList.remove('playing'); });
+            }catch(e){ bubble.classList.remove('playing'); }
+          };
+          if(url){ play(url); return; }
+          bubble.classList.add('playing');
+          requestVoice(entry || {}, raw, speaker, bubble, play);
+        });
+      }
       logEl.appendChild(row);
       trimLog();
       scrollLog();
+      return bubble;
+    }
+
+    function requestVoice(entry, text, speaker, bubble, done){
+      if(!window.__wcTTS){ if(done) done(''); return; }
+      entry = entry || {};
+      var vid = '';
+      try{ if(window.__wcVoiceIdFor) vid = window.__wcVoiceIdFor(speaker) || ''; }catch(e){}
+      window.__wcTTS(text, vid).then(function(url){
+        if(url){
+          entry.audioUrl = url;
+          if(bubble && bubble.setAttribute) bubble.setAttribute('data-audio', url);
+        }
+        if(done) done(url || '');
+      }).catch(function(){ if(done) done(''); });
     }
 
     function showTyping(member){
@@ -381,18 +460,34 @@
     }
 
     function addAiParts(parts){
-      if(ended) return;
+      if(ended) return Promise.resolve();
       var list = (parts || []).filter(function(p){ return p && p.text; });
-      if(!list.length) list = [{ name: title, text: '喂？看得见吗？' }];
-      var i = 0;
-      var step = function(){
-        if(ended) return;
-        var p = list[i++];
-        addBubble('ai', p.text, p.name);
-        transcript.push({ role:'assistant', content:p.text, speakerName:p.name || title, ts:Date.now() });
-        if(i < list.length) setTimeout(step, 420);
-      };
-      step();
+      if(!list.length) list = [{ name: title, text: '怎么突然视频呀？' }];
+      if(!multi && list.length > 1){
+        var mergedText = list.map(function(p){ return String(p.text).trim(); }).filter(Boolean).join('');
+        list = [{ name: list[0].name || title, text: mergedText }];
+      } else if(list.length > 3){
+        list = list.slice(0, 3);
+      }
+      return new Promise(function(resolve){
+        var i = 0;
+        var step = function(){
+          if(ended || i >= list.length){ resolve(); return; }
+          var p = list[i++];
+          var speakerName = p.name || title;
+          var entry = { role:'assistant', content:p.text, speakerName:speakerName, ts:Date.now(), audioUrl:'' };
+          transcript.push(entry);
+          var bubble = addBubble('ai', p.text, p.name, entry);
+          requestVoice(entry, p.text, speakerName, bubble);
+          if(i < list.length){
+            var delay = Math.min(2200, 520 + String(p.text || '').length * 90);
+            setTimeout(step, delay);
+          } else {
+            resolve();
+          }
+        };
+        step();
+      });
     }
 
     function clearTimers(){
@@ -407,6 +502,7 @@
       if(ended) return;
       ended = true;
       clearTimers();
+      vcStopSpeak();
       stopRing();
       if(bgVideoEl){
         try{ bgVideoEl.pause(); }catch(e){}
@@ -442,9 +538,12 @@
         showTyping(pickSpeaker());
         Promise.resolve()
           .then(function(){ return cfg.ai && cfg.ai.opening ? cfg.ai.opening() : null; })
-          .then(function(parts){ if(ended) return; removeTyping(); addAiParts(parts); })
-          .catch(function(){ if(ended) return; removeTyping(); addAiParts(null); })
-          .then(function(){ busy = false; });
+          .then(function(parts){ if(ended) return; removeTyping(); return addAiParts(parts); })
+          .then(function(){ if(ended) return; removeTyping(); return addAiParts(null); })
+          .then(function(){
+            busy = false;
+            if(replyPending){ replyPending = false; startReply(''); }
+          });
       }, 700);
     }
 
@@ -460,26 +559,36 @@
     }
 
     function send(){
-      if(!connected || ended || busy) return;
+      if(!connected || ended) return;
       var v = inputEl.value.trim();
       if(!v) return;
       inputEl.value = '';
+      sendBtn.disabled = true;
       transcript.push({ role:'user', content:v, ts:Date.now() });
+      if(busy) { replyPending = true; return; }
+      startReply(v);
+    }
+
+    function startReply(v){
+      if(ended) return;
+      busy = true;
       var typist = pickSpeaker();
       showTyping(typist);
-      busy = true;
       replyTimer = setTimeout(function(){
         replyTimer = null;
         if(ended){ busy = false; return; }
         Promise.resolve()
           .then(function(){ return cfg.ai && cfg.ai.reply ? cfg.ai.reply(v) : null; })
-          .then(function(parts){ if(ended) return; removeTyping(); addAiParts(parts); })
+          .then(function(parts){ if(ended) return; removeTyping(); return addAiParts(parts); })
           .catch(function(){
             if(ended) return;
             removeTyping();
-            addAiParts([{ name: typist && typist.name ? typist.name : title, text:'（停顿了一下）…怎么不说话了？' }]);
+            return addAiParts([{ name: typist && typist.name ? typist.name : title, text:'（停顿了一下）…怎么不说话了？' }]);
           })
-          .then(function(){ busy = false; });
+          .then(function(){
+            busy = false;
+            if(replyPending){ replyPending = false; startReply(''); }
+          });
       }, 2600);
     }
 

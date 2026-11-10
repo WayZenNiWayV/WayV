@@ -249,6 +249,12 @@
   font-size:14px;color:#333;line-height:1.5;word-break:break-word;
   margin-bottom:8px;white-space:pre-wrap;
 }
+.wc-fav-play{
+  display:inline-flex;align-items:center;gap:4px;margin-left:6px;
+  padding:2px 9px;border-radius:10px;background:#eaf7ef;color:var(--green-deep);
+  font-size:12px;cursor:pointer;user-select:none;white-space:nowrap;
+}
+.wc-fav-play.playing{background:var(--green-deep);color:#fff;}
 .wc-fav-item-actions{
   position:absolute;top:8px;right:8px;display:flex;gap:6px;align-items:center;
 }
@@ -388,7 +394,7 @@
 .wc-chat-detail.show{transform:translateX(0) !important;}
 .wc-cd-topbar{
   flex-shrink:0;min-height:48px;display:flex;align-items:center;gap:8px;
-padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
+padding:0 12px;padding-top:var(--safe-top, 0px);
   background:rgba(255,255,255,.55);
   backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);
   border-bottom:1px solid rgba(255,255,255,.6);
@@ -426,7 +432,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-heart-panel.show{transform:translateX(0) !important;}
 .wc-heart-topbar{
   flex-shrink:0;min-height:48px;display:flex;align-items:center;gap:8px;
-  padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
+  padding:0 12px;padding-top:var(--safe-top, 0px);
   background:rgba(255,255,255,.6);
   backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);
   border-bottom:1px solid rgba(255,255,255,.6);
@@ -629,6 +635,10 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   font-size:14px;color:var(--green-ink);text-align:center;background:#fff;outline:none;
 }
 .wc-set-sub-input:focus{border-color:var(--green-deep);}
+.wc-set-subhead{
+  padding:12px 16px 4px;font-size:12px;color:var(--green-ink-soft);
+  background:rgba(238,250,242,.5);
+}
 .wc-set-divider{height:14px;}
 
 /* ========== 记忆 page ========== */
@@ -731,6 +741,9 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-msg.user .wc-msg-bubble{background:#95ec69;color:#000;border-top-right-radius:4px;border-bottom-right-radius:18px;}
 .wc-msg.ai{align-self:flex-start;}
 .wc-msg.ai .wc-msg-bubble{background:#fff;border:1px solid #e0e0e0;color:#000;border-top-left-radius:4px;}
+.wc-story-msg{max-width:100%;width:100%;}
+.wc-story-msg .wc-msg-body{max-width:100%;width:100%;}
+.wc-story-msg .wc-msg-bubble{flex:1;box-sizing:border-box;}
 .wc-msg-quote{
   background:rgba(0,0,0,.06);border-left:3px solid rgba(0,0,0,.18);
   padding:6px 8px;margin-bottom:6px;border-radius:4px;font-size:12px;
@@ -1016,6 +1029,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   max-width:calc(100vw - 16px);
   box-shadow:0 4px 20px rgba(0,0,0,.3);animation:cmPopIn .15s ease;
 }
+.wc-cm-menu.single{grid-template-columns:auto;padding:4px;}
 @keyframes cmPopIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
 .wc-cm-item{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
@@ -1342,10 +1356,11 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-contact-edit.show{transform:translateX(0) !important;}
 .wc-ce-topbar{
   flex-shrink:0;min-height:48px;display:flex;align-items:center;gap:8px;
-padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
+padding:0 12px;padding-top:var(--safe-top, 0px);
   background:rgba(255,255,255,.55);
   backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);
   border-bottom:1px solid rgba(255,255,255,.6);
+  position:relative;
 }
 .wc-ce-back{
   width:32px;height:32px;border-radius:50%;border:none;
@@ -1353,7 +1368,11 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;
 }
 .wc-ce-back:active{transform:scale(.9);}
-.wc-ce-title{font-size:15px;font-weight:600;color:var(--green-ink);flex:1;text-align:center;}
+.wc-ce-title{
+  position:absolute;left:50%;transform:translateX(-50%);
+  font-size:15px;font-weight:600;color:var(--green-ink);pointer-events:none;
+  max-width:55%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
 .wc-ce-body{
   flex:1;overflow-y:auto;padding:14px 16px;
   -webkit-overflow-scrolling:touch;
@@ -1774,17 +1793,6 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-xfer-detail-mark-btn{width:100%;padding:12px;border:1.5px solid var(--green-deep);border-radius:8px;background:rgba(124,204,155,.15);color:var(--green-deep);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;}
 .wc-xfer-detail-mark-btn:active{background:rgba(124,204,155,.3);transform:scale(.98);}
 
-.wc-status-bar{height:calc(var(--phone-w,420px)*0.095 + var(--safe-top,0px));
-   padding:calc(var(--safe-top,0px) + var(--phone-w,420px)*0.015) calc(var(--phone-w,420px)*0.064) 0;
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:calc(var(--phone-w,420px)*0.04);font-weight:600;color:var(--green-ink);
-     position:relative;z-index:5;flex-shrink:0;
-   background:transparent;}
-.wc-status-bar .wc-status-icons{display:flex;gap:calc(var(--phone-w,420px)*0.016);align-items:center;font-size:calc(var(--phone-w,420px)*0.035);}
-.wc-status-bar .wc-status-icons svg{display:block;flex-shrink:0;}
-.wc-status-bar .sig-icon,.wc-status-bar .wifi-icon{width:calc(var(--phone-w,420px)*0.045);height:calc(var(--phone-w,420px)*0.045);}
-.wc-status-bar .bat-icon{width:calc(var(--phone-w,420px)*0.062);height:calc(var(--phone-w,420px)*0.034);}
-.wc-status-bar .bat-text{font-variant-numeric:tabular-nums;}
 
 /* ===== 语音通话（小剧场） ===== */
 .wc-call{
@@ -1804,7 +1812,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 }
 .wc-call-inner{
   position:relative;z-index:2;flex:1;min-height:0;display:flex;flex-direction:column;
-  padding-top:calc(var(--phone-w,380px)*0.09);
+  padding-top:calc(var(--safe-top, 0px) + 10px);
 }
 .wc-call-header{flex-shrink:0;text-align:center;padding:8px 24px 4px;}
 .wc-call-name{font-size:20px;font-weight:600;letter-spacing:.6px;color:#14452c;}
@@ -1847,7 +1855,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 @keyframes wcCallBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
 
 .wc-call-bubbles{
-  display:none;flex-direction:column;gap:10px;width:100%;flex:1;min-height:0;overflow-y:auto;
+  display:none;flex-direction:column;gap:14px;width:100%;flex:1;min-height:0;overflow-y:auto;
   padding:16px 2px 10px;-webkit-overflow-scrolling:touch;
 }
 .wc-call-bubbles::-webkit-scrollbar{width:0;}
@@ -1858,28 +1866,46 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   background:linear-gradient(180deg,rgba(219,241,229,0),rgba(219,241,229,.85));
 }
 .wc-call.connected .wc-call-bubbles{display:flex;}
-.wc-call-bubble-row{display:flex;gap:8px;align-items:flex-end;max-width:86%;animation:wcCallBubbleIn .28s ease both;}
+.wc-call-bubble-row{display:flex;gap:9px;align-items:flex-start;max-width:88%;animation:wcCallBubbleIn .28s ease both;padding:1px 0;}
 .wc-call-bubble-row.ai{align-self:flex-start;}
 .wc-call-bubble-row.user{align-self:flex-end;flex-direction:row-reverse;}
-@keyframes wcCallBubbleIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes wcCallBubbleIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .wc-call-bubble-mini{
-  width:30px;height:30px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--green-mid),var(--green-deep));
-  box-shadow:0 2px 8px rgba(52,124,86,.22);
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--green-mid),var(--green-deep));
+  box-shadow:0 2px 8px rgba(52,124,86,.22);margin-top:3px;
 }
 .wc-call-bubble-mini img{width:100%;height:100%;object-fit:cover;display:block;}
-.wc-call-bubble{padding:9px 14px;border-radius:16px;font-size:14px;line-height:1.58;word-break:break-word;white-space:pre-wrap;}
-.wc-call-bubble-row.ai .wc-call-bubble{
-  background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);color:#22503a;
-  border-bottom-left-radius:6px;box-shadow:0 4px 14px rgba(38,94,66,.09);
+.wc-call-bubble{
+  padding:0;background:none;border:none;box-shadow:none;border-radius:0;
+  font-size:14.5px;line-height:1.68;word-break:break-word;white-space:pre-wrap;
+  letter-spacing:.2px;text-shadow:0 1px 3px rgba(255,255,255,.72);
 }
-.wc-call-bubble-row.user .wc-call-bubble{
-  background:linear-gradient(135deg,#6fd193,#3fa96a);color:#fff;border-bottom-right-radius:6px;
-  box-shadow:0 5px 16px rgba(63,169,106,.32);
-}
+.wc-call-bubble-row.ai .wc-call-bubble{color:#14452c;}
+.wc-call-bubble-row.user .wc-call-bubble{color:#0f6b83;font-weight:500;text-align:right;}
+.wc-call-narr{color:rgba(20,69,44,.42);font-style:italic;}
+.wc-call-bubble-row.user .wc-call-narr{color:rgba(15,107,131,.48);}
 .wc-call-bubble-wrap{display:flex;flex-direction:column;gap:4px;min-width:0;}
 .wc-call-bubble-name{font-size:11px;color:rgba(29,74,51,.5);line-height:1;padding-left:4px;}
-.wc-call-bubble.typing{display:flex;align-items:center;background:rgba(255,255,255,.94);}
+.wc-call-bubble-row.user .wc-call-bubble-name{padding-left:0;padding-right:4px;text-align:right;}
+.wc-call-bubble.wc-call-voice{display:flex;align-items:flex-start;gap:8px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:opacity .18s ease;}
+.wc-call-bubble.wc-call-voice:active{transform:scale(.985);}
+.wc-cvoice-ico{
+  flex-shrink:0;width:20px;height:20px;margin-top:3px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(63,169,106,.16);color:#3fa96a;transition:background .2s ease,color .2s ease,transform .2s ease;
+}
+.wc-cvoice-ico svg{width:10px;height:10px;display:block;}
+.wc-call-bubble-row.user .wc-cvoice-ico{background:rgba(255,255,255,.24);color:#fff;}
+.wc-call-bubble.wc-call-voice.playing .wc-cvoice-ico{
+  background:#3fa96a;color:#fff;animation:wcVoicePulse .95s ease-in-out infinite;
+}
+.wc-call-bubble-row.user .wc-call-bubble.wc-call-voice.playing .wc-cvoice-ico{background:rgba(255,255,255,.9);color:#3fa96a;}
+@keyframes wcVoicePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.16)}}
+.wc-cvoice-main{min-width:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.wc-cvoice-text{min-width:0;white-space:pre-wrap;}
+.wc-cvoice-dur{font-size:11px;opacity:.48;flex-shrink:0;letter-spacing:.3px;}
+.wc-call-bubble.typing{display:flex;align-items:center;background:none;}
 .wc-call-typing{display:flex;gap:5px;align-items:center;height:20px;}
 .wc-call-typing span{width:6px;height:6px;border-radius:50%;background:rgba(63,169,106,.65);animation:wcCallTypingDot 1.2s ease-in-out infinite;}
 .wc-call-typing span:nth-child(2){animation-delay:.18s;}
@@ -1936,6 +1962,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   background:#f2f2f2;color:#6b6b6b;font-size:12px;
   padding:6px 14px;border-radius:6px;cursor:pointer;
   transition:background .15s;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
 }
 .wc-call-log:active{background:#e8e8e8;}
 .wc-call-log svg{width:14px;height:14px;fill:none;stroke:#9a9a9a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
@@ -1944,6 +1971,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   display:inline-flex;align-items:center;gap:6px;
   font-size:12px;color:#8b9aab;background:rgba(226,238,250,.85);
   padding:5px 14px;border-radius:12px;line-height:1;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
 }
 .wc-call-miss svg{width:14px;height:14px;fill:none;stroke:#e2695f;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
 
@@ -1997,8 +2025,16 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 .wc-callrec-bubble{
   padding:9px 13px;border-radius:6px;background:#f2f2f2;color:#2b2b2b;
   font-size:14px;line-height:1.6;word-break:break-word;white-space:pre-wrap;
+  user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;
 }
 .wc-callrec-row.user .wc-callrec-bubble{background:#e6eefb;}
+.wc-callrec-bubble.wc-callrec-voice{
+  display:flex;align-items:flex-start;gap:9px;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.wc-callrec-bubble.wc-callrec-voice.playing .wc-cvoice-ico{
+  background:#3fa96a;color:#fff;animation:wcVoicePulse .95s ease-in-out infinite;
+}
 .wc-callrec-empty{padding:28px 0;text-align:center;font-size:12px;color:#bbb;}
 
 /* ===== 来电（角色主动打来） ===== */
@@ -2144,10 +2180,6 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 </head>
 <body>
 <div class="wc-app" id="wcApp">
-<div class="wc-status-bar" id="wcStatusBar">
-  <span id="wcStatusTime">00:00</span>
-  <span class="wc-status-icons" id="wcStatusIcons"></span>
-</div>
   <div class="wc-topbar">
     <button class="wc-icon-btn wc-back-btn" id="wcBackBtn" aria-label="返回">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -2178,39 +2210,6 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
 <script>
 (function(){
   const TAB_TITLES = { chat:'微信', contacts:'通讯录', moments:'朋友圈', me:'我' };
-
-  (function renderStatusBar(){
-    const bar = document.getElementById('wcStatusBar');
-    if(!bar) return;
-    const TIME_EL = document.getElementById('wcStatusTime');
-    const ICONS_EL = document.getElementById('wcStatusIcons');
-    const SIG_SVG = '<svg class="sig-icon" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="2.4" height="4" rx="0.6"/><rect x="3.4" y="6" width="2.4" height="6" rx="0.6"/><rect x="6.8" y="4" width="2.4" height="8" rx="0.6"/><rect x="10.2" y="2" width="2.4" height="10" rx="0.6"/><rect x="13.6" y="0" width="2.4" height="12" rx="0.6"/></svg>';
-    const WIFI_SVG = '<svg class="wifi-icon" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 4.5a10 10 0 0114 0"/><path d="M3.2 7a6 6 0 019.6 0"/><path d="M5.6 9.2a2.5 2.5 0 014.8 0"/><circle cx="8" cy="11" r="0.7" fill="currentColor" stroke="none"/></svg>';
-    let batteryLevel = null;
-    let charging = false;
-    const batterySvg = () => {
-      const lvl = batteryLevel == null ? 1 : batteryLevel;
-      const fillW = Math.max(1, Math.round(lvl * 16));
-      const fillColor = charging ? '#f5b800' : (lvl <= 0.2 ? '#e74c3c' : 'var(--green-deep)');
-      return `<svg class="bat-icon" viewBox="0 0 24 12"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2" y="2" width="${fillW}" height="8" rx="1.5" fill="${fillColor}"/><rect x="21.2" y="4" width="1.8" height="4" rx="0.6" fill="currentColor"/></svg>`;
-    };
-    const batPct = () => batteryLevel == null ? '' : `<span class="bat-text">${Math.round(batteryLevel*100)}%</span>`;
-    const update = () => {
-      const d = new Date();
-      if(TIME_EL) TIME_EL.textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-      if(ICONS_EL) ICONS_EL.innerHTML = SIG_SVG + WIFI_SVG + batterySvg() + batPct();
-    };
-    update();
-    setInterval(update, 30000);
-    if(navigator.getBattery){
-      navigator.getBattery().then(bat => {
-        const updBat = () => { batteryLevel = bat.level; charging = bat.charging; update(); };
-        updBat();
-        bat.addEventListener('levelchange', updBat);
-        bat.addEventListener('chargingchange', updBat);
-      }).catch(()=>{});
-    }
-  })();
 
   const SVG = {
     newFriend: '<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>',
@@ -2335,14 +2334,16 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
     { id:'u6', name:'刘扬扬', remark:'扬扬', relationship:'队友', identity:'WayV成员' }
   ]
       },
-      { id:'u6', name:'刘扬扬', avatar:'yangyang.jpg' },
-      { id:'u9', name:'造型师姐姐', avatar:'https://picsum.photos/seed/stylist_wx_avatar/200' }
+      { id:'u6', name:'刘扬扬', avatar:'yangyang.jpg' }
     ];
     let changed = false;
     if(!d.list || !Array.isArray(d.list)) {
       d.list = defaults;
       changed = true;
     } else {
+      const beforeLen = d.list.length;
+      d.list = d.list.filter(c => c.id !== 'u9' && c.id !== 'u8' && c.name !== '李秀满');
+      if(d.list.length !== beforeLen) changed = true;
       const existingIds = new Set(d.list.map(c => c.id));
       defaults.forEach(def => {
         if(!existingIds.has(def.id)){
@@ -2414,15 +2415,15 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
   function saveGroups(list){ Phone.setData('groups', { list }); document.dispatchEvent(new CustomEvent('wechat-data-updated', { detail:{ type:'groups' } })); }
   function getTags(){
     const d = Phone.getData('tags');
-    const defaults = [
-      { id:'t1', name:'WayV 成员', memberIds:['u1','u2','u4','u5','u6'] },
-      { id:'t2', name:'工作人员', memberIds:['u9'] }
-    ];
+    const defaults = [];
     let changed = false;
     if(!d.list || !Array.isArray(d.list)) {
       d.list = defaults;
       changed = true;
     } else {
+      const beforeLen = d.list.length;
+      d.list = d.list.filter(t => t.id !== 't1' && t.id !== 't2');
+      if(d.list.length !== beforeLen) changed = true;
       const existingIds = new Set(d.list.map(t => t.id));
       defaults.forEach(def => {
         if(!existingIds.has(def.id)){
@@ -2482,6 +2483,8 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
     let currentTab = 'chat';
     let chatHistory = {};
     const HISTORY_KEY = 'wechat_chat_history';
+    let _histStripLevel = 0;
+    let _histQuotaWarned = false;
 
     function loadHistoryFromStorage(){
       try{
@@ -2489,8 +2492,52 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
         if(raw) chatHistory = JSON.parse(raw);
       }catch(e){ chatHistory = {}; }
     }
+    function _histSnapshot(stripMedia){
+      if(!stripMedia) return chatHistory;
+      const out = {};
+      Object.keys(chatHistory).forEach(cid => {
+        let n = 0;
+        out[cid] = (chatHistory[cid] || []).map(m => {
+          if(!m) return m;
+          const hasMedia = (typeof m.content === 'string' && m.content.startsWith('data:')) || (typeof m.audioUrl === 'string' && m.audioUrl.startsWith('data:'));
+          if(!hasMedia) return m;
+          if(n++ >= stripMedia) return m;
+          const copy = Object.assign({}, m, { audioUrl:'', _mediaTrimmed:true });
+          if(typeof m.content === 'string' && m.content.startsWith('data:')) copy.content = '';
+          return copy;
+        });
+      });
+      return out;
+    }
     function saveHistoryToStorage(){
-      try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory)); }catch(e){}
+      let level = _histStripLevel;
+      while(true){
+        try{
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(_histSnapshot(level)));
+          if(level > _histStripLevel){
+            _histStripLevel = level;
+            if(!_histQuotaWarned){
+              _histQuotaWarned = true;
+              try{ Phone.toast('存储空间不足，最早的图片/语音已不再保存（文字记录保留）'); }catch(e){}
+            }
+          }
+          return;
+        }catch(e){
+          const quota = e && (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED' || e.code === 22 || e.code === 1014);
+          if(!quota){
+            console.warn('[wechat] 保存聊天记录失败:', e);
+            return;
+          }
+          if(level >= 300){
+            if(!_histQuotaWarned){
+              _histQuotaWarned = true;
+              try{ Phone.toast('本地存储已满，聊天记录保存失败，请清理图片或聊天记录'); }catch(e2){}
+            }
+            return;
+          }
+          level += 25;
+        }
+      }
     }
     loadHistoryFromStorage();
 
@@ -2507,6 +2554,17 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
       if(label.includes('周日')) return -86400000 * 4;
       if(/^\d{1,2}:\d{2}$/.test(label)) return -3600000 * 2;
       return -86400000 * 2;
+    }
+
+    function wcCtxCount(chatId){
+      try{
+        const d = Phone.getData('wechat') || {};
+        const chat = MOCK_CHATS.find(c => c.id === chatId);
+        const gs = (chat && chat.isGroup && chat.groupId) ? ((d.groupSettings || {})[chat.groupId] || {}) : {};
+        const cs = (d.chatSettings || {})[chatId] || {};
+        const n = parseInt(gs.contextCount || cs.contextCount, 10);
+        return (n && n > 0) ? n : 50;
+      }catch(e){ return 50; }
     }
 
     function getHistory(chatId){
@@ -2534,6 +2592,75 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
         }
       }
       return chatHistory[chatId];
+    }
+
+    const AUTO_SUMMARY_MIN = 10;
+    const AUTO_SUMMARY_KEEP = 20;
+    const _summarizingChats = {};
+
+    function _msgForSummary(m){
+      if(!m || !m.role || m.role === 'typing') return '';
+      if(m.type === 'call') return '[通话]';
+      if(m.type === 'image') return m.caption ? `[图片：${m.caption}]` : '[图片]';
+      if(m.type === 'sticker') return '[表情包]';
+      if(m.type === 'voice') return `[语音] ${m.content || ''}`;
+      if(m.type === 'location') return `[位置] ${m.content || ''}`;
+      if(m.type === 'transfer') return m.content || '[转账]';
+      if(m.type === 'redpacket') return m.content || '[红包]';
+      return String(m.content == null ? '' : m.content);
+    }
+
+    async function autoSummarizeHistory(chatId){
+      if(_summarizingChats[chatId]) return;
+      const hist = chatHistory[chatId];
+      if(!hist || !hist.length) return;
+      const d = Phone.getData('wechat');
+      if(!d) return;
+      d.memories = d.memories || {};
+      const mem = d.memories[chatId] = d.memories[chatId] || { core:[], storylines:[] };
+      let done = parseInt(mem.autoSummarized || 0, 10);
+      if(!(done >= 0) || done > hist.length) done = 0;
+      const win = wcCtxCount(chatId);
+      const end = hist.length - win;
+      if(end - done < AUTO_SUMMARY_MIN) return;
+      const batch = hist.slice(done, end).filter(m => m && m.role && m.role !== 'typing' && m.content !== undefined);
+      if(!batch.length){ mem.autoSummarized = end; Phone.setData('wechat', d); return; }
+      const chat = MOCK_CHATS.find(c => c.id === chatId);
+      const chatName = chat ? chat.name : '对方';
+      const lines = batch.map(m => {
+        const who = m.role === 'user' ? '我' : (m.speakerName || chatName);
+        const text = _msgForSummary(m);
+        return text ? `${who}：${text}` : '';
+      }).filter(Boolean).join('\n').slice(-6000);
+      if(!lines) return;
+      _summarizingChats[chatId] = true;
+      try{
+        const raw = await Phone.chatWithAI([
+          { role:'system', content:'你是对话记忆整理助手。把聊天记录压缩成简洁的长期记忆，只保留值得记住的信息：重要事件、约定、称呼变化、关系进展、喜好与情绪、承诺、梗。忽略寒暄、重复内容和无意义闲聊。用第三人称写 3-6 条要点，每条单独一行，不要编号，不要空行，不要任何解释。' },
+          { role:'user', content:`聊天对象：${chatName}\n\n聊天记录：\n${lines}` }
+        ]);
+        const text = (raw || '').trim();
+        if(!text) return;
+        const now = new Date();
+        const time = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+        text.split('\n')
+          .map(s => s.replace(/^[\s\-·•*]+/, '').replace(/^\d+[.、)）]\s*/, '').trim())
+          .filter(Boolean).slice(0, 6)
+          .forEach(line => { mem.core.push({ content: line, time, auto: true }); });
+        const autos = mem.core.filter(x => x && x.auto);
+        while(autos.length > AUTO_SUMMARY_KEEP){
+          const i = mem.core.findIndex(x => x && x.auto);
+          if(i < 0) break;
+          mem.core.splice(i, 1);
+          autos.shift();
+        }
+        mem.autoSummarized = end;
+        Phone.setData('wechat', d);
+      }catch(e){
+        console.warn('[wechat] 自动记忆整理失败:', e);
+      }finally{
+        _summarizingChats[chatId] = false;
+      }
     }
 
     function switchTab(tab){
@@ -3257,6 +3384,8 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
         Phone.setData('wechat', d);
       }
 
+      let favAudio = null;
+
       const panel = document.createElement('div');
       panel.className = 'wc-chat-detail';
       panel.innerHTML = `
@@ -3340,10 +3469,31 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
               <span class="wc-fav-speaker">${escAttr(speaker)}</span>
               <span class="wc-fav-meta">${escAttr(chatName)} · ${timeStr}</span>
             </div>
-            <div class="wc-fav-content">${escAttr(f.content||'')}</div>
+            <div class="wc-fav-content">${escAttr(f.content||'')}${String(f.audioUrl||'').trim() ? `<span class="wc-fav-play" data-idx="${idx}">▶ 语音</span>` : ''}</div>
           </div>`;
         });
         listEl.innerHTML = html;
+
+        listEl.querySelectorAll('.wc-fav-play').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const f = favs[Number(btn.dataset.idx)];
+            const url = String((f && f.audioUrl) || '').trim();
+            if(!url) return;
+            if(btn.classList.contains('playing')){
+              if(favAudio){ try{ favAudio.pause(); }catch(e){} favAudio = null; }
+              btn.classList.remove('playing');
+              return;
+            }
+            if(favAudio){ try{ favAudio.pause(); }catch(e){} favAudio = null; }
+            listEl.querySelectorAll('.wc-fav-play.playing').forEach(x => x.classList.remove('playing'));
+            favAudio = new Audio(url);
+            btn.classList.add('playing');
+            favAudio.onended = () => { btn.classList.remove('playing'); favAudio = null; };
+            favAudio.onerror = () => { btn.classList.remove('playing'); favAudio = null; };
+            const p = favAudio.play();
+            if(p && p.catch) p.catch(() => btn.classList.remove('playing'));
+          });
+        });
 
         listEl.querySelectorAll('.wc-fav-del').forEach(btn => {
           btn.addEventListener('click', async () => {
@@ -4213,6 +4363,50 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
     function uid(){ return 's_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
     function escAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+    function getWorldbookGroupOptions(){
+      const wbs = Phone._getState().worldbooks || [];
+      const groups = {};
+      wbs.forEach(w => {
+        const g = String(w.group || '').trim() || '未分组';
+        if(!groups[g]) groups[g] = [];
+        groups[g].push(w.id);
+      });
+      return Object.keys(groups).map(g => ({ id:g, name:g, ids:groups[g] }));
+    }
+    function resolveWorldbookIds(list){
+      const wbs = Phone._getState().worldbooks || [];
+      const opts = getWorldbookGroupOptions();
+      const out = [];
+      (list || []).forEach(v => {
+        const grp = opts.find(o => o.id === v);
+        if(grp){
+          grp.ids.forEach(id => { if(!out.includes(id)) out.push(id); });
+          return;
+        }
+        if(wbs.some(w => w.id === v) && !out.includes(v)) out.push(v);
+      });
+      return out;
+    }
+    function getBoundWorldbookGroupNames(list){
+      const wbs = Phone._getState().worldbooks || [];
+      const opts = getWorldbookGroupOptions();
+      const entries = list || [];
+      if(!entries.length) return '未绑定';
+      const names = [];
+      entries.forEach(v => {
+        if(opts.some(o => o.id === v)){
+          if(!names.includes(v)) names.push(v);
+          return;
+        }
+        const wb = wbs.find(w => w.id === v);
+        if(wb){
+          const g = String(wb.group || '').trim() || '未分组';
+          if(!names.includes(g)) names.push(g);
+        }
+      });
+      return names.length ? names.join('、') : '未绑定';
+    }
+
     function openMultiPicker(title, items, selectedIds, onDone, emptyTip, opts){
       opts = opts || {};
       const single = !!opts.single;
@@ -4229,7 +4423,7 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
           const inputType = single ? 'radio' : 'checkbox';
           const nameAttr = single ? `name="${title.replace(/"/g,'')}"` : '';
           return `<label style="display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer">
-            <input type="${inputType}" ${nameAttr} data-id="${it.id}" ${checked?'checked':''} style="width:16px;height:16px">
+            <input type="${inputType}" ${nameAttr} data-id="${escAttr(it.id)}" ${checked?'checked':''} style="width:16px;height:16px">
             <span style="font-size:13px;color:var(--green-ink)">${escAttr(it.name)}</span>
           </label>`;
         }).join('');
@@ -4558,7 +4752,8 @@ padding:0 12px;padding-top:calc(var(--phone-w) * 0.11);
         const gs = d.groupSettings[g.id] || {
           stickerGroupIds:[], worldbookGroupIds:[],
           autoReply:true, autoReplySeconds:5, autoReplyMembers:[],
-          contextCount:50, realTime:false, proactiveMsg:false, proactiveMsgInterval:30
+          contextCount:50, realTime:false, proactiveMsg:false, proactiveMsgInterval:30,
+          replyMin:1, replyMax:4, storyWordMin:400, storyWordMax:1000
         };
         d.groupSettings[g.id] = gs;
         return { d, gs };
@@ -4846,7 +5041,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           </div>
           <div class="wc-set-row" data-act="worldbookGroups">
             <span class="wc-set-label">世界书分组绑定</span>
-            <span class="wc-set-val"><span class="wc-set-val-text">${gs.worldbookGroupIds.length ? '已绑定 ' + gs.worldbookGroupIds.length + ' 项' : '未绑定'}</span><span class="wc-set-arrow">›</span></span>
+            <span class="wc-set-val"><span class="wc-set-val-text">${getBoundWorldbookGroupNames(gs.worldbookGroupIds)}</span><span class="wc-set-arrow">›</span></span>
           </div>
           <div class="wc-set-row">
             <span class="wc-set-label">角色自动回复</span>
@@ -4862,6 +5057,21 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             <span class="wc-set-label">允许回复的成员</span>
             <span class="wc-set-val"><span class="wc-set-val-text">${autoReplyMemberText}</span><span class="wc-set-arrow">›</span></span>
           </div>` : ''}
+          <div class="wc-set-subhead">回复设置</div>
+          <div class="wc-set-sub-row">
+            <span class="wc-set-sub-label">线上角色回复</span>
+            <input type="number" class="wc-set-sub-input" min="1" max="20" value="${gs.replyMin ?? 1}" data-num="replyMin">
+            <span class="wc-set-sub-label">~</span>
+            <input type="number" class="wc-set-sub-input" min="1" max="20" value="${gs.replyMax ?? 4}" data-num="replyMax">
+            <span class="wc-set-sub-label">条</span>
+          </div>
+          <div class="wc-set-sub-row">
+            <span class="wc-set-sub-label">线下剧情文字</span>
+            <input type="number" class="wc-set-sub-input" min="100" max="4000" step="50" value="${gs.storyWordMin ?? 400}" data-num="storyWordMin">
+            <span class="wc-set-sub-label">~</span>
+            <input type="number" class="wc-set-sub-input" min="100" max="4000" step="50" value="${gs.storyWordMax ?? 1000}" data-num="storyWordMax">
+            <span class="wc-set-sub-label">字</span>
+          </div>
           <div class="wc-set-slider-row">
             <div class="wc-set-slider-head">
               <span class="wc-set-label">上下文记忆条数</span>
@@ -4925,6 +5135,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             const v = parseInt(inp.value);
             if(key === 'autoReplySeconds') gs.autoReplySeconds = Math.max(1, Math.min(30, v||5));
             if(key === 'proactiveMsgInterval') gs.proactiveMsgInterval = Math.max(5, Math.min(1440, v||30));
+            if(key === 'replyMin'){ gs.replyMin = Math.max(1, Math.min(20, v||1)); if(gs.replyMax < gs.replyMin) gs.replyMax = gs.replyMin; }
+            if(key === 'replyMax'){ gs.replyMax = Math.max(1, Math.min(20, v||4)); if(gs.replyMin > gs.replyMax) gs.replyMin = gs.replyMax; }
+            if(key === 'storyWordMin'){ gs.storyWordMin = Math.max(100, Math.min(4000, v||400)); if(gs.storyWordMax < gs.storyWordMin) gs.storyWordMax = gs.storyWordMin; }
+            if(key === 'storyWordMax'){ gs.storyWordMax = Math.max(100, Math.min(4000, v||1000)); if(gs.storyWordMin > gs.storyWordMax) gs.storyWordMin = gs.storyWordMax; }
             saveSettings(d);
             render();
           });
@@ -4954,11 +5168,14 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
                 gs.stickerGroupIds = ids; saveSettings(d); render();
               });
               break;
-            case 'worldbookGroups':
-              openMultiPicker('选择世界书分组', (Phone._getState().worldbooks||[]).map(w=>({id:w.id,name:w.name})), gs.worldbookGroupIds, (ids) => {
-                gs.worldbookGroupIds = ids; saveSettings(d); render();
-              });
+            case 'worldbookGroups': {
+              const wbGroups = getWorldbookGroupOptions();
+              const preSelected = wbGroups.filter(o => (gs.worldbookGroupIds || []).includes(o.id) || o.ids.some(id => (gs.worldbookGroupIds || []).includes(id))).map(o => o.id);
+              openMultiPicker('选择世界书分组', wbGroups.map(o=>({id:o.id,name:o.name})), preSelected, (ids) => {
+                gs.worldbookGroupIds = ids.slice(); saveSettings(d); render();
+              }, '暂无世界书分组，请先在世界书 App 中添加');
               break;
+            }
             case 'autoReplyMembers': {
               const memberOpts = mems.map(m => ({ id: m.name, name: m.name }));
               openMultiPicker('选择允许自动回复的成员', memberOpts, gs.autoReplyMembers, (ids) => {
@@ -5417,6 +5634,18 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       render();
     }
 
+    const CM_ICONS = {
+      edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+      copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>',
+      quote: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
+      multi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
+      fav: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+      recall: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 015.5 5.5v0a5.5 5.5 0 01-5.5 5.5H11"/></svg>',
+      del: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
+      trans: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>',
+      rewrite: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>'
+    };
+
     function openStoryMode(chatId){
       const chat = MOCK_CHATS.find(c => c.id === chatId);
       if(!chat) return;
@@ -5476,6 +5705,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         <div class="wc-cd-topbar">
           <button class="wc-cd-back">‹</button>
           <span class="wc-cd-title">线下 · ${escAttr(displayName)}</span>
+          <div class="wc-cd-right">
+            <button class="wc-icon-btn" id="wcStorySettings" style="background:none" title="聊天设置"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+          </div>
         </div>
         <div class="wc-cd-messages" id="wcStoryMsgs"></div>
         <div class="wc-cd-input-area">
@@ -5489,24 +5721,394 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       const input = panel.querySelector('#wcStoryInput');
       const sendBtn = panel.querySelector('#wcStorySend');
       let history = getStoryHistory();
+      (function normalizeStoryToSimplified(){
+        let changed = false;
+        history.forEach(m => {
+          if(m.role === 'ai' && typeof m.content === 'string'){
+            const s = toSimplified(m.content);
+            if(s !== m.content){ m.content = s; changed = true; }
+          }
+        });
+        if(changed) saveStoryHistory(history);
+      })();
       let isReplying = false;
+      let rpPendingReply = false;
+      let storyMultiMode = false;
+      let storyMultiSelected = new Set();
+      let storyMenu = null;
 
-      function renderOneStoryMessage(m){
+      function closeStoryMenu(){
+        if(storyMenu){ storyMenu.remove(); storyMenu = null; }
+        document.removeEventListener('click', closeStoryMenu);
+        document.removeEventListener('contextmenu', closeStoryMenu);
+      }
+
+      function showStoryMenu(el, x, y){
+        closeStoryMenu();
+        const idx = parseInt(el.dataset.msgIdx);
+        const m = history[idx];
+        if(!m) return;
+        const menu = document.createElement('div');
+        menu.className = 'wc-cm-menu';
+        const items = [
+          { key:'edit', label:'编辑', icon:CM_ICONS.edit },
+          { key:'copy', label:'复制', icon:CM_ICONS.copy },
+          { key:'multi', label:'多选', icon:CM_ICONS.multi },
+          { key:'fav', label:'收藏', icon:CM_ICONS.fav },
+          { key:'del', label:'删除', icon:CM_ICONS.del, danger:true },
+          { key:'trans', label:'翻译', icon:CM_ICONS.trans }
+        ];
+        if(m.role === 'ai') items.splice(4, 0, { key:'rewrite', label:'重写', icon:CM_ICONS.rewrite });
+        items.forEach(it => {
+          const item = document.createElement('div');
+          item.className = 'wc-cm-item' + (it.danger ? ' danger' : '');
+          item.innerHTML = `${it.icon}<span>${it.label}</span>`;
+          item.addEventListener('click', e => {
+            e.stopPropagation();
+            closeStoryMenu();
+            handleStoryMenuAction(it.key, el);
+          });
+          menu.appendChild(item);
+        });
+        document.body.appendChild(menu);
+        storyMenu = menu;
+        const rect = menu.getBoundingClientRect();
+        let left = x, top = y;
+        if(left + rect.width > window.innerWidth - 8) left = window.innerWidth - rect.width - 8;
+        if(left < 8) left = 8;
+        if(top + rect.height > window.innerHeight - 8) top = y - rect.height - 8;
+        if(top < 8) top = 8;
+        if(top + rect.height > window.innerHeight - 8) top = Math.max(8, window.innerHeight - rect.height - 8);
+        menu.style.left = left + 'px';
+        menu.style.top = top + 'px';
+        setTimeout(() => {
+          document.addEventListener('click', closeStoryMenu);
+          document.addEventListener('contextmenu', closeStoryMenu);
+        }, 50);
+      }
+
+      async function toggleStoryTranslate(msgEl, content){
+        const body = msgEl.querySelector('.wc-msg-body') || msgEl;
+        const existing = body.querySelector('.wc-trans-block');
+        if(existing){
+          const foot = body.querySelector('.wc-trans-foot');
+          if(foot) foot.remove();
+          existing.remove();
+          return;
+        }
+        const anchor = body.querySelector('.wc-msg-bubble');
+        const loading = document.createElement('div');
+        loading.className = 'wc-trans-block';
+        loading.textContent = '翻译中...';
+        if(anchor) anchor.after(loading); else body.appendChild(loading);
+        try{
+          const reply = await Phone.chatWithAI([
+            {role:'system',content:'你是翻译助手。把用户输入的文本翻译为简体中文。粤语翻译成书面简体普通话，繁体转简体，日文/英文也翻译。只输出翻译结果本身，不要解释，不要加引号，不要加"翻译："之类前缀。'},
+            {role:'user',content:content}
+          ]);
+          const text = (reply || '').trim();
+          loading.textContent = text || '(翻译失败)';
+          const foot = document.createElement('div');
+          foot.className = 'wc-trans-foot';
+          foot.textContent = '由微信提供翻译支持';
+          loading.after(foot);
+        } catch(e){
+          loading.textContent = '翻译失败';
+        }
+      }
+
+      async function handleStoryMenuAction(key, el){
+        const idx = parseInt(el.dataset.msgIdx);
+        const msg = history[idx];
+        if(!msg) return;
+        const content = msg.content || '';
+        switch(key){
+          case 'copy':{
+            navigator.clipboard.writeText(content).then(() => Phone.toast('已复制')).catch(() => {
+              const ta = document.createElement('textarea'); ta.value = content; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); Phone.toast('已复制');
+            });
+            break;
+          }
+          case 'edit':{
+            const result = await showStoryEditModal(content);
+            if(result === null || result === undefined) break;
+            if(result === content) break;
+            if(!result.trim()){ Phone.toast('内容不能为空'); break; }
+            msg.content = result.trim();
+            msg.edited = true;
+            saveStoryHistory(history);
+            renderMsgs();
+            Phone.toast('已修改');
+            break;
+          }
+          case 'multi':{
+            toggleStoryMulti(el, idx);
+            break;
+          }
+          case 'fav':{
+            const d = Phone.getData('wechat');
+            d.favorites = d.favorites || [];
+            const exists = d.favorites.some(f => f.chatId === chatId && f.source === 'story' && f.content === content);
+            if(exists){ Phone.toast('已收藏过'); break; }
+            d.favorites.push({ id:'f_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), groupId:'default', chatId, msgIdx:idx, content, speakerName: msg.role === 'user' ? userName : chat.name, role: msg.role === 'user' ? 'user' : 'ai', ts:Date.now(), audioUrl:'', source:'story' });
+            Phone.setData('wechat', d);
+            Phone.toast('已收藏');
+            break;
+          }
+          case 'del':{
+            const r = await Phone.modal({ title:'确定删除这条消息？', fields:[] });
+            if(!r) break;
+            history.splice(idx, 1);
+            saveStoryHistory(history);
+            renderMsgs();
+            Phone.toast('已删除');
+            break;
+          }
+          case 'trans':{
+            toggleStoryTranslate(el, content);
+            break;
+          }
+          case 'rewrite':{
+            const r = await Phone.modal({
+              title:'重写这条剧情',
+              fields:[
+                {key:'hint',label:'重写方向（可选）',value:'',type:'textarea',placeholder:'例如：保持原意但文风更冷淡 / 剧情往「对方答应」的方向发展。留空则保持原意重新润色'}
+              ]
+            });
+            if(!r) break;
+            const hint = String(r.hint || '').trim();
+            const pos = idx;
+            const removed = history[pos];
+            history.splice(pos, 1);
+            saveStoryHistory(history);
+            renderMsgs();
+            const t = document.createElement('div');
+            t.className = 'wc-msg typing';
+            t.innerHTML = `<div class="wc-typing-dots"><span></span><span></span><span></span></div>`;
+            msgs.appendChild(t);
+            msgs.scrollTop = msgs.scrollHeight;
+            try{
+              const sys = buildStorySystemPrompt(true, hint);
+              const messages = [{ role:'system', content: sys }, ...history
+                .filter(m => m.role && m.content !== undefined)
+                .slice(-Math.max(5, parseInt(cs.contextCount || 50, 10)))
+                .map(m => ({
+                  role: m.role === 'user' ? 'user' : 'assistant',
+                  content: m.content
+                }))];
+              const rawReply = await Phone.chatWithAI(messages);
+              const finalText = toSimplified(rawReply.trim());
+              const finalMsg = { role:'ai', content: finalText, speakerName: chat.name, ts: Date.now(), edited: true };
+              history.splice(pos, 0, finalMsg);
+              saveStoryHistory(history);
+              t.remove();
+              renderMsgs();
+              Phone.toast('已重写');
+            } catch(e){
+              t.remove();
+              history.splice(pos, 0, removed);
+              saveStoryHistory(history);
+              renderMsgs();
+              Phone.toast('重写失败');
+            }
+            break;
+          }
+        }
+      }
+
+      function showStoryEditModal(initialContent){
+        return new Promise(resolve => {
+          const root = document.getElementById('modalRoot');
+          if(!root){ resolve(null); return; }
+          const mask = document.createElement('div');
+          mask.className = 'modal-mask';
+          mask.innerHTML = `
+            <div class="modal-box" style="animation:popIn .25s ease;max-width:400px;width:90%">
+              <h4>编辑消息</h4>
+              <div style="margin:12px 0">
+                <textarea id="editStoryTextarea" style="width:100%;min-height:120px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;resize:vertical;box-sizing:border-box;line-height:1.5"></textarea>
+              </div>
+              <div class="modal-actions">
+                <button class="btn-cancel" data-act="cancel">取消</button>
+                <button class="btn-ok" data-act="ok">保存</button>
+              </div>
+            </div>`;
+          root.appendChild(mask);
+          const textarea = mask.querySelector('#editStoryTextarea');
+          textarea.value = initialContent || '';
+          const dismiss = () => {
+            mask.style.animation = 'fadeIn .2s ease reverse';
+            setTimeout(() => mask.remove(), 180);
+          };
+          textarea.addEventListener('keydown', e => {
+            if(e.key === 'Escape'){ resolve(null); dismiss(); }
+          });
+          mask.addEventListener('click', e => {
+            if(e.target === mask){ resolve(null); dismiss(); }
+            if(e.target.dataset.act === 'cancel'){ resolve(null); dismiss(); }
+            if(e.target.dataset.act === 'ok'){ resolve(textarea.value); dismiss(); }
+          });
+          setTimeout(() => textarea.focus(), 100);
+        });
+      }
+
+      function toggleStoryMulti(el, idx){
+        if(!storyMultiMode){
+          storyMultiMode = true;
+          storyMultiSelected.clear();
+          msgs.querySelectorAll('.wc-msg').forEach(m => {
+            m.style.cursor = 'pointer'; m.classList.add('selectable');
+          });
+          const bar = document.createElement('div');
+          bar.className = 'wc-cm-multibar'; bar.id = 'wcStoryMultiBar';
+          bar.innerHTML = `
+            <span id="wcStoryMultiCount" style="font-size:12px;color:var(--green-ink-soft)">已选 0 条</span>
+            <button id="wcStoryMultiFav" style="font-size:12px;color:var(--green-deep);background:none;border:none;cursor:pointer">收藏</button>
+            <button id="wcStoryMultiDel" style="font-size:12px;color:#e74c3c;background:none;border:none;cursor:pointer">删除</button>
+            <button id="wcStoryMultiCancel" style="font-size:12px;color:#999;background:none;border:none;cursor:pointer">取消</button>
+          `;
+          bar.querySelector('#wcStoryMultiFav').addEventListener('click', () => storyBatchFavorite());
+          bar.querySelector('#wcStoryMultiDel').addEventListener('click', () => storyBatchDelete());
+          bar.querySelector('#wcStoryMultiCancel').addEventListener('click', () => exitStoryMulti());
+          msgs.parentElement.insertBefore(bar, msgs.nextSibling);
+        }
+        if(storyMultiSelected.has(idx)){ storyMultiSelected.delete(idx); el.classList.remove('selected'); }
+        else{ storyMultiSelected.add(idx); el.classList.add('selected'); }
+        const cnt = panel.querySelector('#wcStoryMultiCount');
+        if(cnt) cnt.textContent = `已选 ${storyMultiSelected.size} 条`;
+      }
+
+      function exitStoryMulti(){
+        storyMultiMode = false;
+        storyMultiSelected.clear();
+        msgs.querySelectorAll('.wc-msg').forEach(m => {
+          m.style.cursor = ''; m.classList.remove('selected','selectable');
+        });
+        const bar = panel.querySelector('#wcStoryMultiBar');
+        if(bar) bar.remove();
+      }
+
+      function storyBatchFavorite(){
+        const d = Phone.getData('wechat');
+        d.favorites = d.favorites || [];
+        let cnt = 0;
+        storyMultiSelected.forEach(idx => {
+          const m = history[idx];
+          if(!m) return;
+          const exists = d.favorites.some(f => f.chatId === chatId && f.source === 'story' && f.content === (m.content || ''));
+          if(exists) return;
+          d.favorites.push({ id:'f_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), groupId:'default', chatId, msgIdx:idx, content: m.content || '', speakerName: m.role === 'user' ? userName : chat.name, role: m.role === 'user' ? 'user' : 'ai', ts:Date.now(), audioUrl:'', source:'story' });
+          cnt++;
+        });
+        Phone.setData('wechat', d);
+        Phone.toast(`已收藏 ${cnt} 条`);
+        exitStoryMulti();
+      }
+
+      async function storyBatchDelete(){
+        const r = await Phone.modal({ title:`确定删除选中的 ${storyMultiSelected.size} 条消息？`, fields:[] });
+        if(!r) return;
+        const ids = [...storyMultiSelected].sort((a,b)=>b-a);
+        ids.forEach(i => history.splice(i, 1));
+        saveStoryHistory(history);
+        renderMsgs();
+        Phone.toast(`已删除 ${ids.length} 条`);
+        exitStoryMulti();
+      }
+
+      function attachStoryMsgMenu(el, idx, isUserMsg){
+        let longPressTimer = null;
+        el.addEventListener('contextmenu', e => { e.preventDefault(); showStoryMenu(el, e.clientX, e.clientY); });
+        el.addEventListener('touchstart', e => {
+          longPressTimer = setTimeout(() => { e.preventDefault(); const t = e.touches[0]; showStoryMenu(el, t.clientX, t.clientY); }, 500);
+        }, {passive:false});
+        el.addEventListener('touchend', () => { if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }});
+        el.addEventListener('touchmove', () => { if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }});
+        el.addEventListener('click', e => {
+          if(storyMultiMode && !e.target.closest('.wc-cm-item')) toggleStoryMulti(el, idx);
+        });
+      }
+
+      function getStoryWordRange(){
+        try{
+          const d = Phone.getData('wechat') || {};
+          const a = (d.chatSettings || {})[chatId] || {};
+          const b = (isGroup && group) ? ((d.groupSettings || {})[group.id] || {}) : {};
+          const pick = (k, def) => {
+            const v = (b[k] !== undefined && b[k] !== '') ? b[k] : a[k];
+            const n = parseInt(v, 10);
+            return (Number.isFinite(n) && n > 0) ? n : def;
+          };
+          let min = pick('storyWordMin', 400);
+          let max = pick('storyWordMax', 1000);
+          if(max < min) max = min;
+          return { min, max };
+        }catch(e){ return { min:400, max:1000 }; }
+      }
+
+      function buildStorySystemPrompt(isRewrite, hint){
+        const wordRange = getStoryWordRange();
+        let sys;
+        if(isGroup){
+          sys = `你正在进行线下角色扮演。场景是群聊 "${chat.name}" 的一次离线RP场景。\n`;
+          sys += `群成员：${members.map(m=>m.name).join('、')}\n`;
+          const memberSettings = members.filter(m => m.roleSetting).map(m => `${m.name}：\n${m.roleSetting}`).join('\n\n');
+          if(memberSettings) sys += `【角色人设】\n${memberSettings}\n`;
+          sys += `用户 "${userName}" 给出了一个场景/动作/想法。\n`;
+          sys += `⚠️ 这不是在线聊天！而是**线下故事补写**。你需要以第三人称叙事视角，描写角色们对用户输入的反应和接下来发生的事情。\n`;
+          sys += `⚠️ 可以自由描写群内所有角色（${members.map(m=>m.name).join('、')}），但**严禁出现不在本群的无关人物**。\n`;
+          sys += `⚠️ 允许使用括号、方括号、斜体等方式描写动作、表情、环境。可以有内心独白。\n`;
+          sys += `⚠️ 篇幅控制在 ${wordRange.min}~${wordRange.max} 字左右，用生动细腻的文笔，营造沉浸式的故事感。\n`;
+          if(isRewrite && hint) sys += `⚠️ 重写方向：${hint}\n`;
+          sys += `⚠️ 直接输出叙事段落，不要有任何前缀或格式。`;
+        } else {
+          const contact = MOCK_CONTACTS.find(c => c.id === chat.contactId);
+          sys = `你正在进行线下角色扮演。你扮演的是 ${chat.name}。\n`;
+          if(contact?.roleSetting) sys += `【你的人设】\n${contact.roleSetting}\n`;
+          if(contact?.writingStyle?.length) sys += `【文风参考（请模仿这些话法和语气）】\n${contact.writingStyle.slice(0,15).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
+          const userPersona = cs.persona || char.persona || '';
+          if(userPersona) sys += `用户 "${userName}" 的人设：${userPersona}\n`;
+          sys += `用户给出了一个场景/动作/想法。\n`;
+          sys += `⚠️ 这不是在线聊天！而是**线下故事补写**。你需要以第三人称叙事视角，描写 ${chat.name} 对用户输入的反应和接下来发生的事情。\n`;
+          sys += `⚠️ 可以描写 ${chat.name} 和用户，也可以在合理范围内出现其他角色，但**严禁出现与当前对话无关的人物**。\n`;
+          sys += `⚠️ 允许使用括号、方括号、斜体等方式描写动作、表情、环境。可以有内心独白。\n`;
+          sys += `⚠️ 篇幅控制在 ${wordRange.min}~${wordRange.max} 字左右，用生动细腻的文笔，营造沉浸式的故事感。\n`;
+          if(isRewrite && hint) sys += `⚠️ 重写方向：${hint}\n`;
+          sys += `⚠️ 直接输出叙事段落，不要有任何前缀或格式。`;
+        }
+        sys += `⚠️ 全文必须使用简体中文书写，严禁出现任何繁体字。\n`;
+        let memSys = '';
+        try{
+          const allD = Phone.getData('wechat');
+          const cm = allD.memories?.[chatId];
+          if(cm?.core?.length) memSys += `\n\n【核心记忆 - 必须牢记】\n${cm.core.map(m => m.content).join('\n')}`;
+          if(cm?.storylines?.length) memSys += `\n\n【剧情线 - 必须据此发挥】\n${cm.storylines.map(m => m.content).join('\n')}`;
+          const hvs = allD.heartVoices?.[chatId];
+          if(hvs?.length) memSys += `\n\n【你的内心独白（心声）- 这些是你曾在心里真实想过的事】\n${hvs.slice(0,5).map(h => h.content).join('\n')}`;
+        } catch(e){}
+        if(memSys) sys += memSys;
+        return sys;
+      }
+
+      function renderOneStoryMessage(m, idx){
         const d = document.createElement('div');
         const isUserMsg = m.role === 'user';
-        d.className = 'wc-msg ' + m.role;
+        d.className = 'wc-msg ' + (isUserMsg ? 'user' : 'ai wc-story-msg');
+        d.dataset.msgIdx = idx;
+        d.dataset.isUser = isUserMsg ? '1' : '0';
         if(isUserMsg){
           d.innerHTML = `
             ${avatarHTML(userName, '', userAvatar)}
-            <div>
+            <div class="wc-msg-body">
               <div class="wc-msg-bubble">${escAttr(m.content)}</div>
             </div>`;
         } else {
           d.innerHTML = `
-            <div style="display:flex;align-items:flex-end;gap:8px;max-width:85%">
+            <div class="wc-msg-body" style="display:flex;align-items:flex-end;gap:8px;max-width:100%">
               <div class="wc-msg-bubble" style="background:#fff">${escAttr(m.content)}</div>
             </div>`;
         }
+        attachStoryMsgMenu(d, idx, isUserMsg);
         return d;
       }
 
@@ -5519,7 +6121,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           msgs.appendChild(empty);
           return;
         }
-        history.forEach(m => msgs.appendChild(renderOneStoryMessage(m)));
+        history.forEach((m, i) => msgs.appendChild(renderOneStoryMessage(m, i)));
         msgs.scrollTop = msgs.scrollHeight;
       }
       renderMsgs();
@@ -5542,13 +6144,15 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       });
 
       async function doSendAndReply(text){
-        if(isReplying) return;
+        if(text){
+          const ts = Date.now();
+          history.push({ role:'user', content:text, ts });
+          saveStoryHistory(history);
+          input.value = ''; autoResize();
+          renderMsgs();
+        }
+        if(isReplying){ rpPendingReply = true; return; }
         isReplying = true;
-        const ts = Date.now();
-        history.push({ role:'user', content:text, ts });
-        saveStoryHistory(history);
-        input.value = ''; autoResize();
-        renderMsgs();
 
         const t = document.createElement('div');
         t.className = 'wc-msg typing';
@@ -5557,67 +6161,18 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         msgs.scrollTop = msgs.scrollHeight;
 
         try{
-          let sys;
-          if(isGroup){
-            sys = `你正在进行线下角色扮演。场景是群聊 "${chat.name}" 的一次离线RP场景。\n`;
-            sys += `群成员：${members.map(m=>m.name).join('、')}\n`;
-            const memberSettings = members.filter(m => m.roleSetting).map(m => `${m.name}：\n${m.roleSetting}`).join('\n\n');
-            if(memberSettings) sys += `【角色人设】\n${memberSettings}\n`;
-            sys += `用户 "${userName}" 给出了一个场景/动作/想法。\n`;
-            sys += `⚠️ 这不是在线聊天！而是**线下故事补写**。你需要以第三人称叙事视角，描写角色们对用户输入的反应和接下来发生的事情。\n`;
-            sys += `⚠️ 可以自由描写群内所有角色（${members.map(m=>m.name).join('、')}），但**严禁出现不在本群的无关人物**。\n`;
-            sys += `⚠️ 允许使用括号、方括号、斜体等方式描写动作、表情、环境。可以有内心独白。\n`;
-            sys += `⚠️ 至少写300字以上，用生动细腻的文笔，营造沉浸式的故事感。\n`;
-            sys += `⚠️ 直接输出叙事段落，不要有任何前缀或格式。`;
-          } else {
-            const contact = MOCK_CONTACTS.find(c => c.id === chat.contactId);
-            sys = `你正在进行线下角色扮演。你扮演的是 ${chat.name}。\n`;
-            if(contact?.roleSetting) sys += `【你的人设】\n${contact.roleSetting}\n`;
-            if(contact?.writingStyle?.length) sys += `【文风参考（请模仿这些话法和语气）】\n${contact.writingStyle.slice(0,15).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
-            const userPersona = cs.persona || char.persona || '';
-            if(userPersona) sys += `用户 "${userName}" 的人设：${userPersona}\n`;
-            sys += `用户给出了一个场景/动作/想法。\n`;
-            sys += `⚠️ 这不是在线聊天！而是**线下故事补写**。你需要以第三人称叙事视角，描写 ${chat.name} 对用户输入的反应和接下来发生的事情。\n`;
-            sys += `⚠️ 可以描写 ${chat.name} 和用户，也可以在合理范围内出现其他角色，但**严禁出现与当前对话无关的人物**。\n`;
-            sys += `⚠️ 允许使用括号、方括号、斜体等方式描写动作、表情、环境。可以有内心独白。\n`;
-            sys += `⚠️ 至少写300字以上，用生动细腻的文笔，营造沉浸式的故事感。\n`;
-            sys += `⚠️ 直接输出叙事段落，不要有任何前缀或格式。`;
-          }
-
-          let memSys = '';
-          try {
-            const allD = Phone.getData('wechat');
-            const cm = allD.memories?.[chatId];
-            if(cm?.core?.length){
-              memSys += `\n\n【核心记忆 - 必须牢记】\n${cm.core.map(m => m.content).join('\n')}`;
-            }
-            if(cm?.storylines?.length){
-              memSys += `\n\n【剧情线 - 必须据此发挥】\n${cm.storylines.map(m => m.content).join('\n')}`;
-            }
-            const hvs = allD.heartVoices?.[chatId];
-            if(hvs?.length){
-              memSys += `\n\n【你的内心独白（心声）- 这些是你曾在心里真实想过的事】\n${hvs.slice(0,5).map(h => h.content).join('\n')}`;
-            }
-          } catch(e){}
-          if(memSys) sys += memSys;
+          const sys = buildStorySystemPrompt(false, '');
 
           const VALID_ROLES = ['system','user','assistant','tool'];
           const messages = [{ role:'system', content:sys }, ...history
             .filter(m => m.role && m.content !== undefined)
+            .slice(-Math.max(5, parseInt(cs.contextCount || 50, 10)))
             .map(m => ({
               role: VALID_ROLES.includes(m.role) ? m.role : 'user',
               content: m.content
             }))];
           const rawReply = await Phone.chatWithAI(messages);
-
-          let fontType = '';
-          if(isGroup){
-            fontType = members[0]?.fontType || '';
-          } else {
-            const c = MOCK_CONTACTS.find(c => c.id === chat.contactId);
-            if(c?.fontType) fontType = c.fontType;
-          }
-          let finalText = (fontType === '繁体') ? toTraditional(rawReply.trim()) : rawReply.trim();
+          const finalText = toSimplified(rawReply.trim());
           const finalMsg = { role:'ai', content: finalText, speakerName: chat.name, ts: Date.now() };
           history.push(finalMsg);
           saveStoryHistory(history);
@@ -5632,10 +6187,24 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         } finally {
           isReplying = false;
           input.focus();
+          if(rpPendingReply){
+            rpPendingReply = false;
+            setTimeout(() => {
+              if(!document.body.contains(panel) || isReplying) return;
+              doSendAndReply('');
+            }, 400);
+          }
         }
       }
 
+      panel.querySelector('#wcStorySettings').addEventListener('click', () => {
+        if(isGroup && group) openGroupDetail(group.id);
+        else openChatSettings(chatId, panel);
+      });
+
       panel.querySelector('.wc-cd-back').addEventListener('click', () => {
+        exitStoryMulti();
+        closeStoryMenu();
         panel.classList.remove('show');
         setTimeout(() => panel.remove(), 300);
       });
@@ -5647,6 +6216,21 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
     function openChat(chatId){
       const chat = MOCK_CHATS.find(c => c.id === chatId);
       if(!chat) return;
+      let wcVoiceAudio = null;
+      const wcTTSCache = {};
+      const wcVoiceIdForName = (nm) => {
+        const name = String(nm || '').trim();
+        if(!name) return '';
+        try{
+          const list = (isGroup ? members : []);
+          const m0 = list.find(x => x && x.name === name);
+          if(m0 && m0.minimaxVoiceId) return m0.minimaxVoiceId;
+          const c = chat.contactId
+            ? MOCK_CONTACTS.find(x => x.id === chat.contactId)
+            : MOCK_CONTACTS.find(x => x.name === name || x.wechatName === name);
+          return (c && c.minimaxVoiceId) || '';
+        }catch(e){ return ''; }
+      };
       const isGroup = !!chat.isGroup;
       const group = isGroup ? getGroups().find(g => g.id === chat.groupId) : null;
       let members = isGroup ? (group?.members.map(id => MOCK_CONTACTS.find(c=>c.id===id)).filter(Boolean) || []) : [];
@@ -5827,8 +6411,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       const history = getHistory(chatId);
       let emojiActiveId = null;
       let isReplying = false;
+      let pendingAutoReply = false;
       let isOfflineMode = false;
       let proactiveTimer = null;
+      let proactiveMode = false;
 
       const cdTitle = detail.querySelector('#wcCdTitle');
       cdTitle.style.cursor = 'pointer';
@@ -5886,17 +6472,35 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         document.removeEventListener('contextmenu', closeMenu);
       }
 
-      const CM_ICONS = {
-        edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
-        copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>',
-        quote: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
-        multi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
-        fav: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
-        recall: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 015.5 5.5v0a5.5 5.5 0 01-5.5 5.5H11"/></svg>',
-        del: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
-        trans: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>',
-        rewrite: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>'
-      };
+      function showSingleItemMenu(x, y, label, onPick, icon){
+        closeMenu();
+        const menu = document.createElement('div');
+        menu.className = 'wc-cm-menu single';
+        const item = document.createElement('div');
+        item.className = 'wc-cm-item';
+        item.innerHTML = `${icon || CM_ICONS.fav}<span>${label}</span>`;
+        item.addEventListener('click', e => {
+          e.stopPropagation();
+          closeMenu();
+          onPick();
+        });
+        menu.appendChild(item);
+        document.body.appendChild(menu);
+        activeMenu = menu;
+        const rect = menu.getBoundingClientRect();
+        let left = x, top = y;
+        if(left + rect.width > window.innerWidth - 8) left = window.innerWidth - rect.width - 8;
+        if(left < 8) left = 8;
+        if(top + rect.height > window.innerHeight - 8) top = y - rect.height - 8;
+        if(top < 8) top = 8;
+        if(top + rect.height > window.innerHeight - 8) top = Math.max(8, window.innerHeight - rect.height - 8);
+        menu.style.left = left + 'px';
+        menu.style.top = top + 'px';
+        setTimeout(() => {
+          document.addEventListener('click', closeMenu);
+          document.addEventListener('contextmenu', closeMenu);
+        }, 50);
+      }
 
       function showMsgMenu(el, x, y, isUserMsg){
         closeMenu();
@@ -5912,7 +6516,13 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           { key:'del', label:'删除', icon:CM_ICONS.del, danger:true },
           { key:'trans', label:'翻译', icon:CM_ICONS.trans }
         ];
-        if(!isUserMsg){
+        const isCallMsg = !!(el.dataset && el.dataset.callMsg === '1');
+        if(isCallMsg){
+          const keep = ['copy','fav','del','trans'];
+          for(let i = items.length - 1; i >= 0; i--){
+            if(!keep.includes(items[i].key)) items.splice(i, 1);
+          }
+        } else if(!isUserMsg){
           items.splice(7, 0, { key:'rewrite', label:'重写', icon:CM_ICONS.rewrite });
         }
         items.forEach(it => {
@@ -6106,10 +6716,11 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           case 'fav':{
             const d = Phone.getData('wechat');
             d.favorites = d.favorites || [];
-            const exists = d.favorites.some(f => f.chatId === chatId && f.msgIdx === idx);
+            const isCallFav = !!(el.dataset && el.dataset.callMsg === '1');
+            const exists = d.favorites.some(f => f.chatId === chatId && f.msgIdx === idx && (isCallFav ? f.content === content : true));
             if(exists){ Phone.toast('已收藏过'); return; }
-            d.favorites.push({ id:'f_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), groupId:'default', chatId, msgIdx:idx, content, speakerName:msg.speakerName||chat.name, role:msg.role, ts:Date.now() });
-            Phone.setData('wechat', d); Phone.toast('已收藏');
+            d.favorites.push({ id:'f_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), groupId:'default', chatId, msgIdx:idx, content, speakerName:msg.speakerName||chat.name, role:msg.role, ts:Date.now(), audioUrl:msg.audioUrl||'', source: isCallFav ? 'callrec' : '' });
+            Phone.setData('wechat', d); Phone.toast(isCallFav ? '已收藏通话记录' : '已收藏');
             break;
           }
           case 'recall':{
@@ -6132,33 +6743,54 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             break;
           }
           case 'rewrite':{
+            if(msg.type){ Phone.toast('该消息暂不支持重写'); return; }
+            const batch = getRewriteBatch(h, idx);
+            const textMsgs = batch ? batch.msgs.filter(m => !m.type && String(m.content || '').trim()) : [];
+            if(!batch || !textMsgs.length){ Phone.toast('该消息暂不支持重写'); return; }
+            const original = buildRewriteOriginal(textMsgs);
             const r = await Phone.modal({
-              title:'重写回复',
+              title: textMsgs.length > 1 ? `重写整段回复（共 ${textMsgs.length} 条）` : '重写这条回复',
               fields:[
-                {key:'hint',label:'提示词（可选）',value:'',type:'textarea',placeholder:'描述你希望的回复方向、语气、剧情发展等，留空则直接重新生成'}
-              ],
-              buttons:[
-                {text:'直接生成',value:'auto',style:'success'},
-                {text:'按提示生成',value:'hint',style:'primary'},
-                {text:'取消',value:'cancel',style:'ghost'}
+                {key:'hint',label:'重写方向（可选）',value:'',type:'textarea',placeholder:'例如：保持原意但语气更冷淡 / 换成撒娇口吻 / 往「答应一起去」的方向写。留空则保持原意重新润色'}
               ]
             });
-            if(!r || r === 'cancel') return;
-            const hint = r === 'hint' ? '' : (r.hint || '');
-            const bubble = el.querySelector('.wc-msg-bubble');
-            bubble.innerHTML = `<div class="wc-typing-dots"><span></span><span></span><span></span></div>`;
+            if(!r) return;
+            const hint = String(r.hint || '').trim();
+            const removed = batch.msgs.slice();
+            h.splice(batch.start, removed.length);
+            saveHistoryToStorage();
+            renderMsgs();
+            const typingEl = document.createElement('div');
+            typingEl.className = 'wc-msg typing';
+            typingEl.innerHTML = `<div class="wc-typing-dots"><span></span><span></span><span></span></div>`;
+            msgs.appendChild(typingEl);
+            msgs.scrollTop = msgs.scrollHeight;
             try{
-              let sys = buildSystemPrompt(true);
-              if(hint) sys += `\n\n【用户指定的回复方向】\n${hint}`;
-              const ctxMessages = buildContextMessages(idx);
-              const rawReply = await Phone.chatWithAI(ctxMessages);
-              let finalText = rawReply.trim();
-              const contact = chat.contactId ? MOCK_CONTACTS.find(c => c.id === chat.contactId) : null;
-              if(contact?.fontType === '繁体') finalText = toTraditional(finalText);
-              msg.content = finalText; saveHistoryToStorage();
-              renderMsgs(); Phone.toast('已重写');
+              const rawReply = await Phone.chatWithAI(buildRewriteMessages(batch.start, hint, original, textMsgs.length));
+              const parts = splitRewriteReply(rawReply, textMsgs[0]);
+              if(!parts.length) throw new Error('empty');
+              parts.forEach(p => { if(getSpeakerFontType(p.speakerName) === '繁体') p.text = toTraditional(p.text); });
+              const baseTs = batch.msgs[0].ts || Date.now();
+              const newBatchId = 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+              const newMsgs = parts.map((p, i) => Object.assign({}, textMsgs[0], {
+                content: p.text,
+                speakerName: p.speakerName || chat.name,
+                ts: baseTs + i,
+                batchId: newBatchId,
+                edited: true,
+                type: undefined,
+                recalled: false,
+                quote: undefined
+              }));
+              h.splice(batch.start, 0, ...newMsgs);
+              saveHistoryToStorage();
+              renderMsgs();
+              Phone.toast(parts.length > 1 ? `已重写为 ${parts.length} 条` : '已重写');
             } catch(e){
-              bubble.textContent = content; Phone.toast('重写失败');
+              h.splice(batch.start, 0, ...removed);
+              saveHistoryToStorage();
+              renderMsgs();
+              Phone.toast('重写失败');
             }
             break;
           }
@@ -6205,7 +6837,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         multiSelected.forEach(idx => {
           const m = h[idx]; if(!m) return;
           const exists = d.favorites.some(f => f.chatId === chatId && f.msgIdx === idx);
-          if(!exists){ d.favorites.push({id:'f_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),groupId:'default',chatId,msgIdx:idx,content:m.content,speakerName:m.speakerName||chat.name,role:m.role,ts:Date.now()}); cnt++; }
+          if(!exists){ d.favorites.push({id:'f_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),groupId:'default',chatId,msgIdx:idx,content:m.content,speakerName:m.speakerName||chat.name,role:m.role,ts:Date.now(),audioUrl:m.audioUrl||''}); cnt++; }
         });
         Phone.setData('wechat',d); Phone.toast(`已收藏 ${cnt} 条`); exitMultiSelect();
       }
@@ -6232,52 +6864,195 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         });
       }
 
-      function buildSystemPrompt(forRewrite){
+      function getUserPersonaText(){
+        try{
+          const allChars = (Phone._getState().characters || []);
+          const pc = cs.personaId ? allChars.find(c => c.id === cs.personaId) : null;
+          return String(cs.persona || (pc && pc.persona) || char.persona || '').trim();
+        }catch(e){ return String(cs.persona || char.persona || '').trim(); }
+      }
+
+      function getSpeakerFontType(name){
+        try{
+          if(isGroup){
+            const spk = members.find(m => m.name === name);
+            return (spk && spk.fontType) || '';
+          }
+          const c = MOCK_CONTACTS.find(c => c.id === chat.contactId);
+          return (c && c.fontType) || '';
+        }catch(e){ return ''; }
+      }
+
+      function getReplyCountRange(){
+        try{
+          const d = Phone.getData('wechat') || {};
+          const a = (d.chatSettings || {})[chatId] || {};
+          const b = (isGroup && group) ? ((d.groupSettings || {})[group.id] || {}) : {};
+          const pick = (k, def) => {
+            const v = (b[k] !== undefined && b[k] !== '') ? b[k] : a[k];
+            const n = parseInt(v, 10);
+            return (Number.isFinite(n) && n > 0) ? n : def;
+          };
+          let min = pick('replyMin', 1);
+          let max = pick('replyMax', 4);
+          if(max < min) max = min;
+          return { min, max };
+        }catch(e){ return { min:1, max:4 }; }
+      }
+
+      function getStoryWordRange(){
+        try{
+          const d = Phone.getData('wechat') || {};
+          const a = (d.chatSettings || {})[chatId] || {};
+          const b = (isGroup && group) ? ((d.groupSettings || {})[group.id] || {}) : {};
+          const pick = (k, def) => {
+            const v = (b[k] !== undefined && b[k] !== '') ? b[k] : a[k];
+            const n = parseInt(v, 10);
+            return (Number.isFinite(n) && n > 0) ? n : def;
+          };
+          let min = pick('storyWordMin', 400);
+          let max = pick('storyWordMax', 1000);
+          if(max < min) max = min;
+          return { min, max };
+        }catch(e){ return { min:400, max:1000 }; }
+      }
+
+      function getRewriteBatch(h, idx){
+        const target = h[idx];
+        if(!target || target.role !== 'ai' || target.recalled || target.type === 'call') return null;
+        const bid = target.batchId || null;
+        const eligible = (m) => {
+          if(!m || m.role !== 'ai' || m.recalled || m.type === 'call') return false;
+          if((m.batchId || null) !== bid) return false;
+          if(!bid && m.type) return false;
+          return true;
+        };
+        let start = idx, end = idx;
+        while(start - 1 >= 0 && eligible(h[start - 1])) start--;
+        while(end + 1 < h.length && eligible(h[end + 1])) end++;
+        return { start, end, msgs: h.slice(start, end + 1) };
+      }
+
+      function buildRewriteOriginal(msgs){
+        if(isGroup){
+          return msgs.map(m => `【${m.speakerName || chat.name}】：${String(m.content || '').trim()}`).join('\n');
+        }
+        return msgs.map(m => String(m.content || '').trim()).join('\n');
+      }
+
+      function buildRewriteSystemPrompt(hint, original, count){
+        const userPersona = getUserPersonaText();
+        const total = Math.max(1, count || 1);
         let sys;
         if(isGroup){
-          sys = `你在微信群聊 "${chat.name}" 中。\n`;
+          sys = `你正在微信群聊 "${chat.name}" 里，需要重写${total > 1 ? `刚才连续发出的一整段消息（共 ${total} 条）` : '一条已经发出的消息'}。\n`;
           sys += `群成员：${members.map(m=>m.name).join('、')}\n`;
           const ms = members.filter(m=>m.roleSetting).map(m=>`${m.name}：\n${m.roleSetting}`).join('\n\n');
           if(ms) sys += `【角色人设】\n${ms}\n`;
-          sys += `用户 "${userName}" 在群里发消息，你需要选择**至少3个不同**的群成员依次回复，每人发1-3条消息。\n`;
-          if(char.persona) sys += `用户人设：${char.persona}\n`;
-          sys += `回复格式：【角色名】：说的话\n`;
-          sys += `⚠️ 只能选择群内成员，严禁无关人物出场。\n`;
-          sys += `⚠️ 纯对白，不描写动作表情。\n`;
-          sys += `⚠️ 每次最多30字，长内容用 ||| 分隔多条。\n`;
+          if(userPersona) sys += `用户 "${userName}" 的人设：${userPersona}\n`;
+          sys += `⚠️ 这是微信线上聊天，不是线下故事/小说补写！\n`;
+          sys += `⚠️ 只输出群成员说出口的话，禁止旁白，禁止括号动作、表情、心理描写。\n`;
+          sys += `⚠️ 每条消息必须以【角色名】：开头，不同消息用 ||| 分隔，严禁无关人物出场。\n`;
+          sys += `⚠️ 每条不超过40字，像真实微信一样短${total > 1 ? `，保持原有 ${total} 条的条数和发言顺序` : '，最多4条'}。\n`;
         } else {
-          sys = `你是 ${chat.name}。\n`;
           const c = MOCK_CONTACTS.find(c=>c.id===chat.contactId);
+          sys = `你正在微信上和用户 "${userName}" 聊天，你扮演的是 ${chat.name}。\n`;
           if(c?.roleSetting) sys += `【你的人设】\n${c.roleSetting}\n`;
           if(c?.writingStyle?.length) sys += `【文风参考（请模仿这些话法和语气）】\n${c.writingStyle.slice(0,15).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
-          if(cs.persona||char.persona) sys += `用户"${userName}"的人设：${cs.persona||char.persona}\n`;
-          sys += `自然活泼地回复，根据时间调整内容。\n`;
-          sys += `⚠️ 你是${chat.name}，禁止无关人物出场。\n`;
+          if(c?.fontType || c?.voice){
+            const fv = [];
+            if(c.fontType) fv.push(`字体：${c.fontType}`);
+            if(c.voice) fv.push(`语音：${c.voice}`);
+            sys += `【语言设置】${fv.join('，')}\n`;
+          }
+          if(c?.npcs && c.npcs.length){
+            const rels = c.npcs.map(n => `${n.name}（${n.identity||''}，${n.relationship||''}）`.replace(/（，）|（）|，$/g,'')).join('、');
+            if(rels) sys += `【关系网】${rels}\n`;
+          }
+          if(userPersona) sys += `用户 "${userName}" 的人设：${userPersona}\n`;
+          sys += `⚠️ 这是微信线上聊天，不是线下故事/小说补写！\n`;
+          sys += `⚠️ 只输出 ${chat.name} 说出口的话：禁止在句首写「${chat.name}：」这类角色名前缀，禁止括号、旁白、动作、表情、心理描写。\n`;
+          sys += `⚠️ 每条不超过40字，像真实微信一样短。${total > 1 ? `保持原有 ${total} 条的条数，用 ||| 分隔。` : '想多说就拆成 2~4 条，用 ||| 分隔。'}\n`;
+          sys += `⚠️ 严禁无关人物出场。\n`;
         }
         let memSys = '';
-        try{ const _d=Phone.getData('wechat'); const cm=_d.memories?.[chatId]; if(cm?.core?.length) memSys+=`\n\n【核心记忆】\n${cm.core.map(m=>m.content).join('\n')}`; if(cm?.storylines?.length) memSys+=`\n\n【剧情线】\n${cm.storylines.map(m=>m.content).join('\n')}`; const hvs=_d.heartVoices?.[chatId]; if(hvs?.length) memSys+=`\n\n【你的内心独白（心声）】\n${hvs.slice(0,5).map(h=>h.content).join('\n')}`; }catch(e){}
-        if(memSys) sys+=memSys;
+        try{
+          const _d = Phone.getData('wechat');
+          const cm = _d.memories?.[chatId];
+          if(cm?.core?.length) memSys += `\n\n【核心记忆 - 必须牢记】\n${cm.core.map(m=>m.content).join('\n')}`;
+          if(cm?.storylines?.length) memSys += `\n\n【剧情线 - 必须据此发挥】\n${cm.storylines.map(m=>m.content).join('\n')}`;
+          const hvs = _d.heartVoices?.[chatId];
+          if(hvs?.length) memSys += `\n\n【你的内心独白（心声）】\n${hvs.slice(0,5).map(h=>h.content).join('\n')}`;
+        }catch(e){}
+        if(memSys) sys += memSys;
+        if(original){
+          if(total > 1) sys += `\n\n【需要整体重写的原内容】\n以下是刚才连续发出的 ${total} 条消息：\n${original}`;
+          else sys += `\n\n【需要重写的原消息】\n${original}`;
+        }
+        sys += `\n\n【重写要求】\n`;
+        if(total > 1) sys += `用户要重写的是上面**整段连续内容**，不是其中单独某一条。重写后必须整体覆盖这段内容，保持原有的条数和角色分配。\n`;
+        if(hint) sys += `用户希望的重写方向（最高优先级，必须照做）：${hint}\n`;
+        else sys += `保持原内容的意思和语境，只换一种更自然的说法。\n`;
+        sys += `必须延续上文对话，不要自说自话，不要解释，直接输出重写后的消息，多条用 ||| 分隔。`;
         return sys;
       }
 
-      function buildContextMessages(upToIdx){
-        const sys = buildSystemPrompt(false);
+      function buildRewriteMessages(startIdx, hint, original, count){
         const h = getHistory(chatId);
-        const cs_val = (Phone.getData('wechat').chatSettings||{})[chatId]||{};
-        const ctxLen = cs_val.contextLength || 20;
-        const start = Math.max(0, upToIdx - ctxLen);
-        const slice = h.slice(start, upToIdx).filter(m=>!m.recalled&&m.role!=='typing'&&m.content);
+        const sys = buildRewriteSystemPrompt(hint, original, count);
+        const ctxLen = cs.contextCount || 50;
+        const start = Math.max(0, startIdx - ctxLen);
+        const slice = h.slice(start, startIdx).filter(m=>!m.recalled&&m.role!=='typing'&&(m.content||m.type==='call'));
         const messages = [{role:'system',content:sys}];
         slice.forEach(m=>{
           const role = m.role==='user'?'user':'assistant';
           let content = m.content;
-          if(m.type==='voice') content = `[语音] ${m.content}`;
+          if(m.type==='call') content = callCtxText(m);
+          else if(m.type==='voice') content = `[语音] ${m.content}`;
+          else if(m.type==='image') content = m.caption ? `[图片：${m.caption}]` : '[图片]';
           messages.push({role,content});
         });
+        messages.push({role:'user',content: (count > 1)
+          ? '请把上面那段连续发出的内容整体重写（原文见系统提示），直接给出重写结果，多条用 ||| 分隔，不要解释。'
+          : '请重写刚才那条已经发出的消息（原文见系统提示），直接给出重写结果，多条用 ||| 分隔，不要解释。'});
         return messages;
       }
 
+      function splitRewriteReply(raw, msg){
+        const speakerTagRe = /^[【〖\[［「『]\s*([^】〗\]］」』]{1,20}?)\s*[】〗\]］」』]\s*[：:．.]\s*/;
+        const stripTag = (t) => {
+          let s = String(t || '').trim();
+          const m = s.match(speakerTagRe);
+          let speaker = '';
+          if(m){ speaker = m[1].trim(); s = s.slice(m[0].length).trim(); }
+          if(!isGroup && chat.name){
+            if(s.startsWith(chat.name + '：') || s.startsWith(chat.name + ':')) s = s.slice(chat.name.length + 1).trim();
+          }
+          return { speaker, text: s };
+        };
+        let txt = String(raw || '').replace(/\r\n?/g, '\n').replace(/\|\|\|\|+/g, '|||').trim();
+        txt = txt.replace(/^\|\|\|/, '').replace(/\|\|\|$/, '').trim();
+        const segs = txt.split(/\|\|\||\n/).map(s => s.trim()).filter(Boolean);
+        const out = [];
+        segs.forEach(seg => {
+          const { speaker, text } = stripTag(seg);
+          if(!text) return;
+          let speakerName = msg.speakerName || chat.name;
+          if(isGroup && speaker){
+            const found = members.find(mm => mm.name === speaker || mm.name.includes(speaker) || speaker.includes(mm.name.split(' ')[0]));
+            if(found) speakerName = found.name;
+          }
+          const last = out[out.length - 1];
+          if(last && last.text === text && last.speakerName === speakerName) return;
+          out.push({ speakerName, text });
+        });
+        return out.slice(0, 6);
+      }
+
       function renderOneMessage(m){
+        if(m && m._mediaTrimmed && (m.type === 'image' || m.type === 'sticker')){
+          m = Object.assign({}, m, { type:'text', content: m.type === 'sticker' ? '[表情已清理]' : '[图片已清理]' });
+        }
         const d = document.createElement('div');
         const isUserMsg = m.role === 'user';
         const _stickerSrcs = (() => { try { return new Set(getStickerPacks().flatMap(p => p.stickers).map(s => s.src)); } catch(e){ return new Set(); } })();
@@ -6303,7 +7078,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           if(m.status === 'connected'){
             d.innerHTML = `<div class="wc-call-log">${isVideo ? camSvg : phoneSvg}<span>${kindWord}</span><span class="wc-call-log-dur">${callClock(m.duration || 0)}</span></div>`;
             const logEl = d.querySelector('.wc-call-log');
-            if(logEl) logEl.addEventListener('click', () => openCallRecord(m));
+            if(logEl) bindCallRecordFav(logEl, m, () => openCallRecord(m));
           } else {
             let label;
             if(m.direction === 'incoming'){
@@ -6315,6 +7090,8 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               label = m.status === 'declined' ? `${who} 已拒绝${kindWord}` : `${who} 未接${kindWord}`;
             }
             d.innerHTML = `<div class="wc-call-miss">${isVideo ? camSvg : phoneSvg}<span>${escAttr(label)}</span></div>`;
+            const missEl = d.querySelector('.wc-call-miss');
+            if(missEl) bindCallRecordFav(missEl, m, null);
           }
           return d;
         }
@@ -6377,9 +7154,30 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           d.querySelector('.wc-voice-bubble').addEventListener('click', () => {
             const vb = d.querySelector('.wc-voice-bubble');
             const trans = d.querySelector('.wc-voice-transcript');
-            vb.classList.add('playing');
-            setTimeout(() => vb.classList.remove('playing'), 2000);
-            if(trans) trans.style.display = trans.style.display === 'none' ? '' : 'none';
+            const playUrl = (u) => {
+              try{
+                if(wcVoiceAudio){ wcVoiceAudio.pause(); wcVoiceAudio = null; }
+                document.querySelectorAll('.wc-voice-bubble.playing').forEach(el => el.classList.remove('playing'));
+                wcVoiceAudio = new Audio(u);
+                vb.classList.add('playing');
+                wcVoiceAudio.onended = () => { vb.classList.remove('playing'); wcVoiceAudio = null; };
+                wcVoiceAudio.onerror = () => { vb.classList.remove('playing'); wcVoiceAudio = null; };
+                const p = wcVoiceAudio.play();
+                if(p && p.catch) p.catch(() => { vb.classList.remove('playing'); });
+              }catch(e){ vb.classList.remove('playing'); }
+            };
+            if(m.audioUrl){ playUrl(m.audioUrl); return; }
+            if(isUserMsg){ if(trans) trans.style.display = trans.style.display === 'none' ? '' : 'none'; return; }
+            if(vb.classList.contains('loading')) return;
+            vb.classList.add('loading');
+            const vid = wcVoiceIdForName(speakerName);
+            wcTTS(m.content, vid).then(u => {
+              vb.classList.remove('loading');
+              if(!u){ if(trans) trans.style.display = trans.style.display === 'none' ? '' : 'none'; return; }
+              m.audioUrl = u;
+              saveHistoryToStorage();
+              playUrl(u);
+            }).catch(() => { vb.classList.remove('loading'); });
           });
         } else if(m.type === 'transfer'){
           const claimed = m.status === 'claimed' || m.status === 'completed';
@@ -6514,6 +7312,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           const minutes = Math.max(1, parseInt(cs.proactiveMsgInterval) || 30);
           proactiveTimer = setInterval(() => {
             if(!isReplying && document.body.contains(detail)){
+              proactiveMode = true;
               triggerAIReply();
             }
           }, minutes * 60 * 1000);
@@ -6619,6 +7418,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       });
 
       let callEl = null;
+      let callAudio = null;
       let callConnected = false;
       let callEnded = false;
       let callBusy = false;
@@ -6626,6 +7426,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       let connectTimer = null;
       let callTimer = null;
       let replyTimer = null;
+      let callUserTimer = null;
+      let callReplySeq = 0;
+      let callSpeaking = false;
       let callTranscript = [];
       let callDirection = 'outgoing';
       let callSaved = false;
@@ -6831,7 +7634,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           const wbs = state.worldbooks || [];
           const ids = new Set();
           (c?.worldbookIds || []).forEach(id => ids.add(id));
-          (cs.worldbookGroupIds || []).forEach(id => ids.add(id));
+          resolveWorldbookIds(cs.worldbookGroupIds).forEach(id => ids.add(id));
           wbs.forEach(w => { if(w.global) ids.add(w.id); });
           const active = wbs.filter(w => ids.has(w.id));
           if(active.length){
@@ -6842,15 +7645,26 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         }catch(e){}
         sys += `\n【通话规则】\n`;
         sys += `1. 这是打电话，不是发微信。用口语说话，像真的在电话里随口说出来的，不要书面语。\n`;
-        sys += `2. 每次只说 1~3 句，最多 60 字。想多说就拆成几条，用 ||| 分隔。\n`;
-        sys += `3. 允许在括号内写极少量语气或动作描写，例如（停顿了一下）（笑），一条消息最多一处，不要堆砌。\n`;
-        sys += `4. 必须延续之前微信聊天里的话题和关系，也要接住电话里刚说过的话，不要重复说过的话。\n`;
-        if(multi){
-          sys += `5. 这是多人${mediaWord}通话：**每一条都必须以【角色名】：开头**，例如 【${callTargets[0]?.name||'钱锟'}】：喂？听得见吗。\n`;
-          sys += `6. 不同成员轮流说话，不要同一个人连续说很多条；只使用【本次通话成员】里的人。\n`;
-          sys += `7. 只输出说出来的话，不要写旁白，不要写群名。\n`;
+        if(callDirection === 'incoming'){
+          sys += `2. ⚠️ 这通电话是**你主动打给「${userName}」**的，是「${userName}」接起了你的来电。严禁说成是对方打给你的。\n`;
         } else {
-          sys += `5. 只输出说出来的话，不要写【角色名】，不要写第三人称旁白。\n`;
+          sys += `2. ⚠️ 这通电话是**「${userName}」主动打给你**的，是你接起了对方的来电。严禁说成是你打过去的。\n`;
+        }
+        if(multi){
+          sys += `3. 每次只说 1~3 句，最多 60 字；不同成员各说一句，用 ||| 或换行分开。\n`;
+        } else {
+          sys += `3. ⚠️ 一次只回一条消息：1~2 句，最多 60 字。严禁用 ||| 或换行拆成多条，也严禁把同一个意思换个说法重复两遍。\n`;
+        }
+        sys += `4. 允许在括号内写极少量语气或动作描写，例如（停顿了一下）（笑），一条消息最多一处，不要堆砌。\n`;
+        sys += `4.1 接通后的第一句不要用「喂」「喂？」开头，也不要问「听得见吗 / 看得见吗 / 在吗 / 信号好吗」这类套话，直接说内容，比如问对方在干嘛、吐槽自己刚在做的事。\n`;
+        sys += `5. 必须延续之前微信聊天里的话题和关系，也要接住电话里刚说过的话，不要重复说过的话。\n`;
+        sys += `5.1 聊天记录里出现的「语音通话 / 视频通话」条目及其下面「谁：说了什么」的对话，都是你们真实发生过的通话内容，你必须记得并能自然引用，不要当作没发生过。\n`;
+        if(multi){
+          sys += `6. 这是多人${mediaWord}通话：**每一条都必须以【角色名】：开头**，例如 【${callTargets[0]?.name||'钱锟'}】：你们到啦？\n`;
+          sys += `7. 不同成员轮流说话，不要同一个人连续说很多条；只使用【本次通话成员】里的人。\n`;
+          sys += `8. 只输出说出来的话，不要写旁白，不要写群名。\n`;
+        } else {
+          sys += `6. 只输出说出来的话，不要写【角色名】，不要写第三人称旁白。\n`;
         }
         if(callMedia === 'video'){
           sys += `\n【视频画面】你们正开着视频，能看见对方。可以偶尔自然地提到画面里的细节（表情、穿着、身后的环境），但不要刻意描述。\n`;
@@ -6869,27 +7683,29 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       async function callAI(extraUser){
         const VALID = ['system','user','assistant','tool'];
         const ctx = [];
-        history.filter(m => m.role && (m.content !== undefined || m.type === 'call')).slice(-24).forEach(m => {
+        history.filter(m => m.role && (m.content !== undefined || m.type === 'call')).slice(-Math.max(5, parseInt(cs.contextCount || 50, 10))).forEach(m => {
           const raw = m.role === 'ai' ? 'assistant' : (m.role === 'user' ? 'user' : null);
           if(!raw) return;
           ctx.push({
             role: VALID.includes(raw) ? raw : 'user',
-            content: m.type === 'image'
-              ? (m.caption ? `[图片：${m.caption}]` : '[图片]')
-              : (m.type === 'call'
-                  ? (m.status === 'connected'
-                      ? `[${m.kind === 'video' ? '视频' : '语音'}通话 ${callClock(m.duration || 0)}]`
-                      : `[${m.kind === 'video' ? '视频' : '语音'}通话未接通]`)
-                  : String(m.content || ''))
+            content: ctxText(m)
           });
         });
         const multi = callTargets.length > 1;
-        const transcriptMsgs = callTranscript.map(t => ({
-          role: t.role,
-          content: (multi && t.role === 'assistant' && t.speakerName)
+        const transcriptMsgs = [];
+        callTranscript.forEach(t => {
+          if(!t || !t.content) return;
+          const role = t.role === 'ai' ? 'assistant' : t.role;
+          const content = (multi && role === 'assistant' && t.speakerName)
             ? `【${t.speakerName}】：${t.content}`
-            : t.content
-        }));
+            : t.content;
+          const prev = transcriptMsgs[transcriptMsgs.length - 1];
+          if(role === 'user' && prev && prev.role === 'user'){
+            prev.content += '\n' + content;
+            return;
+          }
+          transcriptMsgs.push({ role, content });
+        });
         const messages = [{ role:'system', content: buildCallSystem() }, ...ctx, ...transcriptMsgs];
         if(extraUser) messages.push({ role:'user', content: extraUser });
         const rawReply = await Phone.chatWithAI(messages);
@@ -6907,16 +7723,115 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         if(b) b.scrollTop = b.scrollHeight;
       }
 
-      function callAddBubble(who, text, member){
-        if(!callEl || callEnded) return;
+      function wcStopSpeak(){
+        if(callAudio){ try{ callAudio.pause(); }catch(e){} callAudio = null; }
+        document.querySelectorAll('.wc-call-voice.playing, .wc-callrec-voice.playing').forEach(el => {
+          el.removeAttribute('data-speaking');
+          el.classList.remove('playing');
+        });
+      }
+
+      function callPlayUrl(bubble, url){
+        try{
+          if(callAudio){ try{ callAudio.pause(); }catch(e){} callAudio = null; }
+          callAudio = new Audio(url);
+          bubble.classList.add('playing');
+          callAudio.onended = () => { bubble.classList.remove('playing'); callAudio = null; };
+          callAudio.onerror = () => { bubble.classList.remove('playing'); callAudio = null; };
+          const p = callAudio.play();
+          if(p && p.catch) p.catch(() => { bubble.classList.remove('playing'); });
+          return true;
+        }catch(e){ return false; }
+      }
+
+      function callVoiceBubble(bubble, text, speaker, entry){
+        const url = String((entry && entry.audioUrl) || bubble.dataset.audioUrl || '').trim();
+        if(bubble.classList.contains('playing')){
+          if(callAudio){ try{ callAudio.pause(); }catch(e){} callAudio = null; }
+          bubble.classList.remove('playing');
+          bubble.removeAttribute('data-speaking');
+          return;
+        }
+        if(callAudio){ try{ callAudio.pause(); }catch(e){} callAudio = null; }
+        document.querySelectorAll('.wc-call-voice.playing').forEach(x => x.classList.remove('playing'));
+        if(url){ callPlayUrl(bubble, url); return; }
+        bubble.classList.add('playing');
+        wcTTS(text, callVoiceIdFor(speaker)).then(u => {
+          bubble.classList.remove('playing');
+          if(!u){ Phone.toast('语音生成失败，请检查 MiniMax 语音配置'); return; }
+          if(entry) entry.audioUrl = u;
+          bubble.dataset.audioUrl = u;
+          saveHistoryToStorage();
+          callPlayUrl(bubble, u);
+        }).catch(() => { bubble.classList.remove('playing'); Phone.toast('语音生成失败'); });
+      }
+
+      function callVoiceIdFor(name){
+        const list = callTargets || [];
+        const c = list.find(t => t && t.name === name) || callPartner();
+        return (c && c.minimaxVoiceId) || '';
+      }
+
+      function voiceIdByName(name){
+        const nm = String(name || '').trim();
+        if(!nm) return '';
+        const t = (callTargets || []).find(x => x && x.name === nm);
+        if(t && t.minimaxVoiceId) return t.minimaxVoiceId;
+        try{
+          const c = (getContacts() || []).find(x => x && (x.name === nm || x.wechatName === nm));
+          if(c && c.minimaxVoiceId) return c.minimaxVoiceId;
+        }catch(e){}
+        return '';
+      }
+
+      function callRequestVoice(entry, text, speaker, bubble){
+        if(!entry) return;
+        wcTTS(text, callVoiceIdFor(speaker)).then(url => {
+          if(!url) return;
+          entry.audioUrl = url;
+          if(bubble && bubble.isConnected) bubble.dataset.audioUrl = url;
+          saveHistoryToStorage();
+        }).catch(() => {});
+      }
+
+      function callRichText(raw){
+        const s = String(raw == null ? '' : raw);
+        const out = [];
+        const re = /（[^）]*）|\([^)]*\)/g;
+        let last = 0, m;
+        while((m = re.exec(s)) !== null){
+          if(m.index > last) out.push(escAttr(s.slice(last, m.index)));
+          out.push(`<span class="wc-call-narr">${escAttr(m[0])}</span>`);
+          last = m.index + m[0].length;
+        }
+        if(last < s.length) out.push(escAttr(s.slice(last)));
+        return out.join('');
+      }
+
+      function callAddBubble(who, text, member, entry){
+        if(!callEl || callEnded) return null;
         const b = callEl.querySelector('.wc-call-bubbles');
-        if(!b) return;
+        if(!b) return null;
+        const raw = String(text == null ? '' : text);
+        const speaker = who === 'ai' ? (member?.name || callPartyName()) : (userName || '我');
         const row = document.createElement('div');
         row.className = 'wc-call-bubble-row ' + (who === 'ai' ? 'ai' : 'user');
         const showName = who === 'ai' && callTargets.length > 1 && member?.name;
-        row.innerHTML = `${callMiniAvatar(who, member)}<div class="wc-call-bubble-wrap">${showName ? `<div class="wc-call-bubble-name">${escAttr(member.name)}</div>` : ''}<div class="wc-call-bubble">${escAttr(text)}</div></div>`;
+        const nameHtml = showName ? `<div class="wc-call-bubble-name">${escAttr(member.name)}</div>` : '';
+        let bubble = null;
+        if(who === 'ai'){
+          row.innerHTML = `${callMiniAvatar(who, member)}<div class="wc-call-bubble-wrap">${nameHtml}<div class="wc-call-bubble wc-call-voice"><span class="wc-cvoice-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><span class="wc-cvoice-main"><span class="wc-cvoice-text">${callRichText(raw)}</span></span></div></div>`;
+          bubble = row.querySelector('.wc-call-voice');
+          if(bubble){
+            bubble.dataset.audioUrl = (entry && entry.audioUrl) || '';
+            bubble.addEventListener('click', () => callVoiceBubble(bubble, raw, speaker, entry));
+          }
+        } else {
+          row.innerHTML = `${callMiniAvatar(who, member)}<div class="wc-call-bubble-wrap">${nameHtml}<div class="wc-call-bubble wc-call-text">${callRichText(raw)}</div></div>`;
+        }
         b.appendChild(row);
         callScroll();
+        return bubble;
       }
 
       function callShowTyping(member){
@@ -6941,7 +7856,34 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         const multi = callTargets.length > 1;
         const lines = String(text || '').replace(/\r/g,'').replace(/\|\|\|/g,'\n').split('\n').map(s => s.trim()).filter(Boolean);
         if(!multi){
-          return lines.map(t => ({ member: callTargets[0] || null, text: t }));
+          const kept = [];
+          lines.forEach(t => {
+            const key = t.replace(/（[^）]*）|\([^)]*\)/g,'').replace(/[\s，。！？、,.!?~～…—\-]/g,'');
+            if(!key) return;
+            const dup = kept.some(u => {
+              if(u.key === key) return true;
+              if(u.key.length >= 6 && key.length >= 6){
+                const short = u.key.length <= key.length ? u.key : key;
+                const long = u.key.length <= key.length ? key : u.key;
+                if(long.includes(short)) return true;
+                let hit = 0;
+                const pool = Array.from(long);
+                Array.from(short).forEach(ch => {
+                  const i = pool.indexOf(ch);
+                  if(i > -1){ hit++; pool.splice(i,1); }
+                });
+                if(hit / Math.max(1, Array.from(short).length) >= 0.72) return true;
+              }
+              return false;
+            });
+            if(!dup) kept.push({ key, text: t });
+          });
+          const picked = (kept.length ? kept : [{ text: lines[0] || '' }]).map(x => x.text).filter(Boolean);
+          const body = picked.reduce((acc, cur) => {
+            if(!acc) return cur;
+            return acc + (/[。！？!?，,、~～…—\-）)\s]$/.test(acc) ? '' : ' ') + cur;
+          }, '');
+          return body ? [{ member: callTargets[0] || null, text: body }] : [];
         }
         let last = callTargets[0] || null;
         return lines.map(line => {
@@ -6967,8 +7909,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               ? toTraditional(p.text)
               : p.text;
             const speakerName = (callTargets.length > 1 ? (p.member?.name || callPartyName()) : callPartyName());
-            callTranscript.push({ role:'assistant', content: body, speakerName, ts: Date.now() });
-            callAddBubble('ai', body, p.member);
+            const entry = { role:'assistant', content: body, speakerName, ts: Date.now(), audioUrl:'' };
+            callTranscript.push(entry);
+            const bubble = callAddBubble('ai', body, p.member, entry);
+            callRequestVoice(entry, body, speakerName, bubble);
             if(i < parts.length) setTimeout(step, 420);
             else resolve();
           };
@@ -6979,6 +7923,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       function callCharOpening(){
         if(callEnded || !callEl) return;
         callBusy = true;
+        const seq = ++callReplySeq;
         const opener = callTargets.length > 1
           ? callTargets[Math.floor(Math.random() * callTargets.length)]
           : (callTargets[0] || null);
@@ -6991,27 +7936,41 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             : (callTier === 'normal'
               ? '语气自然平常，像平时聊天一样开口。'
               : '你们关系还生疏，语气要克制客气，别一上来就太热络。');
+          const dirHint = callDirection === 'incoming'
+            ? `这通电话是你主动打给「${userName}」的，对方刚接起你的来电。`
+            : `这通电话是「${userName}」主动打给你的，你刚接起对方的来电。`;
           const openHint = multi
-            ? `（这是 ${callTargets.length} 人语音通话，刚接通。请让其中 1~2 个人先开口，每条都要用【角色名】：开头。${toneHint}）`
-            : `（电话接通了，你们刚开始通话。请你先开口说第一句话。${toneHint}）`;
+            ? `（这是 ${callTargets.length} 人语音通话，刚接通。${dirHint}请让其中 1~2 个人先开口，每条都要用【角色名】：开头。${toneHint}不要用「喂」「听得见吗」开场。）`
+            : `（电话接通了，你们刚开始通话。${dirHint}请你先开口说第一句话。${toneHint}不要用「喂」「听得见吗」开场，直接说内容。）`;
           try{
             text = await callAI(openHint);
           }catch(e){}
-          if(callEnded){ callBusy = false; return; }
+          if(callEnded || seq !== callReplySeq) return;
           callRemoveTyping();
           if(!text){
-            const closePool = ['喂？今天怎么样呀？','喂——想我了吗？','怎么突然打电话过来啦？','喂，听得见吗？'];
-            const farPool = ['喂，哪位？','喂？有事吗？','……你好。','喂，我在，你说。'];
+            const closePool = callDirection === 'incoming'
+              ? ['在忙吗？我突然想给你打个电话。','刚收工，就想听听你的声音。','没什么事，就是想你了。']
+              : ['接啦？怎么突然想起我。','正好，我也刚想找你。','哟，难得你主动打过来。'];
+            const farPool = callDirection === 'incoming'
+              ? ['嗯，我是有点事想问你。','你好，方便说两句吗？','突然打给你，没打扰到你吧。']
+              : ['你好。','嗯，你说。','……有什么事吗。'];
             const pool = callTier === 'close' ? closePool : (callTier === 'normal' ? closePool.concat(farPool) : farPool);
             text = pool[Math.floor(Math.random() * pool.length)];
             if(multi){
-              const a = callTargets[Math.floor(Math.random() * callTargets.length)];
-              const b = callTargets[Math.floor(Math.random() * callTargets.length)];
-              const line2 = '听得见吗？';
-              text = `【${a.name}】：${text}\n【${b.name}】：${line2}`;
+              const others = callTargets.slice();
+              const a = others[Math.floor(Math.random() * others.length)];
+              const b = others.filter(t => t.name !== a.name);
+              if(b.length){
+                const bb = b[Math.floor(Math.random() * b.length)];
+                const line2 = callTier === 'close' ? '我在呢，说吧。' : '嗯，你说。';
+                text = `【${a.name}】：${text}\n【${bb.name}】：${line2}`;
+              }
             }
           }
+          callSpeaking = true;
           await callAddAiText(text);
+          callSpeaking = false;
+          if(seq !== callReplySeq) return;
           callBusy = false;
         })();
       }
@@ -7033,8 +7992,16 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         setTimeout(callCharOpening, 650);
       }
 
+      function callCancelReply(){
+        callReplySeq++;
+        callBusy = false;
+        if(callUserTimer){ clearTimeout(callUserTimer); callUserTimer = null; }
+        if(replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
+        callRemoveTyping();
+      }
+
       function sendCallMessage(){
-        if(!callEl || !callConnected || callEnded || callBusy) return;
+        if(!callEl || !callConnected || callEnded) return;
         const inp = callEl.querySelector('.wc-call-input');
         if(!inp) return;
         const val = inp.value.trim();
@@ -7043,6 +8010,19 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         inp.style.height = 'auto';
         callTranscript.push({ role:'user', content: val, ts: Date.now() });
         callAddBubble('user', val);
+        if(callSpeaking) return;
+        callCancelReply();
+        callUserTimer = setTimeout(() => {
+          callUserTimer = null;
+          if(callEnded || !callEl) return;
+          startCallReply();
+        }, 1500);
+      }
+
+      function startCallReply(){
+        if(callEnded || !callEl) return;
+        if(callUserTimer){ clearTimeout(callUserTimer); callUserTimer = null; }
+        const seq = ++callReplySeq;
         const typist = callTargets.length > 1
           ? callTargets[Math.floor(Math.random() * callTargets.length)]
           : (callTargets[0] || null);
@@ -7050,19 +8030,22 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         callBusy = true;
         replyTimer = setTimeout(async () => {
           replyTimer = null;
-          if(callEnded){ callBusy = false; return; }
+          if(callEnded || seq !== callReplySeq) return;
           let text = '';
           try{ text = await callAI(); }catch(e){}
-          if(callEnded){ callBusy = false; return; }
+          if(callEnded || seq !== callReplySeq) return;
           callRemoveTyping();
           if(!text){
             text = callTargets.length > 1
               ? `【${typist?.name || callTargets[0].name}】：（停顿了一下）…怎么不说话了？`
               : '（停顿了一下）…怎么不说话了？';
           }
+          callSpeaking = true;
           await callAddAiText(text);
+          callSpeaking = false;
+          if(seq !== callReplySeq) return;
           callBusy = false;
-        }, 3000);
+        }, 2400);
       }
 
       function pushCallRecord(status, direction, duration, transcript, kind){
@@ -7088,14 +8071,103 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         return msg;
       }
 
+      function payCtxText(m){
+        if(m.type === 'transfer'){
+          const mine = m.role === 'user';
+          const dir = mine ? `「${userName}」转给你的` : `你转给「${m.toName || userName}」的`;
+          const st = m.status === 'claimed' ? '对方已收款' : (m.status === 'rejected' ? '已退回' : '还没收');
+          return `[转账 ¥${Number(m.amount || 0).toFixed(2)}，${dir}，${st}${m.note ? '，备注：' + m.note : ''}]`;
+        }
+        if(m.type === 'redpacket'){
+          const mine = m.role === 'user';
+          const total = m.count || 1;
+          const opened = (m.openList || []).length;
+          const names = (m.openList || []).map(o => o.name).filter(Boolean);
+          const dir = mine ? `「${userName}」发的` : '你发的';
+          return `[红包 ¥${Number(m.amount || 0).toFixed(2)}，${total}个，已领${opened ? '：' + names.join('、') : ' 0个'}，${dir}${m.msg ? '，留言：' + m.msg : ''}]`;
+        }
+        if(m.type === 'transfer_claimed'){
+          return `[「${userName}」收下了你转的钱]`;
+        }
+        return null;
+      }
+
+      function callCtxText(m){
+        const kindW = m.kind === 'video' ? '视频通话' : '语音通话';
+        const meCalled = m.direction === 'incoming';
+        const who = meCalled ? `你主动打给「${userName}」的` : `「${userName}」打给你的`;
+        let head = '';
+        if(m.status === 'connected') head = `[${who}${kindW}，已接通，时长 ${callClock(m.duration || 0)}]`;
+        else if(m.status === 'declined') head = meCalled
+          ? `[${who}${kindW}，被「${userName}」拒绝了]`
+          : `[${who}${kindW}，你拒绝了来电]`;
+        else if(m.status === 'cancelled') head = `[${who}${kindW}，已取消]`;
+        else head = meCalled
+          ? `[${who}${kindW}，「${userName}」没有接]`
+          : `[${who}${kindW}，你没有接]`;
+        const trans = Array.isArray(m.transcript) ? m.transcript.filter(t => t && t.content) : [];
+        if(!trans.length) return head;
+        const defaultSpeaker = m.speakerName || chat?.name || '';
+        const lines = trans.slice(-20).map(t => {
+          const isUser = t.role === 'user';
+          const spk = isUser ? (userName || '我') : (t.speakerName || defaultSpeaker);
+          const body = String(t.content || '').replace(/\s+/g, ' ').trim();
+          return `${spk}：${body}`;
+        }).filter(Boolean);
+        return head + '\n' + lines.join('\n');
+      }
+
+      function ctxText(m){
+        if(!m) return '';
+        const pay = payCtxText(m);
+        if(pay) return pay;
+        if(m.type === 'call') return callCtxText(m);
+        if(m.type === 'image') return m.caption ? `[图片：${m.caption}]` : '[图片]';
+        if(m.type === 'sticker') return '[表情包]';
+        if(m.type === 'voice') return `[语音] ${m.content}`;
+        if(m.type === 'location') return `[位置] ${m.placeName || m.content}${m.address ? '（' + m.address + '）' : ''}`;
+        return String(m.content == null ? '' : m.content);
+      }
+
       function addCallRecord(status){
         if(callSaved) return;
         callSaved = true;
         const dur = callConnected ? callSeconds : 0;
-        const transcript = callTranscript
-          .filter(t => t && t.content)
-          .map(t => ({ role: t.role, content: t.content, speakerName: t.speakerName || '', ts: t.ts || Date.now() }));
+        const transcript = callTranscript.filter(t => t && t.content);
         pushCallRecord(status || (callConnected ? 'connected' : 'missed'), callDirection, dur, transcript);
+      }
+
+      function bindCallRecordFav(el, m, onClick){
+        const host = el.closest('.wc-msg') || el;
+        let lp = null, firedAt = 0, startPt = null;
+        const cancelLp = () => { if(lp){ clearTimeout(lp); lp = null; } };
+        const openMenu = (x, y) => {
+          host.dataset.content = callCtxText(m);
+          host.dataset.callMsg = '1';
+          firedAt = Date.now();
+          showMsgMenu(host, x, y, host.dataset.isUser === '1');
+        };
+        host.addEventListener('contextmenu', e => {
+          e.preventDefault();
+          cancelLp();
+          openMenu(e.clientX, e.clientY);
+        });
+        host.addEventListener('touchstart', e => {
+          const t = e.touches && e.touches[0];
+          startPt = t ? { x: t.clientX, y: t.clientY } : null;
+          cancelLp();
+          lp = setTimeout(() => {
+            lp = null;
+            if(startPt) openMenu(startPt.x, startPt.y);
+          }, 520);
+        }, { passive:true });
+        host.addEventListener('touchend', cancelLp);
+        host.addEventListener('touchcancel', cancelLp);
+        host.addEventListener('touchmove', cancelLp);
+        el.addEventListener('click', e => {
+          if(Date.now() - firedAt < 900){ e.preventDefault(); e.stopPropagation(); return; }
+          if(onClick) onClick();
+        });
       }
 
       function openCallRecord(m){
@@ -7123,6 +8195,54 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           </div>`;
         document.body.appendChild(mask);
         const body = mask.querySelector('.wc-callrec-body');
+        const addFav = async (t, speakerName) => {
+          let idx = history.indexOf(m);
+          if(idx < 0 && m._idx !== undefined) idx = m._idx;
+          const d0 = Phone.getData('wechat');
+          d0.favorites = d0.favorites || [];
+          const dup = d0.favorites.some(f => f.chatId === chatId && f.msgIdx === idx && f.content === t.content);
+          if(dup){ Phone.toast('已收藏过'); return; }
+          let url = String(t.audioUrl || '').trim();
+          if(!url && t.role !== 'user'){
+            try{ url = await wcTTS(t.content, voiceIdByName(speakerName || t.speakerName)); }catch(e){ url = ''; }
+            if(url) t.audioUrl = url;
+          }
+          const d = Phone.getData('wechat');
+          d.favorites = d.favorites || [];
+          const favSpeaker = t.role === 'user'
+            ? (speakerName || userName || '我')
+            : (t.speakerName || speakerName || chat.name);
+          d.favorites.push({ id:'f_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), groupId:'default', chatId, msgIdx:idx, content:t.content, speakerName:favSpeaker, role:t.role, ts:Date.now(), audioUrl:url, source:'call' });
+          Phone.setData('wechat', d);
+          Phone.toast('已收藏');
+        };
+        const playRec = (el, t, speakerName) => {
+          const url = String(t.audioUrl || '').trim();
+          if(el.classList.contains('playing')){
+            if(wcVoiceAudio){ try{ wcVoiceAudio.pause(); }catch(e){} wcVoiceAudio = null; }
+            el.classList.remove('playing');
+            return;
+          }
+          if(wcVoiceAudio){ try{ wcVoiceAudio.pause(); }catch(e){} wcVoiceAudio = null; }
+          const play = (u) => {
+            try{
+              wcVoiceAudio = new Audio(u);
+              el.classList.add('playing');
+              wcVoiceAudio.onended = () => { el.classList.remove('playing'); wcVoiceAudio = null; };
+              wcVoiceAudio.onerror = () => { el.classList.remove('playing'); wcVoiceAudio = null; };
+              const p = wcVoiceAudio.play();
+              if(p && p.catch) p.catch(() => { el.classList.remove('playing'); });
+            }catch(e){ el.classList.remove('playing'); }
+          };
+          if(url){ play(url); return; }
+          el.classList.add('playing');
+          wcTTS(t.content, voiceIdByName(speakerName || t.speakerName)).then(u => {
+            el.classList.remove('playing');
+            if(!u){ Phone.toast('语音生成失败，请检查 MiniMax 语音配置'); return; }
+            t.audioUrl = u;
+            play(u);
+          }).catch(() => { el.classList.remove('playing'); Phone.toast('语音生成失败'); });
+        };
         if(!trans.length){
           body.innerHTML = '<div class="wc-callrec-empty">暂无通话内容</div>';
         } else {
@@ -7136,14 +8256,41 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             const col = colorFor(nm || '友');
             const avatarInner = av ? `<img src="${escAttr(av)}" alt="">` : escAttr((nm || '友').charAt(0));
             const avatarStyle = av ? '' : ` style="background:linear-gradient(135deg,${col},${shade(col,-20)})"`;
+            const vdur = Math.max(1, Math.round(String(t.content || '').replace(/\s/g,'').length / 4));
             const row = document.createElement('div');
             row.className = 'wc-callrec-row' + (isUser ? ' user' : '');
             row.innerHTML = `
               <div class="wc-callrec-avatar"${avatarStyle}>${avatarInner}</div>
               <div class="wc-callrec-main">
                 <div class="wc-callrec-name">${escAttr(nm)}${hhmm ? '  ' + hhmm : ''}</div>
-                <div class="wc-callrec-bubble">${escAttr(t.content)}</div>
+                ${isUser
+                  ? `<div class="wc-callrec-bubble">${escAttr(t.content)}</div>`
+                  : `<div class="wc-callrec-bubble wc-callrec-voice"><span class="wc-cvoice-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><span class="wc-cvoice-main"><span class="wc-cvoice-text">${escAttr(t.content)}</span><span class="wc-cvoice-dur">${vdur}″</span></span></div>`}
               </div>`;
+            const bubble = row.querySelector('.wc-callrec-bubble');
+            const vb = row.querySelector('.wc-callrec-voice');
+            if(bubble){
+              let lp = null, firedAt = 0, startPt = null;
+              const cancelLp = () => { if(lp){ clearTimeout(lp); lp = null; } };
+              const openFavMenu = (x, y) => {
+                firedAt = Date.now();
+                showSingleItemMenu(x, y, '收藏', () => addFav(t, nm));
+              };
+              row.addEventListener('contextmenu', e => { e.preventDefault(); cancelLp(); openFavMenu(e.clientX, e.clientY); });
+              row.addEventListener('touchstart', e => {
+                const p = e.touches && e.touches[0];
+                startPt = p ? { x: p.clientX, y: p.clientY } : null;
+                cancelLp();
+                lp = setTimeout(() => { lp = null; if(startPt) openFavMenu(startPt.x, startPt.y); }, 520);
+              }, { passive:true });
+              row.addEventListener('touchend', cancelLp);
+              row.addEventListener('touchcancel', cancelLp);
+              row.addEventListener('touchmove', cancelLp);
+              bubble.addEventListener('click', e => {
+                if(Date.now() - firedAt < 900){ e.preventDefault(); e.stopPropagation(); return; }
+                if(vb) playRec(vb, t, nm);
+              });
+            }
             body.appendChild(row);
           });
         }
@@ -7167,24 +8314,114 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         if(callEnded) return;
         callEnded = true;
         callBusy = false;
+        callSpeaking = false;
+        callReplySeq++;
+        wcStopSpeak();
         stopRingtone();
         if(connectTimer){ clearTimeout(connectTimer); connectTimer = null; }
         if(replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
+        if(callUserTimer){ clearTimeout(callUserTimer); callUserTimer = null; }
         if(callTimer){ clearInterval(callTimer); callTimer = null; }
       }
 
       function hangupCall(){
         if(!callEl) return;
         const already = callEnded;
+        const wasConnected = callConnected;
+        const lasted = callSeconds;
+        const tr = callTranscript.slice();
         endCall();
         if(!already){
-          addCallRecord(callConnected ? 'connected' : 'cancelled');
+          addCallRecord(wasConnected ? 'connected' : 'cancelled');
           const statusEl = callEl.querySelector('.wc-call-status');
           if(statusEl) statusEl.textContent = '通话已结束';
+          if(wasConnected) charAfterCallFollowup('voice', lasted, tr);
         }
         const el = callEl;
         el.classList.remove('show');
         setTimeout(() => { if(el.parentNode) el.remove(); }, 320);
+      }
+
+      function charAfterCallFollowup(kind, seconds, transcript){
+        if(isOfflineMode) return;
+        if(!document.body.contains(msgs)) return;
+        if(!(seconds >= 40)) return;
+        if(Math.random() > 0.5) return;
+        const tr = (Array.isArray(transcript) ? transcript : []).filter(t => t && t.content).slice(-10);
+        if(!tr.length) return;
+        const delay = 2200 + Math.random() * 3000;
+        setTimeout(async () => {
+          if(!document.body.contains(detail) || isReplying) return;
+          isReplying = true;
+          const t = document.createElement('div');
+          t.className = 'wc-msg typing';
+          t.innerHTML = `<div class="wc-typing-dots"><span></span><span></span><span></span></div>`;
+          msgs.appendChild(t);
+          msgs.scrollTop = msgs.scrollHeight;
+          let text = '';
+          try{
+            const c = callPartner();
+            const who = isGroup ? (c?.name || chat.name) : displayName;
+            const kindWord = kind === 'video' ? '视频' : '语音';
+            const mins = Math.max(1, Math.round((seconds || 0) / 60));
+            let sys = `你正在扮演「${who}」，刚刚和「${userName}」结束了一通${kindWord}电话（大约聊了 ${mins} 分钟）。\n`;
+            if(c?.roleSetting) sys += `\n【角色人设】\n${c.roleSetting}\n`;
+            if(c?.writingStyle?.length){
+              sys += `\n【说话风格参考（模仿这种语气）】\n${c.writingStyle.slice(0,10).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
+            }
+            sys += `\n【刚才的通话内容】\n${tr.map(x => `${x.role === 'user' ? userName : (x.speakerName || who)}：${String(x.content || '').replace(/\s+/g,' ').trim()}`).join('\n')}\n`;
+            sys += `\n【现在要做的事】\n挂了电话，你在微信上随手补发 1~2 条很短的消息（10~25 字），就像真人挂完电话顺手补一句：可以是刚才没说完的话、一句叮嘱、撒娇，或者"我先去忙了/到家了"这种自然收尾。\n`;
+            sys += `- 不要总结这通电话，不要说"刚才聊得很开心"这类客套话，也不要一上来连问几个问题。\n`;
+            sys += `- 只输出你说的话，不要写角色名、旁白或括号动作；多条用 ||| 分隔。\n`;
+            const VALID_ROLES = ['system','user','assistant','tool'];
+            const messages = [{ role:'system', content: sys }, ...history
+              .filter(m => m.role && (m.content !== undefined || m.type === 'call'))
+              .slice(-Math.max(5, parseInt(cs.contextCount || 50, 10)))
+              .map(m => ({
+                role: (() => {
+                  const raw = m.role === 'typing' ? 'user' : (m.role === 'ai' ? 'assistant' : m.role);
+                  return VALID_ROLES.includes(raw) ? raw : 'user';
+                })(),
+                content: ctxText(m)
+              }))];
+            text = await Phone.chatWithAI(messages);
+          }catch(e){}
+          if(!document.body.contains(msgs)){ isReplying = false; return; }
+          t.remove();
+          let parts = String(text || '').replace(/\r/g,'').split(/\|\|\||\n+/).map(s => s.trim()).filter(Boolean).slice(0, 2);
+          if(!parts.length){ isReplying = false; return; }
+          const c2 = callPartner();
+          const speaker = isGroup ? (c2?.name || displayName) : displayName;
+          const ft = isGroup ? (c2?.fontType || '') : (MOCK_CONTACTS.find(x => x.id === chat.contactId)?.fontType || '');
+          const toPush = parts.map((p, i) => {
+            const cleaned = parseAISendCommands(p, speaker).replyText || p;
+            return {
+              role:'ai',
+              content: (ft === '繁体') ? toTraditional(cleaned) : cleaned,
+              speakerName: speaker,
+              ts: Date.now() + i
+            };
+          }).filter(mm => mm.content);
+          if(!toPush.length){ isReplying = false; return; }
+          const bid = 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+          toPush.forEach(mm => { mm.batchId = bid; history.push(mm); });
+          saveHistoryToStorage();
+          let i = 0;
+          const reveal = () => {
+            if(i >= toPush.length){
+              _notifyChatUpdated();
+              isReplying = false;
+              return;
+            }
+            const mm = toPush[i];
+            mm._idx = history.indexOf(mm);
+            msgs.appendChild(renderOneMessage(mm));
+            msgs.scrollTop = msgs.scrollHeight;
+            i++;
+            setTimeout(reveal, 500 + Math.random() * 400);
+          };
+          reveal();
+        }, delay);
       }
 
       function openCallMemberPicker(media){
@@ -7330,6 +8567,8 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         callConnected = false;
         callEnded = false;
         callBusy = false;
+        callSpeaking = false;
+        callReplySeq++;
         callTranscript = [];
         callSeconds = 0;
         callDirection = incoming ? 'incoming' : 'outgoing';
@@ -7458,13 +8697,17 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         let text = '';
         try{ text = await callAI(hint); }catch(e){}
         if(!text){
-          const warm = ['喂？看得见我吗？', '怎么突然视频呀？', '喂——想我了吗？'];
-          const cold = ['喂？有事吗？', '……你好。', '喂，我在。'];
+          const warm = ['怎么突然视频呀？','哟，今天怎么想起我了？','刚在发呆，你就打过来了。'];
+          const cold = ['嗯，我在。','有事吗？','……你好。'];
           const pool = callTier === 'close' ? warm : (callTier === 'normal' ? warm.concat(cold) : cold);
           text = pool[Math.floor(Math.random() * pool.length)];
           if(callTargets.length > 1){
             const a = callTargets[Math.floor(Math.random() * callTargets.length)];
-            text = `【${a.name}】：${text}\n【${a.name}】：看得见。`;
+            const b = callTargets.filter(t => t.name !== a.name);
+            const line2 = callTier === 'close' ? '我在呢，说吧。' : '嗯，你说。';
+            text = b.length
+              ? `【${a.name}】：${text}\n【${b[Math.floor(Math.random() * b.length)].name}】：${line2}`
+              : `【${a.name}】：${text}`;
           }
         }
         return videoParseParts(text);
@@ -7472,6 +8715,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
 
       async function openVideoCall(opts){
         opts = opts || {};
+        const isIncoming = !!opts.incoming;
         if(videoOpening && !document.querySelector('.vc-call')){ videoOpening = false; stopRingtone(); }
         if(videoOpening) return;
         if(!document.body.contains(detail)) return;
@@ -7492,14 +8736,18 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         const pColor = colorFor((partner?.name || pName) || '友');
         const plan = callPlan();
         callMedia = 'video';
-        callDirection = 'outgoing';
+        callDirection = isIncoming ? 'incoming' : 'outgoing';
         callTier = plan.tier;
         callScore = plan.score;
         callTranscript = [];
         videoSaved = false;
-        const openingHint = multiCall
-          ? `（这是 ${callTargets.length} 人视频通话，刚接通。请让其中 1~2 个人先开口，每条都要用【角色名】：开头。语气要符合你们的关系。）`
-          : `（视频电话接通了，你们刚开始视频通话。请你先开口说第一句话，语气要符合你们的关系。）`;
+        const openingHint = isIncoming
+          ? (multiCall
+              ? `（这是 ${callTargets.length} 人视频通话，「${userName}」接起了你们打过去的视频。请让其中 1~2 个人先开口，每条都要用【角色名】：开头。语气要符合你们的关系。不要用「喂」「听得见吗」「看得见吗」开场。）`
+              : `（视频电话接通了，这通电话是你主动打给「${userName}」的，对方接起了来电。请你先开口说第一句话，语气要符合你们的关系。不要用「喂」「看得见吗」「听得见吗」开场，直接说内容。）`)
+          : (multiCall
+              ? `（这是 ${callTargets.length} 人视频通话，刚接通。这通电话是「${userName}」主动打给你们团队的，你们接起了来电。请让其中 1~2 个人先开口，每条都要用【角色名】：开头。语气要符合你们的关系。不要用「喂」「听得见吗」「看得见吗」开场。）`
+              : `（视频电话接通了，你们刚开始视频通话。这通电话是「${userName}」主动打给你的，你接起了来电。请你先开口说第一句话，语气要符合你们的关系。不要用「喂」「看得见吗」「听得见吗」开场，直接说内容。）`);
         const ok = await loadVideoModule();
         if(!ok){ videoOpening = false; callMedia = 'voice'; Phone.toast('视频通话加载失败'); return; }
         if(!document.body.contains(detail)){ videoOpening = false; callMedia = 'voice'; return; }
@@ -7510,14 +8758,16 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           video: videoBgFor(callTargets),
           userName: userName || '我',
           userAvatar: userAvatar || '',
-          incoming: false,
+          incoming: isIncoming,
           plan,
-          targets: callTargets.map(t => ({ name: t.name || '', avatar: t.avatar || '', fontType: t.fontType || '' })),
+          targets: callTargets.map(t => ({ name: t.name || '', avatar: t.avatar || '', fontType: t.fontType || '', minimaxVoiceId: t.minimaxVoiceId || '' })),
           transcript: callTranscript,
           ring: { start: startRingtone, stop: stopRingtone },
           ai: {
             opening: () => videoAI(openingHint),
-            reply: () => videoAI()
+            reply: () => videoAI(multiCall
+              ? '（视频通话中，请让 1~2 位成员简短回应，每人只说一句，最多 30 字，不要拆成多条。）'
+              : '（视频通话中，请只说一句，最多 30 字，不要用 ||| 拆成多条。）')
           },
           onEnd: (info) => {
             videoOpening = false;
@@ -7527,21 +8777,24 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             videoSaved = true;
             const status = info?.status || (info?.connected ? 'connected' : 'missed');
             const dur = info?.connected ? (info?.seconds || 0) : 0;
-            const tr = callTranscript
-              .filter(t => t && t.content)
-              .map(t => ({ role: t.role, content: t.content, speakerName: t.speakerName || '', ts: t.ts || Date.now() }));
-            pushCallRecord(status, 'outgoing', dur, tr, 'video');
+            const tr = callTranscript.filter(t => t && t.content);
+            pushCallRecord(status, isIncoming ? 'incoming' : 'outgoing', dur, tr, 'video');
+            if(status === 'connected') charAfterCallFollowup('video', dur, tr);
           }
         };
         window.mountVideoCall(detail, cfg);
       }
 
-      function startIncomingCall(member){
+      function startIncomingCall(member, media){
         if(!document.body.contains(detail)) return;
         if(document.querySelector('.wc-call') || document.querySelector('.vc-call') || document.querySelector('.wc-incoming')) return;
         closePanels();
+        const isVideo = media === 'video';
         const incomingList = Array.isArray(member) ? member.filter(x => x && x.name) : (member && member.name ? [member] : []);
-        const caller = incomingList[0] || callPartner();
+        const fallback = isGroup
+          ? (members.find(m => m && m.name) || callPartner())
+          : (MOCK_CONTACTS.find(c => c.id === chat.contactId) || null);
+        const caller = incomingList[0] || fallback;
         if(caller && caller.name) callTargets = incomingList.length ? incomingList : [caller];
         const score = callCloseness();
         callScore = score;
@@ -7555,7 +8808,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           ? `<img src="${escAttr(pAvatar)}" alt="">`
           : escAttr((pName || '友').charAt(0));
         const avatarBg = pAvatar ? '' : ` style="background:linear-gradient(135deg,${pColor},${shade(pColor,-20)})"`;
-        const tipText = callTargets.length > 1 ? `${callTargets.length} 人邀请你进行语音通话…` : '邀请你进行语音通话…';
+        const tipText = callTargets.length > 1 ? `${callTargets.length} 人邀请你进行${isVideo ? '视频' : '语音'}通话…` : `邀请你进行${isVideo ? '视频' : '语音'}通话…`;
         const el = document.createElement('div');
         el.className = 'wc-incoming';
         el.innerHTML = `
@@ -7587,25 +8840,36 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           return true;
         };
         autoTimer = setTimeout(() => {
-          if(finish()) pushCallRecord('missed', 'incoming', 0, []);
+          if(!finish()) return;
+          pushCallRecord('missed', 'incoming', 0, [], isVideo ? 'video' : 'voice');
+          charAfterDeclinedCall(0, isVideo ? 'video' : 'voice', 'missed');
         }, 26000);
         el.querySelector('.wc-incoming-btn.decline').addEventListener('click', () => {
           if(!finish()) return;
-          pushCallRecord('declined', 'incoming', 0, []);
-          charAfterDeclinedCall();
+          pushCallRecord('declined', 'incoming', 0, [], isVideo ? 'video' : 'voice');
+          charAfterDeclinedCall(0, isVideo ? 'video' : 'voice', 'declined');
         });
         el.querySelector('.wc-incoming-btn.accept').addEventListener('click', () => {
           if(!finish()) return;
+          if(el.parentNode) el.remove();
           const targets = callTargets.slice();
-          setTimeout(() => openVoiceCall({ incoming: true, targets }), 240);
+          setTimeout(() => {
+            if(isVideo) openVideoCall({ incoming:true, targets });
+            else openVoiceCall({ incoming: true, targets });
+          }, 240);
         });
       }
 
-      function buildDeclineCallSystem(){
+      function buildDeclineCallSystem(media, reason){
         const c = callPartner();
         const who = isGroup ? (c?.name || chat.name) : displayName;
+        const callWord = media === 'video' ? '视频' : '语音';
         let sys = `你正在扮演「${who}」，此刻和「${userName}」在微信上聊天。\n`;
-        sys += `你刚刚主动给「${userName}」打了一通语音电话，但被对方拒绝了（没接）。\n`;
+        if(reason === 'missed'){
+          sys += `你刚刚主动给「${userName}」打了一通${callWord}电话，一直响铃但对方没有接。\n`;
+        } else {
+          sys += `你刚刚主动给「${userName}」打了一通${callWord}电话，但被对方拒绝了（没接）。\n`;
+        }
         if(c?.roleSetting) sys += `\n【角色人设】\n${c.roleSetting}\n`;
         if(c?.writingStyle?.length){
           sys += `\n【说话风格参考（模仿这种语气）】\n${c.writingStyle.slice(0,12).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
@@ -7618,18 +8882,23 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           if(cm?.core?.length) sys += `\n【核心记忆】\n${cm.core.map(m => m.content).join('\n')}\n`;
         }catch(e){}
         sys += `\n【现在要做的事】\n`;
-        sys += `你要在微信里接着发 2~3 条消息，追问对方为什么没接，表达疑惑、关心或撒娇（例如：怎么不接？/ 有什么事吗？/ 别生气啦）。\n`;
+        if(reason === 'missed'){
+          sys += `你要在微信里接着发 1~3 条消息，可能对方在忙没听到，语气自然一点：可以问一句"在忙吗"，也可以自嘲"看来是没听到"，别表现得像被冷落。\n`;
+        } else {
+          sys += `你要在微信里接着发 1~3 条消息，追问对方为什么没接，表达疑惑、关心或撒娇（例如：怎么不接？/ 有什么事吗？/ 别生气啦）。\n`;
+        }
         sys += `【规则】\n1. 只输出你说的话，不要写角色名，不要旁白和括号动作。\n2. 每条不超过 30 字，用 ||| 分隔。\n3. 语气必须符合你们的关系。\n`;
+        sys += `4. 可以顺带发一条语音条（[语音:内容]）或表情，但最多一个，别堆砌。\n`;
         sys += `\n【你和「${userName}」的关系】${callTierText()}\n`;
         return sys;
       }
 
-      function charAfterDeclinedCall(retry){
+      function charAfterDeclinedCall(retry, media, reason){
         retry = retry || 0;
         if(isOfflineMode) return;
         if(!document.body.contains(msgs)) return;
         if(isReplying){
-          if(retry < 6) setTimeout(() => charAfterDeclinedCall(retry + 1), 1500);
+          if(retry < 6) setTimeout(() => charAfterDeclinedCall(retry + 1, media, reason), 1500);
           return;
         }
         isReplying = true;
@@ -7643,15 +8912,15 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           let text = '';
           try{
             const VALID_ROLES = ['system','user','assistant','tool'];
-            const messages = [{ role:'system', content: buildDeclineCallSystem() }, ...history
+            const messages = [{ role:'system', content: buildDeclineCallSystem(media, reason) }, ...history
               .filter(m => m.role && m.content !== undefined)
+              .slice(-Math.max(5, parseInt(cs.contextCount || 50, 10)))
               .map(m => ({
                 role: (() => {
                   const raw = m.role === 'typing' ? 'user' : (m.role === 'ai' ? 'assistant' : m.role);
                   return VALID_ROLES.includes(raw) ? raw : 'user';
                 })(),
-                content: m.type === 'image' ? (m.caption ? `[图片：${m.caption}]` : '[图片]')
-                  : (m.type === 'call' ? (m.kind === 'video' ? '[视频通话]' : '[语音通话]') : String(m.content || ''))
+                content: ctxText(m)
               }))];
             text = await Phone.chatWithAI(messages);
           }catch(e){}
@@ -7667,19 +8936,51 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               : ['怎么不接？', '有什么事吗？', '看到回我一下。'];
           }
           parts = parts.slice(0, 3);
-          const toPush = parts.map((p, i) => ({
-            role:'ai',
-            content: (ft === '繁体') ? toTraditional(p) : p,
-            speakerName: speaker,
-            ts: Date.now() + i
-          }));
-          toPush.forEach(mm => history.push(mm));
+          const stickerMap = {};
+          (cs.stickerGroupIds?.length ? getStickerPacks().filter(p => cs.stickerGroupIds.includes(p.id)).flatMap(p => p.stickers) : []).forEach(s => { stickerMap[s.id] = s; });
+          const toPush = (await Promise.all(parts.map(async (p, i) => {
+            const vm = p.match(/^[\[【](?:语音条|语音)[：:]([^\]】]+)[\]】]$/);
+            if(vm){
+              const vt = vm[1].trim();
+              const vid = isGroup ? (callPartner()?.minimaxVoiceId || '') : (contact?.minimaxVoiceId || '');
+              const dur = Math.max(1, Math.ceil(vt.length / 5));
+              const vMsg = { role:'ai', type:'voice', content: vt, duration: dur, audioUrl:'', speakerName: speaker, ts: Date.now() + i };
+              wcTTS(vt, vid).then(url => { if(url){ vMsg.audioUrl = url; saveHistoryToStorage(); } }).catch(()=>{});
+              return vMsg;
+            }
+            const sm = p.match(/^[\[【]表情[：:]([^\]】]+)[\]】]$/);
+            if(sm){
+              const sk = stickerMap[sm[1].trim()];
+              if(sk) return { role:'ai', type:'sticker', content: sk.src, caption: sk.caption||'', speakerName: speaker, ts: Date.now() + i };
+            }
+            const tm = p.match(/^[\[【]文字图[：:]([^\]】]+)[\]】]$/);
+            if(tm){
+              const src = await genTextImage(tm[1].trim());
+              return { role:'ai', type:'image', content: src, caption:'', isTextImg:true, speakerName: speaker, ts: Date.now() + i };
+            }
+            const cleaned = parseAISendCommands(p, speaker).replyText || p;
+            return {
+              role:'ai',
+              content: (ft === '繁体') ? toTraditional(cleaned) : cleaned,
+              speakerName: speaker,
+              ts: Date.now() + i
+            };
+          }))).filter(mm => mm && (mm.content || mm.type === 'sticker'));
+          const declineBatchId = 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+          toPush.forEach(mm => { mm.batchId = declineBatchId; history.push(mm); });
           saveHistoryToStorage();
           let i = 0;
           const reveal = () => {
             if(i >= toPush.length){
               _notifyChatUpdated();
               isReplying = false;
+              if(pendingAutoReply){
+                pendingAutoReply = false;
+                setTimeout(() => {
+                  if(!document.body.contains(detail) || isReplying) return;
+                  triggerAIReply();
+                }, 600);
+              }
               return;
             }
             const mm = toPush[i];
@@ -7697,7 +8998,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         try{
           if(isOfflineMode) return;
           if(!document.body.contains(detail) || isReplying) return;
-          if(document.querySelector('.wc-call') || document.querySelector('.wc-incoming')) return;
+          if(document.querySelector('.wc-call') || document.querySelector('.vc-call') || document.querySelector('.wc-incoming')) return;
           if(!history.some(m => m.role === 'user')) return;
           let caller = null;
           if(isGroup){
@@ -7707,20 +9008,29 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           }
           aiReplyCountSinceCall++;
           const now = Date.now();
-          if(now - lastCharCallAt < 6 * 60 * 1000) return;
+          if(now - lastCharCallAt < 20 * 60 * 1000) return;
           const score = callCloseness();
-          let prob = 0.12;
-          if(score >= 65) prob = 0.3;
-          else if(score >= 45) prob = 0.2;
-          const force = aiReplyCountSinceCall >= 12;
+          let prob = 0.05;
+          if(score >= 65) prob = 0.12;
+          else if(score >= 45) prob = 0.08;
+          const force = aiReplyCountSinceCall >= 24;
           if(!force && Math.random() > prob) return;
           setTimeout(() => {
             if(!document.body.contains(detail) || isReplying) return;
-            if(document.querySelector('.wc-call') || document.querySelector('.wc-incoming')) return;
-            if(Date.now() - lastCharCallAt < 6 * 60 * 1000) return;
+            if(document.querySelector('.wc-call') || document.querySelector('.vc-call') || document.querySelector('.wc-incoming')) return;
+            if(Date.now() - lastCharCallAt < 20 * 60 * 1000) return;
             lastCharCallAt = Date.now();
             aiReplyCountSinceCall = 0;
-            startIncomingCall(caller || undefined);
+            const wantVideo = Math.random() < 0.25;
+            let callArg = caller || undefined;
+            if(isGroup && caller && members.length > 1 && Math.random() < 0.45){
+              const extra = members.filter(m => m && m.name && m !== caller);
+              if(extra.length){
+                callArg = [caller, extra[Math.floor(Math.random() * extra.length)]];
+              }
+            }
+            if(wantVideo) startIncomingCall(callArg, 'video');
+            else startIncomingCall(callArg);
           }, 1600 + Math.random() * 1600);
         }catch(e){}
       }
@@ -7745,13 +9055,13 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               title:'文字生成图片',
               fields:[
                 { key:'text', label:'文字内容', value:'', type:'textarea', placeholder:'输入要渲染成图片的文字' },
-                { key:'bg', label:'背景色', value:'#ffffff', type:'color' },
-                { key:'fg', label:'文字颜色', value:'#1a1a1a', type:'color' }
+                { key:'style', label:'配色', value:'0', type:'select', opts: TI_STYLES.map((s,i) => `<option value="${i}">${s.name}</option>`).join('') }
               ]
             });
             if(!t) return;
             const txt = (t.text||'').trim(); if(!txt){ Phone.toast('请输入文字'); return; }
-            const src = await genTextImage(txt, t.bg || '#ffffff', t.fg || '#1a1a1a');
+            const st = TI_STYLES[parseInt(t.style, 10)] || TI_STYLES[0];
+            const src = await genTextImage(txt, st.bg, st.fg);
             sendImage({ src, caption:'', isTextImg:true });
           } else {
             const inp = document.createElement('input');
@@ -7853,44 +9163,150 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         }catch(e){ return { enabled:false, seconds:5 }; }
       }
       function scheduleAutoReply(){
-        if(isReplying) return;
         const cfg = getAutoReplyConfig();
         if(!cfg.enabled) return;
-        const delay = Math.max(1, cfg.seconds) * 1000;
+        const base = Math.max(1, cfg.seconds) * 1000;
+        const lastMsg = history.length ? (history[history.length - 1].content || '') : '';
+        const extra = Math.min(1800, String(lastMsg).length * 12);
+        const delay = base + extra + Math.random() * 1500;
+        if(isReplying){ pendingAutoReply = true; return; }
         setTimeout(() => {
           if(!document.body.contains(detail)) return;
-          if(isReplying) return;
+          if(isReplying){ pendingAutoReply = true; return; }
           triggerAIReply();
         }, delay);
       }
-      function genTextImage(text, bg='#ffffff', fg='#1a1a1a'){
+      const TI_STYLES = [
+        { name:'雾蓝', bg:'#6E7B8B', fg:'#2B323C' },
+        { name:'暖白', bg:'#F2F0EC', fg:'#3B3A36' },
+        { name:'浅灰', bg:'#E9E9E9', fg:'#3A3A3A' },
+        { name:'冷灰', bg:'#E3E7EC', fg:'#39434E' },
+        { name:'米灰', bg:'#E7E4DE', fg:'#4A443C' },
+        { name:'墨黑', bg:'#33363B', fg:'#EDEFF2' }
+      ];
+      function genTextImage(text, bg, fg){
         return new Promise(resolve => {
-          const CW = 600, CH = 600, pad = 40;
+          const CW = 600, CH = 600, pad = Math.round(CW * 0.09);
           const c = document.createElement('canvas');
           c.width = CW; c.height = CH;
           const ctx = c.getContext('2d');
-          let fs = 36, lineH, lines2;
-          while(fs >= 18){
-            lineH = fs * 1.5;
-            ctx.font = fs + 'px "PingFang SC","Microsoft YaHei",sans-serif';
-            lines2 = []; let cur = '';
-            for(const ch of (text||'').split('')){
+          const font = s => s + 'px "PingFang SC","Microsoft YaHei",sans-serif';
+          const wrap = () => {
+            const out = []; let cur = '';
+            for(const ch of Array.from(text || '')){
+              if(ch === '\n'){ out.push(cur); cur = ''; continue; }
               const t2 = cur + ch;
-              if(ctx.measureText(t2).width > CW - pad*2){ lines2.push(cur); cur = ch; }
+              if(ctx.measureText(t2).width > CW - pad*2 && cur){ out.push(cur); cur = ch; }
               else cur = t2;
             }
-            if(cur) lines2.push(cur);
-            if(lines2.length * lineH + pad*2 <= CH) break;
+            if(cur) out.push(cur);
+            return out;
+          };
+          let fs = Math.round(CW * 0.075), lineH = 0, lines = [];
+          while(fs >= 18){
+            ctx.font = font(fs);
+            lineH = Math.round(fs * 1.75);
+            lines = wrap();
+            if(lines.length * lineH <= CH - pad*2) break;
             fs -= 2;
           }
-          ctx.fillStyle = bg; ctx.fillRect(0,0,CW,CH);
-          ctx.fillStyle = fg; ctx.font = fs + 'px "PingFang SC","Microsoft YaHei",sans-serif';
+          ctx.fillStyle = bg || TI_STYLES[0].bg;
+          ctx.fillRect(0,0,CW,CH);
+          ctx.fillStyle = fg || TI_STYLES[0].fg;
+          ctx.font = font(fs);
+          ctx.textAlign = 'left';
           ctx.textBaseline = 'top';
-          const startY = (CH - lines2.length * lineH) / 2;
-          lines2.forEach((ln,i) => ctx.fillText(ln, pad, startY + i*lineH));
+          const startY = (CH - lines.length * lineH) / 2;
+          lines.forEach((ln,i) => ctx.fillText(ln, pad, startY + i*lineH));
           resolve(c.toDataURL('image/png'));
         });
       }
+
+      function wcHexToAudioUrl(hex){
+        try{
+          const s = String(hex || '').replace(/[\s]/g, '');
+          if(!s || s.length < 2) return '';
+          const len = s.length >> 1;
+          const bytes = new Uint8Array(len);
+          for(let i = 0; i < len; i++){
+            const v = parseInt(s.substr(i * 2, 2), 16);
+            if(isNaN(v)) return '';
+            bytes[i] = v;
+          }
+          let bin = '';
+          const CHUNK = 0x8000;
+          for(let i = 0; i < bytes.length; i += CHUNK){
+            bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+          }
+          return 'data:audio/mpeg;base64,' + btoa(bin);
+        }catch(e){ return ''; }
+      }
+
+      function wcSpeakText(raw){
+        let s = String(raw == null ? '' : raw);
+        for(let i = 0; i < 2; i++){
+          s = s
+            .replace(/（[^（）]*）/g, '')
+            .replace(/\([^()]*\)/g, '')
+            .replace(/【[^【】]*】/g, '')
+            .replace(/\[[^\[\]]*\]/g, '')
+            .replace(/〔[^〔〕]*〕/g, '')
+            .replace(/\*[^*]*\*/g, '');
+        }
+        s = s.split('\n')
+          .map(line => line.replace(/[ \t]+/g, ' ').trim())
+          .filter(line => line.length > 0)
+          .join('\n');
+        s = s.replace(/^[\u4e00-\u9fa5A-Za-z·]{1,8}[：:]\s*/gm, '').trim();
+        return s;
+      }
+
+      async function wcTTS(text, voiceId){
+        const t = wcSpeakText(text);
+        if(!t) return '';
+        let cfg = {};
+        try{ cfg = (Phone._getState && Phone._getState().voiceConfig) || {}; }catch(e){ cfg = {}; }
+        if(!cfg.apiKey) return '';
+        const vid = String(voiceId || '').trim() || String(cfg.voiceId || '').trim() || 'female-shaonv';
+        const key = vid + '|' + t;
+        if(wcTTSCache[key]) return wcTTSCache[key];
+        const base = String(cfg.baseUrl || 'https://api.minimaxi.com').trim().replace(/\/+$/, '');
+        const model = /t2s/i.test(String(cfg.model || '')) || !cfg.model ? 'speech-02-turbo' : cfg.model;
+        const gid = String(cfg.groupId || '').trim();
+        const qs = gid ? `?GroupId=${encodeURIComponent(gid)}` : '';
+        try{
+          const res = await fetch(`${base}/v1/t2a_v2${qs}`, {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + cfg.apiKey },
+            body: JSON.stringify({
+              model,
+              text: t,
+              stream: false,
+              voice_setting:{ voice_id: vid, speed: Number(cfg.speed) || 1.0, vol: 1, pitch: 0 },
+              audio_setting:{ sample_rate: 32000, bitrate: 128000, format: 'mp3', channel: 1 },
+              output_format: 'hex'
+            })
+          });
+          if(!res.ok) throw new Error('HTTP ' + res.status);
+          const json = await res.json();
+          const br = (json && json.base_resp) || {};
+          if(br.status_code && br.status_code !== 0){
+            console.warn('[MiniMax TTS] ' + (br.status_msg || 'error ' + br.status_code));
+            return '';
+          }
+          const data = (json && json.data) || {};
+          let url = '';
+          if(data.audio) url = wcHexToAudioUrl(data.audio);
+          else if(data.audio_url) url = data.audio_url;
+          if(url) wcTTSCache[key] = url;
+          return url;
+        }catch(e){
+          console.warn('[MiniMax TTS] 请求失败：', e && e.message, '（跨域失败时请在设置里切换国内 / 海外接口）');
+          return '';
+        }
+      }
+      window.__wcTTS = wcTTS;
+      window.__wcVoiceIdFor = (name) => callVoiceIdFor(name);
 
       function sendImage(img){
         emojiPicker.classList.remove('show');
@@ -7912,10 +9328,17 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
 
       function sendVoiceMessage(transcript, seconds){
         const ts = Date.now();
-        history.push({ role:'user', type:'voice', content:transcript, duration:seconds, ts });
+        const msg = { role:'user', type:'voice', content:transcript, duration:seconds, audioUrl:'', ts };
+        history.push(msg);
         saveHistoryToStorage();
         _notifyChatUpdated();
         scheduleAutoReply();
+        wcTTS(transcript).then(url => {
+          if(url){
+            msg.audioUrl = url;
+            saveHistoryToStorage();
+          }
+        }).catch(()=>{});
       }
 
       function sendLocation(loc, opts){
@@ -8595,7 +10018,6 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       }
 
       async function doSend(text){
-        if(isReplying) return;
         const ts = Date.now();
         const msg = { role:'user', content:text, ts };
         if(input.dataset.quoteIdx !== undefined){
@@ -8657,13 +10079,37 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         }
         text = text.replace(callRe, '');
 
+        const videoCallRe = /[\[【](?:视频通话|视频电话|视频来电)(?:[：:]\s*([^\]】]*))?[\]】]/g;
+        while((m = videoCallRe.exec(text)) !== null){
+          commands.push({ speakerName: defaultSpeakerName, type:'videoCall', target: (m[1] || '').trim() });
+        }
+        text = text.replace(videoCallRe, '');
+
+        const locRe = /[\[【](?:发送位置|发定位|共享位置|我的位置|位置|定位)[：:]\s*([^\]】]+)[\]】]/g;
+        while((m = locRe.exec(text)) !== null){
+          const segs = m[1].split(/[|｜]/).map(s => s.trim()).filter(Boolean);
+          if(segs.length){
+            commands.push({
+              speakerName: defaultSpeakerName,
+              type:'location',
+              placeName: segs[0],
+              address: segs[1] || '',
+              distance: segs[2] || ''
+            });
+          }
+        }
+        text = text.replace(locRe, '');
+
+        text = text.replace(/[\[【]图片[：:]\s*([^\]】]+)[\]】]/g, '[文字图:$1]');
+
         text = text.replace(/\|\|\|\|/g, '|||').replace(/^\|\|\|?/g, '').replace(/\|\|\|?$/g, '').trim();
         return { replyText: text, commands };
       }
 
       function executeAISendCommands(commands){
-        if(!commands || !commands.length) return;
+        if(!commands || !commands.length) return 0;
         const tsBase = Date.now();
+        let created = 0;
         commands.forEach((c, i) => {
           const ts = tsBase + i;
           if(c.type === 'transfer'){
@@ -8675,6 +10121,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               status:'pending', speakerName: c.speakerName,
               openList:[], ts, msgId:'xfer_char_' + ts
             });
+            created++;
           } else if(c.type === 'redpacket'){
             history.push({
               role:'ai', type:'redpacket', source:'char',
@@ -8686,13 +10133,30 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               speakerName: c.speakerName,
               openList:[], ts, msgId:'rp_char_' + ts
             });
+            created++;
           } else if(c.type === 'call'){
             if(!pendingCharCall) pendingCharCall = { callers: [], ts };
             pendingCharCall.callers.push({ speakerName: c.speakerName || '', target: c.target || '' });
+          } else if(c.type === 'videoCall'){
+            if(!pendingCharCall) pendingCharCall = { callers: [], ts };
+            pendingCharCall.media = 'video';
+            pendingCharCall.callers.push({ speakerName: c.speakerName || '', target: c.target || '' });
+          } else if(c.type === 'location'){
+            history.push({
+              role:'ai', type:'location', source:'char',
+              content: c.placeName,
+              placeName: c.placeName,
+              address: c.address || '',
+              distance: c.distance || '',
+              speakerName: c.speakerName,
+              ts
+            });
+            created++;
           }
         });
         saveHistoryToStorage();
         _notifyChatUpdated();
+        return created;
       }
 
       function collectPendingIncomingPayments(){
@@ -8889,9 +10353,24 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         }
       }
 
+      function endReply(){
+        isReplying = false;
+        input.focus();
+        if(pendingAutoReply){
+          pendingAutoReply = false;
+          setTimeout(() => {
+            if(!document.body.contains(detail) || isReplying) return;
+            triggerAIReply();
+          }, 600);
+        }
+      }
+
       async function triggerAIReply(){
+        const isProactive = proactiveMode;
+        proactiveMode = false;
         if(isReplying) return;
         isReplying = true;
+        pendingAutoReply = false;
 
         let typingMsg;
         if(isGroup){
@@ -8907,6 +10386,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
 
         try{
           if(isOfflineMode){
+            const wordRange = getStoryWordRange();
             let sys;
             if(isGroup){
               sys = `你正在进行线下角色扮演。场景是群聊 "${chat.name}" 的一次离线RP场景。\n`;
@@ -8917,7 +10397,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               sys += `⚠️ 这不是在线聊天！而是**线下故事补写**。你需要以第三人称叙事视角，描写角色们对用户输入的反应和接下来发生的事情。\n`;
               sys += `⚠️ 可以自由描写群内所有角色（${members.map(m=>m.name).join('、')}），但**严禁出现不在本群的无关人物**。\n`;
               sys += `⚠️ 允许使用括号、方括号、斜体等方式描写动作、表情、环境。可以有内心独白。\n`;
-              sys += `⚠️ 至少写300字以上，用生动细腻的文笔，营造沉浸式的故事感。\n`;
+              sys += `⚠️ 篇幅控制在 ${wordRange.min}~${wordRange.max} 字左右，用生动细腻的文笔，营造沉浸式的故事感。\n`;
               sys += `⚠️ 直接输出叙事段落，不要有任何前缀或格式。`;
             } else {
               const contact = MOCK_CONTACTS.find(c => c.id === chat.contactId);
@@ -8930,9 +10410,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               sys += `⚠️ 这不是在线聊天！而是**线下故事补写**。你需要以第三人称叙事视角，描写 ${chat.name} 对用户输入的反应和接下来发生的事情。\n`;
               sys += `⚠️ 可以描写 ${chat.name} 和用户，也可以在合理范围内出现其他角色，但**严禁出现与当前对话无关的人物**。\n`;
               sys += `⚠️ 允许使用括号、方括号、斜体等方式描写动作、表情、环境。可以有内心独白。\n`;
-              sys += `⚠️ 至少写300字以上，用生动细腻的文笔，营造沉浸式的故事感。\n`;
+              sys += `⚠️ 篇幅控制在 ${wordRange.min}~${wordRange.max} 字左右，用生动细腻的文笔，营造沉浸式的故事感。\n`;
               sys += `⚠️ 直接输出叙事段落，不要有任何前缀或格式。`;
             }
+            sys += `⚠️ 全文必须使用简体中文书写，严禁出现任何繁体字。\n`;
 
             let memSys = '';
             try {
@@ -8954,32 +10435,28 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             const VALID_ROLES = ['system','user','assistant','tool'];
             const messages = [{ role:'system', content:sys }, ...history
               .filter(m => m.role && m.content !== undefined)
+              .slice(-Math.max(5, parseInt(cs.contextCount || 50, 10)))
               .map(m => ({
                 role: (() => {
                   const raw = m.role === 'typing' ? 'user' : (m.role === 'ai' ? 'assistant' : m.role);
                   return VALID_ROLES.includes(raw) ? raw : 'user';
                 })(),
-                content: m.type==='image' ? (m.caption?`[图片：${m.caption}]`:'[图片]') : m.content
+                content: m.type==='image' ? (m.caption?`[图片：${m.caption}]`:'[图片]')
+                  : (m.type==='sticker' ? '[表情包]'
+                    : (m.type==='voice' ? `[语音] ${m.content}`
+                      : (m.type==='location' ? `[位置] ${m.content}` : m.content)))
               }))];
             const rawReply = await Phone.chatWithAI(messages);
-
-            let fontType = '';
-            if(isGroup){
-              fontType = members[0]?.fontType || '';
-            } else {
-              const c = MOCK_CONTACTS.find(c => c.id === chat.contactId);
-              if(c?.fontType) fontType = c.fontType;
-            }
-            let finalText = (fontType === '繁体') ? toTraditional(rawReply.trim()) : rawReply.trim();
+            const finalText = toSimplified(rawReply.trim());
             const finalMsg = { role:'ai', content: finalText, speakerName: chat.name, ts: Date.now() };
             history.push(finalMsg);
             saveHistoryToStorage();
+            autoSummarizeHistory(chatId);
             t.remove();
             msgs.appendChild(renderOneMessage(finalMsg));
             msgs.scrollTop = msgs.scrollHeight;
             _notifyChatUpdated();
-            isReplying = false;
-            input.focus();
+            endReply();
             return;
           }
 
@@ -8988,21 +10465,23 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           const activeWbIds = new Set();
           if(isGroup){
             members.forEach(m => { (m.worldbookIds || []).forEach(id => activeWbIds.add(id)); });
-            (cs.worldbookGroupIds || []).forEach(id => activeWbIds.add(id));
+            resolveWorldbookIds(cs.worldbookGroupIds).forEach(id => activeWbIds.add(id));
           } else {
             const contact = MOCK_CONTACTS.find(c => c.id === chat.contactId);
             (contact?.worldbookIds || []).forEach(id => activeWbIds.add(id));
-            (cs.worldbookGroupIds || []).forEach(id => activeWbIds.add(id));
+            resolveWorldbookIds(cs.worldbookGroupIds).forEach(id => activeWbIds.add(id));
           }
           wbs.forEach(w => { if(w.global) activeWbIds.add(w.id); });
           const activeWbs = wbs.filter(w => activeWbIds.has(w.id));
 
+          const replyRange = getReplyCountRange();
           let sys;
           const now = new Date();
           const timeStr = cs.realTime ? `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}` : '';
           const userPersona = cs.persona || char.persona || '';
           if(isGroup){
             sys = `你是群聊 "${chat.name}" 的AI角色扮演者。\n`;
+            sys += `⚠️ 必须紧接上文继续对话：延续最近几条消息的话题、情绪和彼此称呼，不要突然换话题，不要重复或复述已经说过的话。\n`;
             if(timeStr) sys += `当前时间：${timeStr}\n`;
             const allowedMemberNames = (cs.autoReplyMembers && cs.autoReplyMembers.length) ? cs.autoReplyMembers : members.map(m=>m.name);
             const replyMembers = members.filter(m => allowedMemberNames.includes(m.name));
@@ -9028,11 +10507,16 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             if(memberRels){
               sys += `\n【群成员关系网】\n${memberRels}\n`;
             }
-            sys += `用户 "${userName}" 在群里发了消息，现在由群成员来回复。\n`;
+            if(isProactive){
+              sys += `群里安静了一会儿，现在由你们主动开口，找「${userName}」说点什么。\n`;
+            } else {
+              sys += `用户 "${userName}" 在群里发了消息，现在由群成员来回复。\n`;
+            }
             sys += `⚠️⚠️⚠️ 绝对规则：\n`;
-            sys += `1. 必须至少选择 **3 个不同的群成员** 发言，每人至少1条。严禁让同一个人连续说超过1条。\n`;
+            sys += `1. 像真实群聊一样，挑 1~3 个最想接话的成员发言（人多热闹时可以更多），每人 1~2 条，不要每次都是同样几个人。\n`;
             sys += `2. **每一条回复的开头都必须写【角色名】：**，不能有任何一条漏掉！\n`;
             sys += `3. 用 ||| 把不同人的消息隔开。\n`;
+            sys += `4. 群友之间可以互相接话、吐槽、抢话，不要每个人都只对用户说话。\n`;
             sys += `\n正确示例（假设群成员有 ${promptMembers.map(m=>m.name).join('、')}）：\n`;
             sys += `【${promptMembers[0]?.name||'钱锟'}】：哈哈这个有意思|||【${promptMembers[1]?.name||'黄冠亨'}】：我也觉得|||【${promptMembers[2]?.name||'刘扬扬'}】：等下一起？\n`;
             sys += `\n绝对禁止写成：\n`;
@@ -9047,9 +10531,11 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             sys += `⚠️ 只能选择以下成员回复：${promptMembers.map(m=>m.name).join('、')}。严禁让不在此列的人物出场。\n`;
             sys += `⚠️ 重要：回复时必须严格遵守该成员的语言设置——如果字体是"繁体"，必须全部使用繁体字；如果语音是"粤语"，要用粤语口语表达。\n`;
             sys += `⚠️ 这是线上真实聊天场景！严禁使用括号、方括号或任何形式来描述角色的动作、表情、心理活动（如：微笑、点头、心里想着xxx）。只输出角色说的话，纯粹的对白。\n`;
-            sys += `⚠️ 每次回复**最多80字**，就像真实微信聊天一样简短。如果想说的内容较多，必须拆分成多条消息依次发送，用 ||| 分隔。`;
+            sys += `⚠️ 唯一例外：发送功能指令时必须用方括号，例如 [语音:...]、[转账:520:生日快乐]、[红包:66:恭喜]、[位置:地点|地址|距离]、[表情：ID]、[文字图:...]、[语音通话]、[视频通话]。这些是微信功能，不算动作描写。\n`;
+            sys += `⚠️ 每次回复**最多80字**，就像真实微信聊天一样简短。本次回复请拆成 ${replyRange.min}~${replyRange.max} 条消息依次发送，用 ||| 分隔。`;
           } else {
             sys = `你正在与一个叫 "${userName}" 的用户聊天，你扮演的是 ${chat.name}。`;
+            sys += `\n⚠️ 必须紧接上文继续对话：延续最近几条消息的话题、情绪和彼此称呼，不要突然换话题，不要重复或复述已经说过的话。`;
             if(timeStr) sys += `\n当前时间：${timeStr}`;
             const contact = MOCK_CONTACTS.find(c => c.id === chat.contactId);
             if(contact?.roleSetting){
@@ -9071,11 +10557,16 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             if(userPersona){
               sys += `用户 "${userName}" 的人设：${userPersona}。`;
             }
-            sys += `\n请以自然、活泼、符合人设的方式回应，保持对话简洁有情感。请根据当前时间调整你的回复内容（如早上好、晚安等）。\n`;
+            if(isProactive){
+              sys += `\n「${userName}」有一阵子没说话了，现在由你主动发一条微信过去。\n`;
+            } else {
+              sys += `\n请以自然、活泼、符合人设的方式回应，保持对话简洁有情感。请根据当前时间调整你的回复内容（如早上好、晚安等）。\n`;
+            }
             sys += `⚠️ 你是 ${chat.name}，只能以 ${chat.name} 的身份说话。严禁让无关的第三方人物出场或插话。\n`;
             sys += `⚠️ 重要：回复时必须严格遵守角色的语言设置——如果字体是"繁体"，必须全部使用繁体字；如果语音是"粤语"，要用粤语口语表达。\n`;
             sys += `⚠️ 这是线上真实聊天场景！严禁使用括号、方括号或任何形式描述角色的动作、表情、心理活动（如：微笑、点头、心里想着xxx）。只输出纯粹的对白，像微信聊天一样。\n`;
-            sys += `⚠️ 每次回复**最多80字**，就像真实微信聊天一样简短。如果想说的内容较多，必须拆分成多条消息依次发送，用 ||| 分隔。示例：第一句话|||第二句话|||第三句话`;
+            sys += `⚠️ 唯一例外：发送功能指令时必须用方括号，例如 [语音:...]、[转账:520:生日快乐]、[红包:66:恭喜]、[位置:地点|地址|距离]、[表情：ID]、[文字图:...]、[语音通话]、[视频通话]。这些是微信功能，不算动作描写。\n`;
+            sys += `⚠️ 每次回复**最多80字**，就像真实微信聊天一样简短。本次回复请拆成 ${replyRange.min}~${replyRange.max} 条消息依次发送，用 ||| 分隔。示例：第一句话|||第二句话|||第三句话`;
           }
           const pendingAll = collectPendingIncomingPayments();
           const pendingToAI = pendingAll ? pendingAll.filter(p => p.direction === 'toAI') : null;
@@ -9113,27 +10604,70 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               sys += `⚠️ 群聊场景：**每个成员**都要根据自己的人设独立判断！如果领，就在该成员的回复块里加 [领取红包]；如果不领，就加 [不领红包: 原因]。\n`;
               sys += `⚠️ 红包有剩余数量时（如还剩3个），应该让多个成员各自领一个。转账一般只有一个收款人，通常只有一个成员收。\n`;
             }
-            sys += `⚠️ 决策标记必须单独占一行，和对白分开。90%情况应该拒绝！\n`;
+            sys += `⚠️ 决策标记必须单独占一行，和对白分开。按人设和关系自然判断，不要为了拒绝而拒绝，也不要对方发什么都收。\n`;
            }
 
           sys += `\n\n【主动发红包/转账能力】\n`;
-          sys += `在合适的场景下，你也可以主动给 ${userName} 发红包或转账（比如生日、节日庆祝、感谢对方、道歉、关系亲密的互动等），使用以下指令格式：\n`;
+          sys += `在合适的场景下，你也可以主动${isGroup ? '在群里' : `给 ${userName} `}发红包或转账（比如生日、节日庆祝、感谢对方、道歉、关系亲密的互动等），使用以下指令格式：\n`;
           sys += `- 转账：单独一行写 [转账:金额:备注]  例如 [转账:520:生日快乐] 或 [转账:100]\n`;
           sys += `- 红包（固定金额）：单独一行写 [红包:金额:留言]  例如 [红包:66.66:恭喜发财]\n`;
           sys += `- 红包（拼手气）：单独一行写 [红包拼手气:总金额:个数:留言]  例如 [红包拼手气:200:5:新年红包]\n`;
-          sys += `【发钱原则 —— 谨慎 > 主动】\n`;
-          sys += `1. 只有在特殊场景（生日/节日/重大感谢/道歉/亲密关系撒娇）才发，日常闲聊不要发。\n`;
-          sys += `2. 金额要符合人设：普通朋友<50，亲密关系可稍大(但一般不超200)，土豪人设例外。\n`;
-          sys += `3. 发钱指令和对白分开写，单独占一行。\n`;
+          sys += `【发钱原则 —— 像真人一样，别机械】\n`;
+          sys += `1. 生日、节日、感谢、道歉、撒娇、哄人、打赌输了、AA 还钱这些场景，都可以自然发；日常小额玩闹也可以，但不要每次聊天都发。\n`;
+          sys += `2. 金额要符合人设和关系：普通朋友<50，亲密关系可稍大(一般不超200)，土豪人设例外。\n`;
+          sys += `3. 发钱指令和对白分开写，单独占一行；发之前或发之后用一句话自然地说清楚为什么发。\n`;
           sys += `4. 不要连续发多个红包/转账，一次最多发一个。\n`;
+          sys += `\n\n【发送语音条】\n想用声音说话时，可以直接发一条语音条（对方点一下就能听到你的声音）。格式：单独一行写 [语音:要说的话]。\n`;
+          sys += `- 语音条内容是你要真正说出口的话，口语化、简短（30字以内），不要写动作描写，不要加括号。\n`;
+          sys += `- 撒娇、哄人、说晚安、想对方、情绪上来的时候，用语音条比打字更自然。\n`;
+          sys += `⚠️ 当对方说"发语音/发条语音/语音条/说句话给我听/用语音回我"时，必须用 [语音:内容] 发语音条，绝对不能改成打电话。\n`;
+          sys += `⚠️ [语音:内容] 是发语音条；[语音通话] 是发起一通电话，两者完全不同，严禁混用。\n`;
+
+          sys += `\n\n【发送位置】\n当你们聊到"你在哪/我到了/这家店在哪/要不要见面/我在这边"这类话题时，可以自然地发一个位置。\n`;
+          sys += `- 格式：单独一行写 [位置:地点名称|详细地址|距离]，地址和距离可以省略。例如 [位置:首尔林|首尔城东区纛岛路|3.2km]。\n`;
+          sys += `- 位置要符合角色当前所在的城市和场景，不要凭空乱编跨国地点。\n`;
+
           sys += `\n\n【主动打电话能力】\n`;
-          sys += `当话题到了该直接说话的时候（想念、着急、有重要的事、想听听声音、吵架后想哄人），你可以主动给 ${userName} 打语音电话。\n`;
-          sys += `- 格式：单独一行写 [语音通话]，不要加任何参数。\n`;
+          sys += `当话题到了该直接说话的时候（想念、着急、有重要的事、想听听声音、吵架后想哄人），你可以主动给 ${userName} 打电话。\n`;
+          sys += `- 语音电话：单独一行写 [语音通话]，不要加任何参数。\n`;
+          sys += `- 视频电话：单独一行写 [视频通话]。想见对方、想露脸、想给对方看某个东西时用。\n`;
+          sys += `- ⚠️ 只有你真的要发起一通电话时才用；对方只是让你发语音条时，用 [语音:...]，不要打电话。\n`;
           if(isGroup){
-            sys += `- 群聊里写 [语音通话] 时，就代表「你」本人要打电话；同一条回复里多人各写一次会变成多人通话。\n`;
+            sys += `- 群聊里写 [语音通话]/[视频通话] 时，就代表「你」本人要打电话；同一条回复里多人各写一次会变成多人通话。\n`;
           }
           sys += `- 发出后你会真的打电话过去，对方可以选择接听或拒绝；被拒绝后你会再发消息追问。\n`;
-          sys += `- 不要频繁使用，一天最多一次，只有在情绪或话题足够强烈时才用。\n`;
+          sys += `- 不要每句话都打电话，但情绪到位时可以自然打过去；同一话题里不要反复打。\n`;
+          try{
+            let lastCallTs = 0;
+            for(let i = history.length - 1; i >= 0; i--){
+              if(history[i] && history[i].type === 'call'){ lastCallTs = history[i].ts || 0; break; }
+            }
+            if(lastCallTs){
+              const mins = (Date.now() - lastCallTs) / 60000;
+              if(mins < 60){
+                sys += `- ⚠️ 你们 ${Math.max(1, Math.round(mins))} 分钟前才通过电话，这会儿先别再打了，用文字聊就好。\n`;
+              }
+            }
+          }catch(e){}
+
+          sys += `\n\n【聊天记录里的标记说明 —— 这些是真实发生过的微信消息】\n`;
+          sys += `- [语音] 内容：一条语音条，方括号后就是语音里说的话，你要像听过一样自然回应\n`;
+          sys += `- [图片] / [图片：说明]：一张图片\n`;
+          sys += `- [表情包]：一个表情包\n`;
+          sys += `- [位置] 地点（地址）：一个位置，可以顺着聊"离我多远""那边有什么"之类\n`;
+          sys += `- [转账 ¥金额，谁转给谁的，状态] / [红包 ¥金额，几个，已领：谁，谁发的，留言]：真实发生过的转账和红包，注意看清状态：\n`;
+          sys += `  · "还没收"：对方还没点收款，别急着道谢，也别催；\n`;
+          sys += `  · "对方已收款" / "已退回"：已经处理完了，可以自然地说一句"收到啦""怎么退回来了"之类；\n`;
+          sys += `  · 红包"已领：A、B"表示这些人已经领了，没领的可以顺口提一句。\n`;
+          sys += `- 通话记录（语音通话/视频通话）：你们真实通过的电话，聊过的内容要记得\n`;
+
+          sys += `\n\n【像真人一样聊天 —— 最重要】\n`;
+          sys += `1. 一次回复拆成 ${replyRange.min}~${replyRange.max} 条短消息，用 ||| 分隔；长短错落，不要每条都一样长，也不要每次都写一大段。\n`;
+          sys += `2. 多用语气词和表情（啊、呀、啦、诶、嘛、哈哈、🥺、😭、🙄、😅 等），不要像客服一样礼貌完整。\n`;
+          sys += `3. 先回应对方最后一句话的情绪，再补自己的话；不要自顾自换话题，也不要每句都反问。\n`;
+          sys += `4. 偶尔只回几个字（"嗯。""哈哈哈""真的假的""绝了"），真实聊天不会每句都很长。\n`;
+          sys += `5. 不要总结、不要复述对方的话、不要说"作为AI""我理解你的感受""希望我的回答能帮到你"这类话。\n`;
+          sys += `6. 转账、红包、位置、文字图、语音条、电话这些能力只在语境自然需要时使用，不要为了用而用，也不要一次全用上。\n`;
           if(activeWbs.length){
             sys += '\n\n【必须遵守的守则】';
             activeWbs.forEach(wb => { sys += `\n- ${wb.name}：${wb.content}`; });
@@ -9151,7 +10685,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
 例如：对方说了好消息想庆祝，就选含义"开心/庆祝/棒棒"的；对方难过安慰他，就选含义"安慰/抱抱/别难过"的。`;
           }
 
-          sys += `\n\n【生成文字图片】\n如果想发送一张纯文字图片（适合用来发鸡汤、金句、心情语录等），直接在回复中写 [文字图:要渲染的文字内容] 即可。例如：[文字图:今天也要元气满满呀]。文字图会自动生成正方形图片发送。`;
+          sys += `\n\n【生成文字图片】\n如果想发送一张纯文字图片（适合用来发鸡汤、金句、心情语录、晚安、歌词等），直接在回复中写 [文字图:要渲染的文字内容] 即可，也可以写成 [图片:要渲染的文字内容]。例如：[文字图:今天也要元气满满呀]。文字图会自动生成正方形图片发送，适合代替一大段文字表达情绪。`;
 
           try {
             const allD = Phone.getData('wechat');
@@ -9168,20 +10702,33 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             }
           } catch(e){}
 
+          if(isProactive){
+            sys += `\n\n【现在的情况 —— 主动开口】\n`;
+            if(isGroup){
+              sys += `这不是在回复对方，而是群里安静了一会儿，你们想主动找「${userName}」说话。挑 1~2 个成员自然地开口（可以顺手发个表情或语音条），像朋友突然想起TA一样。\n`;
+            } else {
+              sys += `这不是在回复对方，而是「${userName}」有一阵子没说话了，你想主动找TA聊。从你们最近聊过的事、你当下的状态，或突然想到的一件小事自然开口，像真人随手发一条微信那样。\n`;
+            }
+            sys += `- 不要用"在吗""在干嘛""怎么不说话""好久没聊了"这类套话开头，也不要一上来连问好几个问题。\n`;
+            sys += `- 可以只用 1~2 条很短的消息，甚至可以只发一个表情或一条语音条。\n`;
+            sys += `- 语气要符合你们的关系和当前时间段（深夜、早上、忙的时候都不一样）。\n`;
+          }
+
           const VALID_ROLES = ['system','user','assistant','tool'];
           const messages = [{ role:'system', content:sys }, ...history
             .filter(m => m.role && (m.content !== undefined || m.type === 'call'))
-            .map(m => ({
-              role: (() => {
+            .slice(-Math.max(5, parseInt(cs.contextCount || 50, 10)))
+            .map(m => {
+              const role = (() => {
                 const raw = m.role === 'typing' ? 'user' : (m.role === 'ai' ? 'assistant' : m.role);
                 return VALID_ROLES.includes(raw) ? raw : 'user';
-              })(),
-              content: m.type === 'call'
-                ? (m.status === 'connected'
-                    ? `[${m.kind === 'video' ? '视频' : '语音'}通话 ${callClock(m.duration || 0)}]`
-                    : `[${m.kind === 'video' ? '视频' : '语音'}通话未接通]`)
-                : (m.type==='image' ? (m.caption?`[图片：${m.caption}]`:'[图片]') : m.content)
-            }))];
+              })();
+              let text = ctxText(m);
+              if(isGroup && role === 'assistant' && m.speakerName && typeof text === 'string'){
+                text = `【${m.speakerName}】：${text}`;
+              }
+              return { role, content: text };
+            })];
           const rawReply = await Phone.chatWithAI(messages);
 
           function resolveSpeakerName(sn){
@@ -9243,19 +10790,33 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           applyPaymentsToParts(parts);
 
           const allCommands = [];
+          const expandedParts = [];
           parts.forEach(p => {
             const { speakerName, text } = isGroup ? p : (typeof p === 'string' ? parseSpeakerAndText(p) : p);
-            const { replyText, commands } = parseAISendCommands(text, speakerName);
-            p.text = replyText;
-            if(commands.length) allCommands.push(...commands);
+            const src = String(text == null ? '' : text);
+            const voiceRe = /[\[【](?:语音条|语音)[：:]([^\]】]+)[\]】]/g;
+            let last = 0;
+            let vm;
+            const pushText = t => {
+              const { replyText, commands } = parseAISendCommands(t, speakerName);
+              if(commands.length) allCommands.push(...commands);
+              if(replyText && replyText.trim()) expandedParts.push({ speakerName, text: replyText });
+            };
+            while((vm = voiceRe.exec(src)) !== null){
+              if(vm.index > last) pushText(src.slice(last, vm.index));
+              const vt = vm[1].trim();
+              if(vt) expandedParts.push({ speakerName, voice: vt });
+              last = voiceRe.lastIndex;
+            }
+            if(last === 0) pushText(src);
+            else if(last < src.length) pushText(src.slice(last));
           });
-          executeAISendCommands(allCommands);
 
-          const finalParts = parts
-            .filter(p => p.text && p.text.trim())
+          const finalParts = expandedParts
+            .filter(p => (p.voice && p.voice.trim()) || (p.text && p.text.trim()))
             .reduce((acc, p) => {
               const last = acc[acc.length - 1];
-              if(last && last.speakerName === p.speakerName && last.text === p.text) return acc;
+              if(last && !p.voice && !last.voice && last.speakerName === p.speakerName && last.text === p.text) return acc;
               acc.push(p);
               return acc;
             }, []);
@@ -9264,6 +10825,19 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           allStickers.forEach(s => { stickerMap[s.id] = s; });
           const parsedMessagesRaw = await Promise.all(finalParts.map(async (p, i) => {
             const { speakerName, text } = isGroup ? p : (typeof p === 'string' ? parseSpeakerAndText(p) : p);
+            if(p && p.voice){
+              const vt = String(p.voice).trim();
+              const spkContact = isGroup
+                ? members.find(m => m.name === speakerName)
+                : defaultContact;
+              const vid = (spkContact && spkContact.minimaxVoiceId) || '';
+              const dur = Math.max(1, Math.ceil(vt.length / 5));
+              const vMsg = { role:'ai', type:'voice', content: vt, duration: dur, audioUrl:'', speakerName, ts: Date.now() + i };
+              wcTTS(vt, vid).then(url => {
+                if(url){ vMsg.audioUrl = url; saveHistoryToStorage(); }
+              }).catch(()=>{});
+              return vMsg;
+            }
             const stickerMatch = text.match(/\[表情[：:]([^\]]+)\]/);
             if(stickerMatch){
               const sid = stickerMatch[1].trim();
@@ -9301,45 +10875,76 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             }
             return true;
           });
-          parsedMessages.forEach(m => history.push(m));
+          const replyBatchId = 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+          parsedMessages.forEach(m => { m.batchId = replyBatchId; history.push(m); });
           saveHistoryToStorage();
+          autoSummarizeHistory(chatId);
           t.remove();
 
           let idx = 0;
           function revealNext(){
             if(idx >= parsedMessages.length){
-              _notifyChatUpdated();
-              isReplying = false;
-              input.focus();
-              if(pendingCharCall){
-                const req = pendingCharCall;
-                pendingCharCall = null;
-                const callers = (req.callers || []).map(c => {
-                  if(!isGroup) return null;
-                  const byName = members.find(mm => mm.name === c.speakerName);
-                  if(byName) return byName;
-                  if(c.target) return members.find(mm => mm.name === c.target || (mm.name && c.target.includes(mm.name))) || null;
-                  return null;
-                }).filter(Boolean);
-                const callerArg = isGroup
-                  ? (callers.length ? callers : (members[0] ? [members[0]] : null))
-                  : undefined;
-                lastCharCallAt = Date.now();
-                aiReplyCountSinceCall = 0;
-                setTimeout(() => {
-                  if(!document.body.contains(detail) || isReplying) return;
-                  if(document.querySelector('.wc-call') || document.querySelector('.wc-incoming')) return;
-                  startIncomingCall(callerArg || undefined);
-                }, 1200);
-                return;
+              const afterAll = () => {
+                _notifyChatUpdated();
+                isReplying = false;
+                input.focus();
+                if(pendingCharCall){
+                  const req = pendingCharCall;
+                  pendingCharCall = null;
+                  const callers = (req.callers || []).map(c => {
+                    if(!isGroup) return null;
+                    const byName = members.find(mm => mm.name === c.speakerName);
+                    if(byName) return byName;
+                    if(c.target) return members.find(mm => mm.name === c.target || (mm.name && c.target.includes(mm.name))) || null;
+                    return null;
+                  }).filter(Boolean);
+                  const callerArg = isGroup
+                    ? (callers.length ? callers : (members[0] ? [members[0]] : null))
+                    : undefined;
+                  lastCharCallAt = Date.now();
+                  aiReplyCountSinceCall = 0;
+                  const isVideoCall = req.media === 'video';
+                  setTimeout(() => {
+                    if(!document.body.contains(detail) || isReplying) return;
+                    if(document.querySelector('.wc-call') || document.querySelector('.wc-incoming') || document.querySelector('.vc-call')) return;
+                    if(isVideoCall) startIncomingCall(callerArg || undefined, 'video');
+                    else startIncomingCall(callerArg || undefined);
+                  }, 1200);
+                  return;
+                }
+                maybeCharInitiateCall();
+                if(pendingAutoReply){
+                  pendingAutoReply = false;
+                  setTimeout(() => {
+                    if(!document.body.contains(detail) || isReplying) return;
+                    triggerAIReply();
+                  }, 600);
+                }
+              };
+              if(allCommands.length){
+                let ci = 0;
+                const stepCmd = () => {
+                  if(!document.body.contains(detail)){ isReplying = false; return; }
+                  if(ci >= allCommands.length){ afterAll(); return; }
+                  executeAISendCommands([allCommands[ci]]);
+                  ci++;
+                  setTimeout(stepCmd, 550 + Math.random() * 450);
+                };
+                setTimeout(stepCmd, 420);
+              } else {
+                afterAll();
               }
-              maybeCharInitiateCall();
               return;
             }
-            msgs.appendChild(renderOneMessage(parsedMessages[idx]));
+            const cur = parsedMessages[idx];
+            msgs.appendChild(renderOneMessage(cur));
             msgs.scrollTop = msgs.scrollHeight;
             idx++;
-            setTimeout(revealNext, 500 + Math.random() * 400);
+            const curLen = typeof cur.content === 'string' ? cur.content.length : 0;
+            const gap = (cur.type === 'voice' || cur.type === 'sticker' || cur.type === 'image' || cur.type === 'location')
+              ? 380 + Math.random() * 320
+              : Math.min(2000, 320 + Math.random() * 280 + Math.min(1300, curLen * 35));
+            setTimeout(revealNext, gap);
           }
           revealNext();
           return;
@@ -9365,6 +10970,8 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       if(!chat) return;
       const store = getHeartStore();
       const list = store.heartVoices[chatId] || [];
+      const d = Phone.getData('wechat');
+      const cs = (d.chatSettings || {})[chatId] || {};
 
       const existing = document.querySelector('.wc-heart-popup');
       if(existing) existing.remove();
@@ -9431,6 +11038,13 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           if(contact?.roleSetting){
             sys += `\n\n【角色人设】\n${contact.roleSetting}\n`;
           }
+          const memForHeart = ((Phone.getData('wechat') || {}).memories || {})[chatId];
+          if(memForHeart?.core?.length){
+            sys += `\n【核心记忆 - 必须牢记】\n${memForHeart.core.map(x => '- ' + x.content).join('\n')}\n`;
+          }
+          if(memForHeart?.storylines?.length){
+            sys += `\n【剧情线 - 必须据此发挥】\n${memForHeart.storylines.map(x => '- ' + x.content).join('\n')}\n`;
+          }
           if(contact?.writingStyle?.length){
             sys += `\n【文风参考（请模仿这些话法和语气）】\n${contact.writingStyle.slice(0,15).map(s => s.trim()).filter(Boolean).join('\n')}\n`;
           }
@@ -9468,6 +11082,8 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       if(!chat) return;
       const store = getHeartStore();
       const list = store.heartVoices[chatId] || [];
+      const d = Phone.getData('wechat');
+      const cs = (d.chatSettings || {})[chatId] || {};
 
       const panel = document.createElement('div');
       panel.className = 'wc-heart-panel';
@@ -9537,6 +11153,13 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           if(contact?.roleSetting){
             sys += `\n\n【角色人设】\n${contact.roleSetting}\n`;
           }
+          const memForHeart = ((Phone.getData('wechat') || {}).memories || {})[chatId];
+          if(memForHeart?.core?.length){
+            sys += `\n【核心记忆 - 必须牢记】\n${memForHeart.core.map(x => '- ' + x.content).join('\n')}\n`;
+          }
+          if(memForHeart?.storylines?.length){
+            sys += `\n【剧情线 - 必须据此发挥】\n${memForHeart.storylines.map(x => '- ' + x.content).join('\n')}\n`;
+          }
           sys += `\n最近的对话记录如下：\n${recent}\n\n`;
           sys += `请以第一人称（我）写出 ${chat.name} 此刻的心声，可以是对 ${userName} 的感觉、对刚才对话的想法、或者藏在心里的小秘密。语气要自然、细腻、有情感，不要太官方，像在写私密日记一样。篇幅适中，50-150字。`;
           if(activeWbs.length){
@@ -9593,7 +11216,8 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           stickerGroupIds:[], worldbookGroupIds:[],
           autoReply:false, autoReplySeconds:5, contextCount:50,
           realTime:false, shareGroupMemory:false, shareGroupIds:[],
-          phonePassword:'', proactiveMsg:false, proactiveMsgInterval:30, proactiveMoment:false, proactiveMomentInterval:60
+          phonePassword:'', proactiveMsg:false, proactiveMsgInterval:30, proactiveMoment:false, proactiveMomentInterval:60,
+          replyMin:1, replyMax:4, storyWordMin:400, storyWordMax:1000
         };
         d.chatSettings[chatId] = cs;
         return { d, cs };
@@ -9657,7 +11281,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           </div>
           <div class="wc-set-row" data-act="worldbookGroups">
             <span class="wc-set-label">世界书分组绑定</span>
-            <span class="wc-set-val"><span class="wc-set-val-text">${cs.worldbookGroupIds.length ? '已绑定 ' + cs.worldbookGroupIds.length + ' 项' : '未绑定'}</span><span class="wc-set-arrow">›</span></span>
+            <span class="wc-set-val"><span class="wc-set-val-text">${getBoundWorldbookGroupNames(cs.worldbookGroupIds)}</span><span class="wc-set-arrow">›</span></span>
           </div>
           <div class="wc-set-row" data-act="autoReply">
             <span class="wc-set-label">角色自动回复</span>
@@ -9669,6 +11293,21 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             <input type="number" class="wc-set-sub-input" min="1" max="30" value="${cs.autoReplySeconds}" data-num="autoReplySeconds">
             <span class="wc-set-sub-label">秒回复</span>
           </div>` : ''}
+          <div class="wc-set-subhead">回复设置</div>
+          <div class="wc-set-sub-row">
+            <span class="wc-set-sub-label">线上角色回复</span>
+            <input type="number" class="wc-set-sub-input" min="1" max="20" value="${cs.replyMin ?? 1}" data-num="replyMin">
+            <span class="wc-set-sub-label">~</span>
+            <input type="number" class="wc-set-sub-input" min="1" max="20" value="${cs.replyMax ?? 4}" data-num="replyMax">
+            <span class="wc-set-sub-label">条</span>
+          </div>
+          <div class="wc-set-sub-row">
+            <span class="wc-set-sub-label">线下剧情文字</span>
+            <input type="number" class="wc-set-sub-input" min="100" max="4000" step="50" value="${cs.storyWordMin ?? 400}" data-num="storyWordMin">
+            <span class="wc-set-sub-label">~</span>
+            <input type="number" class="wc-set-sub-input" min="100" max="4000" step="50" value="${cs.storyWordMax ?? 1000}" data-num="storyWordMax">
+            <span class="wc-set-sub-label">字</span>
+          </div>
           <div class="wc-set-slider-row">
             <div class="wc-set-slider-head">
               <span class="wc-set-label">上下文记忆条数</span>
@@ -9759,6 +11398,10 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             if(key === 'autoReplySeconds') cs.autoReplySeconds = Math.max(1, Math.min(30, v||5));
             if(key === 'proactiveMsgInterval') cs.proactiveMsgInterval = Math.max(5, Math.min(1440, v||30));
             if(key === 'proactiveMomentInterval') cs.proactiveMomentInterval = Math.max(5, Math.min(1440, v||60));
+            if(key === 'replyMin'){ cs.replyMin = Math.max(1, Math.min(20, v||1)); if(cs.replyMax < cs.replyMin) cs.replyMax = cs.replyMin; }
+            if(key === 'replyMax'){ cs.replyMax = Math.max(1, Math.min(20, v||4)); if(cs.replyMin > cs.replyMax) cs.replyMin = cs.replyMax; }
+            if(key === 'storyWordMin'){ cs.storyWordMin = Math.max(100, Math.min(4000, v||400)); if(cs.storyWordMax < cs.storyWordMin) cs.storyWordMax = cs.storyWordMin; }
+            if(key === 'storyWordMax'){ cs.storyWordMax = Math.max(100, Math.min(4000, v||1000)); if(cs.storyWordMin > cs.storyWordMax) cs.storyWordMin = cs.storyWordMax; }
             saveSettings(d);
             render();
           });
@@ -9814,13 +11457,16 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               cs.stickerGroupIds = ids; saveSettings(d); render();
             });
             break;
-          case 'worldbookGroups':
-            openMultiPicker('选择世界书分组', (Phone._getState().worldbooks||[]).map(w=>({id:w.id,name:w.name})), cs.worldbookGroupIds, (ids) => {
-              cs.worldbookGroupIds = ids;
-              if(contact){ contact.worldbookIds = ids.slice(); saveContacts(MOCK_CONTACTS); }
+          case 'worldbookGroups': {
+            const wbGroups = getWorldbookGroupOptions();
+            const preSelected = wbGroups.filter(o => (cs.worldbookGroupIds || []).includes(o.id) || o.ids.some(id => (cs.worldbookGroupIds || []).includes(id))).map(o => o.id);
+            openMultiPicker('选择世界书分组', wbGroups.map(o=>({id:o.id,name:o.name})), preSelected, (ids) => {
+              cs.worldbookGroupIds = ids.slice();
+              if(contact){ contact.worldbookIds = resolveWorldbookIds(cs.worldbookGroupIds); saveContacts(MOCK_CONTACTS); }
               saveSettings(d); render();
-            });
+            }, '暂无世界书分组，请先在世界书 App 中添加');
             break;
+          }
           case 'shareGroups': {
             const groups = getGroups();
             openMultiPicker('选择共享群聊', groups.map(g=>({id:g.id,name:g.name})), cs.shareGroupIds, (ids) => {
@@ -9860,7 +11506,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
                 if(posterFontType === '繁体') content = toTraditional(content);
                 const images = [];
                 content = content.replace(/\[文字图[：:]([^\]]+)\]/g, (m, txt) => {
-                  images.push({ type:'text', text: txt.trim(), bg:'#ffffff', fg:'#1a1a1a' });
+                  const pal = [['#6E7B8B','#2B323C'],['#F2F0EC','#3B3A36'],['#E9E9E9','#3A3A3A'],['#E3E7EC','#39434E'],['#E7E4DE','#4A443C'],['#33363B','#EDEFF2']];
+                  const c = pal[Math.floor(Math.random() * pal.length)];
+                  images.push({ type:'text', text: txt.trim(), bg:c[0], fg:c[1] });
                   return '';
                 }).trim();
                 const puqData = Phone.getData('puq') || { posts:[] };
@@ -9930,7 +11578,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             }
             break;
           case 'delete':
-            if(confirm(`确定删除与「${contact?.name||chat.name}」的会话？此操作不可恢复。`)){
+            {
               const idx = MOCK_CHATS.findIndex(c=>c.id===chatId);
               if(idx>-1) MOCK_CHATS.splice(idx,1);
               const wd = Phone.getData('wechat') || {};

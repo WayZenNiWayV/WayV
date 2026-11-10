@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -29,12 +29,6 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
 .phone-screen{width:100%;height:100%;background:var(--green-bg);border-radius:calc(var(--radius) - var(--phone-w)*0.016);overflow:hidden;position:relative;display:flex;flex-direction:column;}
 .phone-screen::before{content:"";position:absolute;top:-20%;left:-20%;width:80%;height:60%;background:radial-gradient(circle,rgba(124,204,155,.45) 0%,transparent 70%);pointer-events:none;}
 .phone-screen::after{content:"";position:absolute;bottom:-15%;right:-15%;width:70%;height:55%;background:radial-gradient(circle,rgba(184,226,198,.55) 0%,transparent 70%);pointer-events:none;}
-.status-bar{height:calc(var(--phone-w)*0.095 + var(--safe-top));padding:calc(var(--safe-top) + var(--phone-w)*0.015) calc(var(--phone-w)*0.064) 0;display:flex;justify-content:space-between;align-items:center;font-size:calc(var(--phone-w)*0.04);font-weight:600;color:var(--green-ink);position:relative;z-index:1;}
-.status-bar .icons{display:flex;gap:calc(var(--phone-w)*0.016);align-items:center;font-size:calc(var(--phone-w)*0.035);}
-.status-bar .icons svg{display:block;flex-shrink:0;}
-.status-bar .sig-icon,.status-bar .wifi-icon{width:calc(var(--phone-w)*0.045);height:calc(var(--phone-w)*0.045);}
-.status-bar .bat-icon{width:calc(var(--phone-w)*0.062);height:calc(var(--phone-w)*0.034);}
-.status-bar .bat-text{font-variant-numeric:tabular-nums;}
 .desktop{flex:0 0 auto;padding:8px 10px calc(var(--phone-w)*0.015);display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:calc(var(--phone-w)*0.19);gap:calc(var(--phone-w)*0.018);overflow-y:auto;align-content:start;position:relative;z-index:1;}
 .desktop::-webkit-scrollbar{display:none;}
 .tile{border-radius:calc(var(--phone-w)*0.04);cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .6s cubic-bezier(.32,2,.4,1);}
@@ -54,7 +48,7 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
 .dock-item .dock-label{font-size:calc(var(--phone-w)*0.024);color:var(--green-ink);font-weight:500;}
 
 .disk-widget{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;padding:calc(var(--phone-w)*0.02);transform:translateY(15px);}
-.disk-vinyl{width:calc(var(--phone-w)*0.34);height:calc(var(--phone-w)*0.34);border-radius:50%;background:repeating-radial-gradient(circle at center,#1a1a1a 0,#1a1a1a 1.5px,#333 2px,#333 2.5px);position:relative;animation:diskSpin 16s linear infinite;box-shadow:none;flex-shrink:0;will-change:transform;}
+.disk-vinyl{width:calc(var(--phone-w)*0.34);height:calc(var(--phone-w)*0.34);border-radius:50%;background:repeating-radial-gradient(circle at center,#1a1a1a 0,#1a1a1a 1.5px,#333 2px,#333 2.5px);position:relative;animation:diskSpin 16s linear infinite;box-shadow:none;flex-shrink:0;will-change:transform;cursor:pointer;}
 .disk-cover{position:absolute;width:calc(var(--phone-w)*0.16);height:calc(var(--phone-w)*0.16);border-radius:50%;overflow:hidden;background:#111;border:3px solid #000;top:50%;left:50%;transform:translate(-50%,-50%);cursor:pointer;}
 .disk-cover img{width:100%;height:100%;object-fit:cover;}
 .disk-cover svg{width:55%;height:55%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--green-deep);}
@@ -162,6 +156,15 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
 .voice-card .voice-preview{display:flex;align-items:center;gap:10px;padding:10px;background:var(--green-bg);border-radius:10px;margin-top:8px;min-width:0;overflow:hidden;}
 .voice-play-btn{width:36px;height:36px;border-radius:50%;background:var(--green-deep);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
 .voice-play-btn:active{transform:scale(.92);}
+.voice-seg{display:flex;gap:8px;flex:1;min-width:0;}
+.voice-seg-btn{flex:1;padding:9px 8px;border-radius:10px;border:1px solid var(--line);background:var(--green-bg);color:var(--green-ink);font-size:13px;font-family:inherit;cursor:pointer;transition:transform .1s;white-space:nowrap;}
+.voice-seg-btn:active{transform:scale(.96);}
+.voice-seg-btn.active{background:var(--green-deep);border-color:var(--green-deep);color:#fff;font-weight:600;}
+.voice-hint{font-size:11px;color:var(--green-ink-soft);line-height:1.5;padding:6px 2px 8px;word-break:break-all;}
+.voice-models{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 10px;}
+.voice-model-btn{padding:7px 12px;border-radius:10px;border:1px solid var(--line);background:var(--green-bg);color:var(--green-ink);font-size:12px;font-family:inherit;cursor:pointer;transition:transform .1s;}
+.voice-model-btn:active{transform:scale(.96);}
+.voice-model-btn.active{background:var(--green-deep);border-color:var(--green-deep);color:#fff;font-weight:600;}
 
 .chat-page{display:flex;flex-direction:column;height:100%;}
 .chat-header{flex-shrink:0;}
@@ -197,7 +200,6 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
   .phone-shell{width:100vw;height:100dvh;border-radius:0;padding:0;box-shadow:none;background:var(--green-bg);}
   .phone-shell::before{display:none;}
   .phone-screen{width:100%;height:100%;background:var(--green-bg);border-radius:calc(var(--radius) - var(--phone-w)*0.016);overflow:hidden;position:relative;display:flex;flex-direction:column;}
-  .status-bar{height:calc(var(--phone-w)*0.095 + var(--safe-top));padding-top:calc(var(--safe-top) + var(--phone-w)*0.015);}
   .desktop{padding:10px calc(var(--phone-w)*0.03) calc(var(--phone-w)*0.027);}
   .dock{margin:calc(var(--phone-w)*0.016) calc(var(--phone-w)*0.03) calc(var(--phone-w)*0.01);}
   .modal-mask{padding:var(--safe-top) env(safe-area-inset-right,0px) var(--safe-bottom) env(safe-area-inset-left,0px);}
@@ -220,7 +222,6 @@ html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Micros
 <body>
 <div id="phone" class="phone-shell">
   <div class="phone-screen" id="phoneScreen">
-    <div class="status-bar" id="statusBar"></div>
     <div class="desktop" id="desktop"></div>
     <div class="photo-strip" id="photoStrip"></div>
     <div class="dock" id="dock"></div>
@@ -308,7 +309,12 @@ const Phone = (() => {
     }
     if(!state.currentApiId && state.apis.length) state.currentApiId = state.apis[0].id;
     if(!state.voiceConfig){
-      state.voiceConfig = { provider:'minimax', groupId:'', apiKey:'', voiceId:'', model:'speech-01-t2s', speed:1.0 };
+      state.voiceConfig = { provider:'minimax', groupId:'', apiKey:'', voiceId:'', baseUrl:'https://api.minimaxi.com', region:'cn', model:'speech-2.8-hd', speed:1.0 };
+    }else{
+      const vc = state.voiceConfig;
+      if(!vc.region) vc.region = /api\.minimax\.io/i.test(String(vc.baseUrl||'')) ? 'global' : 'cn';
+      if(!vc.baseUrl || /api\.minimax\.chat/i.test(String(vc.baseUrl||''))) vc.baseUrl = vc.region === 'global' ? 'https://api.minimax.io' : 'https://api.minimaxi.com';
+      if(!vc.model) vc.model = 'speech-2.8-hd';
     }
     if(!state.worldbooks) state.worldbooks = [
       { id:'wb_1', name:'角色扮演守则', group:'人设', global:true, content:'\u5bf9\u8bdd\u65f6\u4fdd\u6301\u89d2\u8272\u7684\u4e00\u8d2f\u6027\uff0c\u4e0d\u8981\u7a81\u7834\u7b2c\u56db\u5899\u3002\n\u56de\u5e94\u8981\u7b26\u5408\u89d2\u8272\u7684\u8eab\u4efd\u3001\u5e74\u9f84\u548c\u6027\u683c\u3002\n\u5c0f\u8bed\u5de5\u5177\u548c\u8868\u60c5\u52a8\u4f5c\u63cf\u5199\u53ef\u4ee5\u589e\u52a0\u771f\u5b9e\u611f\u3002' },
@@ -320,7 +326,6 @@ const Phone = (() => {
     });
     if(!state.chatHistory) state.chatHistory = {};
     saveState();
-    renderStatusBar();
     Desktop.mount(widgets, apps);
     startClock();
     fetchRealWeather();
@@ -434,35 +439,6 @@ const Phone = (() => {
   function getGlobalData(key){ state.globalData = state.globalData || {}; state.globalData[key] = state.globalData[key] || {}; return state.globalData[key]; }
   function setGlobalData(key, value){ state.globalData = state.globalData || {}; state.globalData[key] = value; saveState(); }
   function updateChar(patch){ Object.assign(getCurrentChar(), patch); saveState(); }
-  function renderStatusBar(){
-    const bar = document.getElementById('statusBar');
-    if(!bar) return;
-    const SIG_SVG = '<svg class="sig-icon" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="2.4" height="4" rx="0.6"/><rect x="3.4" y="6" width="2.4" height="6" rx="0.6"/><rect x="6.8" y="4" width="2.4" height="8" rx="0.6"/><rect x="10.2" y="2" width="2.4" height="10" rx="0.6"/><rect x="13.6" y="0" width="2.4" height="12" rx="0.6"/></svg>';
-    const WIFI_SVG = '<svg class="wifi-icon" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 4.5a10 10 0 0114 0"/><path d="M3.2 7a6 6 0 019.6 0"/><path d="M5.6 9.2a2.5 2.5 0 014.8 0"/><circle cx="8" cy="11" r="0.7" fill="currentColor" stroke="none"/></svg>';
-    let batteryLevel = null;
-    let charging = false;
-    const batterySvg = () => {
-      const lvl = batteryLevel == null ? 1 : batteryLevel;
-      const fillW = Math.max(1, Math.round(lvl * 16));
-      const fillColor = charging ? '#f5b800' : (lvl <= 0.2 ? '#e74c3c' : 'var(--green-deep)');
-      return `<svg class="bat-icon" viewBox="0 0 24 12"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2" y="2" width="${fillW}" height="8" rx="1.5" fill="${fillColor}"/><rect x="21.2" y="4" width="1.8" height="4" rx="0.6" fill="currentColor"/></svg>`;
-    };
-    const batPct = () => batteryLevel == null ? '' : `<span class="bat-text">${Math.round(batteryLevel*100)}%</span>`;
-    const update = () => {
-      const d = new Date();
-      bar.innerHTML = `<span>${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</span><span class="icons">${SIG_SVG}${WIFI_SVG}${batterySvg()}${batPct()}</span>`;
-    };
-    update();
-    setInterval(update, 30000);
-    if(navigator.getBattery){
-      navigator.getBattery().then(bat => {
-        const updBat = () => { batteryLevel = bat.level; charging = bat.charging; update(); };
-        updBat();
-        bat.addEventListener('levelchange', updBat);
-        bat.addEventListener('chargingchange', updBat);
-      }).catch(()=>{});
-    }
-  }
   function startClock(){
     setInterval(() => {
       const clock = document.querySelector('.widget-homeinfo .clock');
@@ -497,10 +473,18 @@ const Phone = (() => {
         else if(f.type === 'file') inputs += `<div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">${f.label}</div><input type="file" accept="image/*" data-key="${f.key}" ${f.multiple?'multiple':''}></div>`;
         else if(f.type === 'select') inputs += `<div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">${f.label}</div><select data-key="${f.key}" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none;background:#fff">${f.opts||''}</select></div>`;
         else if(f.type === 'checkbox') inputs += `<div style="margin-bottom:10px;display:flex;align-items:center;gap:8px"><input type="checkbox" data-key="${f.key}" ${f.checked?'checked':''} style="width:18px;height:18px"><span style="font-size:13px;color:var(--green-ink)">${f.label}</span></div>`;
+        else if(f.button){
+          inputs += `<div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">${f.label}</div><div style="display:flex;gap:8px;align-items:center"><input type="${f.type||'text'}" data-key="${f.key}" placeholder="${f.placeholder||''}" value="${f.value||''}" style="flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none"><button type="button" data-field-btn="${f.key}" style="flex:none;width:38px;height:38px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--green-deep);color:#fff;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit">${f.button}</button></div></div>`;
+        }
         else inputs += `<div style="margin-bottom:10px"><div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:4px">${f.label}</div><input type="${f.type||'text'}" data-key="${f.key}" placeholder="${f.placeholder||''}" value="${f.value||''}" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--green-ink);font-family:inherit;outline:none"></div>`;
       });
       mask.innerHTML = `<div class="modal-box" style="animation:popIn .25s ease"><h4>${title||''}</h4>${inputs}<div class="modal-actions"><button class="btn-cancel" data-act="cancel">取消</button><button class="btn-ok" data-act="ok">确定</button></div></div>`;
       root.appendChild(mask);
+      fields.forEach(f => {
+        if(!f.button) return;
+        const btn = mask.querySelector(`[data-field-btn="${f.key}"]`);
+        if(btn) btn.onclick = (e) => { e.stopPropagation(); f.onButton?.(mask.querySelector(`[data-key="${f.key}"]`), mask); };
+      });
       const box = mask.querySelector('.modal-box');
       function dismiss(result){ mask.style.animation='fadeIn .2s ease reverse'; box.style.animation='popIn .2s ease reverse'; setTimeout(()=>mask.remove(),180); resolve(result); }
       mask.addEventListener('click', e => {
@@ -902,20 +886,6 @@ async function editCharacter(char){
       </div>`;
       }).join('')}
     </div>
-    <div style="margin-bottom:10px">
-      <div style="font-size:12px;color:var(--green-ink-soft);margin-bottom:6px">世界书（勾选对该角色生效的守则）</div>
-      <div id="charWorldbooks">${(() => {
-        const wbs = Phone._getState().worldbooks || [];
-        if(wbs.length === 0) return '<div style="font-size:12px;color:var(--green-ink-soft);padding:8px 0">暂无世界书，请先在世界书 App 中添加</div>';
-        return wbs.map(wb => {
-          const checked = wb.global || (editing.worldbookIds || []).includes(wb.id);
-          return `<label style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer">
-            <input type="checkbox" data-wb-id="${wb.id}" ${checked?'checked':''} style="width:16px;height:16px">
-            <span style="font-size:13px;color:var(--green-ink);flex:1">${wb.name}${wb.global?' <span style="font-size:11px;color:var(--green-deep)">[全局]</span>':''}</span>
-          </label>`;
-        }).join('');
-      })()}</div>
-    </div>
     <div class="modal-actions"><button class="btn-cancel" data-act="cancel">取消</button><button class="btn-ok" data-act="ok">保存</button></div>
   </div>`;
   root.appendChild(mask);
@@ -953,7 +923,6 @@ async function editCharacter(char){
         editing.persona = mask.querySelector('#charPersona').value.trim();
         editing.social = char?.social || { wechatId:'', weiboId:'', bubbleId:'', taobaoId:'' };
         editing.wcProfile = char?.wcProfile || { gender:'', region:'', patMsg:'', signature:'' };
-        editing.worldbookIds = Array.from(mask.querySelectorAll('#charWorldbooks input[type="checkbox"]:checked')).map(cb => cb.dataset.wbId);
         Phone.saveChar(editing);
         rerender('homeInfo');
         dismiss(editing);
@@ -1080,13 +1049,23 @@ function renderSettingsPage(body){
   append(`<div class="settings-section" style="margin-top:22px"><div class="settings-section-title">MiniMax 语音配置</div></div>`);
   const voiceCard = document.createElement('div');
   voiceCard.className = 'settings-card voice-card';
-  const vmOpts = ['speech-01-t2s','speech-02-t2s','speech-01-t2s-hd'];
-  const cardHtml = `<div class="settings-row"><div class="settings-row-label">Group ID</div><input class="settings-row-input" id="voiceGroupId" type="text" value="${voiceCfg.groupId||''}" placeholder="MiniMax 团队 ID（一串数字）"></div>
+  const vmOpts = ['speech-2.8-hd','speech-2.8-turbo','speech-2.6-hd','speech-2.6-turbo','speech-02-hd','speech-02-turbo','speech-01-hd','speech-01-turbo'];
+  const curModel = String(voiceCfg.model || '').trim();
+  if(curModel && vmOpts.indexOf(curModel) < 0) vmOpts.unshift(curModel);
+  const activeModel = curModel || vmOpts[0];
+  const curRegion = /minimax\.io/i.test(String(voiceCfg.baseUrl || '')) ? 'global' : 'cn';
+  const cardHtml = `<div class="settings-row"><div class="settings-row-label">Group ID</div><input class="settings-row-input" id="voiceGroupId" type="text" value="${voiceCfg.groupId||''}" placeholder="MiniMax 团队 ID（T2A 接口可不填）"></div>
     <div class="settings-row"><div class="settings-row-label">API Key</div><input class="settings-row-input" id="voiceKey" type="password" value="${voiceCfg.apiKey||''}" placeholder="MiniMax API Key"></div>
-    <div class="settings-row"><div class="settings-row-label">Voice ID</div><input class="settings-row-input" id="voiceVoiceId" type="text" value="${voiceCfg.voiceId||''}" placeholder="音色 ID"></div>
-    <div class="settings-row"><div class="settings-row-label">模型</div>
-      <select class="settings-row-select" id="voiceModel">${vmOpts.map(m=>`<option value="${m}" ${m===voiceCfg.model?'selected':''}>${m}</option>`).join('')}</select>
+    <div class="settings-row"><div class="settings-row-label">接口区域</div>
+      <div class="voice-seg" id="voiceRegion">
+        <button type="button" class="voice-seg-btn ${curRegion==='cn'?'active':''}" data-region="cn">国内版</button>
+        <button type="button" class="voice-seg-btn ${curRegion==='global'?'active':''}" data-region="global">海外版</button>
+      </div>
     </div>
+    <div class="voice-hint" id="voiceRegionHint"></div>
+    <div class="settings-row"><div class="settings-row-label">模型</div></div>
+    <div class="voice-models" id="voiceModelList">${vmOpts.map(m=>`<button type="button" class="voice-model-btn ${m===activeModel?'active':''}" data-model="${m}">${m}</button>`).join('')}</div>
+    <div class="voice-hint">HD 模型音质更好，Turbo 模型速度更快延迟更低。</div>
     <div class="settings-row"><div class="settings-row-label">语速</div>
       <input class="settings-row-input" id="voiceSpeed" type="number" step="0.1" min="0.1" max="3" value="${voiceCfg.speed||1.0}">
     </div>
@@ -1107,46 +1086,93 @@ function renderSettingsPage(body){
 
   const vKey = voiceCard.querySelector('#voiceKey');
   const vGroupId = voiceCard.querySelector('#voiceGroupId');
-  const vVoiceId = voiceCard.querySelector('#voiceVoiceId');
-  const vModel = voiceCard.querySelector('#voiceModel');
   const vSpeed = voiceCard.querySelector('#voiceSpeed');
+  const V_HOSTS = { cn:'https://api.minimaxi.com', global:'https://api.minimax.io' };
+  let selRegion = curRegion;
+  let selModel = activeModel;
+  const regionHint = voiceCard.querySelector('#voiceRegionHint');
+  const paintRegion = () => {
+    voiceCard.querySelectorAll('#voiceRegion .voice-seg-btn').forEach(b => b.classList.toggle('active', b.dataset.region === selRegion));
+    regionHint.textContent = (selRegion === 'cn' ? '国内版接口：' : '海外版接口：') + V_HOSTS[selRegion];
+  };
+  voiceCard.querySelectorAll('#voiceRegion .voice-seg-btn').forEach(b => {
+    b.onclick = () => { selRegion = b.dataset.region; paintRegion(); };
+  });
+  paintRegion();
+  voiceCard.querySelectorAll('#voiceModelList .voice-model-btn').forEach(b => {
+    b.onclick = () => {
+      selModel = b.dataset.model;
+      voiceCard.querySelectorAll('#voiceModelList .voice-model-btn').forEach(x => x.classList.toggle('active', x === b));
+    };
+  });
   voiceCard.querySelector('#voiceSave').onclick = () => {
     Phone._getState().voiceConfig = {
-      provider:'minimax', groupId: vGroupId.value.trim(), apiKey: vKey.value.trim(), voiceId: vVoiceId.value.trim(), model: vModel.value, speed: parseFloat(vSpeed.value) || 1.0
+      provider:'minimax', groupId: vGroupId.value.trim(), apiKey: vKey.value.trim(), voiceId: voiceCfg.voiceId || '', baseUrl: V_HOSTS[selRegion], region: selRegion, model: selModel, speed: parseFloat(vSpeed.value) || 1.0
     };
     Phone._saveState();
     alert('语音配置已保存');
   };
   const voicePreview = voiceCard.querySelector('#voicePreview');
   voiceCard.querySelector('#voiceTest').onclick = () => { voicePreview.style.display = 'flex'; };
+  const hexToAudioUrl = (hex) => {
+    try{
+      const s = String(hex || '').replace(/[\s]/g, '');
+      if(!s || s.length < 2) return '';
+      const len = s.length >> 1;
+      const bytes = new Uint8Array(len);
+      for(let i = 0; i < len; i++){
+        const v = parseInt(s.substr(i * 2, 2), 16);
+        if(isNaN(v)) return '';
+        bytes[i] = v;
+      }
+      let bin = '';
+      for(let i = 0; i < bytes.length; i += 0x8000){
+        bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+      }
+      return 'data:audio/mpeg;base64,' + btoa(bin);
+    }catch(e){ return ''; }
+  };
   let currentAudio = null;
   voiceCard.querySelector('#voicePlayBtn').onclick = async () => {
-    const cfg = Phone._getState().voiceConfig;
-    if(!cfg.groupId){ alert('请先填入 MiniMax Group ID'); return; }
+    const cfg = Object.assign({}, Phone._getState().voiceConfig, {
+      groupId: vGroupId.value.trim(), apiKey: vKey.value.trim(),
+      baseUrl: V_HOSTS[selRegion], model: selModel, speed: parseFloat(vSpeed.value) || 1.0
+    });
     if(!cfg.apiKey){ alert('请先填入 MiniMax API Key'); return; }
-    if(!cfg.voiceId){ alert('请先填入 Voice ID'); return; }
+    const vid = cfg.voiceId || 'female-shaonv';
     const text = voiceCard.querySelector('#voiceTestText').value.trim();
     if(!text) return;
+    const base = String(cfg.baseUrl || 'https://api.minimaxi.com').trim().replace(/\/+$/, '');
+    const model = /t2s/i.test(String(cfg.model || '')) || !cfg.model ? 'speech-02-turbo' : cfg.model;
+    const gid = String(cfg.groupId || '').trim();
+    const qs = gid ? `?GroupId=${encodeURIComponent(gid)}` : '';
     try{
-      const res = await fetch('https://api.minimax.chat/v1/text_to_speech', {
+      const res = await fetch(`${base}/v1/t2a_v2${qs}`, {
         method:'POST',
-        headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${cfg.apiKey}`, 'GroupId': cfg.groupId },
+        headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${cfg.apiKey}` },
         body: JSON.stringify({
-          model: cfg.model,
+          model,
           text,
-          voice_setting:{ voice_id: cfg.voiceId, speed: cfg.speed || 1.0 },
-          response_type: 'url'
+          stream: false,
+          voice_setting:{ voice_id: vid, speed: cfg.speed || 1.0, vol: 1, pitch: 0 },
+          audio_setting:{ sample_rate: 32000, bitrate: 128000, format: 'mp3', channel: 1 },
+          output_format: 'hex'
         })
       });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
       const json = await res.json();
-      if(json.data?.audio_url){
+      const br = json.base_resp || {};
+      if(br.status_code && br.status_code !== 0) throw new Error(br.status_msg || ('错误码 ' + br.status_code));
+      const data = json.data || {};
+      const url = data.audio ? hexToAudioUrl(data.audio) : (data.audio_url || '');
+      if(url){
         if(currentAudio) currentAudio.pause();
-        currentAudio = new Audio(json.data.audio_url);
+        currentAudio = new Audio(url);
         currentAudio.play();
       }else{
-        alert('试听失败: ' + (json.base_resp?.status_msg || '未知错误'));
+        alert('试听失败：接口没有返回音频数据');
       }
-    }catch(e){ alert('试听失败: ' + e.message); }
+    }catch(e){ alert('试听失败: ' + e.message + '\n（若是 Failed to fetch，请先点“保存语音配置”，再切换国内 / 海外接口重试）'); }
   };
 }
 
@@ -1202,7 +1228,8 @@ Phone.registerWidget({
       const r = await Phone.modal({ title:'更换唱片封面', fields:[{key:'url',label:'图片 URL',value:''},{key:'file',label:'或上传本地图片',type:'file'}], onOk:async v=>{const d=Phone.getGlobalData('disk');if(v.file)d.cover=await Phone.fileToBase64(v.file);else if(v.url.trim())d.cover=v.url.trim();Phone.setGlobalData('disk',d);return v;} });
       if(r) rerender('disk');
     }
-  }
+  },
+  onWidgetClick: () => openMusicPage()
 });
 
 Phone.registerWidget({
@@ -1378,6 +1405,35 @@ function openWorldBookPage(){
     });
   }
 
+  function pickWorldBookGroup(onPick){
+    const esc = (s) => String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const groups = [];
+    (state.worldbooks || []).forEach(w => {
+      const g = String(w.group || '').trim();
+      if(g && groups.indexOf(g) < 0) groups.push(g);
+    });
+    const root = document.getElementById('modalRoot');
+    const mask = document.createElement('div');
+    mask.className = 'modal-mask';
+    const body = groups.length
+      ? groups.map(g => `<label style="display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer"><input type="radio" name="wbGroupPick" value="${esc(g)}" style="width:16px;height:16px"><span style="font-size:13px;color:var(--green-ink)">${esc(g)}</span></label>`).join('')
+      : '<div style="font-size:13px;color:var(--green-ink-soft);padding:16px 0;text-align:center">暂无已有分组，直接在输入框填写即可</div>';
+    mask.innerHTML = `<div class="modal-box" style="animation:popIn .25s ease;max-height:75vh;overflow-y:auto"><h4>选择已有分组</h4><div>${body}</div><div class="modal-actions"><button class="btn-cancel" data-act="cancel">取消</button>${groups.length?'<button class="btn-ok" data-act="ok">确定</button>':''}</div></div>`;
+    root.appendChild(mask);
+    const box = mask.querySelector('.modal-box');
+    function dismiss(){ mask.style.animation='fadeIn .2s ease reverse'; box.style.animation='popIn .2s ease reverse'; setTimeout(()=>mask.remove(),180); }
+    mask.addEventListener('click', e => {
+      if(e.target === mask) return dismiss();
+      const act = e.target.dataset.act;
+      if(act === 'cancel') return dismiss();
+      if(act === 'ok'){
+        const sel = mask.querySelector('input[name="wbGroupPick"]:checked');
+        if(sel) onPick(sel.value);
+        dismiss();
+      }
+    });
+  }
+
   function openWorldBookEditor(wb, onDone){
     const isNew = !wb;
     const editing = wb ? {...wb} : { id:'wb_'+Date.now(), name:'', content:'', group:'', global:false };
@@ -1385,7 +1441,7 @@ function openWorldBookPage(){
       title: isNew ? '添加世界书' : '编辑世界书',
       fields: [
         { key:'name', label:'名称', value: editing.name, placeholder:'例如:说话风格' },
-        { key:'group', label:'分组', value: editing.group||'', placeholder:'例如:默认/不填则未分组' },
+        { key:'group', label:'分组', value: editing.group||'', placeholder:'例如:默认/不填则未分组', button:'+', onButton:(input) => pickWorldBookGroup((g) => { if(input) input.value = g; }) },
         { key:'content', label:'内容', type:'textarea', value: editing.content, placeholder:'人物必须遵守的守则...' },
         { key:'global', label:'全局默认生效', type:'checkbox', checked: !!editing.global }
       ],
@@ -1476,6 +1532,42 @@ function openWeiboPage(){
         }
       }catch(err){
         body.innerHTML = '<div style="padding:20px;color:var(--green-ink-soft);font-size:13px">加载微博失败：' + err.message + '</div>';
+      }
+    }
+  });
+}
+
+function openMusicPage(){
+  Phone.openPage({
+    title: '',
+    render: async (body) => {
+      const view = body.parentElement;
+      view.querySelector('.page-header').style.display = 'none';
+      body.style.padding = '0';
+      body.style.overflow = 'hidden';
+      body.style.display = 'flex';
+      body.style.flexDirection = 'column';
+      try{
+        const res = await fetch('Music.html?v=' + Date.now());
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        doc.querySelectorAll('style').forEach(s => {
+          const style = document.createElement('style');
+          style.textContent = s.textContent;
+          document.head.appendChild(style);
+        });
+        body.innerHTML = doc.body.innerHTML;
+        const scripts = doc.querySelectorAll('script');
+        for(const s of scripts){
+          const script = document.createElement('script');
+          script.textContent = s.textContent;
+          document.body.appendChild(script);
+        }
+        if(window.mountMusicApp){
+          window.mountMusicApp(body, Phone, () => view.querySelector('.page-back').click());
+        }
+      }catch(err){
+        body.innerHTML = '<div style="padding:20px;color:var(--green-ink-soft);font-size:13px">加载音乐失败：' + err.message + '</div>';
       }
     }
   });
