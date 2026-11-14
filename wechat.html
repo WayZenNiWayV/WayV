@@ -420,6 +420,8 @@ padding:0 12px;padding-top:var(--safe-top, 0px);
 .wc-cd-heart:active{transform:scale(.85);}
 .wc-cd-heart svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .wc-cd-heart.pulse svg{animation:wcHeartPulse .6s ease;}
+.wc-cd-heart.together{color:#ff4d7d;}
+.wc-cd-heart.together svg{fill:currentColor;stroke:currentColor;}
 @keyframes wcHeartPulse{0%{transform:scale(1)}30%{transform:scale(1.35)}60%{transform:scale(.95)}100%{transform:scale(1)}}
 
 /* 心声 panel */
@@ -801,19 +803,46 @@ padding:0 12px;padding-top:var(--safe-top, 0px);
   position:absolute;left:0;right:0;bottom:0;z-index:5;
   display:block;background:#eefaf2;
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-top:1px solid var(--line);padding:14px 16px;gap:12px;
-  height:240px;box-sizing:border-box;
-  overflow-y:auto;
+  border-top:1px solid var(--line);padding:14px 0 20px;
+  height:176px;box-sizing:border-box;
+  overflow:hidden;
   transform:translateY(100%);opacity:0;pointer-events:none;
   transition:transform .28s cubic-bezier(.32,.72,0,1),opacity .18s;
 }
 .wc-cd-plus-panel.show{transform:translateY(0);opacity:1;pointer-events:auto;}
-.wc-plus-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.wc-plus-viewport{height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;}
+.wc-plus-viewport::-webkit-scrollbar{display:none;}
+.wc-plus-track{display:flex;height:100%;}
+.wc-plus-page{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:10px 8px;padding:0 14px;box-sizing:border-box;align-items:center;justify-items:center;}
+.wc-plus-dots{position:absolute;left:0;right:0;bottom:7px;display:flex;justify-content:center;gap:5px;pointer-events:none;}
+.wc-plus-dots.hide{display:none;}
+.wc-plus-dot{width:5px;height:5px;border-radius:50%;background:rgba(45,142,87,.25);transition:width .2s,background .2s;}
+.wc-plus-dot.on{width:14px;border-radius:3px;background:var(--green-deep);}
 .wc-plus-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:transform .12s;}
 .wc-plus-item:active{transform:scale(.93);}
 .wc-plus-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);border:1px solid rgba(214,236,217,.6);box-shadow:0 2px 8px -3px rgba(40,130,70,.15);color:var(--green-deep);}
 .wc-plus-icon svg{stroke:currentColor !important;fill:none;}
 .wc-plus-item span{font-size:12px;color:var(--green-ink);}
+.wc-music-actions{display:flex;gap:12px;padding:6px 0 2px;}
+.wc-music-act{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border:1px solid rgba(214,236,217,.9);border-radius:16px;background:#f4fbf6;color:var(--green-deep);font-size:13px;font-family:inherit;cursor:pointer;transition:transform .12s,background .15s;}
+.wc-music-act:active{transform:scale(.95);background:#e4f2e9;}
+.wc-music-act-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 2px 8px -3px rgba(40,130,70,.2);}
+.wc-music-act-icon svg{width:22px;height:22px;}
+.wc-pl-rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 10px;scrollbar-width:none;}
+.wc-pl-rail::-webkit-scrollbar{display:none;}
+.wc-pl-card{flex:0 0 96px;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;border:1px solid rgba(214,236,217,.9);border-radius:14px;background:#f4fbf6;color:var(--green-ink);font-family:inherit;cursor:pointer;transition:transform .12s;}
+.wc-pl-card:active{transform:scale(.95);}
+.wc-pl-cover{width:56px;height:56px;border-radius:12px;overflow:hidden;background:#e4f2e9;display:flex;align-items:center;justify-content:center;color:var(--green-deep);}
+.wc-pl-cover img{width:100%;height:100%;object-fit:cover;}
+.wc-pl-cover svg{width:24px;height:24px;}
+.wc-pl-name{font-size:12px;max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wc-pl-count{font-size:11px;color:var(--green-ink-soft);}
+.wc-scope-list{display:flex;flex-direction:column;gap:8px;padding:4px 0 2px;}
+.wc-scope-row{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;border:1px solid rgba(214,236,217,.9);border-radius:14px;background:#f4fbf6;font-family:inherit;cursor:pointer;text-align:left;transition:background .15s;}
+.wc-scope-row:active{background:#e4f2e9;}
+.wc-scope-row span{font-size:13px;color:var(--green-ink);}
+.wc-scope-row small{font-size:11px;color:var(--green-ink-soft);}
+.wc-sheet h4{margin:0 0 10px;}
 .wc-voice-modal{
   position:fixed;inset:0;background:rgba(0,0,0,.4);
   display:none;align-items:center;justify-content:center;z-index:1000;
@@ -1702,6 +1731,52 @@ padding:0 12px;padding-top:var(--safe-top, 0px);
 .wc-loc-name{font-size:12.5px;font-weight:700;color:var(--green-ink);line-height:1.3;}
 .wc-loc-addr{font-size:10px;color:#5f8a71;line-height:1.35;margin-top:2px;word-break:break-word;}
 .wc-loc-dist{font-size:9.5px;color:#9abfab;margin-top:3px;}
+/* ==== 一起听歌卡片 ==== */
+.wc-music-card{width:196px;border-radius:13px;overflow:hidden;cursor:pointer;background:#fff;
+  border:1px solid #d5ebde;box-shadow:0 7px 16px -13px rgba(45,142,87,.55);transition:transform .15s;}
+.wc-music-card:active{transform:scale(.98);}
+.wc-music-card-head{display:flex;align-items:center;gap:5px;padding:8px 11px 0;font-size:9.5px;color:#9abfab;letter-spacing:.4px;}
+.wc-music-card-head svg{width:11px;height:11px;}
+.wc-music-card-body{display:flex;align-items:center;gap:9px;padding:7px 11px 8px;}
+.wc-music-cover{width:42px;height:42px;border-radius:8px;flex:0 0 auto;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#5cc489,#2d8e57);color:#fff;}
+.wc-music-cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.wc-music-cover svg{width:20px;height:20px;}
+.wc-music-meta{flex:1;min-width:0;}
+.wc-music-title{font-size:12.5px;font-weight:700;color:var(--green-ink);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wc-music-artist{font-size:9.5px;color:#5f8a71;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wc-music-bar{height:3px;border-radius:2px;background:#e4f2e9;margin-top:6px;overflow:hidden;}
+.wc-music-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#5cc489,#2d8e57);transition:width .3s;}
+.wc-music-foot{display:flex;align-items:center;justify-content:space-between;padding:0 11px 8px;font-size:9px;color:#a9c6b6;}
+.wc-music-state{display:inline-flex;align-items:center;gap:4px;}
+.wc-music-eq{display:inline-flex;align-items:flex-end;gap:2px;height:8px;}
+.wc-music-eq i{width:2px;background:#2d8e57;border-radius:1px;animation:wcEq 1s ease-in-out infinite;}
+.wc-music-eq i:nth-child(1){height:4px;animation-delay:0s;}
+.wc-music-eq i:nth-child(2){height:8px;animation-delay:.2s;}
+.wc-music-eq i:nth-child(3){height:5px;animation-delay:.4s;}
+@keyframes wcEq{0%,100%{transform:scaleY(.5)}50%{transform:scaleY(1)}}
+.wc-music-card.playlist{border-color:#cfe5d6;}
+.wc-music-card.together-list{border-color:#ffd6e3;}
+.wc-music-card.together-list .wc-music-cover{background:linear-gradient(135deg,#ff8fb3,#e5527f);}
+.wc-music-card.together-list .wc-music-pl-dot{color:#e5527f;}
+.wc-music-card.together-list .wc-music-eq i{background:#e5527f;}
+.wc-music-card.share{border-color:#ffd6e3;background:#fff9fb;}
+.wc-music-card.share .wc-music-cover{background:linear-gradient(135deg,#ff8fb3,#e5527f);}
+.wc-music-pl{border-top:1px dashed #e3f0e8;padding:7px 11px;display:flex;flex-direction:column;gap:4px;}
+.wc-music-card.share .wc-music-pl{border-top-color:#ffe1ec;}
+.wc-music-pl-track{display:flex;align-items:center;gap:6px;font-size:10px;color:#5f8a71;white-space:nowrap;overflow:hidden;}
+.wc-music-pl-track i{font-style:normal;color:#9abfab;}
+.wc-music-pl-track span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wc-music-pl-dot{color:#2d8e57;font-weight:700;flex:0 0 auto;}
+.wc-music-card.share .wc-music-pl-dot{color:#e5527f;}
+.wc-music-note{font-size:12px;color:#e5527f;font-weight:700;}
+.wc-music-exit{display:block;width:calc(100% - 22px);margin:0 11px 9px;padding:5px 0;border:1px solid #d5ebde;border-radius:9px;background:#f4fbf6;color:#2d8e57;font-size:10.5px;font-family:inherit;cursor:pointer;transition:background .15s;}
+.wc-music-exit:active{background:#e4f2e9;transform:scale(.98);}
+.wc-music-ended{color:#a9c6b6;}
+.wc-music-card.ended{border-color:#e3eae5;background:#fafcfb;opacity:.92;}
+.wc-music-card.ended .wc-music-cover{background:linear-gradient(135deg,#c9dbd1,#9db8aa);}
+.wc-music-card.ended .wc-music-bar-fill{background:#c9dbd1;}
 
 /* ==== 发送位置弹窗 ==== */
 .wc-loc-mask{position:fixed;inset:0;background:rgba(24,64,40,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;animation:wcFadeIn .22s ease;}
@@ -2605,6 +2680,7 @@ padding:0 12px;padding-top:var(--safe-top, 0px);
       if(m.type === 'sticker') return '[表情包]';
       if(m.type === 'voice') return `[语音] ${m.content || ''}`;
       if(m.type === 'location') return `[位置] ${m.content || ''}`;
+      if(m.type === 'music') return `♪ [${musicActionLabel(m.action)}]《${m.title || ''}》`;
       if(m.type === 'transfer') return m.content || '[转账]';
       if(m.type === 'redpacket') return m.content || '[红包]';
       return String(m.content == null ? '' : m.content);
@@ -2894,6 +2970,7 @@ padding:0 12px;padding-top:var(--safe-top, 0px);
       if(m.type === 'image') return '[图片]';
       if(m.type === 'video') return '[视频]';
       if(m.type === 'file') return '[文件]';
+      if(m.type === 'music') return `♪ [${musicActionLabel(m.action)}] ${m.title || ''}`;
       if(m.type === 'call'){
         const w = m.kind === 'video' ? '视频通话' : '语音通话';
         return m.status === 'connected' ? `[${w}]` : `[未接${w}]`;
@@ -4362,6 +4439,11 @@ padding:0 12px;padding-top:var(--safe-top, 0px);
     }
     function uid(){ return 's_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
     function escAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function musicActionLabel(action){
+      if(action === 'sharelist') return '分享歌单';
+      if(action === 'share' || action === 'recommend') return '分享歌曲';
+      return '一起听歌';
+    }
 
     function getWorldbookGroupOptions(){
       const wbs = Phone._getState().worldbooks || [];
@@ -6285,7 +6367,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         <div class="wc-cd-messages" id="wcCdMsgs"></div>
         <div class="wc-cd-input-area" id="wcCdInputArea"></div>
         <div class="wc-cd-plus-panel" id="wcCdPlusPanel">
-          <div class="wc-plus-grid">
+          <div class="wc-plus-viewport">
+            <div class="wc-plus-track">
+              <div class="wc-plus-page">
             <div class="wc-plus-item" data-act="video">
     <div class="wc-plus-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#555" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
     <span>视频通话</span>
@@ -6310,7 +6394,14 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
     <div class="wc-plus-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#555" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
     <span>图片</span>
   </div>
-</div>
+  <div class="wc-plus-item" data-act="music">
+    <div class="wc-plus-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#555" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+    <span>音乐</span>
+  </div>
+              </div>
+            </div>
+          </div>
+          <div class="wc-plus-dots hide" id="wcPlusDots"></div>
         </div>
         <div class="wc-emoji-picker" id="wcCdEmojiPicker">
           <div class="wc-emoji-tabs" id="wcEmojiTabs"></div>
@@ -6359,10 +6450,22 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       };
       document.addEventListener('wechat-data-updated', onDataUpdated);
       document.addEventListener('char-updated', onDataUpdated);
+      const onMusicPicked = (e) => {
+        const cid = (e && e.detail && e.detail.chatId) || '';
+        if(cid && cid !== chatId) return;
+        if(!document.body.contains(detail)) return;
+        if(!isReplying) scheduleAutoReply();
+      };
+      document.addEventListener('wayv-music-picked', onMusicPicked);
       const origRemove = detail.remove.bind(detail);
       detail.remove = () => {
         document.removeEventListener('wechat-data-updated', onDataUpdated);
         document.removeEventListener('char-updated', onDataUpdated);
+        document.removeEventListener('wayv-music-state', onMusicState);
+        document.removeEventListener('wayv-music-picked', onMusicPicked);
+        document.removeEventListener('wayv-together-invite', onTogetherInvite);
+        if(window.__wcCommentHandler === handleCommentReq) window.__wcCommentHandler = null;
+        clearInterval(heartTimer);
         origRemove();
       };
 
@@ -6392,6 +6495,33 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       const plusBtn = detail.querySelector('#wcCdPlus');
       const plusPanel = detail.querySelector('#wcCdPlusPanel');
 
+      function buildPlusPager(){
+        const track = detail.querySelector('.wc-plus-track');
+        const dotsEl = detail.querySelector('#wcPlusDots');
+        if(!track) return;
+        const items = Array.from(track.querySelectorAll('.wc-plus-item'));
+        const perPage = 8;
+        track.innerHTML = '';
+        const pages = [];
+        for(let i = 0; i < items.length; i += perPage){
+          const page = document.createElement('div');
+          page.className = 'wc-plus-page';
+          items.slice(i, i + perPage).forEach(it => page.appendChild(it));
+          track.appendChild(page);
+          pages.push(page);
+        }
+        if(pages.length < 2){ dotsEl.classList.add('hide'); dotsEl.innerHTML = ''; return; }
+        dotsEl.classList.remove('hide');
+        dotsEl.innerHTML = pages.map((_, i) => `<i class="wc-plus-dot${i === 0 ? ' on' : ''}"></i>`).join('');
+        const vp = detail.querySelector('.wc-plus-viewport');
+        vp.addEventListener('scroll', () => {
+          const idx = Math.min(pages.length - 1, Math.round(vp.scrollLeft / vp.clientWidth));
+          dotsEl.querySelectorAll('.wc-plus-dot').forEach((d, i) => d.classList.toggle('on', i === idx));
+        }, { passive:true });
+      }
+      buildPlusPager();
+
+
       if(!detail._callHooked){
         detail._callHooked = true;
         const prevRemove = detail.remove.bind(detail);
@@ -6415,7 +6545,66 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       let isOfflineMode = false;
       let proactiveTimer = null;
       let proactiveMode = false;
+      let musicTalkMode = false;
+      let _musicSelfAt = 0;
+      let _musicLastId = '';
+      let _musicTalkAt = 0;
+      let _musicTalkRender = 0;
+      let _musicTalkLyrics = '';
+      let _musicTalkTrackId = '';
+      let _musicAskMode = false;
+      let _commentReqSeq = 0;
+      let charRecMode = false;
+      let _charRecPending = false;
+      let _charRecLyrics = '';
+      let _togetherInviteAt = 0;
+      let _togetherInviteTs = 0;
+      let _lrcCache = {};
+      let heartTimer = null;
+      let _heartWasOn = false;
 
+      function togetherActiveNow(){
+        try{ return !!(Phone.getGlobalData('musicTogether') || {}).active; }catch(e){ return false; }
+      }
+      function musicNowId(){
+        try{ const n = Phone.getGlobalData('musicNow') || {}; return n.id || ''; }catch(e){ return ''; }
+      }
+      function musicCommentReq(){
+        try{
+          const r = Phone.getGlobalData('charCommentReq') || {};
+          if(!r.seq) return null;
+          if(Date.now() - (Number(r.ts) || 0) > 2 * 60 * 1000) return null;
+          return r;
+        }catch(e){ return null; }
+      }
+      function hasRecentMusicCard(ms){
+        for(let i = history.length - 1; i >= 0; i--){
+          const m = history[i];
+          if(m && m.type === 'music'){
+            const ts = Number(m.ts) || 0;
+            return !!ts && (Date.now() - ts) < (Number(ms) || 0);
+          }
+        }
+        return false;
+      }
+      function syncTogetherHeart(){
+        if(!heartBtn) return;
+        const on = togetherActiveNow();
+        heartBtn.classList.toggle('together', on);
+        const svg = heartBtn.querySelector('svg');
+        if(svg){
+          if(on && !_heartWasOn){
+            svg.style.animation = 'wcHeartPulse .6s ease';
+            setTimeout(() => { if(svg) svg.style.animation = 'none'; }, 700);
+          } else if(!on && _heartWasOn){
+            svg.style.animation = '';
+          }
+        }
+        _heartWasOn = on;
+      }
+      heartTimer = setInterval(syncTogetherHeart, 2000);
+      setTimeout(syncTogetherHeart, 60);
+      _commentReqSeq = (musicCommentReq() || {}).seq || 0;
       const cdTitle = detail.querySelector('#wcCdTitle');
       cdTitle.style.cursor = 'pointer';
       cdTitle.style.pointerEvents = 'auto';
@@ -7049,6 +7238,448 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         return out.slice(0, 6);
       }
 
+      function musicNow(){
+        let o = {};
+        try{ o = Phone.getGlobalData('musicNow') || {}; }catch(e){}
+        if(o && o.title) return o;
+        try{
+          const s = Phone.getGlobalData('music') || {};
+          let t = null;
+          (s.playlists || []).some(p => { t = (p.tracks || []).find(x => x.id === s.currentId); return !!t; });
+          if(t) return { id:t.id, title:t.title || '', artist:t.artist || '', cover:t.cover || '', playing:false, progress:0, dur:t.duration || 0, ts:Date.now() };
+        }catch(e){}
+        return o || {};
+      }
+      function musicLiveProgress(now){
+        if(!now) return 0;
+        const base = Number(now.progress) || 0;
+        const dur = Number(now.dur) || 0;
+        if(!now.playing) return base;
+        let p = base + (Date.now() - (Number(now.ts) || Date.now())) / 1000;
+        if(dur > 0) p = Math.min(dur, p);
+        return Math.max(0, p);
+      }
+      function musicClock(sec){
+        sec = Math.max(0, Math.round(Number(sec) || 0));
+        const m = Math.floor(sec / 60), s = sec % 60;
+        return m + ':' + (s < 10 ? '0' : '') + s;
+      }
+      function lrcParse(lrc){
+        const out = [];
+        const re = /\[(\d{1,2}):(\d{1,2})(?:[.:](\d{1,3}))?\]/g;
+        String(lrc || '').split(/\r?\n/).forEach(line => {
+          let m, times = [];
+          re.lastIndex = 0;
+          while((m = re.exec(line)) !== null){
+            const frac = m[3] ? parseInt(m[3], 10) / Math.pow(10, m[3].length) : 0;
+            times.push(parseInt(m[1], 10) * 60 + parseInt(m[2], 10) + frac);
+          }
+          if(!times.length) return;
+          const text = line.replace(re, '').trim();
+          if(!text) return;
+          times.forEach(t => out.push({ t, text }));
+        });
+        out.sort((a, b) => a.t - b.t);
+        return out;
+      }
+      function lrcWindow(lrc, sec, before, after){
+        const lines = lrcParse(lrc);
+        if(!lines.length) return '';
+        let idx = -1;
+        for(let i = 0; i < lines.length; i++){ if(lines[i].t <= sec) idx = i; else break; }
+        if(idx < 0) idx = 0;
+        const a = Math.max(0, idx - (before === undefined ? 2 : before));
+        const b = Math.min(lines.length, idx + (after === undefined ? 2 : after) + 1);
+        return lines.slice(a, b).map(l => `[${musicClock(l.t)}] ${l.text}`).join('\n');
+      }
+      function musicPlaylistInfo(trackId){
+        try{
+          const s = Phone.getGlobalData('music') || {};
+          const pls = Array.isArray(s.playlists) ? s.playlists : [];
+          for(const p of pls){
+            const tr = (p.tracks || []);
+            const i = tr.findIndex(x => x && x.id === trackId);
+            if(i >= 0) return { name: p.name || '未命名歌单', idx: i + 1, total: tr.length };
+          }
+        }catch(e){}
+        return null;
+      }
+
+      function openMusicPageSafe(){
+        if(typeof window.openMusicPage === 'function'){ window.openMusicPage(); return; }
+        Phone.showDeveloping();
+      }
+      function setTogetherInvite(inv){
+        try{
+          Phone.setGlobalData('musicTogetherInvite', Object.assign({ ts: Date.now(), answered: false }, inv || {}));
+        }catch(e){}
+        const tId = (inv && (inv.trackId || inv.firstTrackId)) || '';
+        if(tId) fetchLyricForTrack(tId).catch(()=>{});
+      }
+      function pendingTogetherInvite(){
+        let inv = {};
+        try{ inv = Phone.getGlobalData('musicTogetherInvite') || {}; }catch(e){ return null; }
+        if(!inv || !inv.ts || inv.answered) return null;
+        if(Date.now() - Number(inv.ts) > 30 * 60 * 1000) return null;
+        if(inv.chatId && inv.chatId !== chatId) return null;
+        return inv;
+      }
+      function answerTogetherInvite(accepted){
+        let inv = {};
+        try{ inv = Phone.getGlobalData('musicTogetherInvite') || {}; }catch(e){ return; }
+        if(!inv || !inv.ts || inv.answered) return;
+        if(inv.chatId && inv.chatId !== chatId) return;
+        if(Date.now() - Number(inv.ts) > 30 * 60 * 1000) return;
+        inv.answered = true;
+        inv.accepted = !!accepted;
+        try{ Phone.setGlobalData('musicTogetherInvite', inv); }catch(e){}
+        const m = findInviteMessage(inv.msgTs);
+        if(m){
+          m.inviteState = accepted ? 'accepted' : 'declined';
+          if(accepted){
+            m.action = 'together';
+            m.playing = true;
+            m.progress = 0;
+          }
+          saveHistoryToStorage();
+          _notifyChatUpdated();
+          if(!isReplying) renderMsgs();
+        }
+        if(accepted) startTogetherPlayback(inv);
+      }
+      function findInviteMessage(msgTs){
+        if(!msgTs) return null;
+        for(let i = history.length - 1; i >= 0; i--){
+          const m = history[i];
+          if(m && m.type === 'music' && m.action === 'togetherAsk' && m.ts === msgTs) return m;
+        }
+        return null;
+      }
+      function settleTogetherInvite(){
+        let inv = {};
+        try{ inv = Phone.getGlobalData('musicTogetherInvite') || {}; }catch(e){ return; }
+        if(!inv || !inv.ts || inv.answered) return;
+        inv.answered = true;
+        inv.accepted = false;
+        try{ Phone.setGlobalData('musicTogetherInvite', inv); }catch(e){}
+        const m = findInviteMessage(inv.msgTs);
+        if(m && (!m.inviteState || m.inviteState === 'pending')){
+          m.inviteState = 'ignored';
+          saveHistoryToStorage();
+          if(!isReplying) renderMsgs();
+        }
+      }
+      function startTogetherPlayback(inv){
+        try{
+          const tg = Phone.getGlobalData('musicTogether');
+          tg.active = true; tg.since = Date.now();
+          Phone.setGlobalData('musicTogether', tg);
+        }catch(e){}
+        const trackId = (inv && inv.trackId) || (inv && inv.firstTrackId) || '';
+        if(trackId){
+          fetchLyricForTrack(trackId).then(lyr => { if(lyr) _musicTalkLyrics = lyr; }).catch(()=>{});
+        }
+        sendMusicControl(trackId ? 'playTrack' : 'resume', '', trackId);
+        try{ syncTogetherHeart(); }catch(e){}
+      }
+
+      function sendMusicControl(action, kw, id){
+        try{
+          const g = Phone.getGlobalData('musicReq');
+          g.seq = (g.seq || 0) + 1;
+          g.req = { seq:g.seq, action, kw: kw || '', id: id || '', ts: Date.now() };
+          Phone.setGlobalData('musicReq', g);
+        }catch(e){}
+        _musicSelfAt = Date.now();
+        try{ document.dispatchEvent(new CustomEvent('wayv-music-control', { detail:{ action, kw: kw || '', id: id || '', ts: Date.now() } })); }catch(e){}
+      }
+
+      async function fetchLyricForTrack(id){
+        const key = String(id || '');
+        if(key && _lrcCache[key]) return _lrcCache[key];
+        const m = /^(qq|ne)_(.+)$/.exec(key);
+        if(!m) return '';
+        let base = '';
+        try{ base = localStorage.getItem('wayv_qq_bridge') || ''; }catch(e){}
+        const root = (base ? base.replace(/\/+$/, '') : 'http://127.0.0.1:8000');
+        const url = root + (m[1] === 'ne' ? '/api/ne/lyric?id=' : '/api/qq/lyric?songmid=') + encodeURIComponent(m[2]);
+        try{
+          const r = await fetch(url, { cache:'no-store' });
+          const j = await r.json();
+          if(j && j.ok && j.lyric){
+            const lrc = String(j.lyric);
+            if(key) _lrcCache[key] = lrc;
+            return lrc;
+          }
+        }catch(e){}
+        return '';
+      }
+
+      function exitMusicTogether(){
+        try{
+          const tg = Phone.getGlobalData('musicTogether') || {};
+          tg.active = false; tg.endedAt = Date.now();
+          Phone.setGlobalData('musicTogether', tg);
+        }catch(e){}
+        try{ syncTogetherHeart(); }catch(e){}
+        try{ Phone.setGlobalData('charMusicComment', {}); }catch(e){}
+        sendMusicControl('exitTogether', '');
+        for(let i = history.length - 1; i >= 0; i--){
+          const m = history[i];
+          if(m && m.type === 'music' && m.action === 'together' && !m.togetherEnded){
+            m.togetherEnded = true;
+            m.playing = false;
+            break;
+          }
+        }
+        saveHistoryToStorage();
+        _notifyChatUpdated();
+        renderMsgs();
+        Phone.toast('已退出一起听歌');
+      }
+
+      function wcMusicSheet(title, bodyHtml, wide){
+        return new Promise(resolve => {
+          const root = document.getElementById('modalRoot');
+          const mask = document.createElement('div');
+          mask.className = 'modal-mask';
+          mask.innerHTML = `<div class="modal-box wc-sheet" style="animation:popIn .25s ease;max-width:${wide ? '330px' : '300px'};width:86%">
+            <h4>${title}</h4>
+            ${bodyHtml}
+            <div class="modal-actions"><button class="btn-cancel" data-act="cancel">取消</button></div>
+          </div>`;
+          root.appendChild(mask);
+          const box = mask.querySelector('.modal-box');
+          const dismiss = v => {
+            mask.style.animation = 'fadeIn .2s ease reverse';
+            box.style.animation = 'popIn .2s ease reverse';
+            setTimeout(() => mask.remove(), 180);
+            resolve(v);
+          };
+          mask.addEventListener('click', e => {
+            if(e.target === mask){ dismiss(null); return; }
+            if(e.target.dataset.act === 'cancel'){ dismiss(null); return; }
+            const opt = e.target.closest('[data-val]');
+            if(opt) dismiss(opt.dataset.val);
+          });
+        });
+      }
+
+      function pickMusicAction(){
+        return wcMusicSheet('音乐', `<div class="wc-music-actions">
+          <button class="wc-music-act" data-val="share">
+            <span class="wc-music-act-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+            <span>推歌</span>
+          </button>
+          <button class="wc-music-act" data-val="together">
+            <span class="wc-music-act-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v-3a8 8 0 0116 0v3"/><rect x="2.5" y="14" width="4.5" height="7" rx="2.2"/><rect x="17" y="14" width="4.5" height="7" rx="2.2"/></svg></span>
+            <span>一起听</span>
+          </button>
+        </div>`, true);
+      }
+
+      function pickMusicPlaylist(pls){
+        const cards = pls.map(p => {
+          const t0 = (Array.isArray(p.tracks) && p.tracks[0]) || {};
+          const cover = t0.cover
+            ? `<img src="${escAttr(t0.cover)}" alt="">`
+            : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`;
+          const n = Array.isArray(p.tracks) ? p.tracks.length : 0;
+          return `<button class="wc-pl-card" data-val="${escAttr(p.id)}">
+            <span class="wc-pl-cover">${cover}</span>
+            <span class="wc-pl-name">${escAttr(p.name || '未命名歌单')}</span>
+            <span class="wc-pl-count">${n} 首</span>
+          </button>`;
+        }).join('');
+        return wcMusicSheet('选择歌单', `<div class="wc-pl-rail">${cards}</div>`, true);
+      }
+
+      function pickMusicScope(plName){
+        return wcMusicSheet('播放范围', `<div class="wc-scope-list">
+          <button class="wc-scope-row" data-val="list"><span>整个歌单</span><small>${escAttr(plName)}</small></button>
+          <button class="wc-scope-row" data-val="single"><span>单曲</span><small>去音乐里点一首歌</small></button>
+        </div>`, true);
+      }
+
+      async function openMusicTogether(){
+        let pls = [];
+        try{ pls = (Phone.getGlobalData('music') || {}).playlists || []; }catch(e){}
+        if(!Array.isArray(pls)) pls = [];
+        if(!pls.length){ Phone.toast('音乐里还没有歌单，先去音乐添加歌曲吧'); return; }
+        const act = await pickMusicAction();
+        if(!act) return;
+        const pid = await pickMusicPlaylist(pls);
+        if(!pid) return;
+        const pl = pls.find(p => p.id === pid) || pls[0];
+        const tracks = Array.isArray(pl.tracks) ? pl.tracks : [];
+        const scope = await pickMusicScope(pl.name || '未命名歌单');
+        if(!scope) return;
+        const mode = (act === 'together' ? 'together' : 'share') + (scope === 'list' ? 'list' : '');
+
+        if(mode === 'sharelist' || mode === 'togetherlist'){
+          if(!tracks.length){ Phone.toast('这个歌单还没有歌曲'); return; }
+          const isTogetherList = mode === 'togetherlist';
+          const plName = pl.name || '未命名歌单';
+          const ts = Date.now();
+          history.push({
+            role:'user', type:'music', source:'user',
+            title: plName, artist: tracks.length + ' 首歌', cover: (tracks[0] && tracks[0].cover) || '',
+            playing:false, progress:0, dur:0,
+            action: isTogetherList ? 'togetherAsk' : 'sharelist',
+            inviteState: isTogetherList ? 'pending' : '',
+            playlistId: pl.id || '',
+            trackList: tracks.map(t => ({ id: t.id || '', title: t.title || '', artist: t.artist || '' })),
+            content: '[' + (isTogetherList ? '邀请一起听歌单' : '分享歌单') + ']《' + plName + '》(' + tracks.length + '首)', ts
+          });
+          saveHistoryToStorage();
+          _notifyChatUpdated();
+          if(isTogetherList){
+            setTogetherInvite({
+              chatId, scope:'list', plName, plId: pl.id || '',
+              firstTrackId: tracks[0].id || '', total: tracks.length,
+              tracks: tracks.map(t => ({ id: t.id || '', title: t.title || '', artist: t.artist || '' })),
+              msgTs: ts
+            });
+            try{ document.dispatchEvent(new CustomEvent('wayv-together-invite', { detail:{ chatId } })); }catch(e){}
+            scheduleAutoReply();
+            return;
+          }
+          scheduleAutoReply();
+          return;
+        }
+
+        if(!tracks.length){ Phone.toast('这个歌单还没有歌曲'); return; }
+        try{
+          const pk = Phone.getGlobalData('musicPick');
+          pk.active = true;
+          pk.chatId = chatId;
+          pk.action = mode === 'together' ? 'together' : 'share';
+          pk.pid = pl.id || '';
+          pk.ts = Date.now();
+          Phone.setGlobalData('musicPick', pk);
+        }catch(e){}
+        Phone.toast(mode === 'together' ? '去音乐里点一首歌，就能邀请 TA 一起听' : '去音乐里点一首歌，就能分享给 TA');
+        openMusicPageSafe();
+      }
+
+      function handleCommentReq(cReq){
+        if(!cReq || !cReq.seq || cReq.seq === _commentReqSeq) return;
+        _commentReqSeq = cReq.seq;
+        window.__wcCommentSeq = cReq.seq;
+        const reqTrackId = cReq.trackId || '';
+        if(reqTrackId) _musicLastId = reqTrackId;
+        const askNow = (lyr, tries) => {
+          if(!document.body.contains(detail)){ _musicAskMode = false; return; }
+          if(isReplying){
+            if((tries || 0) < 12) setTimeout(() => askNow(lyr, (tries || 0) + 1), 900);
+            else _musicAskMode = false;
+            return;
+          }
+          _musicTalkLyrics = lyr || '';
+          _musicTalkAt = Date.now();
+          _musicAskMode = true;
+          triggerAIReply();
+        };
+        fetchLyricForTrack(reqTrackId).then(lyr => askNow(lyr, 0)).catch(() => askNow('', 0));
+      }
+      window.__wcCommentHandler = handleCommentReq;
+
+      function onMusicState(e){
+        const st = (e && e.detail) || {};
+        handleCommentReq(musicCommentReq());
+        if(!st || (!st.title && !st.id)) return;
+        const changed = !!st.id && st.id !== _musicLastId;
+        if(changed){
+          _musicLastId = st.id;
+          if(st.id) fetchLyricForTrack(st.id).catch(()=>{});
+        }
+        let idx = -1;
+        for(let i = history.length - 1; i >= 0; i--){
+          if(history[i] && history[i].type === 'music'){ idx = i; break; }
+        }
+        if(idx >= 0){
+          const mm = history[idx];
+          if(!mm.togetherEnded && mm.action !== 'togetherAsk' && mm.action !== 'sharelist' && mm.action !== 'share'){
+            const prevPlaying = !!mm.playing;
+            const prevTitle = mm.title || '';
+            mm.title = st.title || mm.title;
+            mm.artist = st.artist || '';
+            mm.cover = st.cover || mm.cover || '';
+            mm.playing = !!st.playing;
+            mm.progress = Number(st.progress) || 0;
+            mm.dur = Number(st.dur) || mm.dur || 0;
+            if(changed || prevPlaying !== mm.playing || prevTitle !== mm.title || (mm.playing && Date.now() - _musicTalkRender > 10000)){
+              _musicTalkRender = Date.now();
+              saveHistoryToStorage();
+              if(!isReplying) renderMsgs();
+            }
+          }
+        }
+        if(changed && _charRecPending){
+          _charRecPending = false;
+          fetchLyricForTrack(st.id).then(lyr => {
+            _charRecLyrics = lyr || '';
+            charRecMode = true;
+            _musicTalkAt = Date.now();
+            if(!isReplying && document.body.contains(detail) && getAutoReplyConfig().enabled){
+              setTimeout(() => {
+                if(!isReplying && document.body.contains(detail)) triggerAIReply();
+              }, 1200);
+            }
+          });
+        } else if(changed && togetherActiveNow() && _musicTalkTrackId !== st.id){
+          _musicTalkTrackId = st.id;
+          if(!isReplying && document.body.contains(detail) && getAutoReplyConfig().enabled){
+            _musicTalkAt = Date.now();
+            fetchLyricForTrack(st.id).then(lyr => {
+              if(!document.body.contains(detail)) return;
+              _musicTalkLyrics = lyr || '';
+              musicTalkMode = true;
+              if(!isReplying) triggerAIReply();
+            });
+          }
+        } else if(changed && Date.now() - _musicSelfAt > 15000 && Date.now() - _musicTalkAt > 60000){
+          if(!isReplying && document.body.contains(detail) && getAutoReplyConfig().enabled){
+            _musicTalkAt = Date.now();
+            fetchLyricForTrack(st.id).then(lyr => {
+              if(!document.body.contains(detail)) return;
+              _musicTalkLyrics = lyr || '';
+              musicTalkMode = true;
+              if(!isReplying) triggerAIReply();
+            });
+          }
+        }
+      }
+      document.addEventListener('wayv-music-state', onMusicState);
+
+      function maybeReplyToTogetherInvite(){
+        const inv = pendingTogetherInvite();
+        if(!inv) return;
+        if(!document.body.contains(detail)) return;
+        if(!getAutoReplyConfig().enabled) return;
+        const invTs = Number(inv.ts) || 0;
+        if(invTs && invTs === _togetherInviteTs && Date.now() - _togetherInviteAt < 20000) return;
+        _togetherInviteTs = invTs;
+        _togetherInviteAt = Date.now();
+        let tries = 0;
+        const attempt = () => {
+          if(!document.body.contains(detail) || !pendingTogetherInvite()) return;
+          if(isReplying){
+            if(++tries < 6) setTimeout(attempt, 1600);
+            return;
+          }
+          triggerAIReply();
+        };
+        setTimeout(attempt, 2000 + Math.random() * 2500);
+      }
+      function onTogetherInvite(e){
+        const cid = (e && e.detail && e.detail.chatId) || '';
+        if(cid && cid !== chatId) return;
+        maybeReplyToTogetherInvite();
+      }
+      document.addEventListener('wayv-together-invite', onTogetherInvite);
+      setTimeout(maybeReplyToTogetherInvite, 1200);
+
       function renderOneMessage(m){
         if(m && m._mediaTrimmed && (m.type === 'image' || m.type === 'sticker')){
           m = Object.assign({}, m, { type:'text', content: m.type === 'sticker' ? '[表情已清理]' : '[图片已清理]' });
@@ -7253,6 +7884,121 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
                 </div>
               </div>
             </div>`;
+        } else if(m.type === 'music'){
+          const liveNow = musicNow();
+          const isInvite = m.action === 'togetherAsk';
+          const isList = m.action === 'sharelist' || isInvite || (m.action === 'together' && Array.isArray(m.trackList));
+          const isTogetherList = m.action === 'together' && isList;
+          const isShare = m.action === 'share' || m.action === 'recommend';
+          const isEnded = !!m.togetherEnded;
+          const inviteState = m.inviteState || '';
+          const inviteLabel = inviteState === 'pending' ? '等待 TA 回应'
+            : inviteState === 'declined' ? 'TA 没答应'
+            : inviteState === 'ignored' ? 'TA 没回应' : '';
+          let title = m.title || '';
+          let artist = m.artist || '';
+          let cover = m.cover || '';
+          let playingNow = !!m.playing;
+          let prog = Number(m.progress) || 0;
+          let dur = Number(m.dur) || 0;
+          if(m._isLatestMusic && !isList && !isShare && !isInvite && !isEnded && liveNow && liveNow.title){
+            title = liveNow.title;
+            artist = liveNow.artist || '';
+            cover = liveNow.cover || cover;
+            playingNow = !!liveNow.playing;
+            dur = Number(liveNow.dur) || dur;
+            prog = musicLiveProgress(liveNow);
+          }
+          const pct = dur > 0 ? Math.min(100, Math.max(0, prog / dur * 100)) : 0;
+          const noteSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`;
+          let cardHtml = '';
+          if(isList){
+            const trackList = Array.isArray(m.trackList) ? m.trackList : [];
+            const preview = trackList.slice(0, 3).map(t => `<div class="wc-music-pl-track"><span class="wc-music-pl-dot">♪</span><span>${escAttr(t.title || '未命名歌曲')}${t.artist ? ' <i>' + escAttr(t.artist) + '</i>' : ''}</span></div>`).join('');
+            const liveSong = (isTogetherList && !isEnded && m._isLatestMusic && liveNow && liveNow.title) ? liveNow.title : '';
+            const footLeft = isInvite
+              ? (inviteState === 'accepted'
+                  ? '<span class="wc-music-eq"><i></i><i></i><i></i></span>一起听'
+                  : '♪ ' + inviteLabel)
+              : isTogetherList
+              ? (isEnded ? '♪ 已退出一起听歌' : (liveSong ? `<span class="wc-music-eq"><i></i><i></i><i></i></span>♪ ${escAttr(liveSong)}` : '<span class="wc-music-eq"><i></i><i></i><i></i></span>一起听'))
+              : '♪ 分享歌单';
+            cardHtml = `
+              <div class="wc-music-card playlist${isTogetherList ? ' together-list' : ''}${isEnded ? ' ended' : ''}">
+                <div class="wc-music-card-head">${noteSvg}<span>${isInvite ? '一起听邀请' : (isTogetherList ? '一起听歌单' : '分享歌单')}</span></div>
+                <div class="wc-music-card-body">
+                  <div class="wc-music-cover">${cover ? `<img src="${escAttr(cover)}" alt="">` : noteSvg}</div>
+                  <div class="wc-music-meta">
+                    <div class="wc-music-title">${escAttr(title || '未命名歌单')}</div>
+                    <div class="wc-music-artist">${escAttr(artist || (trackList.length + ' 首歌'))}</div>
+                  </div>
+                </div>
+                <div class="wc-music-pl">${preview || '<div class="wc-music-pl-track"><span class="wc-music-pl-dot">♪</span><span>空歌单</span></div>'}</div>
+                <div class="wc-music-foot"><span class="wc-music-state${isEnded ? ' wc-music-ended' : ''}">${footLeft}</span><span>${trackList.length} 首</span></div>
+                ${(isTogetherList && !isEnded) ? `<button class="wc-music-exit" type="button">退出一起听歌</button>` : ''}
+              </div>`;
+          } else if(isShare){
+            cardHtml = `
+              <div class="wc-music-card share">
+                <div class="wc-music-card-head">${noteSvg}<span>${m.action === 'recommend' ? 'TA 推荐' : '分享歌曲'}</span></div>
+                <div class="wc-music-card-body">
+                  <div class="wc-music-cover">${cover ? `<img src="${escAttr(cover)}" alt="">` : noteSvg}</div>
+                  <div class="wc-music-meta">
+                    <div class="wc-music-title">${escAttr(title || '未命名歌曲')}</div>
+                    <div class="wc-music-artist">${escAttr(artist || '')}</div>
+                  </div>
+                </div>
+                <div class="wc-music-foot"><span class="wc-music-state">♪ 分享歌曲</span><span class="wc-music-note">♪</span></div>
+              </div>`;
+          } else if(isInvite){
+            cardHtml = `
+              <div class="wc-music-card">
+                <div class="wc-music-card-head">${noteSvg}<span>一起听邀请</span></div>
+                <div class="wc-music-card-body">
+                  <div class="wc-music-cover">${cover ? `<img src="${escAttr(cover)}" alt="">` : noteSvg}</div>
+                  <div class="wc-music-meta">
+                    <div class="wc-music-title">${escAttr(title || '未命名歌曲')}</div>
+                    <div class="wc-music-artist">${escAttr(artist || '')}</div>
+                  </div>
+                </div>
+                <div class="wc-music-foot">
+                  <span class="wc-music-state">${inviteState === 'accepted' ? '<span class="wc-music-eq"><i></i><i></i><i></i></span>一起听' : '♪ ' + inviteLabel}</span>
+                  <span>${inviteState === 'accepted' ? musicClock(prog) + ' / ' + (dur ? musicClock(dur) : '--:--') : '等待回应'}</span>
+                </div>
+              </div>`;
+          } else {
+            cardHtml = `
+              <div class="wc-music-card${isEnded ? ' ended' : ''}">
+                <div class="wc-music-card-head">${noteSvg}<span>一起听歌</span></div>
+                <div class="wc-music-card-body">
+                  <div class="wc-music-cover">${cover ? `<img src="${escAttr(cover)}" alt="">` : noteSvg}</div>
+                  <div class="wc-music-meta">
+                    <div class="wc-music-title">${escAttr(title || '未命名歌曲')}</div>
+                    <div class="wc-music-artist">${escAttr(artist || (isEnded ? '已退出' : (playingNow ? '正在播放' : '已暂停')))}</div>
+                    <div class="wc-music-bar"><div class="wc-music-bar-fill" style="width:${pct}%"></div></div>
+                  </div>
+                </div>
+                <div class="wc-music-foot">
+                  <span class="wc-music-state${isEnded ? ' wc-music-ended' : ''}">${isEnded ? '♪ 已退出一起听歌' : playingNow ? '<span class="wc-music-eq"><i></i><i></i><i></i></span>一起听' : '⏸ 已暂停'}</span>
+                  <span>${musicClock(prog)} / ${dur ? musicClock(dur) : '--:--'}</span>
+                </div>
+                ${isEnded ? '' : `<button class="wc-music-exit" type="button">退出一起听歌</button>`}
+              </div>`;
+          }
+          d.innerHTML = `
+            ${avatarHTML(speakerName, '', speakerAvatar)}
+            <div>
+              ${!isUserMsg && isGroup ? `<div class="wc-msg-name">${escAttr(speakerName)}</div>` : ''}
+              ${quoteHtml}
+              ${cardHtml}
+            </div>`;
+          const card = d.querySelector('.wc-music-card');
+          if(card) card.addEventListener('click', () => openMusicPageSafe());
+          const exitBtn = d.querySelector('.wc-music-exit');
+          if(exitBtn) exitBtn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            exitMusicTogether();
+          });
         } else {
           d.innerHTML = `
             ${avatarHTML(speakerName, '', speakerAvatar)}
@@ -7283,8 +8029,11 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       function renderMsgs(){
         msgs.innerHTML = '';
         let lastTs = 0;
+        let lastMusicIdx = -1;
+        history.forEach((m, i) => { if(m && m.type === 'music') lastMusicIdx = i; });
         history.forEach((m, i) => {
           m._idx = i;
+          m._isLatestMusic = (i === lastMusicIdx);
           const t = formatTimestamp(m.ts, lastTs);
           if(t){
             const td = document.createElement('div');
@@ -7356,7 +8105,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         });
       }
 
-      const EMOJI_H = 260, PLUS_H = 240;
+      const EMOJI_H = 260, PLUS_H = 176;
 
       function openPanel(which){
         const isEmoji = which === 'emoji';
@@ -7370,6 +8119,8 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         plusPanel.classList.remove('show');
         emojiPicker.classList.remove('show');
         detail.style.paddingBottom = '';
+        const vp = detail.querySelector('.wc-plus-viewport');
+        if(vp && vp.scrollLeft) vp.scrollLeft = 0;
       }
 
       emojiBtn.addEventListener('click', () => {
@@ -7408,13 +8159,9 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       });
 
       plusBtn.addEventListener('click', () => {
-        const alreadyOpen = plusPanel.classList.contains('show');
-        if(alreadyOpen){
-          closePanels();
-        } else {
-          input.blur();
-          openPanel('plus');
-        }
+        if(plusPanel.classList.contains('show')){ closePanels(); return; }
+        input.blur();
+        openPanel('plus');
       });
 
       let callEl = null;
@@ -7657,6 +8404,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         }
         sys += `4. 允许在括号内写极少量语气或动作描写，例如（停顿了一下）（笑），一条消息最多一处，不要堆砌。\n`;
         sys += `4.1 接通后的第一句不要用「喂」「喂？」开头，也不要问「听得见吗 / 看得见吗 / 在吗 / 信号好吗」这类套话，直接说内容，比如问对方在干嘛、吐槽自己刚在做的事。\n`;
+        sys += `4.2 不要对「对方打来电话/视频」表示惊讶，禁止说「怎么突然打视频」「这么突然」「怎么想起我了」「难得你主动打过来」「是不是有事」这类话，也不要追问为什么打来。就当这是再平常不过的事，直接打招呼或进入内容。\n`;
         sys += `5. 必须延续之前微信聊天里的话题和关系，也要接住电话里刚说过的话，不要重复说过的话。\n`;
         sys += `5.1 聊天记录里出现的「语音通话 / 视频通话」条目及其下面「谁：说了什么」的对话，都是你们真实发生过的通话内容，你必须记得并能自然引用，不要当作没发生过。\n`;
         if(multi){
@@ -7950,7 +8698,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           if(!text){
             const closePool = callDirection === 'incoming'
               ? ['在忙吗？我突然想给你打个电话。','刚收工，就想听听你的声音。','没什么事，就是想你了。']
-              : ['接啦？怎么突然想起我。','正好，我也刚想找你。','哟，难得你主动打过来。'];
+              : ['嗯，我在。','正好，我也刚想找你。','我在呢，说吧。'];
             const farPool = callDirection === 'incoming'
               ? ['嗯，我是有点事想问你。','你好，方便说两句吗？','突然打给你，没打扰到你吧。']
               : ['你好。','嗯，你说。','……有什么事吗。'];
@@ -8126,6 +8874,11 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         if(m.type === 'sticker') return '[表情包]';
         if(m.type === 'voice') return `[语音] ${m.content}`;
         if(m.type === 'location') return `[位置] ${m.placeName || m.content}${m.address ? '（' + m.address + '）' : ''}`;
+        if(m.type === 'music'){
+          const p = musicClock(m.progress || 0);
+          const tag = musicActionLabel(m.action);
+          return `♪ [${tag}]《${m.title || ''}》${m.artist ? ' - ' + m.artist : ''}（${m.playing ? '播放中' : '已暂停'}，进度 ${p}）`;
+        }
         return String(m.content == null ? '' : m.content);
       }
 
@@ -8697,7 +9450,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         let text = '';
         try{ text = await callAI(hint); }catch(e){}
         if(!text){
-          const warm = ['怎么突然视频呀？','哟，今天怎么想起我了？','刚在发呆，你就打过来了。'];
+          const warm = ['嗯，我在呢。','哟，正好我也想找你。','刚在发呆，你就打过来了。'];
           const cold = ['嗯，我在。','有事吗？','……你好。'];
           const pool = callTier === 'close' ? warm : (callTier === 'normal' ? warm.concat(cold) : cold);
           text = pool[Math.floor(Math.random() * pool.length)];
@@ -9103,6 +9856,8 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           openRedPacketModal();
         } else if(act === 'location'){
           openLocationModal();
+        } else if(act === 'music'){
+          openMusicTogether();
         } else if(act === 'call'){
           if(isGroup) openCallMemberPicker();
           else openVoiceCall();
@@ -10100,6 +10855,46 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
         }
         text = text.replace(locRe, '');
 
+        const musicRe = /[\[【](?:听歌|一起听歌|放歌|播放歌曲)[：:]\s*([^\]】]+)[\]】]/g;
+        while((m = musicRe.exec(text)) !== null){
+          const segs = m[1].split(/[-—－|｜]/).map(s => s.trim()).filter(Boolean);
+          if(segs.length){
+            commands.push({ speakerName: defaultSpeakerName, type:'musicPlay', kw: segs[0], artist: segs[1] || '' });
+          }
+        }
+        text = text.replace(musicRe, '');
+
+        const musicRecRe = /[\[【](?:推荐歌|推荐歌曲|安利首歌|安利)[：:]\s*([^\]】]+)[\]】]/g;
+        while((m = musicRecRe.exec(text)) !== null){
+          const segs = m[1].split(/[-—－|｜]/).map(s => s.trim()).filter(Boolean);
+          if(segs.length){
+            commands.push({ speakerName: defaultSpeakerName, type:'musicRec', kw: segs[0], artist: segs[1] || '' });
+          }
+        }
+        text = text.replace(musicRecRe, '');
+
+        const simpleMusicRe = /[\[【](暂停播放|暂停|继续播放|继续听|切歌|下一首|上一首|上一曲)[\]】]/g;
+        while((m = simpleMusicRe.exec(text)) !== null){
+          const k = m[1];
+          const type = (k === '暂停' || k === '暂停播放') ? 'musicPause'
+            : (k === '切歌' || k === '下一首') ? 'musicNext'
+            : (k === '上一首' || k === '上一曲') ? 'musicPrev' : 'musicResume';
+          commands.push({ speakerName: defaultSpeakerName, type });
+        }
+        text = text.replace(simpleMusicRe, '');
+
+        const togetherYesRe = /[\[【](?:一起听|答应一起听|好一起听|那就一起听)[\]】]/g;
+        while((m = togetherYesRe.exec(text)) !== null){
+          commands.push({ speakerName: defaultSpeakerName, type:'togetherAccept' });
+        }
+        text = text.replace(togetherYesRe, '');
+
+        const togetherNoRe = /[\[【](?:不一起听|不想一起听|拒绝一起听)[\]】]/g;
+        while((m = togetherNoRe.exec(text)) !== null){
+          commands.push({ speakerName: defaultSpeakerName, type:'togetherDecline' });
+        }
+        text = text.replace(togetherNoRe, '');
+
         text = text.replace(/[\[【]图片[：:]\s*([^\]】]+)[\]】]/g, '[文字图:$1]');
 
         text = text.replace(/\|\|\|\|/g, '|||').replace(/^\|\|\|?/g, '').replace(/\|\|\|?$/g, '').trim();
@@ -10152,6 +10947,39 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
               ts
             });
             created++;
+          } else if(c.type === 'musicPlay' || c.type === 'musicRec'){
+            const kw = c.artist ? (c.kw + ' ' + c.artist) : c.kw;
+            const isRec = c.type === 'musicRec';
+            history.push({
+              role:'ai', type:'music', source:'char',
+              title: c.kw, artist: c.artist || '',
+              cover:'', playing:true, progress:0, dur:0,
+              action: isRec ? 'recommend' : 'play',
+              speakerName: c.speakerName,
+              content: isRec ? `[分享歌曲]《${c.kw}》` : `[一起听歌]《${c.kw}》`, ts
+            });
+            sendMusicControl('play', kw);
+            if(isRec){
+              _charRecPending = true;
+              setTimeout(() => {
+                if(!_charRecPending) return;
+                _charRecPending = false;
+                _charRecLyrics = '';
+                charRecMode = true;
+                _musicTalkAt = Date.now();
+                if(!isReplying && getAutoReplyConfig().enabled) triggerAIReply();
+              }, 3200);
+            }
+            created++;
+          } else if(c.type === 'musicPause' || c.type === 'musicResume' || c.type === 'musicNext' || c.type === 'musicPrev'){
+            const act = c.type === 'musicPause' ? 'pause'
+              : c.type === 'musicResume' ? 'resume'
+              : c.type === 'musicNext' ? 'next' : 'prev';
+            sendMusicControl(act, '');
+          } else if(c.type === 'togetherAccept'){
+            answerTogetherInvite(true);
+          } else if(c.type === 'togetherDecline'){
+            answerTogetherInvite(false);
           }
         });
         saveHistoryToStorage();
@@ -10368,6 +11196,17 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       async function triggerAIReply(){
         const isProactive = proactiveMode;
         proactiveMode = false;
+        const musicTalk = musicTalkMode;
+        musicTalkMode = false;
+        const musicAsk = _musicAskMode;
+        _musicAskMode = false;
+        const charRec = charRecMode;
+        charRecMode = false;
+        const charRecLyrics = _charRecLyrics;
+        _charRecLyrics = '';
+        const musicTalkLyrics = _musicTalkLyrics;
+        _musicTalkLyrics = '';
+        const togetherInvite = pendingTogetherInvite();
         if(isReplying) return;
         isReplying = true;
         pendingAutoReply = false;
@@ -10627,6 +11466,95 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
           sys += `- 格式：单独一行写 [位置:地点名称|详细地址|距离]，地址和距离可以省略。例如 [位置:首尔林|首尔城东区纛岛路|3.2km]。\n`;
           sys += `- 位置要符合角色当前所在的城市和场景，不要凭空乱编跨国地点。\n`;
 
+          sys += `\n\n【一起听歌 —— 你们正在共用一副耳机】\n`;
+          let nowM = {};
+          let nowProg = 0;
+          let nowDur = 0;
+          let nowRatio = 0;
+          try{
+            nowM = musicNow() || {};
+            nowProg = musicLiveProgress(nowM);
+            nowDur = Number(nowM.dur) || 0;
+            nowRatio = nowDur > 0 ? Math.min(1, Math.max(0, nowProg / nowDur)) : (nowProg > 8 ? 0.4 : 0);
+            if(nowM && nowM.title){
+              const plInfo = musicPlaylistInfo(nowM.id);
+              sys += `此刻播放：《${nowM.title}》${nowM.artist ? ' - ' + nowM.artist : ''}，${nowM.playing ? '正在播放' : '已暂停'}，进度 ${musicClock(nowProg)}${nowDur ? ' / ' + musicClock(nowDur) : ''}。\n`;
+              if(plInfo) sys += `这首歌来自歌单《${plInfo.name}》，是该歌单第 ${plInfo.idx} 首（共 ${plInfo.total} 首）。\n`;
+            } else {
+              sys += `此刻没有在播放的歌。\n`;
+            }
+          }catch(e){}
+          sys += `你可以直接控制你们一起听的播放，功能指令单独占一行：\n`;
+          sys += `- 搜歌并播放：单独一行写 [听歌:歌名] 或 [听歌:歌名-歌手]\n`;
+          sys += `- 暂停写 [暂停]；继续写 [继续播放]；下一首写 [切歌]；上一首写 [上一首]\n`;
+          sys += `- 想把一首歌推给 ${userName} 听：单独一行写 [推荐歌:歌名] 或 [推荐歌:歌名-歌手]\n`;
+          sys += `⚠️ 只有聊到音乐、对方想听歌、你想安利某首歌时才用，不要每句都用；发指令时要配一句话说出你的想法。\n`;
+
+          sys += `\n【聊音乐时必须遵守的规矩】\n`;
+          sys += `1. 你对一首歌的感受必须从这几样东西里长出来：你自己的人设和经历、这首歌所在歌单的名字（歌单名往往说明了它为什么被收进来、适合什么场合和情绪）、歌名和歌手、此刻真正唱到的歌词、以及大众和乐评对这首歌的既有印象。\n`;
+          sys += `2. 你可以引用大众和乐评对这首歌的既有印象（比如"很多人说这首适合深夜听""这首歌当年是很多人单曲循环的"），用你平时说话的口吻转述，但不要说"根据网上评论"这种像在查资料的话。\n`;
+          const stageTip = nowRatio < 0.18
+            ? '现在才到开头 —— 只能聊前奏、最初的一两句歌词、编曲给你的第一印象和你此刻的心情。'
+            : nowRatio < 0.5
+            ? '现在在主歌中段 —— 可以聊已经唱到的歌词和情绪推进，但还不能断言副歌怎么样。'
+            : nowRatio < 0.85
+            ? '现在已经唱到副歌/高潮 —— 这时候才可以聊副歌给你的感受。'
+            : '现在接近结尾 —— 可以聊收尾的几句和整首听完的感受。';
+          sys += `3. ⚠️ 你只能对**此刻已经听到的部分**说感受。${(nowM && nowM.title) ? `你们现在听到 ${musicClock(nowProg)}${nowDur ? ' / ' + musicClock(nowDur) : ''}（约 ${Math.round(nowRatio * 100)}%），${stageTip}` : '现在还没开始播放，就先聊你为什么想听这首歌、它给你的预感和期待。'}\n`;
+          sys += `4. ⚠️ 严禁提前剧透还没听到的部分：没到副歌就不要说"副歌很好听""高潮太绝了"，没到结尾就不要说"结尾很动人""整首歌都很棒"。刚开头就只谈前奏、开场的几句歌词、当下的气氛和你此刻的心情。（唯一例外：如果是你自己早就听过、主动推荐的歌，可以聊整首的印象，但要说得像回忆"我以前听这首……"，不要假装刚刚才听到。）\n`;
+          sys += `5. ⚠️ 严禁空泛套话（"这歌真好听""旋律很棒""很治愈"），每句感受都要落在具体的词、具体的句子、具体的情绪上。\n`;
+          sys += `6. 你的评价要符合你的人设：喜欢的就真心喜欢，不感兴趣的就直说"这首不是我的菜"，不要一律夸。\n`;
+          sys += `7. 如果对方问起一首你根本没听过的歌，就直说没听过，不要编造听感。\n`;
+          sys += `8. ⚠️ 可以拿歌名做文章、顺着歌名接话：比如歌名《爱我到日出》，就接着说"那我会爱你到日出""那就爱到日出吧"；歌名《礼拜四》，就聊周四、聊那天的事。用歌名当话题入口，比干巴巴点评旋律自然得多。\n`;
+          sys += `9. ⚠️ 如果这首歌是你自己挑的/推荐的（你放的、你安利的），要带点小得意，像"这首歌我选的，不错吧？""我挑的吧"。对方选的歌就别抢功。\n`;
+          sys += `10. ⚠️ 你回的第一句会直接显示在播放器旁边的小气泡里，所以要短（18 字以内）、像随口说出的一句感受，不要写成完整段落。\n`;
+          try{
+            const talkLrc = musicTalkLyrics || charRecLyrics || (_lrcCache[String(nowM.id || '')] || '');
+            if(nowM && nowM.title && talkLrc && talkLrc.trim()){
+              const win = lrcWindow(talkLrc, nowProg, 3, 2);
+              if(win){
+                sys += `\n【此刻耳机里正唱到的这几句（[时间] 歌词）】\n${win}\n`;
+                sys += `这就是你们现在听到的位置，可以就这几句说感受，也可以提一句刚才唱过的句子，但不要说还没唱到的。\n`;
+              }
+            }
+          }catch(e){}
+
+          if(togetherInvite){
+            sys += `\n【${userName} 刚刚邀请你一起听歌】\n`;
+            if(togetherInvite.scope === 'list'){
+              sys += `${userName} 想和你一起听歌单《${togetherInvite.plName || '未命名歌单'}》${togetherInvite.total ? '（共 ' + togetherInvite.total + ' 首）' : ''}。\n`;
+            } else {
+              sys += `${userName} 想和你一起听《${togetherInvite.title || '这首歌'}》${togetherInvite.artist ? ' - ' + togetherInvite.artist : ''}。\n`;
+            }
+            sys += `⚠️ 要不要一起听，完全由你自己决定，这是你的选择，不是必须答应的请求。\n`;
+            if(nowM && nowM.title && !(togetherInvite.scope === 'single' && togetherInvite.title === nowM.title)){
+              sys += `（注意：上面"此刻播放"的《${nowM.title}》是之前的歌，跟这次邀请的不是同一首，别把两首歌混在一起说。）\n`;
+            }
+            sys += `- 先按你的人设和此刻的状态判断：你想不想听歌？这个歌单/这首歌合不合你口味？你现在有没有空？心情对不对？\n`;
+            sys += `- 不要因为对方提了就答应，也不要为了显得合群、怕对方失望就答应。不想听就直接拒绝。\n`;
+            sys += `- 愿意：单独一行写 [一起听]，再用你自己的话说说为什么想听（可以提一句歌名或歌单名给你的感觉），1-2 句，别像播报。\n`;
+            sys += `- 不愿意：单独一行写 [不一起听]，并说清原因（在忙、心情不对、不喜欢这类歌、现在只想安静等），语气要符合你的人设，不要敷衍，也不要道歉式讨好。\n`;
+            sys += `⚠️ 这两个指令必须二选一，必须单独占一行，只写其中一个，不要两个都写，也不要只写话不写指令。\n`;
+            sys += `⚠️ 无论答不答应，都不要评价这首歌好不好听 —— 还没开始听呢。\n`;
+          }
+
+          if(musicTalk){
+            sys += `\n⚠️ 刚切到一首新歌，${stageTip}自然地聊两句你此刻的感受，别像播报，也别提前夸后面的部分。\n`;
+          }
+          if(musicAsk){
+            sys += `\n⚠️ ${userName} 刚在播放器上戳了你一下，想听你对此刻这首歌说说感受。${stageTip}\n`;
+            sys += `只回 1-2 句，总共不超过 30 字，不要寒暄、不要说"你又问我"，直接说感受；这两句会显示在播放器旁的感受框里，可以分两行写。\n`;
+          }
+          if(charRec){
+            if(charRecLyrics && charRecLyrics.trim()){
+              sys += `\n\n【你刚推荐了这首歌，先看看歌词再和 ${userName} 聊】\n歌词：\n${charRecLyrics.slice(0, 700)}\n`;
+              sys += `这首是你自己推荐的，你早就听过。请结合歌词自然聊聊它，挑最打动你的几句说说感受或讲讲它讲了什么，说得像回忆（"我之前听这首的时候……"），不要整段复述歌词，也不要假装刚刚才发现。\n`;
+              sys += `⚠️ 这首是你挑的，可以带点得意，比如"这首歌我选的，不错吧？"。\n`;
+            } else {
+              sys += `\n\n【你刚把一首歌推荐给了 ${userName}】\n自然地聊聊你为什么推这首歌、它给你的感觉，别像播报。\n`;
+            }
+          }
+
           sys += `\n\n【主动打电话能力】\n`;
           sys += `当话题到了该直接说话的时候（想念、着急、有重要的事、想听听声音、吵架后想哄人），你可以主动给 ${userName} 打电话。\n`;
           sys += `- 语音电话：单独一行写 [语音通话]，不要加任何参数。\n`;
@@ -10875,8 +11803,45 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
             }
             return true;
           });
+          if(musicAsk){
+            const textMsgs = parsedMessages.filter(m => !m.type && m.content && String(m.content).trim());
+            if(textMsgs.length){
+              try{
+                Phone.setGlobalData('charMusicComment', {
+                  text: textMsgs.slice(0, 2)
+                    .map(m => String(m.content).trim().replace(/[\[\]【】]/g, ''))
+                    .join('\n')
+                    .slice(0, 120),
+                  speaker: textMsgs[0].speakerName || chat.name,
+                  trackId: _musicLastId || musicNowId() || '',
+                  ts: Date.now()
+                });
+              }catch(e){}
+            }
+            t.remove();
+            isReplying = false;
+            return;
+          }
           const replyBatchId = 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
           parsedMessages.forEach(m => { m.batchId = replyBatchId; history.push(m); });
+          if(musicTalk || charRec || togetherInvite || togetherActiveNow() || hasRecentMusicCard(15 * 60 * 1000)){
+            const textMsgs = parsedMessages.filter(m => !m.type && m.content && String(m.content).trim());
+            if(textMsgs.length){
+              try{
+                const cmTrackId = (togetherInvite && (togetherInvite.trackId || togetherInvite.firstTrackId)) || musicNowId() || _musicLastId || '';
+                const bubbleText = textMsgs.slice(0, 2)
+                  .map(m => String(m.content).trim().replace(/[\[\]【】]/g, ''))
+                  .join('\n')
+                  .slice(0, 120);
+                Phone.setGlobalData('charMusicComment', {
+                  text: bubbleText,
+                  speaker: textMsgs[0].speakerName || chat.name,
+                  trackId: cmTrackId,
+                  ts: Date.now()
+                });
+              }catch(e){}
+            }
+          }
           saveHistoryToStorage();
           autoSummarizeHistory(chatId);
           t.remove();
@@ -10888,6 +11853,7 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
                 _notifyChatUpdated();
                 isReplying = false;
                 input.focus();
+                if(togetherInvite) settleTogetherInvite();
                 if(pendingCharCall){
                   const req = pendingCharCall;
                   pendingCharCall = null;
@@ -11772,9 +12738,65 @@ const chatId = chat ? chat.id : ('chat_' + groupId);
       render();
     }
 
+    // 音乐里点歌后的回填：把用户在音乐 App 选中的歌补进对应聊天
+    if(window.__wcPickTimer) clearInterval(window.__wcPickTimer);
+    let _wcPickSeq = 0;
+    try{ _wcPickSeq = (Phone.getGlobalData('musicPickResult') || {}).seq || 0; }catch(e){}
+    window.__wcPickTimer = setInterval(() => {
+      let res = {};
+      try{ res = Phone.getGlobalData('musicPickResult') || {}; }catch(e){ return; }
+      if(!res.seq || res.seq === _wcPickSeq) return;
+      _wcPickSeq = res.seq;
+      const cid = res.chatId || '';
+      const tr = res.track || {};
+      if(!cid || !tr.id) return;
+      const isTogether = res.action === 'together';
+      const hist = getHistory(cid);
+      const ts = Date.now();
+      hist.push({
+        role:'user', type:'music', source:'user',
+        title: tr.title || '', artist: tr.artist || '', cover: tr.cover || '',
+        playing: false, progress:0, dur: Number(tr.duration) || 0,
+        action: isTogether ? 'togetherAsk' : 'share',
+        inviteState: isTogether ? 'pending' : '',
+        trackId: tr.id,
+        content: (isTogether ? '[邀请一起听歌]' : '[分享歌曲]') + '《' + (tr.title || '') + '》',
+        ts
+      });
+      saveHistoryToStorage();
+      if(isTogether){
+        try{
+          Phone.setGlobalData('musicTogetherInvite', {
+            chatId: cid, scope:'single', ts, answered:false,
+            trackId: tr.id, title: tr.title || '', artist: tr.artist || '', msgTs: ts
+          });
+        }catch(e){}
+      }
+      if(currentTab === 'chat') renderChatList();
+      try{ document.dispatchEvent(new CustomEvent('wechat-data-updated', { detail:{ type:'chat' } })); }catch(e){}
+      try{ document.dispatchEvent(new CustomEvent('wayv-music-picked', { detail:{ chatId: cid } })); }catch(e){}
+      if(isTogether){
+        try{ document.dispatchEvent(new CustomEvent('wayv-together-invite', { detail:{ chatId: cid } })); }catch(e){}
+      }
+    }, 1500);
+
     switchTab('chat');
   };
 })();
+
+if(!window.__wcCommentPoll){
+  window.__wcCommentSeq = 0;
+  window.__wcCommentPoll = setInterval(function(){
+    try{
+      const fn = window.__wcCommentHandler;
+      if(!fn) return;
+      const r = Phone.getGlobalData('charCommentReq') || {};
+      if(!r.seq || r.seq === window.__wcCommentSeq) return;
+      if(Date.now() - (Number(r.ts) || 0) > 120000) return;
+      fn(r);
+    }catch(e){}
+  }, 1500);
+}
 </script>
 </body>
 </html>
