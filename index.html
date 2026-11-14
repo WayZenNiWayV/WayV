@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -25,7 +25,6 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#d4f0de,#e8f6dd 60%,#f0fbf0);display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .phone-shell{width:var(--phone-w);height:var(--phone-h);background:#0d1a12;border-radius:var(--radius);padding:calc(var(--phone-w)*0.027);box-shadow:0 40px 80px -20px rgba(20,60,35,.35),inset 0 0 0 1.5px rgba(255,255,255,.08);position:relative;transition:all .15s ease;}
-.phone-shell::before{display:none;}
 .phone-screen{width:100%;height:100%;background:var(--green-bg);border-radius:calc(var(--radius) - var(--phone-w)*0.016);overflow:hidden;position:relative;display:flex;flex-direction:column;}
 .phone-screen::before{content:"";position:absolute;top:-20%;left:-20%;width:80%;height:60%;background:radial-gradient(circle,rgba(124,204,155,.45) 0%,transparent 70%);pointer-events:none;}
 .phone-screen::after{content:"";position:absolute;bottom:-15%;right:-15%;width:70%;height:55%;background:radial-gradient(circle,rgba(184,226,198,.55) 0%,transparent 70%);pointer-events:none;}
@@ -409,7 +408,7 @@ const Phone = (() => {
       return [];
     }catch(e){ return []; }
   }
-  async function chatWithAI(messages, apiOverride){
+  async function chatWithAI(messages, apiOverride, extra){
     const api = apiOverride || getCurrentApi();
     if(!api || !api.url || !api.key){
       throw new Error('请先在设置里配置 API');
@@ -418,17 +417,19 @@ const Phone = (() => {
     if(!model) throw new Error('该 API 还未选择模型');
     const VALID_ROLES = ['system','user','assistant','tool'];
     const clean = (messages || []).filter(m => m && m.content !== undefined && VALID_ROLES.includes(m.role));
+    const body = { model, messages: clean, stream:false };
+    if(extra && typeof extra === 'object') Object.assign(body, extra);
     const res = await fetch(`${api.url.replace(/\/$/,'')}/chat/completions`, {
       method:'POST',
       headers:{
         'Content-Type':'application/json',
         'Authorization':`Bearer ${api.key}`
       },
-      body: JSON.stringify({ model, messages: clean, stream:false })
+      body: JSON.stringify(body)
     });
     if(!res.ok){
       const txt = await res.text();
-      throw new Error('API 错误: ' + txt);
+      throw new Error('API 错误(' + res.status + '): ' + String(txt||'').slice(0,180));
     }
     const json = await res.json();
     return json.choices?.[0]?.message?.content || '';
@@ -606,6 +607,7 @@ const Desktop = (() => {
             if(fn) fn(node);
           });
         });
+        if(t.onMount) t.onMount(node);
       } else {
         node.innerHTML = `<div class="app-icon">${t.icon}</div><div class="app-label">${t.name}</div>`;
       }
@@ -855,6 +857,7 @@ function rerender(key){
       if(fn) fn(tile);
     });
   });
+  if(cfg.onMount) cfg.onMount(tile);
 }
 
 async function editCharacter(char){
@@ -1221,16 +1224,35 @@ Phone.registerWidget({
   render(){
     const d = Phone.getGlobalData('disk');
     const cover = d.cover || '';
-    return `<div class="disk-widget"><div class="disk-vinyl"><div class="disk-cover" data-action="changeCover">${cover ? `<img src="${cover}">` : CAMERA_ICON}</div></div></div>`;
+    return `<div class="disk-widget"><div class="disk-vinyl"><div class="disk-cover">${cover ? `<img src="${cover}">` : CAMERA_ICON}</div></div></div>`;
   },
-  onAction:{
-    async changeCover(){
-      const r = await Phone.modal({ title:'更换唱片封面', fields:[{key:'url',label:'图片 URL',value:''},{key:'file',label:'或上传本地图片',type:'file'}], onOk:async v=>{const d=Phone.getGlobalData('disk');if(v.file)d.cover=await Phone.fileToBase64(v.file);else if(v.url.trim())d.cover=v.url.trim();Phone.setGlobalData('disk',d);return v;} });
-      if(r) rerender('disk');
-    }
+  onMount(node){
+    const cover = node.querySelector('.disk-cover');
+    if(!cover || cover._bound) return;
+    cover._bound = true;
+    let timer = null, longPressed = false;
+    const cancel = () => { if(timer){ clearTimeout(timer); timer = null; } };
+    cover.addEventListener('pointerdown', e => {
+      longPressed = false;
+      cancel();
+      timer = setTimeout(() => {
+        timer = null;
+        longPressed = true;
+        changeCover();
+      }, 500);
+    });
+    ['pointerup','pointerleave','pointercancel'].forEach(ev => cover.addEventListener(ev, cancel));
+    cover.addEventListener('click', e => {
+      if(longPressed){ longPressed = false; e.stopPropagation(); }
+    });
   },
   onWidgetClick: () => openMusicPage()
 });
+
+async function changeCover(){
+  const r = await Phone.modal({ title:'更换唱片封面', fields:[{key:'url',label:'图片 URL',value:''},{key:'file',label:'或上传本地图片',type:'file'}], onOk:async v=>{const d=Phone.getGlobalData('disk');if(v.file)d.cover=await Phone.fileToBase64(v.file);else if(v.url.trim())d.cover=v.url.trim();Phone.setGlobalData('disk',d);return v;} });
+  if(r) rerender('disk');
+}
 
 Phone.registerWidget({
   key: 'photo',
@@ -1251,7 +1273,7 @@ Phone.registerWidget({
 
 Phone.registerApp({ key:'wechat', name:'微信', icon:WECHAT_ICON, colStart:3, rowStart:2, onClick: () => openChatPage() });
 Phone.registerApp({ key:'weibo', name:'微博', icon:WEIBO_ICON, colStart:4, rowStart:2, onClick: () => openWeiboPage() });
-Phone.registerApp({ key:'bubble', name:'泡泡', icon:BUBBLE_ICON, colStart:3, rowStart:3, onClick: () => openSocialAppPage('bubble','泡泡','bubbleId') });
+Phone.registerApp({ key:'bubble', name:'泡泡', icon:BUBBLE_ICON, colStart:3, rowStart:3, onClick: () => openBubblePage() });
 Phone.registerApp({ key:'taobao', name:'淘宝', icon:TAOBAO_ICON, colStart:4, rowStart:3, onClick: () => openSocialAppPage('taobao','淘宝','taobaoId') });
 Phone.registerApp({ key:'couple', name:'情侣空间', icon:COUPLE_ICON, colStart:1, rowStart:4 });
 Phone.registerApp({
@@ -1537,6 +1559,43 @@ function openWeiboPage(){
   });
 }
 
+function openBubblePage(){
+  Phone.openPage({
+    title: '',
+    render: async (body) => {
+      const view = body.parentElement;
+      view.querySelector('.page-header').style.display = 'none';
+      body.style.padding = '0';
+      body.style.overflow = 'hidden';
+      body.style.display = 'flex';
+      body.style.flexDirection = 'column';
+      try{
+        const res = await fetch('bubble.html?v=' + Date.now());
+        if(!res.ok) throw new Error('找不到 bubble.html（HTTP ' + res.status + '）');
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        doc.querySelectorAll('style').forEach(s => {
+          const style = document.createElement('style');
+          style.textContent = s.textContent;
+          document.head.appendChild(style);
+        });
+        body.innerHTML = doc.body.innerHTML;
+        const scripts = doc.querySelectorAll('script');
+        for(const s of scripts){
+          const script = document.createElement('script');
+          script.textContent = s.textContent;
+          document.body.appendChild(script);
+        }
+        if(window.mountBubbleApp){
+          window.mountBubbleApp(body, Phone, () => view.querySelector('.page-back').click());
+        }
+      }catch(err){
+        body.innerHTML = '<div style="padding:20px;color:var(--green-ink-soft);font-size:13px">加载泡泡失败：' + err.message + '</div>';
+      }
+    }
+  });
+}
+
 function openMusicPage(){
   Phone.openPage({
     title: '',
@@ -1549,6 +1608,7 @@ function openMusicPage(){
       body.style.flexDirection = 'column';
       try{
         const res = await fetch('Music.html?v=' + Date.now());
+        if(!res.ok) throw new Error('找不到 Music.html（HTTP ' + res.status + '），请确认该文件和 index.html 在同一个目录');
         const html = await res.text();
         const doc = new DOMParser().parseFromString(html, 'text/html');
         doc.querySelectorAll('style').forEach(s => {
