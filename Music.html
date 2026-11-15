@@ -262,10 +262,6 @@
 .mu-prov-title{font-size:14px;font-weight:800;color:var(--mu-ink);line-height:1.3;}
 .mu-prov-sub{font-size:11px;color:var(--mu-ink-soft);margin-top:3px;}
 .mu-prov-arrow{font-size:17px;color:var(--mu-ink-soft);flex-shrink:0;padding-left:4px;}
-.mu-prov.current{box-shadow:0 0 0 2px rgba(47,155,98,.32) inset;}
-.mu-prov-dot{width:6px;height:6px;border-radius:50%;background:rgba(63,169,106,.24);display:inline-block;
-  vertical-align:middle;margin-right:5px;}
-.mu-prov-dot.on{background:#2f9b62;}
 .mu-back-picker{margin-top:10px;background:none;border:none;font-family:inherit;font-size:12px;font-weight:700;
   color:var(--mu-deep);cursor:pointer;padding:6px 9px;border-radius:8px;}
 .mu-back-picker:active{background:rgba(63,169,106,.1);}
@@ -916,8 +912,8 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
       if(!m) return;
       lyricLoading[t.id] = true;
       var url = (m[1] === 'ne')
-        ? '/api/ne/lyric?id=' + encodeURIComponent(m[2])
-        : '/api/qq/lyric?songmid=' + encodeURIComponent(m[2]);
+        ? '/api/wyymusic/lyric?id=' + encodeURIComponent(m[2])
+        : '/api/qqmusic/lyric?songmid=' + encodeURIComponent(m[2]);
       api(url).then(function(j){
         if(j && j.ok && j.lyric){
           t.lyric = j.lyric;
@@ -1735,7 +1731,7 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
     }
 
     function probeBridge(base){
-      var url = (base ? base.replace(/\/+$/, '') : '') + '/api/qq/status?t=' + Date.now();
+      var url = (base ? base.replace(/\/+$/, '') : '') + '/api/qqmusic/status?t=' + Date.now();
       var ctl = null;
       try{ ctl = new AbortController(); }catch(e){ ctl = null; }
       var opt = { cache:'no-store' };
@@ -1804,15 +1800,15 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
 
     function qqOpen(){
       if(qqProfile && qqProfile.loggedIn){ openQQSheet(); return; }
-      openLogin(true);
+      openLogin();
       ensureBridge().then(function(ok){
-        if(!ok){ openLogin(); return; }
+        if(!ok) return;
         detectProfile().then(function(p){
           p = p || {};
           if(p.loggedIn){ setProfile(p); closeLogin(); openQQSheet(); return; }
           setProfile(p);
-          openLogin();
-        }).catch(function(){ openLogin(); });
+          if(loginMask.classList.contains('show') && loginBody.querySelector('#muPickQq')) renderLoginPicker();
+        }).catch(function(){});
       });
     }
 
@@ -1887,14 +1883,14 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
         (hasKey ? '' :
           '<div class="mu-login-fail" style="margin-top:10px">' +
             '<div class="mu-login-fail-msg">QQ 扫码只拿到了账号身份（歌单、昵称可用）。' +
-            '要播放 VIP 歌曲，改用微信扫码即可直接拿到播放凭证。</div>' +
+            '要播放 VIP 歌曲，改用cookie凭证即可直接拿到播放凭证。</div>' +
           '</div>' +
           '<div class="mu-login-acts">' +
             '<button class="mu-login-act" id="muKeyLater">先进入曲库</button>' +
-            '<button class="mu-login-act primary" id="muKeyAdd">改用微信扫码</button>' +
+            '<button class="mu-login-act primary" id="muKeyAdd">改用cookie</button>' +
           '</div>');
       var addBtn = loginBody.querySelector('#muKeyAdd');
-      if(addBtn) addBtn.onclick = function(){ renderLoginWxQr(); };
+      if(addBtn) addBtn.onclick = function(){ renderLoginCookie(); };
       var laterBtn = loginBody.querySelector('#muKeyLater');
       if(laterBtn) laterBtn.onclick = function(){ closeLogin(); openQQSheet(); };
       toast('已登录 QQ 音乐');
@@ -1998,111 +1994,37 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
 
     var qrMode = 'qq';
     var prov = 'qq';
-    var neQrKey = '';
 
     function provName(){
       return prov === 'ne' ? '网易云音乐' : 'QQ 音乐';
     }
 
+    function apiProv(p){
+      return (p || prov) === 'ne' ? 'wyymusic' : 'qqmusic';
+    }
+
     function qrEndpoint(){
-      if(qrMode === 'ne') return '/api/ne/qr';
-      return qrMode === 'wx' ? '/api/qq/wxqr' : '/api/qq/qr';
+      if(qrMode === 'ne') return '/api/wyymusic/qr';
+      return qrMode === 'wx' ? '/api/qqmusic/wxqr' : '/api/qqmusic/qr';
     }
 
     function qrCheckEndpoint(){
-      if(qrMode === 'ne') return '/api/ne/qr/check';
-      return qrMode === 'wx' ? '/api/qq/wxqr/check' : '/api/qq/qr/check';
+      if(qrMode === 'ne') return '/api/wyymusic/qr/check';
+      return qrMode === 'wx' ? '/api/qqmusic/wxqr/check' : '/api/qqmusic/qr/check';
     }
 
     function detectProfile(){
-      return probeProviders().then(function(st){
-        if(!st) return null;
-        var q = (st.qq && st.qq.loggedIn) ? st.qq : null;
-        var n = (st.ne && st.ne.loggedIn) ? st.ne : null;
-        if(q && n) return (n.loginTime || 0) > (q.loginTime || 0) ? n.profile : q.profile;
-        if(q) return q.profile;
-        if(n) return n.profile;
-        return (st.qq && st.qq.ok) ? st.qq.profile : ((st.ne && st.ne.ok) ? st.ne.profile : null);
-      }).catch(function(){ return null; });
-    }
-
-    var provState = { qq: null, ne: null };
-
-    function probeProviders(){
-      if(!bridgeOk) return Promise.resolve(null);
       return Promise.all([
-        api('/api/qq/status').catch(function(){ return null; }),
-        api('/api/ne/status').catch(function(){ return null; })
+        api('/api/qqmusic/status').catch(function(){ return null; }),
+        api('/api/wyymusic/status').catch(function(){ return null; })
       ]).then(function(res){
-        var q = res[0], n = res[1];
-        var qOK = !!(q && !q.notJson), nOK = !!(n && !n.notJson);
-        if(!qOK && !nOK) return null;
-        provState.qq = qOK
-          ? { ok:true, loggedIn: !!(q.profile && q.profile.loggedIn),
-              profile: q.profile || {}, loginTime: q.loginTime || 0 }
-          : { ok:false, loggedIn:false, profile:{}, loginTime:0 };
-        provState.ne = nOK
-          ? { ok:true, loggedIn: !!(n.profile && n.profile.loggedIn),
-              profile: n.profile || {}, loginTime: n.loginTime || 0 }
-          : { ok:false, loggedIn:false, profile:{}, loginTime:0 };
-        return provState;
+        var qr = res[0] || {}, nr = res[1] || {};
+        var q = qr.profile || {}, n = nr.profile || {};
+        if(q.loggedIn && n.loggedIn) return (nr.loginTime || 0) > (qr.loginTime || 0) ? n : q;
+        if(q.loggedIn) return q;
+        if(n.loggedIn) return n;
+        return q;
       });
-    }
-
-    function provSubInner(p){
-      var st = provState[p];
-      if(!st) return '<span class="mu-prov-dot"></span>正在检查登录状态…';
-      if(!st.ok) return '<span class="mu-prov-dot"></span>本机服务读不到这个平台的登录态';
-      var prof = st.profile || {};
-      if(st.loggedIn){
-        return '<span class="mu-prov-dot on"></span>已登录' +
-               (prof.nick ? '：' + esc(prof.nick) : '') +
-               (prof.vip ? '<span class="mu-vip-badge">VIP</span>' : '') +
-               ' · 点击直接进入';
-      }
-      return '<span class="mu-prov-dot"></span>未登录 · ' +
-             (p === 'ne' ? '用网易云音乐 App 扫码' : '用手机 QQ 扫码');
-    }
-
-    function provRow(p, ico, title){
-      var st = provState[p];
-      var cur = (prov === p && st && st.loggedIn) ? ' current' : '';
-      var key = p === 'ne' ? 'Ne' : 'Qq';
-      return '<button class="mu-prov' + cur + '" id="muPick' + key + '" data-prov="' + p + '">' +
-        '<div class="mu-prov-ico' + (p === 'ne' ? ' ne' : '') + '">' + ico + '</div>' +
-        '<div class="mu-prov-main">' +
-          '<div class="mu-prov-title">' + title + '</div>' +
-          '<div class="mu-prov-sub" id="muSub' + key + '">' + provSubInner(p) + '</div>' +
-        '</div>' +
-        '<div class="mu-prov-arrow">›</div>' +
-      '</button>';
-    }
-
-    function bindPicker(){
-      var btns = loginBody.querySelectorAll('.mu-prov');
-      for(var i = 0; i < btns.length; i++){
-        btns[i].onclick = function(){ pickProvider(this.getAttribute('data-prov')); };
-      }
-    }
-
-    function refreshPicker(){
-      return probeProviders().then(function(st){
-        if(!loginMask.classList.contains('show')) return;
-        if(!st){
-          if(loginBody.querySelector('#muPickQq')) renderLoginNoBridge(renderLoginPicker);
-          return;
-        }
-        if(!loginBody.querySelector('#muPickQq')) return;
-        ['qq', 'ne'].forEach(function(p){
-          var key = p === 'ne' ? 'Ne' : 'Qq';
-          var btn = loginBody.querySelector('#muPick' + key);
-          var sub = loginBody.querySelector('#muSub' + key);
-          if(sub) sub.innerHTML = provSubInner(p);
-          if(btn) btn.classList.toggle('current', prov === p && !!(provState[p] && provState[p].loggedIn));
-        });
-        var any = (provState.qq && provState.qq.loggedIn) || (provState.ne && provState.ne.loggedIn);
-        loginStatusSet(any ? '已登录的平台点一下直接进入' : '请选择要扫码登录的平台');
-      }).catch(function(){});
     }
 
     function renderLoginPicker(){
@@ -2110,29 +2032,43 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
       qqStopPoll();
       qrMode = '';
       loginTitle.textContent = '登录音乐平台';
-      loginDesc.textContent = '会同时检查 QQ 音乐和网易云音乐的登录状态；已登录的点一下直接进入，未登录的点一下扫码。';
-      provState.qq = null;
-      provState.ne = null;
+      loginDesc.textContent = '选择一个音乐平台扫码登录，登录哪个就进入哪个的曲库。';
       loginBody.innerHTML =
         '<div class="mu-login-picker">' +
-          provRow('qq', 'Q', 'QQ 音乐') +
-          provRow('ne', '云', '网易云音乐') +
+          '<button class="mu-prov" id="muPickQq">' +
+            '<div class="mu-prov-ico">Q</div>' +
+            '<div class="mu-prov-main">' +
+              '<div class="mu-prov-title">QQ 音乐</div>' +
+              '<div class="mu-prov-sub">用手机 QQ 扫码登录</div>' +
+            '</div>' +
+            '<div class="mu-prov-arrow">›</div>' +
+          '</button>' +
+          '<button class="mu-prov" id="muPickNe">' +
+            '<div class="mu-prov-ico ne">云</div>' +
+            '<div class="mu-prov-main">' +
+              '<div class="mu-prov-title">网易云音乐</div>' +
+              '<div class="mu-prov-sub">用网易云音乐 App 扫码登录</div>' +
+            '</div>' +
+            '<div class="mu-prov-arrow">›</div>' +
+          '</button>' +
         '</div>' +
         (bridgeOk ? '' :
-          '<div class="mu-login-note">正在自动连接本机服务（<code>qqmusic_server.py</code>），连上后会直接显示两个平台的登录状态，无需刷新。</div>');
-      loginStatusSet(bridgeOk ? '正在检查两个平台的登录状态…' : '正在连接本机服务…');
-      bindPicker();
+          '<div class="mu-login-note">正在自动连接本机服务（<code>qqmusic_server.py</code>），连上后会直接出二维码，无需刷新。</div>');
+      loginStatusSet(bridgeOk ? '请选择要登录的音乐平台' : '正在连接本机服务…');
+      loginBody.querySelector('#muPickQq').onclick = function(){ pickProvider('qq'); };
+      loginBody.querySelector('#muPickNe').onclick = function(){ pickProvider('ne'); };
       if(!bridgeOk){
         watchBridgeThen(function(){
           if(loginMask.classList.contains('show') && loginBody.querySelector('#muPickQq')) renderLoginPicker();
         });
-        return;
+      } else {
+        stopBridgeWatch();
       }
-      stopBridgeWatch();
-      refreshPicker();
     }
 
-    function startQr(p){
+    function pickProvider(p){
+      prov = p;
+      qrMode = p;
       var next = (p === 'ne') ? renderLoginNeQr : renderLoginQr;
       if(bridgeOk){ next(); return; }
       loginStatusSet('正在连接本机服务…');
@@ -2142,30 +2078,6 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
         renderLoginPicker();
         watchBridgeThen(next);
       });
-    }
-
-    function useProvider(p){
-      prov = p;
-      qrMode = p;
-      setProfile((provState[p] && provState[p].profile) || null);
-      closeLogin();
-      openQQSheet();
-      toast('已进入' + provName());
-    }
-
-    function pickProvider(p){
-      prov = p;
-      qrMode = p;
-      var st = provState[p];
-      if(st && st.loggedIn){ useProvider(p); return; }
-      if(!st && bridgeOk){
-        probeProviders().then(function(res){
-          if(res){ pickProvider(p); return; }
-          renderLoginNoBridge(renderLoginPicker);
-        }).catch(function(){ startQr(p); });
-        return;
-      }
-      startQr(p);
     }
 
     function loginEnsureBridge(next){
@@ -2199,7 +2111,6 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
       if(!loginMask.classList.contains('show')) return;
       if(!bridgeOk){ loginEnsureBridge(renderLoginNeQr); return; }
       qrMode = 'ne';
-      neQrKey = '';
       loginTitle.textContent = '网易云音乐登录';
       loginDesc.textContent = '用网易云音乐 App 扫一扫，登录后可读取歌单、播放 VIP 歌曲。';
       loginBody.innerHTML =
@@ -2282,24 +2193,69 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
             '<textarea id="muCookieText" placeholder="或整段粘贴：uin=...; qm_keyst=...; qqmusic_key=..."></textarea>' +
             '<button id="muCookieSave">保存并登录</button>' +
           '</div>' +
+          '<div class="mu-login-fail" id="muCookieErr" style="display:none;margin-top:2px"></div>' +
           '<button class="mu-cookie-link" id="muQrSwitch">← 返回扫码登录</button>' +
         '</div>';
       loginStatusSet('手动 Cookie 登录');
       loginBody.querySelector('#muQrSwitch').onclick = renderLoginQr;
-      loginBody.querySelector('#muCookieSave').onclick = function(){
+      var saveBtn = loginBody.querySelector('#muCookieSave');
+      var errBox = loginBody.querySelector('#muCookieErr');
+      function cookieErr(title, msg, trace, actionText){
+        if(!errBox) return;
+        if(!title){
+          errBox.style.display = 'none';
+          errBox.innerHTML = '';
+          return;
+        }
+        errBox.style.display = 'block';
+        errBox.innerHTML =
+          '<div class="mu-login-fail-title">' + esc(title) + '</div>' +
+          '<div class="mu-login-fail-msg">' + esc(msg || '') + '</div>' +
+          (trace && trace.length ? '<pre class="mu-login-trace">' + esc(trace.join('\n')) + '</pre>' : '') +
+          (actionText ? '<button class="mu-cookie-link" id="muCookieSkip">' + esc(actionText) + '</button>' : '');
+      }
+      function saveBtnReset(){
+        saveBtn.disabled = false;
+        saveBtn.textContent = '保存并登录';
+      }
+      saveBtn.onclick = function(){
         var uin = (loginBody.querySelector('#muKeyUin').value || '').trim();
         var keyst = (loginBody.querySelector('#muKeyKeyst').value || '').trim();
         var txt = (loginBody.querySelector('#muCookieText').value || '').trim();
-        if(!uin && !keyst && !txt){ loginStatusSet('请先填写 uin / qm_keyst 或粘贴 Cookie', 'warn'); return; }
+        cookieErr();
+        if(!uin && !keyst && !txt){
+          loginStatusSet('请先填写 uin / qm_keyst 或粘贴 Cookie', 'warn');
+          cookieErr('还没填内容', '请填写 uin / qm_keyst，或把整段 Cookie 粘贴到下面的输入框。');
+          return;
+        }
         loginStatusSet('正在验证 Cookie…');
-        api('/api/qq/cookie', { method:'POST', headers:{'Content-Type':'application/json'},
+        saveBtn.disabled = true;
+        saveBtn.textContent = '验证中…';
+        api('/api/qqmusic/cookie', { method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ uin: uin, keyst: keyst, cookie: txt }) }).then(function(j){
-          if(j && j.profile && j.profile.loggedIn){
-            loginDone(j.profile);
-          } else {
-            loginStatusSet((j && j.error) || 'Cookie 无效或已过期，请重新获取', 'warn');
+          saveBtnReset();
+          if(j && j.ok){
+            if(!j.hasKey){
+              loginStatusSet('已登录，但没有拿到播放凭证', 'warn');
+              cookieErr('Cookie 里没有播放凭证',
+                '已识别到账号（歌单、昵称可用），但没有找到 qm_keyst，VIP 歌曲仍然播不了。' +
+                '请确认复制的是 y.qq.com 域名下的 qm_keyst，而不是 p_skey / pt4_token。',
+                null, '先进入曲库（只能听免费歌）');
+              var skip = errBox.querySelector('#muCookieSkip');
+              if(skip) skip.onclick = function(){ loginDone(j); };
+              return;
+            }
+            loginDone(j);
+            return;
           }
-        }).catch(function(){ loginStatusSet('保存失败，检查服务是否在运行', 'warn'); });
+          var msg = (j && j.error) || 'Cookie 无效或已过期，请重新获取 qm_keyst';
+          loginStatusSet(msg, 'warn');
+          cookieErr('Cookie 无效或已过期', msg, j && j.trace);
+        }).catch(function(){
+          saveBtnReset();
+          loginStatusSet('保存失败，检查服务是否在运行', 'warn');
+          cookieErr('保存失败', '连不上本机音乐服务，请确认 qqmusic_server.py 正在运行。');
+        });
       };
     }
 
@@ -2322,7 +2278,6 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
           return;
         }
         qrImg.src = j.image;
-        if(qrMode === 'ne') neQrKey = j.key || '';
         loginStatusSet('');
         qqPoll();
       }).catch(function(){
@@ -2336,13 +2291,6 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
       qrTimer = setInterval(function(){
         api(qrCheckEndpoint()).then(function(j){
           if(!j) return;
-          if(qrMode === 'ne' && j.key && j.image && j.key !== neQrKey){
-            neQrKey = j.key;
-            var neImg = loginBody.querySelector('#muQrImg');
-            var neCard = loginBody.querySelector('#muQrCard');
-            if(neImg) neImg.src = j.image;
-            if(neCard) neCard.classList.remove('loading');
-          }
           if(j.status === 0){
             qqStopPoll();
             if(qrMode === 'ne'){
@@ -2383,7 +2331,7 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
 
     function img(url){
       if(!url) return '';
-      return apiUrl('/api/qq/cover?url=' + encodeURIComponent(url));
+      return apiUrl('/api/' + apiProv() + '/cover?url=' + encodeURIComponent(url));
     }
 
     function qqTop(){
@@ -2441,8 +2389,8 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
       qqStopPoll();
       qqSongs = [];
       qqRender(qqTop() + qqUserBar() + '<div class="mu-empty">读取歌单中…</div>');
-      var tasks = [api('/api/' + prov + '/playlists')];
-      if(prov === 'ne') tasks.push(api('/api/ne/collection').catch(function(){ return {ok:true}; }));
+      var tasks = [api('/api/' + apiProv() + '/playlists')];
+      if(prov === 'ne') tasks.push(api('/api/wyymusic/collection').catch(function(){ return {ok:true}; }));
       Promise.all(tasks).then(function(ress){
         var j = ress[0];
         if(!j || !j.ok){
@@ -2496,7 +2444,7 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
     }
 
     function qqSearch(kw){
-      return api('/api/' + prov + '/search?kw=' + encodeURIComponent(kw)).then(function(j){
+      return api('/api/' + apiProv() + '/search?kw=' + encodeURIComponent(kw)).then(function(j){
         if(!j || !j.ok) throw new Error((j && j.error) || '搜索失败');
         return j.songs || [];
       });
@@ -2527,7 +2475,7 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
       qqBody.innerHTML = '<div class="mu-qq-head"><button class="mu-qq-back-sm" data-qq="back">‹</button>' +
         '<div class="mu-qq-head-title">' + esc(title || '歌单') + '</div></div>' +
         '<div class="mu-empty">读取曲目…</div>';
-      api('/api/' + prov + '/playlist?id=' + encodeURIComponent(id)).then(function(j){
+      api('/api/' + apiProv() + '/playlist?id=' + encodeURIComponent(id)).then(function(j){
         if(!j || !j.ok){
           qqBody.innerHTML = '<div class="mu-qq-head"><button class="mu-qq-back-sm" data-qq="back">‹</button>' +
             '<div class="mu-qq-head-title">' + esc(title || '歌单') + '</div></div>' +
@@ -2549,7 +2497,7 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
       qqBody.innerHTML = '<div class="mu-qq-head"><button class="mu-qq-back-sm" data-qq="back">‹</button>' +
         '<div class="mu-qq-head-title">专辑</div></div>' +
         '<div class="mu-empty">读取曲目…</div>';
-      api('/api/' + prov + '/album?id=' + encodeURIComponent(id)).then(function(j){
+      api('/api/' + apiProv() + '/album?id=' + encodeURIComponent(id)).then(function(j){
         if(!j || !j.ok){
           qqBody.innerHTML = '<div class="mu-qq-head"><button class="mu-qq-back-sm" data-qq="back">‹</button>' +
             '<div class="mu-qq-head-title">专辑</div></div>' +
@@ -2662,12 +2610,12 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
     function qqPlaySong(s){
       if(!s) return;
       if(provOfSong(s) === 'ne'){ nePlaySong(s); return; }
-      var probe = '/api/qq/stream?debug=1&songmid=' + encodeURIComponent(s.songmid) +
+      var probe = '/api/qqmusic/stream?debug=1&songmid=' + encodeURIComponent(s.songmid) +
             '&mediaMid=' + encodeURIComponent(s.mediaMid || s.songmid);
       api(probe).then(function(j){
         if(j && j.ok && j.url){
           console.log('[QQ音乐] 播放地址：', j.url);
-          qqAddAndPlay(s, apiUrl('/api/qq/stream?songmid=' + encodeURIComponent(s.songmid) +
+          qqAddAndPlay(s, apiUrl('/api/qqmusic/stream?songmid=' + encodeURIComponent(s.songmid) +
                 '&mediaMid=' + encodeURIComponent(s.mediaMid || s.songmid)));
           return;
         }
@@ -2678,13 +2626,13 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
             ? (noKey ? '需要扫码补播放凭证' : '需要 VIP 权限')
             : ('result=' + ((j && j.result) || '?'));
         toast('《' + s.title + '》' + reason + '，正在寻找可播放版本…');
-        api('/api/qq/find-playable?kw=' + encodeURIComponent(s.title) +
+        api('/api/qqmusic/find-playable?kw=' + encodeURIComponent(s.title) +
             '&exclude=' + encodeURIComponent(s.songmid)).then(function(f){
           if(f && f.ok && f.song){
             var alt = f.song;
             alt.qq = true; alt.ne = false;
             console.log('[QQ音乐] 改用可播放版本：', alt.songmid, f.url);
-            qqAddAndPlay(alt, apiUrl('/api/qq/stream?songmid=' + encodeURIComponent(alt.songmid) +
+            qqAddAndPlay(alt, apiUrl('/api/qqmusic/stream?songmid=' + encodeURIComponent(alt.songmid) +
                   '&mediaMid=' + encodeURIComponent(alt.mediaMid || alt.songmid)),
                   '《' + s.title + '》原版本' + reason + '，已切换到可播放版本');
           } else {
@@ -2706,21 +2654,21 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
     }
 
     function nePlaySong(s){
-      api('/api/ne/stream?debug=1&id=' + encodeURIComponent(s.songmid)).then(function(j){
+      api('/api/wyymusic/stream?debug=1&id=' + encodeURIComponent(s.songmid)).then(function(j){
         if(j && j.ok && j.url){
           console.log('[网易云] 播放地址：', j.url);
-          qqAddAndPlay(s, apiUrl('/api/ne/stream?id=' + encodeURIComponent(s.songmid)));
+          qqAddAndPlay(s, apiUrl('/api/wyymusic/stream?id=' + encodeURIComponent(s.songmid)));
           return;
         }
         var reason = (j && j.needVip) ? '需要 VIP 或版权受限' : ('code=' + ((j && j.code) || '?'));
         toast('《' + s.title + '》' + reason + '，正在寻找可播放版本…');
-        api('/api/ne/find-playable?kw=' + encodeURIComponent(s.title) +
+        api('/api/wyymusic/find-playable?kw=' + encodeURIComponent(s.title) +
             '&exclude=' + encodeURIComponent(s.songmid)).then(function(f){
           if(f && f.ok && f.song){
             var alt = f.song;
             alt.ne = true; alt.qq = false;
             console.log('[网易云] 改用可播放版本：', alt.songmid, f.url);
-            qqAddAndPlay(alt, apiUrl('/api/ne/stream?id=' + encodeURIComponent(alt.songmid)),
+            qqAddAndPlay(alt, apiUrl('/api/wyymusic/stream?id=' + encodeURIComponent(alt.songmid)),
                   '《' + s.title + '》原版本' + reason + '，已切换到可播放版本');
           } else {
             toast('《' + s.title + '》无法播放：' + ((f && f.error) || '没有可播放的版本'));
@@ -2745,7 +2693,7 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
       if(!t) return;
       var act = t.getAttribute('data-qq');
       if(act === 'out'){
-        api('/api/' + prov + '/logout', { method:'POST' }).then(function(){
+        api('/api/' + apiProv() + '/logout', { method:'POST' }).then(function(){
           setProfile(null);
           qqLists = []; qqSongs = []; qqSearchSongs = [];
           toast('已退出' + provName());
@@ -2786,27 +2734,18 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
     setPlaying(playing);
     ensureBridge().then(function(ok){
       if(!ok) return;
-      probeProviders().then(function(st){
-        if(!st) return;
-        var q = (st.qq && st.qq.loggedIn) ? st.qq : null;
-        var n = (st.ne && st.ne.loggedIn) ? st.ne : null;
-        if(q && n) setProfile((n.loginTime || 0) > (q.loginTime || 0) ? n.profile : q.profile);
-        else if(q) setProfile(q.profile);
-        else if(n) setProfile(n.profile);
+      api('/api/qqmusic/status').catch(function(){ return null; }).then(function(j){
+        var p = (j && j.profile) || {};
+        api('/api/wyymusic/status').catch(function(){ return null; }).then(function(k){
+          var n = (k && k.profile) || {};
+          var np = (k && k.loginTime) || 0;
+          var qp = (j && j.loginTime) || 0;
+          if(p.loggedIn && n.loggedIn) setProfile(np > qp ? n : p);
+          else if(p.loggedIn) setProfile(p);
+          else if(n.loggedIn) setProfile(n);
+        }).catch(function(){ if(p.loggedIn) setProfile(p); });
       }).catch(function(){});
     });
-
-    var autoLogin = '';
-    try {
-      var mLogin = /(?:^|[?&#])login=(qq|ne|wx)/.exec(location.search + location.hash);
-      if(mLogin) autoLogin = mLogin[1];
-    } catch(e){ autoLogin = ''; }
-    if(autoLogin){
-      openLogin();
-      if(autoLogin === 'ne') renderLoginNeQr();
-      else if(autoLogin === 'wx') renderLoginWxQr();
-      else renderLoginQr();
-    }
 
     var guard = setInterval(function(){
       if(!app.isConnected){ uiOn = false; qqStopPoll(); clearInterval(guard); }
