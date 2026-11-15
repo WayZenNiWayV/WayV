@@ -1998,6 +1998,7 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
 
     var qrMode = 'qq';
     var prov = 'qq';
+    var neQrKey = '';
 
     function provName(){
       return prov === 'ne' ? '网易云音乐' : 'QQ 音乐';
@@ -2198,6 +2199,7 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
       if(!loginMask.classList.contains('show')) return;
       if(!bridgeOk){ loginEnsureBridge(renderLoginNeQr); return; }
       qrMode = 'ne';
+      neQrKey = '';
       loginTitle.textContent = '网易云音乐登录';
       loginDesc.textContent = '用网易云音乐 App 扫一扫，登录后可读取歌单、播放 VIP 歌曲。';
       loginBody.innerHTML =
@@ -2320,6 +2322,7 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
           return;
         }
         qrImg.src = j.image;
+        if(qrMode === 'ne') neQrKey = j.key || '';
         loginStatusSet('');
         qqPoll();
       }).catch(function(){
@@ -2333,6 +2336,13 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
       qrTimer = setInterval(function(){
         api(qrCheckEndpoint()).then(function(j){
           if(!j) return;
+          if(qrMode === 'ne' && j.key && j.image && j.key !== neQrKey){
+            neQrKey = j.key;
+            var neImg = loginBody.querySelector('#muQrImg');
+            var neCard = loginBody.querySelector('#muQrCard');
+            if(neImg) neImg.src = j.image;
+            if(neCard) neCard.classList.remove('loading');
+          }
           if(j.status === 0){
             qqStopPoll();
             if(qrMode === 'ne'){
@@ -2785,6 +2795,18 @@ body[data-mu-standalone] .mu-app{width:min(92vw,420px);height:min(92vh,850px);bo
         else if(n) setProfile(n.profile);
       }).catch(function(){});
     });
+
+    var autoLogin = '';
+    try {
+      var mLogin = /(?:^|[?&#])login=(qq|ne|wx)/.exec(location.search + location.hash);
+      if(mLogin) autoLogin = mLogin[1];
+    } catch(e){ autoLogin = ''; }
+    if(autoLogin){
+      openLogin();
+      if(autoLogin === 'ne') renderLoginNeQr();
+      else if(autoLogin === 'wx') renderLoginWxQr();
+      else renderLoginQr();
+    }
 
     var guard = setInterval(function(){
       if(!app.isConnected){ uiOn = false; qqStopPoll(); clearInterval(guard); }
